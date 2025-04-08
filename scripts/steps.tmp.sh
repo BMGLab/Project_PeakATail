@@ -1,7 +1,7 @@
 
 STAR --runThreadN 64 \
      --genomeDir data/humanSTARindex/ \
-     --readFilesIn data/*_R2_001.fastq.gz data/*_R1_001.fastq.gz \
+     --readFilesIn data/Mono_day0_S1_R1_001.fastq.gz data/Mono_day0_S1_R2_001.fastq.gz \
      --outSAMtype BAM SortedByCoordinate \
      --outSAMattributes CR UR CY UY CB UB \
      --soloType CB_UMI_Simple \
