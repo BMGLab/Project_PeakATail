@@ -5,6 +5,9 @@ logs/
 # Ignore documentation drafts
 docs/
 
+#Ignore nextflow work folder
+work/
+
 # Ignore temporary files
 *.Rhistory
 *.RData
@@ -12,6 +15,7 @@ docs/
 *.log
 *.tmp
 *.bak
+.nextflow*
 
 # Ignore environment or cache
 .conda/

@@ -1,0 +1,4 @@
+sample,read1,read2,read_length,cb_len,umi_len
+A549trd_M2mac_day8,data/A549trd_M2mac_day8_S4_R1_001.fastq.gz,data/A549trd_M2mac_day8_S4_R2_001.fastq.gz,101,12,8
+untrd_mac_day7,data/untrd_mac_day7_S1_R1_001.fastq.gz,data/untrd_mac_day7_S1_R2_001.fastq.gz,101,12,8
+Mono_day0,data/Mono_day0_S1_R1_001.fastq.gz,data/Mono_day0_S1_R2_001.fastq.gz,101,12,8
