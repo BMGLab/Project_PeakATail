@@ -41,3 +41,5 @@ All key plots are saved in `/figures`. The naming follows the manuscript figure 
 ## Citation
 If you use this project, please cite: [Your paper or bioRxiv link]
 """
+
+nextflow run main.nf -work-dir /mnt/second/yk_nf_scrach_space/ -resume
