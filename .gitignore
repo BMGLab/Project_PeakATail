@@ -1,6 +1,7 @@
 # Ignore data and outputs
 data/
 logs/
+results/
 
 # Ignore documentation drafts
 docs/

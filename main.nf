@@ -5,7 +5,6 @@ params.genomeDir   = "data/humanSTARindex/"
 params.gtf         = "data/humanSTARindex/Homo_sapiens.GRCh38.99.gtf"
 params.rscript     = "scripts/pat_down.R"
 
-// Create channel from CSV
 workflow {
 
     Channel
@@ -16,8 +15,8 @@ workflow {
     // Step 1: Align reads
     aligned_bams_ch = align_reads(samples_ch)
 
-    // Step 2: Merge BAM files
-    merged_bam_ch = merge_bams(aligned_bams_ch)
+    // Step 2: Wait for all BAMs then merge
+    merged_bam_ch = aligned_bams_ch.collect().ifEmpty([]) | merge_bams
 
     // Step 3: Run EMA
     ema_out_ch = run_ema(merged_bam_ch)
@@ -29,6 +28,7 @@ workflow {
 process align_reads {
     tag { sample.sample }
     publishDir "results/star", mode: 'copy'
+    conda "./envs/star_env.yaml" // This YAML should define the STAR environment
 
     input:
     val sample
@@ -43,22 +43,22 @@ process align_reads {
     def umi_start    = sample.cb_len.toInteger() + 1
 
     """
-    STAR --runThreadN 64 \\
-         --genomeDir ${genome_dir} \\
-         --readFilesIn ${read2_path} ${read1_path} \\
-         --outSAMtype BAM SortedByCoordinate \\
-         --outFileNamePrefix ${sample.sample}_ \\
-         --outSAMattributes CR UR CY UY CB UB \\
-         --soloType CB_UMI_Simple \\
-         --soloCBstart 1 \\
-         --soloUMIstart ${umi_start} \\
-         --soloCBlen ${sample.cb_len} \\
-         --soloUMIlen ${sample.umi_len} \\
-         --soloUMIdedup 1MM_CR \\
-         --soloCBwhitelist None \\
-         --soloCBmatchWLtype 1MM_multi \\
-         --soloCellReadStats Standard \\
-         --readFilesCommand 'gunzip -c' \\
+    STAR --runThreadN 64 \
+         --genomeDir ${genome_dir} \
+         --readFilesIn ${read2_path} ${read1_path} \
+         --outSAMtype BAM SortedByCoordinate \
+         --outFileNamePrefix ${sample.sample}_ \
+         --outSAMattributes CR UR CY UY CB UB \
+         --soloType CB_UMI_Simple \
+         --soloCBstart 1 \
+         --soloUMIstart ${umi_start} \
+         --soloCBlen ${sample.cb_len} \
+         --soloUMIlen ${sample.umi_len} \
+         --soloUMIdedup 1MM_CR \
+         --soloCBwhitelist None \
+         --soloCBmatchWLtype 1MM_multi \
+         --soloCellReadStats Standard \
+         --readFilesCommand 'gunzip -c' \
          --soloBarcodeReadLength 0
 
     mv ${sample.sample}_Aligned.sortedByCoord.out.bam ${sample.sample}.bam
@@ -66,7 +66,6 @@ process align_reads {
 }
 
 process merge_bams {
-
     publishDir "results/ema_merge", mode: 'copy'
 
     input:
@@ -76,18 +75,19 @@ process merge_bams {
     path "Aligned.sortedByCoord.merged.out.bam"
 
     script:
+    def env_path = file("tools/PeakATail/.emaenv/bin/activate").toAbsolutePath()
     """
-    source .emaenv/bin/activate
+    source ${env_path}
     echo "bamFiles:" > bamfiles.yaml
     for bam in ${bams.join(' ')}; do
       echo "  - \${bam}" >> bamfiles.yaml
     done
     ema_merge --bamFiles bamfiles.yaml --threads 100
+    deactivate
     """
 }
 
 process run_ema {
-
     publishDir "results/emaout", mode: 'copy'
 
     input:
@@ -97,22 +97,23 @@ process run_ema {
     path "emaout"
 
     script:
+    def env_path = file("tools/PeakATail/.emaenv/bin/activate").toAbsolutePath()
     """
-    source .emaenv/bin/activate
-    ema --bamDir ${bam_file} \\
-        --sequenceLen 101 \\
-        --CellBarcodeLen 12 \\
-        --BarcodeTag CB \\
-        --gap 200 \\
-        --min_read 2000 \\
-        --min_cells 200 \\
-        --min_genes 200 \\
+    source ${env_path}
+    ema --bamDir ${bam_file} \
+        --sequenceLen 101 \
+        --CellBarcodeLen 12 \
+        --BarcodeTag CB \
+        --gap 200 \
+        --min_read 2000 \
+        --min_cells 200 \
+        --min_genes 200 \
         --gtfDir ${params.gtf}
+    deactivate
     """
 }
 
 process downstream_analysis {
-
     publishDir "results/final", mode: 'copy'
 
     input:
