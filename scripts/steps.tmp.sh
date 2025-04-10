@@ -1,6 +1,6 @@
 conda activate STAR
 #to analyse  Alternative Polyadenylation Sites
-#3' single cell RNA-Seq data used
+#3' Single Cell RNA-Seq data used
 STAR --runThreadN 64 \
      --genomeDir data/humanSTARindex/ \
      --readFilesIn data/Mono_day0_S1_R1_001.fastq.gz data/Mono_day0_S1_R2_001.fastq.gz \
