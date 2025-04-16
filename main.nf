@@ -67,7 +67,7 @@ process align_reads {
     conda deactivate
     """
 }
-/*
+
 process merge_bams {
     publishDir "results/ema_merge", mode: 'copy'
 
@@ -81,7 +81,6 @@ process merge_bams {
     def env_path = file("tools/PeakATail/.emaenv/bin/activate").toAbsolutePath()
     """
     source ${env_path}
-    echo "bamFiles:" > bamfiles.yaml
     for bam in ${bams.join(' ')}; do
       echo "  - \${bam}" >> bamfiles.yaml
     done
@@ -89,62 +88,6 @@ process merge_bams {
     deactivate
     """
 }
-*/
-
-/*
-//Define new path for bam files-Define directory in the script
-
-process merge_bams {
-    publishDir "results/ema_merge", mode: 'copy'
-
-    output:
-    path "Aligned.sortedByCoord.merged.out.bam"
-
-    script:
-    def env_path = file("tools/PeakATail/.emaenv/bin/activate").toAbsolutePath()
-    def bam_dir = '/mnt/ssd0/ek_nf_scrach_spac/36/25f6abdb014e681ef0493499cb54da/' // Specify the directory where BAM files are located
-
-    """
-    source ${env_path}
-    echo "bamFiles:" > bamfiles.yaml
-    for bam in ${bam_dir}/*.bam; do
-      echo "  - \$bam" >> bamfiles.yaml
-    done
-    ema_merge --bamFiles=bamfiles.yaml --threads 100
-    deactivate
-    """
-}
-*/
-
-process merge_bams {
-    publishDir "results/ema_merge", mode: 'copy'
-
-    input:
-    path bams
-
-
-    output:
-    path "Aligned.sortedByCoord.merged.out.bam"
-
-    script:
-    def env_path = file("tools/PeakATail/.emaenv/bin/activate").toAbsolutePath()
-    // def bam_dir = '/mnt/ssd0/ek_nf_scrach_spac/36/25f6abdb014e681ef0493499cb54da'
-
-    """
-    source ${env_path}
-    echo "bamFiles:" > bamfiles.yaml
-    for bam in ${bams}/*.bam; do
-      realpath \$bam >> resolved_bams.txt
-      echo "  - \$(realpath \$bam)" >> bamfiles.yaml
-    done
-    cat bamfiles.yaml
-    ema_merge --bamFiles=bamfiles.yaml --threads 100
-    deactivate
-    """
-}
-
-
-
 
 process run_ema {
     publishDir "results/emaout", mode: 'copy'
