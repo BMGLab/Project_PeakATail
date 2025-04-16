@@ -100,6 +100,7 @@ process run_ema {
 
     script:
     def env_path = file("tools/PeakATail/.emaenv/bin/activate").toAbsolutePath()
+    def gtf_file = file(params.gtf).toAbsolutePath()
     """
     source ${env_path}
     ema --bamDir ${bam_file} \
@@ -110,7 +111,7 @@ process run_ema {
         --min_read 2000 \
         --min_cells 200 \
         --min_genes 200 \
-        --gtfDir ${params.gtf}
+        --gtfDir ${gtf_file}
     deactivate
     """
 }
@@ -122,7 +123,8 @@ process downstream_analysis {
     path ema_folder
 
     script:
+    def downstream_r = file(params.rscript).toAbsolutePath()
     """
-    Rscript ${params.rscript} ${ema_folder} Macs_sc
+    Rscript ${downstream_r} ${ema_folder} Macs_sc
     """
 }
