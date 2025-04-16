@@ -7,16 +7,15 @@ params.rscript     = "scripts/pat_down.R"
 
 workflow {
 
-    Channel
+    samples_ch = Channel
         .fromPath(params.samplesheet)
         .splitCsv(header: true)
-        .set { samples_ch }
 
     // Step 1: Align reads
     aligned_bams_ch = align_reads(samples_ch)
 
-    // Step 2: Wait for all BAMs then merge
-    merged_bam_ch = aligned_bams_ch.collect().ifEmpty([]) | merge_bams
+    // Step 2: Merge BAMs
+    merged_bam_ch = merge_bams(aligned_bams_ch)
 
     // Step 3: Run EMA
     ema_out_ch = run_ema(merged_bam_ch)
@@ -28,7 +27,6 @@ workflow {
 process align_reads {
     tag { sample.sample }
     publishDir "results/star", mode: 'copy'
-    // conda "./envs/star_env.yaml" // This YAML should define the STAR environment
 
     input:
     val sample
@@ -37,14 +35,15 @@ process align_reads {
     path "${sample.sample}.bam"
 
     script:
-    def read1_path   = file(sample.read1).toAbsolutePath()
-    def read2_path   = file(sample.read2).toAbsolutePath()
-    def genome_dir   = file(params.genomeDir).toAbsolutePath()
-    def umi_start    = sample.cb_len.toInteger() + 1
+    def read1_path = file(sample.read1).toAbsolutePath()
+    def read2_path = file(sample.read2).toAbsolutePath()
+    def genome_dir = file(params.genomeDir).toAbsolutePath()
+    def umi_start = sample.cb_len.toInteger() + 1
 
     """
     source /home/biolab/miniconda3/etc/profile.d/conda.sh
     conda activate STAR
+
     STAR --runThreadN 64 \
          --genomeDir ${genome_dir} \
          --readFilesIn ${read2_path} ${read1_path} \
@@ -63,82 +62,33 @@ process align_reads {
          --readFilesCommand 'gunzip -c' \
          --soloBarcodeReadLength 0
 
-    mv ${sample.sample}_Aligned.sortedByCoord.out.bam ${sample.sample}.bam
+     mv ${sample}_Aligned.sortedByCoord.out.bam ${sample}.bam
     conda deactivate
     """
 }
-/*
+
 process merge_bams {
     publishDir "results/ema_merge", mode: 'copy'
 
     input:
-    path bams
+    path(bams)
 
     output:
     path "Aligned.sortedByCoord.merged.out.bam"
 
     script:
     def env_path = file("tools/PeakATail/.emaenv/bin/activate").toAbsolutePath()
+
     """
     source ${env_path}
+
     echo "bamFiles:" > bamfiles.yaml
     for bam in ${bams.join(' ')}; do
-      echo "  - \${bam}" >> bamfiles.yaml
-    done
-    ema_merge --bamFiles bamfiles.yaml --threads 100
-    deactivate
-    """
-}
-*/
-
-/*
-//Define new path for bam files-Define directory in the script
-
-process merge_bams {
-    publishDir "results/ema_merge", mode: 'copy'
-
-    output:
-    path "Aligned.sortedByCoord.merged.out.bam"
-
-    script:
-    def env_path = file("tools/PeakATail/.emaenv/bin/activate").toAbsolutePath()
-    def bam_dir = '/mnt/ssd0/ek_nf_scrach_spac/36/25f6abdb014e681ef0493499cb54da/' // Specify the directory where BAM files are located
-
-    """
-    source ${env_path}
-    echo "bamFiles:" > bamfiles.yaml
-    for bam in ${bam_dir}/*.bam; do
-      echo "  - \$bam" >> bamfiles.yaml
-    done
-    ema_merge --bamFiles=bamfiles.yaml --threads 100
-    deactivate
-    """
-}
-*/
-
-process merge_bams {
-    publishDir "results/ema_merge", mode: 'copy'
-
-    input:
-    path bams
-
-
-    output:
-    path "Aligned.sortedByCoord.merged.out.bam"
-
-    script:
-    def env_path = file("tools/PeakATail/.emaenv/bin/activate").toAbsolutePath()
-    // def bam_dir = '/mnt/ssd0/ek_nf_scrach_spac/36/25f6abdb014e681ef0493499cb54da'
-
-    """
-    source ${env_path}
-    echo "bamFiles:" > bamfiles.yaml
-    for bam in ${bams}/*.bam; do
-      realpath \$bam >> resolved_bams.txt
       echo "  - \$(realpath \$bam)" >> bamfiles.yaml
     done
-    cat bamfiles.yaml
-    ema_merge --bamFiles=bamfiles.yaml --threads 100
+
+    ema_merge --bamFiles bamfiles.yaml --threads 64
+
     deactivate
     """
 }
@@ -183,3 +133,7 @@ process downstream_analysis {
     Rscript ${params.rscript} ${ema_folder} Macs_sc
     """
 }
+
+
+
+
