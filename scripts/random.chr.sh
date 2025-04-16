@@ -1,5 +1,5 @@
 # Define your input BAM
-INPUT_BAM="input.bam"
+INPUT_BAM=$1
 
 samtools index $INPUT_BAM
 
