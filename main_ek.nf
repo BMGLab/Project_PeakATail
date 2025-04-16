@@ -62,7 +62,7 @@ process align_reads {
          --readFilesCommand 'gunzip -c' \
          --soloBarcodeReadLength 0
 
-   # mv ${sample.sample}_Aligned.sortedByCoord.out.bam ${sample.sample}.bam
+     mv ${sample}_Aligned.sortedByCoord.out.bam ${sample}.bam
     conda deactivate
     """
 }
