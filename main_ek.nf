@@ -3,24 +3,30 @@ nextflow.enable.dsl=2
 params.samplesheet = "sample_sheet.csv"
 params.genomeDir   = "data/humanSTARindex/"
 params.gtf         = "data/humanSTARindex/Homo_sapiens.GRCh38.99.gtf"
+params.chromSizes  = "data/hg38.chrom.sizes"
+params.flankLength = 5000
 params.rscript     = "scripts/pat_down.R"
 
 workflow {
 
-    samples_ch = Channel
+    Channel
         .fromPath(params.samplesheet)
         .splitCsv(header: true)
+        .set { samples_ch }
 
     // Step 1: Align reads
     aligned_bams_ch = align_reads(samples_ch)
 
-    // Step 2: Merge BAMs
-    merged_bam_ch = merge_bams(aligned_bams_ch)
+    // Step 2: Wait for all BAMs then merge
+    merged_bam_ch = aligned_bams_ch.collect().ifEmpty([]) | merge_bams
 
-    // Step 3: Run EMA
-    ema_out_ch = run_ema(merged_bam_ch)
+    // Step 3: Filter BAMs to UTR
+    filtered_sampled_bam_ch = merged_bam_ch | filter_and_sample_bam
 
-    // Step 4: R analysis
+    // Step 4: Run EMA
+    ema_out_ch = run_ema(filtered_sampled_bam_ch)
+
+    // Step 5: R Analysis
     downstream_analysis(ema_out_ch)
 }
 
@@ -28,6 +34,7 @@ process align_reads {
     tag { sample.sample }
     publishDir "results/star", mode: 'copy'
 
+     // conda "./envs/star_env.yaml" // This YAML should define the STAR environment
     input:
     val sample
 
@@ -38,12 +45,11 @@ process align_reads {
     def read1_path = file(sample.read1).toAbsolutePath()
     def read2_path = file(sample.read2).toAbsolutePath()
     def genome_dir = file(params.genomeDir).toAbsolutePath()
-    def umi_start = sample.cb_len.toInteger() + 1
+    def umi_start  = sample.cb_len.toInteger() + 1
 
     """
     source /home/biolab/miniconda3/etc/profile.d/conda.sh
     conda activate STAR
-
     STAR --runThreadN 64 \
          --genomeDir ${genome_dir} \
          --readFilesIn ${read2_path} ${read1_path} \
@@ -62,7 +68,7 @@ process align_reads {
          --readFilesCommand 'gunzip -c' \
          --soloBarcodeReadLength 0
 
-     mv ${sample}_Aligned.sortedByCoord.out.bam ${sample}.bam
+    mv ${sample.sample}_Aligned.sortedByCoord.out.bam ${sample.sample}.bam
     conda deactivate
     """
 }
@@ -71,30 +77,58 @@ process merge_bams {
     publishDir "results/ema_merge", mode: 'copy'
 
     input:
-    path(bams)
+    path bams
 
     output:
     path "Aligned.sortedByCoord.merged.out.bam"
 
     script:
     def env_path = file("tools/PeakATail/.emaenv/bin/activate").toAbsolutePath()
-
     """
     source ${env_path}
-
-    echo "bamFiles:" > bamfiles.yaml
     for bam in ${bams.join(' ')}; do
-      echo "  - \$(realpath \$bam)" >> bamfiles.yaml
+      echo "  - \${bam}" >> bamfiles.yaml
     done
-
-    ema_merge --bamFiles bamfiles.yaml --threads 64
-
+    ema_merge --bamFiles bamfiles.yaml --threads 100
     deactivate
     """
 }
 
+process filter_and_sample_bam {
+    tag { bam.getBaseName() }
+    publishDir 'results/utr_sampled', mode: 'copy'
 
+    input:
+    path bam
 
+    output:
+    path "${bam.getBaseName().replace('.bam','')}_3utr_sampled.bam"
+
+    script:
+    def gtf_file = file(params.gtf).toAbsolutePath()
+    def chromosome_size = file(params.chromSizes).toAbsolutePath()
+    """
+    source /home/biolab/miniconda3/etc/profile.d/conda.sh
+    conda activate STAR
+
+    awk '\$3=="three_prime_UTR"' ${gtf_file} \
+      | awk 'BEGIN{OFS="\t"}{print \$1, \$4-1, \$5, ".", ".", \$7}' \
+      > utrs_3prime.bed
+
+    bedtools flank -i utrs_3prime.bed -g ${chromosome_size} -l ${params.flankLength} -r 0 -s \
+      | bedtools sort \
+      | bedtools merge \
+      > regions_3utr.bed
+
+    bedtools intersect \
+      -abam ${bam} \
+      -b regions_3utr.bed \
+      | samtools view -h -s 0.1 -b - \
+      > ${bam.getBaseName().replace('.bam','')}_3utr_sampled.bam
+
+    conda deactivate
+    """
+}
 
 process run_ema {
     publishDir "results/emaout", mode: 'copy'
@@ -107,6 +141,7 @@ process run_ema {
 
     script:
     def env_path = file("tools/PeakATail/.emaenv/bin/activate").toAbsolutePath()
+    def gtf_file = file(params.gtf).toAbsolutePath()
     """
     source ${env_path}
     ema --bamDir ${bam_file} \
@@ -117,7 +152,7 @@ process run_ema {
         --min_read 2000 \
         --min_cells 200 \
         --min_genes 200 \
-        --gtfDir ${params.gtf}
+        --gtfDir ${gtf_file}
     deactivate
     """
 }
@@ -129,11 +164,8 @@ process downstream_analysis {
     path ema_folder
 
     script:
+    def downstream_r = file(params.rscript).toAbsolutePath()
     """
-    Rscript ${params.rscript} ${ema_folder} Macs_sc
+    Rscript ${downstream_r} ${ema_folder} Macs_sc
     """
 }
-
-
-
-
