@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 params.samplesheet = "sample_sheet.csv"
 params.genomeDir   = "data/humanSTARindex/"
 params.gtf         = "data/humanSTARindex/Homo_sapiens.GRCh38.99.gtf"
-params.chromSizes  = "data/hg38.chrom.sizes"
+params.chromSizes  = "data/chrom.sizes.nochr.filt"
 params.flankLength = 5000
 params.rscript     = "scripts/pat_down.R"
 
@@ -102,7 +102,7 @@ process filter_and_sample_bam {
     path bam
 
     output:
-    path "${bam.getBaseName().replace('.bam','')}_3utr_sampled.bam"
+    path "${bam.getBaseName().replace('.bam','')}_3utr_sampled_not_filtered.bam"
 
     script:
     def gtf_file = file(params.gtf).toAbsolutePath()
@@ -111,8 +111,8 @@ process filter_and_sample_bam {
     source /home/biolab/miniconda3/etc/profile.d/conda.sh
     conda activate STAR
 
-    awk '\$3=="three_prime_UTR"' ${gtf_file} \
-      | awk 'BEGIN{OFS="\t"}{print \$1, \$4-1, \$5, ".", ".", \$7}' \
+    awk '\$3 == "three_prime_utr"' ${gtf_file} \
+      | awk 'BEGIN{OFS="\t"} {print \$1, \$4-1, \$5, ".", ".", \$7}' \
       > utrs_3prime.bed
 
     bedtools flank -i utrs_3prime.bed -g ${chromosome_size} -l ${params.flankLength} -r 0 -s \
@@ -123,12 +123,13 @@ process filter_and_sample_bam {
     bedtools intersect \
       -abam ${bam} \
       -b regions_3utr.bed \
-      | samtools view -h -s 0.1 -b - \
-      > ${bam.getBaseName().replace('.bam','')}_3utr_sampled.bam
+      | samtools view -b - \
+      > ${bam.getBaseName().replace('.bam','')}_3utr_sampled_not_filtered.bam
 
     conda deactivate
     """
 }
+
 
 process run_ema {
     publishDir "results/emaout", mode: 'copy'
