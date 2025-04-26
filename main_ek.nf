@@ -102,7 +102,7 @@ process filter_and_sample_bam {
     path bam
 
     output:
-    path "${bam.getBaseName().replace('.bam','')}_3utr_sampled_not_filtered.bam"
+    path "${bam.getBaseName().replace('.bam','')}_3utr_selected.bam"
 
     script:
     def gtf_file = file(params.gtf).toAbsolutePath()
@@ -110,21 +110,16 @@ process filter_and_sample_bam {
     """
     source /home/biolab/miniconda3/etc/profile.d/conda.sh
     conda activate STAR
-
-    awk '\$3 == "three_prime_utr"' ${gtf_file} \
-      | awk 'BEGIN{OFS="\t"} {print \$1, \$4-1, \$5, ".", ".", \$7}' \
-      > utrs_3prime.bed
-
-    bedtools flank -i utrs_3prime.bed -g ${chromosome_size} -l ${params.flankLength} -r 0 -s \
-      | bedtools sort \
-      | bedtools merge \
-      > regions_3utr.bed
-
+    
+    python /home/biolab/Projects/PeakATail_wd/scripts/gtf2bed.py ${gtf_file}  > regions_3utr_py.bed    
     bedtools intersect \
+      -wa -s \
       -abam ${bam} \
-      -b regions_3utr.bed \
+      -b regions_3utr_py.bed  \
       | samtools view -b - \
-      > ${bam.getBaseName().replace('.bam','')}_3utr_sampled_not_filtered.bam
+      > ${bam.getBaseName().replace('.bam','')}_3utr_selected.bam
+
+    samtools index ${bam.getBaseName().replace('.bam','')}_3utr_selected.bam
 
     conda deactivate
     """
@@ -150,9 +145,9 @@ process run_ema {
         --CellBarcodeLen 12 \
         --BarcodeTag CB \
         --gap 200 \
-        --min_read 2000 \
-        --min_cells 200 \
-        --min_genes 200 \
+        --min_read 20 \
+        --min_cells 20 \
+        --min_genes 20 \
         --gtfDir ${gtf_file}
     deactivate
     """

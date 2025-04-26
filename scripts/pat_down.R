@@ -3,7 +3,7 @@ library(dplyr)
 library(tidyverse)
 library(Seurat)
 library('biomaRt')
-mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl", host="https://asia.ensembl.org"))
+ensembl <- useEnsembl(biomart = "ensembl", dataset = "hsapiens_gene_ensembl")
 print("biomart complete")
 
 args <- commandArgs(TRUE)
@@ -126,6 +126,7 @@ seu <- CreateSeuratObject(counts = expression_matrix)
 seu
 
 seu <- NormalizeData(seu, normalization.method = "LogNormalize", scale.factor = 10000)
+print(getwd())
 saveRDS(seu, file = paste(runid, "seu_pat.RDS", sep = "_"))
 
 #Variable features
@@ -133,7 +134,7 @@ seu <- FindVariableFeatures(seu, selection.method = "vst", nfeatures = 2000)
 #Scale data
 seu <- ScaleData(seu, features = rownames(seu))
 
-saveRDS(seu, file = paste(runid, "seu_pat.RDS", sep = "_"))
+#saveRDS(seu, file = paste(runid, "seu_pat.RDS", sep = "_"))
 
 #Linear dimension reduction - PCA
 seu <- RunPCA(seu, features = VariableFeatures(object = seu))

@@ -3,6 +3,8 @@ nextflow.enable.dsl=2
 params.samplesheet = "sample_sheet.csv"
 params.genomeDir   = "data/humanSTARindex/"
 params.gtf         = "data/humanSTARindex/Homo_sapiens.GRCh38.99.gtf"
+params.chromSizes  = "data/chrom.sizes.nochr.filt"
+params.flankLength = 5000
 params.rscript     = "scripts/pat_down.R"
 
 workflow {
@@ -18,18 +20,21 @@ workflow {
     // Step 2: Wait for all BAMs then merge
     merged_bam_ch = aligned_bams_ch.collect().ifEmpty([]) | merge_bams
 
-    // Step 3: Run EMA
-    ema_out_ch = run_ema(merged_bam_ch)
+    // Step 3: Filter BAMs to UTR
+    filtered_sampled_bam_ch = merged_bam_ch | filter_and_sample_bam
 
-    // Step 4: R analysis
+    // Step 4: Run EMA
+    ema_out_ch = run_ema(filtered_sampled_bam_ch)
+
+    // Step 5: R Analysis
     downstream_analysis(ema_out_ch)
 }
 
 process align_reads {
     tag { sample.sample }
     publishDir "results/star", mode: 'copy'
-    // conda "./envs/star_env.yaml" // This YAML should define the STAR environment
 
+     // conda "./envs/star_env.yaml" // This YAML should define the STAR environment
     input:
     val sample
 
@@ -37,10 +42,10 @@ process align_reads {
     path "${sample.sample}.bam"
 
     script:
-    def read1_path   = file(sample.read1).toAbsolutePath()
-    def read2_path   = file(sample.read2).toAbsolutePath()
-    def genome_dir   = file(params.genomeDir).toAbsolutePath()
-    def umi_start    = sample.cb_len.toInteger() + 1
+    def read1_path = file(sample.read1).toAbsolutePath()
+    def read2_path = file(sample.read2).toAbsolutePath()
+    def genome_dir = file(params.genomeDir).toAbsolutePath()
+    def umi_start  = sample.cb_len.toInteger() + 1
 
     """
     source /home/biolab/miniconda3/etc/profile.d/conda.sh
@@ -89,8 +94,40 @@ process merge_bams {
     """
 }
 
+process filter_and_sample_bam {
+    tag { bam.getBaseName() }
+    publishDir 'results/utr_sampled', mode: 'copy'
+
+    input:
+    path bam
+
+    output:
+    path "${bam.getBaseName().replace('.bam','')}_3utr_selected.bam"
+
+    script:
+    def gtf_file = file(params.gtf).toAbsolutePath()
+    def chromosome_size = file(params.chromSizes).toAbsolutePath()
+    """
+    source /home/biolab/miniconda3/etc/profile.d/conda.sh
+    conda activate STAR
+    
+    python /home/biolab/Projects/PeakATail_wd/scripts/gtf2bed.py ${gtf_file}  > regions_3utr_py.bed    
+    bedtools intersect \
+      -wa -s \
+      -abam ${bam} \
+      -b regions_3utr_py.bed  \
+      | samtools view -b - \
+      > ${bam.getBaseName().replace('.bam','')}_3utr_selected.bam
+
+    samtools index ${bam.getBaseName().replace('.bam','')}_3utr_selected.bam
+
+    conda deactivate
+    """
+}
+
+
 process run_ema {
-    publishDir "results/emaout", mode: 'copy'
+    publishDir "results/", mode: 'copy'
 
     input:
     path bam_file

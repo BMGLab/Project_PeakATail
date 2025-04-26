@@ -1,0 +1,4 @@
+sample,read1,read2,read_length,cb_len,umi_len
+/mnt/lun3/processed/EbruKocakaya/final_atlas/ozlmtuna/Aligned.sortedByCoord.merged.out.bam
+/mnt/lun2/rawdata/TUSEB-16428/Macrophage_scRNAseq/Run_peakATail/Aligned.sortedByCoord.merged.out.bam
+

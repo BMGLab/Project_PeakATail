@@ -66,4 +66,4 @@ def gtf_bed(bedfile,
                 endbed.write(bed_info)
 
 
-gtf_bed(bedfile="test.bed", gtffile="/home/biolab/Projects/PeakATail_wd/data/humanSTARindex/Homo_sapiens.GRCh38.99.gtf")
+gtf_bed(bedfile="regions_3utr_py.bed", gtffile="/home/biolab/Projects/PeakATail_wd/data/humanSTARindex/Homo_sapiens.GRCh38.99.gtf")

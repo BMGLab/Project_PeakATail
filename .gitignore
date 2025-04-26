@@ -8,6 +8,7 @@ docs/
 
 #Ignore nextflow work folder
 work/
+amirtest/
 
 # Ignore temporary files
 *.Rhistory

@@ -1,0 +1,17 @@
+name: r_env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base=4.3
+  - r-dplyr
+  - r-tidyverse
+  - r-seurat
+  - r-data.table
+  - r-stringi
+  - bioconductor-genomicranges
+  - bioconductor-biobase #for biomaRt dependencies
+  - r-devtools  # helpful for installing R packages from GitHub if needed
+  - r-remotes   # optional, for alternative installation methods
+  - r-irkernel  # optional, allows using R in Jupyter if needed
