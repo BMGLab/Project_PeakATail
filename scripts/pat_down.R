@@ -14,7 +14,7 @@ runid <- args[2]
 #Get GTF
 gtf_file <- args[3] # or gtf_file <- "~/Documents/data/PASseqData/humanSTARindex/Homo_sapiens.GRCh38.99.sorted.gtf"  # E.g., downloaded from Ensembl or Gencode
 
-gene = 0# turn this to 1 if need gene exp seurat.
+gene = 1# turn this to 1 if need gene exp seurat.
 
 setwd(emadir)
 
@@ -106,7 +106,7 @@ if(gene == 1){
   #Variable features
   seug <- FindVariableFeatures(seug, selection.method = "vst", nfeatures = 2000)
   #Scale data
-  seug <- ScaleData(seug, features = rownames(seug))
+  seug <- ScaleData(seug, features = VariableFeatures(seug))
   #Linear dimension reduction - PCA
   seug <- RunPCA(seug, features = VariableFeatures(object = seug))
   #Finding the neighboring structure
@@ -132,7 +132,7 @@ saveRDS(seu, file = paste(runid, "seu_pat.RDS", sep = "_"))
 #Variable features
 seu <- FindVariableFeatures(seu, selection.method = "vst", nfeatures = 2000)
 #Scale data
-seu <- ScaleData(seu, features = rownames(seu))
+seu <- ScaleData(seu, features = VariableFeatures(seu))
 
 #saveRDS(seu, file = paste(runid, "seu_pat.RDS", sep = "_"))
 
