@@ -1,11 +1,11 @@
 nextflow.enable.dsl=2
 
-params.samplesheet = "sample_sheet.csv"
+params.samplesheet = "scripts/pipeline/sample_sheet.csv"
 params.genomeDir   = "data/humanSTARindex/"
 params.gtf         = "data/humanSTARindex/Homo_sapiens.GRCh38.99.gtf"
 params.chromSizes  = "data/chrom.sizes.nochr.filt"
 params.flankLength = 5000
-params.rscript     = "scripts/pat_down.R"
+params.rscript     = "scripts/pipeline/pat_down.R"
 
 workflow {
 
@@ -127,7 +127,7 @@ process filter_and_sample_bam {
 
 
 process run_ema {
-    publishDir "results/", mode: 'copy'
+    publishDir "results/emaout", mode: 'copy'
 
     input:
     path bam_file
@@ -145,9 +145,9 @@ process run_ema {
         --CellBarcodeLen 12 \
         --BarcodeTag CB \
         --gap 200 \
-        --min_read 2000 \
-        --min_cells 200 \
-        --min_genes 200 \
+        --min_read 20 \
+        --min_cells 20 \
+        --min_genes 20 \
         --gtfDir ${gtf_file}
     deactivate
     """

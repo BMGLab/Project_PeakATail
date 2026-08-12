@@ -2,6 +2,9 @@
 data/
 logs/
 results/
+archive/
+scripts/figures/
+report_data/
 
 # Ignore documentation drafts
 docs/

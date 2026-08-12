@@ -1,0 +1,208 @@
+---
+output:
+  reprex::reprex_document:
+    venue: "gh"
+    advertise: FALSE
+    session_info: TRUE
+    style: TRUE
+    comment: "#;-)"
+    tidyverse_quiet: FALSE
+    std_out_err: TRUE
+knit: reprex::reprex_render
+---
+
+
+
+
+```{r}
+library(Seurat)
+library(SeuratObject)
+data<-readRDS("/mnt/ssd1/Projects/LAMs_wd/data/local.rds")
+
+```
+
+```{r}
+
+#install.packages("Rcpp")
+#table(data@meta.data$ann_fine)
+#head(data@meta.data)
+
+#View Only Laughney_Massague_2020 dataset
+laugh <- subset(data, subset = dataset == "Laughney_Massague_2020")
+laugh <- subset_fin[!is.na(subset_fin$dataset),]
+
+laugh
+
+```
+
+```{r}
+
+table(laugh@meta.data$cell_type_predicted)
+saveRDS(laugh, file = "/home/biolab/Projects/PeakATail_wd/20250724_luca_subset_laughney.rds")
+```
+
+
+```{r}
+laugh
+library(ggplot2)
+DimPlot(laugh, reduction = "umap", group.by = "cell_type_predicted", label = TRUE, repel = TRUE) +
+  ggtitle("Laughney_Massague_2020 dataset") +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+pas_genes<- c("FOXP1", "NEK1", "POLA1", "THADA", "WDPCP",
+              "SLC39A10","INSIG2","NAT8L","APBA1")
+
+#DimPlot(laugh, reduction = "umap", group.by = "cell_type_predicted", label = TRUE, repel = TRUE) +
+  ggtitle("Laughney_Massague_2020 dataset") +
+  theme(legend.position = "bottom")
+
+
+FeaturePlot(laugh, features = pas_genes, ncol = 3)
+
+```
+
+```{r}
+
+tam_gene_sets <- list(
+  Inflam_TAMs = c("IL1B", "CCL3", "CXCL1", "CXCL2", "CXCL3", "CXCL5"),
+  IFN_TAMs    = c("IDO", "ISG15", "CXCL8", "CXCL9", "CXCL10"),
+  Reg_TAMs    = c("ARG1", "MRC1", "CD274", "CX3CR1"),
+ Prolif_TAMs = c("MKI67", "CDK1"),
+  RTM_TAMs    = c("LYVE1", "HES1", "FOLR2"),
+ Angio_TAMs  = c("VEGFA", "SPP1"),
+  LA_TAMs     = c("APOC1", "APOE", "ACP5", "FABP5")
+)
+```
+
+```{r}
+if (!requireNamespace("biomaRt", quietly = TRUE)) {
+  install.packages("biomaRt")
+}
+library(biomaRt)
+
+ensembl_ids <- rownames(laugh)
+
+mart <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")  # use mmusculus/rnorvegicus for mouse/rat
+
+# Get mapping
+gene_map <- getBM(
+  filters = "ensembl_gene_id",
+  attributes = c("ensembl_gene_id", "hgnc_symbol"),
+  values = ensembl_ids,
+  mart = mart
+)
+
+# Remove empty mappings
+gene_map <- gene_map[gene_map$hgnc_symbol != "", ]
+
+# Make sure mapping is 1-to-1 (remove duplicates if needed)
+gene_map <- gene_map[!duplicated(gene_map$ensembl_gene_id), ]
+
+# Subset Seurat object to those with mappings
+laugh <- subset(laugh, features = gene_map$ensembl_gene_id)
+
+# Replace rownames with gene symbols
+rownames(laugh) <- gene_map$hgnc_symbol[match(rownames(laugh), gene_map$ensembl_gene_id)]
+
+```
+
+```{r}
+# Extract assay matrix (RNA assay, "data" slot)
+rna_data <- GetAssayData(laugh, assay = "RNA", slot = "data")
+
+# Match ENSEMBL IDs to gene symbols
+ensembl_ids <- rownames(rna_data)
+mapped_symbols <- gene_map$hgnc_symbol[match(ensembl_ids, gene_map$ensembl_gene_id)]
+
+# Remove entries with no gene symbol
+keep <- !is.na(mapped_symbols) & mapped_symbols != ""
+rna_data <- rna_data[keep, ]
+mapped_symbols <- mapped_symbols[keep]
+
+# Ensure unique gene symbols
+rna_data <- rna_data[!duplicated(mapped_symbols), ]
+rownames(rna_data) <- mapped_symbols
+
+data_mat   <- GetAssayData(laugh, assay = "RNA", slot = "data")
+# Match & clean both matrices
+gene_map <- gene_map[gene_map$hgnc_symbol != "" & !duplicated(gene_map$ensembl_gene_id), ]
+
+# Map to gene symbols
+symbol_map <- gene_map$hgnc_symbol[match(rownames(counts_mat), gene_map$ensembl_gene_id)]
+keep <- !is.na(symbol_map) & symbol_map != ""
+
+# Filter and rename both
+counts_mat <- counts_mat[keep, ]
+data_mat <- data_mat[keep, ]
+symbol_map <- symbol_map[keep]
+
+# Remove duplicated symbols
+nondup <- !duplicated(symbol_map)
+counts_mat <- counts_mat[nondup, ]
+data_mat <- data_mat[nondup, ]
+rownames(counts_mat) <- symbol_map[nondup]
+rownames(data_mat) <- symbol_map[nondup]
+
+# Create new Seurat object
+laugh_symbol <- CreateSeuratObject(counts = counts_mat, meta.data = laugh@meta.data)
+
+# Add the normalized data manually to the "data" slot
+DefaultAssay(laugh_symbol) <- "RNA"
+laugh_symbol[["RNA"]]@data <- data_mat
+
+
+
+# Optionally transfer metadata / reductions if needed
+laugh_symbol@meta.data <- laugh@meta.data
+laugh_symbol@reductions <- laugh@reductions  # if PCA/UMAP etc. were run before
+laugh_symbol
+```
+
+ENSG00000114861
+ENSG00000285708
+ENSG00000137601
+ENSG00000101868
+ENSG00000115970
+ENSG00000143951
+ENSG00000196950
+ENSG00000125629
+ENSG00000185818
+ENSG00000107282
+``` {r}
+
+macs<- subset(laugh, subset = cell_type_predicted %in% c("Macrophage", "Monocyte"))
+ 
+pas_genes<- c("ENSG00000114861",
+"ENSG00000285708",
+"ENSG00000137601",
+"ENSG00000101868",
+"ENSG00000115970",
+"ENSG00000143951",
+"ENSG00000196950",
+"ENSG00000125629",
+"ENSG00000185818",
+"ENSG00000107282")
+
+# Open PDF device
+#pdf("20250724_laughney_pasgenes_featureplots.pdf", width = 12, height = 10)
+
+# Feature plot for gene list
+FeaturePlot(macs, features = pas_genes, ncol = 3)
+
+# Close PDF device
+#dev.off()
+
+
+
+
+
+
+
+```
+
+
+
+
+
