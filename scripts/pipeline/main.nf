@@ -1,9 +1,9 @@
 nextflow.enable.dsl=2
 
 params.samplesheet = "scripts/pipeline/sample_sheet.csv"
-params.genomeDir   = "data/humanSTARindex/"
-params.gtf         = "data/humanSTARindex/Homo_sapiens.GRCh38.99.gtf"
-params.chromSizes  = "data/chrom.sizes.nochr.filt"
+params.genomeDir   = "data/references/humanSTARindex/"
+params.gtf         = "data/references/humanSTARindex/Homo_sapiens.GRCh38.99.gtf"
+params.chromSizes  = "data/references/chrom.sizes.nochr.filt"
 params.flankLength = 5000
 params.rscript     = "scripts/pipeline/pat_down.R"
 
@@ -111,7 +111,7 @@ process filter_and_sample_bam {
     source /home/biolab/miniconda3/etc/profile.d/conda.sh
     conda activate STAR
     
-    python /home/biolab/Projects/PeakATail_wd/scripts/gtf2bed.py ${gtf_file}  > regions_3utr_py.bed    
+    python /home/biolab/Projects/PeakATail_wd/scripts/misc/gtf2bed.py ${gtf_file}  > regions_3utr_py.bed    
     bedtools intersect \
       -wa -s \
       -abam ${bam} \

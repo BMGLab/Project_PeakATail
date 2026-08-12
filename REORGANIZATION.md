@@ -40,6 +40,27 @@ path updates — check this table for the new location.
 New: `results/laughney_rerun_2026-08_fixed` → symlink to
 `/mnt/ssd2/Laugney_Aligned/peakatail_experiments/RERUN_2026-08_fixed`.
 
+## `data/` grouped into subfolders
+
+`data/` was a flat dump of ~50 items; it is now:
+
+| Old path | New path | Notes |
+|---|---|---|
+| `data/humanSTARindex` (symlink), `data/chrom.sizes.nochr.filt`, `data/hg38.chrom.sizes` | `data/references/` | joins `gene_end.bed`; `main.nf` `params.genomeDir/gtf/chromSizes` updated |
+| `data/*.fastq.gz` (20 symlinks → /mnt/lun2 macrophage + A549 co-culture reads) | `data/macrophage/` | `scripts/pipeline/sample_sheet.csv` read1/read2 paths updated |
+| `data/2025*_laughney*.h5ad`, `20250507_laughney_metadata.csv`, `PATIENT_LUNG_ADENOCARCINOMA_ANNOTATED.h5` | `data/laughney/` | 17G of Laughney inputs |
+| `data/test.bam`, `KI270373.1.bam`, `KI270744.1.bam(.bai)`, `downsampled_aligned.bam(.bai)` | `data/testdata/` | small dev/test slices |
+| `data/.nextflow`, `data/.nextflow.log*` | `archive/nextflow-logs/data-run/` | logs moved; `.nextflow` dir is root-owned and stayed |
+
+Absolute paths inside old notebooks that pointed at `…/data/<file>.h5ad` now need
+`…/data/laughney/<file>.h5ad`. Also fixed: `main.nf`/`main_ek.nf` hardcoded
+`scripts/gtf2bed.py` → `scripts/misc/gtf2bed.py`.
+
+**Pre-existing breakage (not caused by this reorg):** both `.nf` files source
+`tools/PeakATail/.emaenv/bin/activate`, a virtualenv that no longer exists — it was part of
+the discarded "yk from biolab" commit. This legacy pipeline needs a real env (or should be
+retired in favor of the ssd2 Nextflow pipeline) before it can run again.
+
 ## Items that need sudo (couldn't be moved as `biolab`)
 
 Directory renames need write permission on the directory itself; these are owned by others:
@@ -47,6 +68,7 @@ Directory renames need write permission on the directory itself; these are owned
 - `scripts/figures/` (ebrukocakaya) — contents already copied to `results/figures/`; safe to `sudo rm -rf` after verifying.
 - `report_data/` (amiramiritabat) — contents copied to `results/report_data/`; same.
 - `data/null/` (root, 16K), `data/work/` (root, 4K) — stray root-owned dirs from an old run; `sudo rm -rf` when convenient.
+- `data/.nextflow/`, `data/Laugney_scdownstream/` (6.2M), `data/ge_apa_merged_mudata/` (425M) — root-owned, so they stayed at the `data/` top level. Move with sudo: `Laugney_scdownstream` → `data/laughney/`, `ge_apa_merged_mudata` → `data/` is fine, `.nextflow` → `archive/`.
 
 One-time permanent fix for the shared-repo permission problem (new git objects currently
 require a workaround because ~90 `.git` paths belong to ebrukocakaya):

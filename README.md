@@ -11,9 +11,11 @@ Reorganized on 2026-08-12 — see `REORGANIZATION.md` for the full old→new pat
 ## Layout
 
 ```
-data/         inputs (git-ignored): Laughney h5ads, STAR index, references
-  laughney/     Laughney-specific inputs (barcodes, samplesheets, rds, test BAM)
-  references/   reference files (gene_end.bed — formerly ./test.bed)
+data/         inputs (git-ignored)
+  laughney/     Laughney inputs: h5ads (17G), barcodes, samplesheets, luca rds, metadata
+  macrophage/   macrophage / A549 co-culture FASTQ symlinks (→ /mnt/lun2)
+  references/   STAR index (symlink), chrom.sizes, gene_end.bed (formerly ./test.bed)
+  testdata/     small dev BAMs (test.bam, KI270*, downsampled_aligned)
 scripts/      analysis code (tracked)
   laughney/     Laughney notebooks & Rmds (scanpy QC, LuCA subsetting, downstream)
   pipeline/     Nextflow pipeline: main.nf, main_ek.nf, config, envs, pat_down.R
