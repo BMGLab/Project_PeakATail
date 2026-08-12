@@ -67,6 +67,27 @@ for sample in A549trd_M2mac_day8 A549trd_M2mac_day9 A549trd_mac_day7 untrd_M2mac
      --soloBarcodeReadLength 0;
 done
 
+#Run scdownstream from nf.core.
+#integrate ALL thogether using SCVI
+sudo nextflow run nf-core/scdownstream \
+-r dev --outdir /mnt/ssd1/Projects/PeakATail_wd/data/Laugney_scdownstream \
+-w /mnt/ssd0/nextflow_workspace/yk_works/ \
+-profile docker \
+--input /mnt/ssd1/Projects/PeakATail_wd/data/sample_sheet.csv \
+--memory_scale 20 \
+--integration_methods="scvi" \
+--ambient_removal 'decontx' \
+--doublet_detection 'scrublet' \
+--skip_rankgenesgroups 'true' \
+-resume \
+--clustering_resolutions 1.0,1.5 \
+--integration_hvgs 2000 \
+--prep_cellxgene 'false' \
+--skip_liana 
+#-c nextflow.config
+
+
+
 #Create a bamfiles.yaml from the outputs of the previous step
 source .emaenv/bin/activate
 
