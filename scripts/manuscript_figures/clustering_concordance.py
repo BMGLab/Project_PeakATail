@@ -41,6 +41,20 @@ import pandas as pd
 from matplotlib.lines import Line2D
 from scipy import stats
 
+# --- manuscript deliverables: PNG + vector PDF into manuscript/figures/ ---
+import os as _os
+import matplotlib as _mpl
+_mpl.rcParams['pdf.fonttype'] = 42   # TrueType, not Type 3 (journal requirement)
+_mpl.rcParams['ps.fonttype'] = 42
+FIGDIR = '/mnt/ssd1/Projects/PeakATail_wd/manuscript/figures'
+_os.makedirs(FIGDIR, exist_ok=True)
+def save_manuscript(fig, name, **kw):
+    for ext in ('png', 'pdf'):
+        p = _os.path.join(FIGDIR, f'{name}.{ext}')
+        fig.savefig(p, **({'dpi': 300} if ext == 'png' else {}), **kw)
+        print('wrote', p)
+
+
 # ----------------------------------------------------------------------------
 # paths
 # ----------------------------------------------------------------------------
@@ -601,6 +615,7 @@ fig.legend(
 )
 
 fig.savefig(PNG, dpi=300, facecolor=SURFACE)
+save_manuscript(fig, NAME, facecolor=SURFACE)
 plt.close(fig)
 
 # ----------------------------------------------------------------------------

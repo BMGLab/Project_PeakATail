@@ -33,6 +33,20 @@ from matplotlib.gridspec import GridSpec
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
+# --- manuscript deliverables: PNG + vector PDF into manuscript/figures/ ---
+import os as _os
+import matplotlib as _mpl
+_mpl.rcParams['pdf.fonttype'] = 42   # TrueType, not Type 3 (journal requirement)
+_mpl.rcParams['ps.fonttype'] = 42
+FIGDIR = '/mnt/ssd1/Projects/PeakATail_wd/manuscript/figures'
+_os.makedirs(FIGDIR, exist_ok=True)
+def save_manuscript(fig, name, **kw):
+    for ext in ('png', 'pdf'):
+        p = _os.path.join(FIGDIR, f'{name}.{ext}')
+        fig.savefig(p, **({'dpi': 300} if ext == 'png' else {}), **kw)
+        print('wrote', p)
+
+
 ROOT = "/mnt/ssd2/Laugney_Aligned/peakatail_experiments/RERUN_2026-08_fixed/runs/reannotate"
 OUTDIR = "/mnt/ssd1/Projects/PeakATail_wd/results/figures/manuscript"
 NAME = "parameter_sweep"
@@ -424,6 +438,7 @@ ax.text(0.0, -0.50,
 place_tags(fig)
 fig.savefig(os.path.join(OUTDIR, f"{NAME}.png"), dpi=300, facecolor=SURFACE,
             bbox_inches="tight", pad_inches=0.16)
+save_manuscript(fig, NAME, facecolor=SURFACE, bbox_inches="tight", pad_inches=0.16)
 print("wrote", os.path.join(OUTDIR, f"{NAME}.png"))
 for r in pd_rows:
     print(f"{r['label']:34s} pas {r['pas']:+7.2f}%  clusters {r['clu']:+7.2f}% "

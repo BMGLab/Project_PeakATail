@@ -62,6 +62,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+# --- manuscript deliverables: PNG + vector PDF into manuscript/figures/ ---
+import os as _os
+import matplotlib as _mpl
+_mpl.rcParams['pdf.fonttype'] = 42   # TrueType, not Type 3 (journal requirement)
+_mpl.rcParams['ps.fonttype'] = 42
+FIGDIR = '/mnt/ssd1/Projects/PeakATail_wd/manuscript/figures'
+_os.makedirs(FIGDIR, exist_ok=True)
+def save_manuscript(fig, name, **kw):
+    for ext in ('png', 'pdf'):
+        p = _os.path.join(FIGDIR, f'{name}.{ext}')
+        fig.savefig(p, **({'dpi': 300} if ext == 'png' else {}), **kw)
+        print('wrote', p)
+
+
 # ----------------------------------------------------------------------------
 # paths / constants
 # ----------------------------------------------------------------------------
@@ -758,6 +772,7 @@ fig.text(0.006, 0.028, textwrap.fill(FOOTNOTE, 197),
          fontsize=6.4, color=MUTED, va="bottom", ha="left", linespacing=1.5)
 fig.tight_layout(rect=[0, 0.107, 1, 0.957])
 fig.savefig(OUTDIR / f"{NAME}.png", dpi=300, facecolor=SURFACE)
+save_manuscript(fig, NAME, facecolor=SURFACE)
 log(f"[out] {OUTDIR / (NAME + '.png')}")
 
 
