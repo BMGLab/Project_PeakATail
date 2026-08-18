@@ -1,0 +1,2 @@
+sample_id,file_type,files
+pbmc_10k_v3,bam,/mnt/ssd1/Projects/PeakATail_wd/data/benchmark/pbmc_10k_v3/pbmc_10k_v3_possorted_genome_bam.bam

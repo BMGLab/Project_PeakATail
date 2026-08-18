@@ -28,3 +28,7 @@ amirtest/
 __pycache__/
 .DS_Store
 
+
+# tool clones/envs for benchmarking (not our content)
+tools/*
+!tools/PeakATail

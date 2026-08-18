@@ -1,3 +1,4 @@
 {
-    "nextflow.telemetry.enabled": false
+    "nextflow.telemetry.enabled": false,
+    "git.ignoreLimitWarning": true
 }

@@ -1,0 +1,11 @@
+dataset_name: "pbmc_10k_v3"
+sample_file: "/mnt/ssd1/Projects/PeakATail_wd/scripts/benchmark_tools/scutrquant/sample_sheet.csv"
+cell_annots: null
+target: "utrome_hg38_v1"
+
+bx_whitelist: "extdata/bxs/3M-february-2018.txt"
+tech: "10xv3"
+strand: "--fr-stranded"
+
+min_umis: 500
+tmp_dir: "/mnt/ssd1/Projects/PeakATail_wd/scripts/benchmark_tools/scutrquant/tmp"
