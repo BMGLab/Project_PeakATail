@@ -32,21 +32,28 @@ needs no restructuring: Genome Research → Briefings in Bioinformatics / NAR. A
           so *relative* standing is what the paper argues.
 
 ### P1 — weeks 1–3 (competitive evidence)
-- [ ] Head-to-head on **pbmc_10k_v3**: PeakATail vs Sierra, scAPAtrap, SCAPTURE, polyApipe, scTail
-      (+ scUTRquant if build is tractable). Installs + harness in progress; 44 GB BAM downloading.
-- [ ] Add **GSE104556 testis** (spermatogenesis gradient = benchmark + positive control in one)
-- [ ] **FDR calibration** of `switch diff` via permuted cell labels (needs P0 switch rerun)
-- [ ] Verify `--ip-filter` live; resolve the lg_ip_off duplicate-arm question (issue 3)
+- [~] Head-to-head on **pbmc_10k_v3** — RUNNING (2026-08-19): PeakATail, Sierra (txdbmaker shim), scAPAtrap,
+      SCAPTURE, polyApipe, scUTRquant all live; scTail inapplicable by chemistry (needs R1-preserved
+      libraries; 10x v3 R1 = CB+UMI only) — documented for the comparison table.
+- [~] **GSE104556 testis** build RUNNING (STARsolo path, mouse GRCm38 r102; ~6-9h)
+- [x] **FDR calibration** — DONE for fisher, verdict NEGATIVE: 20/20 null runs report q<0.05 hits
+      (mean 42/run vs TRUE 40); causes = read pseudoreplication + marker double-dip. Issue 7 filed;
+      nb_pairwise calibration running; D4 cells-mode needs CLI exposure. Manuscript must not use
+      fisher q-values as-is.
+- [x] `--ip-filter` verified LIVE (annotate flags 3.8%, filter drops exactly flagged, default=off) —
+      resolves the lg_ip_off duplicate as expected behavior; docs rows to delete (comment staged for #69)
 - [ ] Merge the point-mode benchmark PR after Amir's review
 
 ### P2 — weeks 3–6 (ground truth + the make-or-break experiment)
-- [ ] **Kinnex PBMC long-read** Tier-1 truth: download, extract poly(A)-tailed 3′ ends per barcode,
-      score PeakATail sensitivity/specificity against it
+- [~] **Kinnex PBMC long-read** Tier-1 truth: 36GB downloading (dedup FLNC BAM + GEM-X mapped BAM);
+      extraction plan in scripts/benchmark_tools/kinnex_truth_plan.md
 - [ ] Known-biology positive controls: T-cell activation genes, plasma-cell IGHM switch (checklist in
       `02_validation_plan.md`)
 - [ ] **Novelty experiment**: a cell population/state visible in PAS space that GEX clustering misses,
       orthogonally validated — this decides whether the title leads with clustering
-- [ ] Release engineering (issue 4): CI, PyPI, CITATION.cff, Zenodo DOI on `v0.3.0`
+- [~] Release engineering (issue #70): branch feat/release-engineering READY (CI yml, validated
+      CITATION.cff, README 12/12 commands; suite 925 pass / 5 pre-existing fails documented) —
+      publish block staged in publish_github.sh; PyPI/Zenodo remain
 
 ### P3 — weeks 6–10 (biology + figure freeze)
 - [ ] Laughney per-celltype APA switches: stage/metastasis programs per cell type (from P0 rerun)

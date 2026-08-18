@@ -46,4 +46,19 @@ if [ -d "$TOOL" ] && git -C "$TOOL" log --oneline -1 >/dev/null 2>&1; then
 else
   echo "PR branch not found at $TOOL — skipping PR step."
 fi
+
+# --- PR: release engineering — CI, CITATION.cff, README command table (branch prepared locally by Claude) ---
+RELENG_NUM="${urls[4]:-70}"; RELENG_NUM="${RELENG_NUM##*/}"
+RELTOOL=/mnt/ssd1/Projects/PeakATail_wd/tools/PeakATail-relwork
+if [ -d "$RELTOOL" ] && git -C "$RELTOOL" log --oneline -1 >/dev/null 2>&1; then
+  git -C "$RELTOOL" push -u origin feat/release-engineering
+  RELBODY_FILE=pr_release_body.md
+  sed "s/__RELENG_ISSUE__/${RELENG_NUM}/" "$RELBODY_FILE" > /tmp/relbody.$$
+  gh pr create -R $R -B develop -H feat/release-engineering      -t "chore(release): CI test workflow, CITATION.cff, complete README command table"      --body-file /tmp/relbody.$$ 
+  gh pr edit -R $R feat/release-engineering --add-reviewer TRextabat || true
+  gh issue comment -R $R "$RELENG_NUM" -b "PR implementing the CI + CITATION.cff + README-table items: see the linked feat/release-engineering pull request. PyPI/bioconda/Zenodo remain open."
+  rm -f /tmp/relbody.$$
+else
+  echo "Release-engineering branch not found at $RELTOOL — skipping PR step."
+fi
 echo "ALL DONE"
