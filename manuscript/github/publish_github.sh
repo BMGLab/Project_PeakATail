@@ -16,14 +16,15 @@ declare -A titles=(
  [3]="Grid arm lg_ip_off produced output byte-identical to lg_annotate — internal-priming contrast incomplete"
  [4]="Release engineering for publication: CI running pytest, PyPI/bioconda, CITATION.cff, Zenodo DOI"
  [5]="Docs inconsistencies to resolve before Methods is written"
+ [6]="Called peak 3-prime ends stop ~90-105 nt short of the cleavage site — add data-driven offset correction"
 )
 declare -A files=(
  [1]=issue1_switch_celltype_bug.md [2]=issue2_benchmark_defensibility.md
  [3]=issue3_lg_ip_off_duplicate.md [4]=issue4_release_engineering.md
- [5]=issue5_docs_inconsistencies.md
+ [5]=issue5_docs_inconsistencies.md [6]=issue6_cleavage_offset.md
 )
 declare -A urls
-for i in 1 2 3 4 5; do
+for i in 1 2 3 4 5 6; do
   body="$(cat "${files[$i]}")$footer"
   urls[$i]=$(gh issue create -R $R --label manuscript -t "${titles[$i]}" -b "$body")
   echo "issue $i -> ${urls[$i]}"

@@ -294,3 +294,81 @@ placeholder from the wrong PAS space.
 10. **Donor and batch structure:** map the 17 samples to donors, run an integrated-cohort clustering, and
     test patient effects. Every per-sample n=17 test in this round assumes an independence the design
     probably does not have; this also determines whether any stage comparison is worth powering.
+
+---
+
+# Round 2 addendum — curated benchmark + motif validation (2026-08-18)
+
+Full report: `07_curated_benchmark_report.md`. Both figures independently re-verified (adversarial
+pass); numbers below are post-verification. Executes round-1 next-analyses items 2, 3 and 4.
+
+## 6. `benchmark_curated.png` / `.tsv`
+
+**Finding.** Re-benchmarked against the curated PolyASite 2.0 atlas (569,005 representative sites,
+GRCh38.96) with strand-matched point-mode matching and one reconciled genic-shuffle null: precision at
+100 bp is 0.36–0.49 across all five arms — ~16–23× the null — but recall is size-capped at 0.03–0.09,
+so **every arm fails all three roadmap bars (P ≥ 0.70, R ≥ 0.60, F1 ≥ 0.65) at every cutoff 10–200 bp,
+on both recall flavors and on the TES reference** (0 of 150 roadmap rows pass).
+
+**Headline numbers.**
+- Precision @100 bp vs curated atlas: lg 0.447, lp 0.492, si 0.355, lg_ip_filter 0.457, B1 0.475;
+  max anywhere 0.557 (@200 bp). Genic-shuffle null 0.020–0.024 (5 arms × 3 seeds).
+- Fold over null by cutoff: 25–42× @10 bp, 19–32× @50 bp, 16–23× @100 bp, 10–14× @200 bp — quote the
+  fold with its cutoff (~20× is a 100 bp number).
+- Recall @100 bp: full atlas 0.025–0.048; restricted to strand-matched bodies of the 14,851 detected
+  genes (n=285,220) 0.050–0.095. F1 (flavor b) 0.091–0.150 @100 bp; max 0.210 (si @200 bp).
+- TES secondary reference (73,439 protein-coding ends): precision @100 bp 0.204–0.313; never near a bar.
+- Set sizes after scaffold drop: lg 22,629 / lp 21,470 / si 43,023 / lg_ip 20,605 / B1 16,497.
+
+**Verdict: SOUND.** Every precision/recall/F1/null cell reproduced exactly by independent pipelines
+(`bedtools window -sm`, fresh shuffle seed 777 landed inside the null band); point-mode strand
+reduction proven formally and empirically (swapped 5'-base control collapses precision 0.447→0.130).
+
+**Must travel with it.**
+- **Not comparable to the retired 0.9986** — deliberately stricter matcher (strand-matched, point-mode,
+  curated ~32×-sparser reference); `null_control` (fig 5) reconciles the matchers. The 0.9986 was a
+  reference-density artifact and must not reach the manuscript.
+- **Recall is arithmetically capped by set size**: per-arm ceilings (n_called/285,220) 0.058–0.151. The
+  0.60 recall bar is unreachable by construction for a single-cohort assay vs a pan-tissue atlas;
+  recall-b rises roughly linearly with n called. Flavor (a) also counts 397 unreachable scaffold sites.
+- The honest claim is strong enrichment over null, not benchmark-passing accuracy.
+- `lg_ip_off` is byte-identical to `lg_annotate` (md5 `20cb4550…`) — scored once, still not an
+  independent arm.
+- Latent (not triggered): script pipelines lack pipefail and results are cached under
+  `.cache_benchmark_curated/`; fix before reuse.
+
+## 7. `motif_validation.png` / `.tsv`
+
+**Finding.** Atlas-independent sequence test: called peaks flank genuine polyadenylation sites, but the
+peak 3' end is not the cleavage site — it stops ~90–105 nt short (consistent with 10x R2 coverage
+ending before the poly(A) junction). AATAAA|ATTAAA sits within +0..+100 nt downstream in 37% of sites
+vs 15% in genic-shuffle nulls, with full canonical architecture; the internal-priming filter halves
+A-rich downstream tracts.
+
+**Headline numbers.**
+- AATAAA|ATTAAA, prescribed −40..−5 window (assumes peak end = cleavage): real 7.7% vs null 5.4% —
+  near-null, nowhere near the 70–80% literature rate for true PAS.
+- Re-anchored +0..+100 nt: real 37.1% (ip 37.4%) vs null 14.7% (2.5×); any-of-12 hexamers 65.8% vs 43.7%.
+- AATAAA profile: >2× null across +29..+94 nt, mode +75 nt, bimodal sub-peaks +48/+75.
+- Composition: A-fraction crests at 0.426 at +98 nt then cliffs to ~0.30 background (modal cleavage
+  position); T overtakes A past +99.
+- Internal-priming proxy (+10..+30): real 6.3% → ip-filtered **3.0%** (628/20,605 = 3.05%) vs null 2.2%
+  — 51.7% relative reduction (run-A6 6.0→2.8%, fracA70 2.4→1.2%).
+- n: real 22,629, ip 20,605, null 3 seeds × ~22,620. PolyASite not used anywhere.
+
+**Verdict: SOUND.** Strand-correct point collapse verified formally, by an independent
+genomic-coordinate route reproducing every count exactly, and by manual samtools revcomp check; all
+on-figure numbers match the TSV.
+
+**Must travel with it.**
+- Write **3.0% (or 3.05%), not 3.1%**, for the ip-filtered internal-priming rate.
+- Soften "downstream U-rich element": T over +101..+150 is only ~1 pp above null — say "T overtakes A
+  past the modal cleavage position".
+- The +90–105 nt implied-cleavage offset assumes canonical 15–30 nt AATAAA-to-cleavage spacing on the
+  +75 profile mode; `pasbed.bed` carries no finer cleavage estimate.
+- Even re-anchored, 37% is below curated-PAS rates (70–80%); per-site offset variability and residual
+  false calls are not separable here. The +48/+75 bimodality (two offset populations) is uninvestigated.
+- Prescribed-window numbers (near-null) are all still in the TSV — do not quote them as evidence
+  against the calls without the anchor-offset explanation.
+- Methods trap documented in the script: with `bedtools getfasta -s`, asymmetric windows break
+  minus-strand index mapping (phantom −525 hump); symmetric ±160 nt windows are immune.

@@ -18,11 +18,18 @@ needs no restructuring: Genome Research → Briefings in Bioinformatics / NAR. A
 - [ ] **Switch rerun** — apply the one-line `main.nf` fix (→ `unified/multi_sample_merged.bed`, NOT
       the 14%-coverage cohort bed) + `nextflow -resume`. *Owner: Amir. Everything biological waits on this.*
 - [x] Null-control analysis proving the 18.4M-reference benchmark indefensible *(done, verified)*
-- [ ] **Curated re-benchmark** vs PolyASite 2.0 point-mode/strand-matched + null *(Claude — running)*
-- [ ] **Motif validation** (AAUAAA enrichment, internal-priming rate) — atlas-independent accuracy *(Claude — running)*
+- [x] **Curated re-benchmark** vs PolyASite 2.0 point-mode/strand-matched + null *(done, verified — see 07_curated_benchmark_report.md)*
+- [x] **Motif validation** — atlas-independent accuracy *(done, verified; discovered the ~90–105 nt cleavage-offset)*
 - [ ] **Publish GitHub issues + PR** — review `manuscript/github/`, then run `manuscript/github/publish_github.sh` *(Ebru)*
-- [ ] Decision checkpoint: does point-mode precision vs curated atlas clear the ROADMAP bar (≥70%)?
-      If not, reframe the paper around the clustering novelty before more benchmarking is sunk.
+- [x] **Decision checkpoint — TRIGGERED (2026-08-19).** Point-mode precision vs curated PolyASite 2.0
+      is 0.36–0.49 @100bp (~20× null) — under the 70% bar; recall is arithmetically capped at 0.06–0.15
+      by set size, so the ≥60% bar is unreachable *by design*. Decisions:
+      (a) **reframe**: lead with clustering novelty + enrichment-over-null + canonical motif architecture,
+          not absolute atlas accuracy; (b) the old ROADMAP bars must be restated (issue for Amir/PI);
+      (c) the **cleavage-offset correction** (issue 6) is the concrete path to recovering precision —
+          AATAAA mode at +75 nt implies cleavage ~+90–105 nt past the reported peak end;
+      (d) the head-to-head matters even more: all tools get scored under the identical fair matcher,
+          so *relative* standing is what the paper argues.
 
 ### P1 — weeks 1–3 (competitive evidence)
 - [ ] Head-to-head on **pbmc_10k_v3**: PeakATail vs Sierra, scAPAtrap, SCAPTURE, polyApipe, scTail

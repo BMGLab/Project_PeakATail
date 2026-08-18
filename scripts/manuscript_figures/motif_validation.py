@@ -13,8 +13,8 @@ WHAT THE DATA SHOWED (and the figure now says)
     Under the prescribed anchor -- each peak's 3'-most base per strand taken
     as the cleavage site -- the canonical signal is almost absent (7.7% vs
     5.4% in the gene-body null).  Scanning +-150 nt around that anchor finds
-    the AATAAA density hump at +40..+90 nt DOWNSTREAM of the peak end
-    (mode ~+73), the A-rich signal region peaking ~+98, and the U(T)-rich
+    the AATAAA density hump at +29..+94 nt DOWNSTREAM of the peak end
+    (mode +75), the A-rich signal region peaking ~+98, and the U(T)-rich
     downstream element past +100: the full canonical PAS architecture,
     displaced ~+90 nt.  The called peaks are genuine PAS neighbourhoods
     (AATAAA/ATTAAA within +0..+100 of the peak end: 37% real vs 15% null),
