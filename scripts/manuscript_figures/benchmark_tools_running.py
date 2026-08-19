@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SUPERSEDED by scripts/manuscript_figures/benchmark_headtohead.py (all 6 tools x 2 datasets, final manuscript figure); kept only for provenance.
 """
 benchmark_tools_running.py -- the RUNNING cross-tool comparison table+figure.
 External tools so far: polyApipe 0.1.0 and Sierra 0.99.27 on pbmc_10k_v3

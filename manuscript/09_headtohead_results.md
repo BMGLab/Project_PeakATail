@@ -27,12 +27,17 @@ de novo tools. Null precision ~0.022 for every arm.
 | scUTRquant\* | 35.7k/35.9k | 0.782/0.784 | 0.259 | **0.389** | n/a (catalog) |
 | polyApipe | 89.5k/88.0k | 0.401/0.412 | 0.250/0.251 | **0.308/0.312** | 0.49/0.50 |
 | **PeakATail** | 45.9k/46.7k | 0.369/0.368 | 0.198/0.201 | **0.258/0.260** | 0.75/0.73 |
+| SCAPTURE | 23.6k (m1 only) | 0.694 | 0.155 | **0.253** | m2 invalid (disk) |
+| scAPAtrap | 135.5k/151.1k | 0.250/0.239 | 0.245/0.259 | **0.248/0.248** | 0.88/0.79 |
 | Sierra | 22.6k/21.4k | 0.509/0.581 | 0.107/0.117 | **0.177/0.195** | 0.79/0.83 |
-| scAPAtrap | 135.5k/151.1k | scored | scored | see TSVs | pending |
-| SCAPTURE | 23.7k (m1 only) | scored | scored | see TSVs | m2 invalid (disk) |
 
-PeakATail is mid-pack here — second among de novo tools by F1, and **best-balanced on reproducibility**
-among the high-recall tools (0.73–0.75 vs polyApipe 0.49–0.50).
+PeakATail is mid-pack here — second among de novo tools by F1 — but it is **not** the reproducibility
+leader. Ranked by replicate concordance@100: scAPAtrap 0.88/0.79 > Sierra 0.79/0.83 > PeakATail
+0.75/0.73 > polyApipe 0.49/0.50. scAPAtrap achieves this at *higher* recall than PeakATail
+(0.245–0.259 vs 0.198–0.201), so the honest scope of PeakATail's reproducibility claim is **against
+polyApipe only**. The qualifier that must travel with scAPAtrap's 0.88: it is measured on a set its
+own `reducePeaks(min.cells=10, min.count=10)` has already depth-cleaned (literally zero depth-1
+calls), and it buys that reproducibility at precision 0.24–0.25 vs PeakATail's 0.37.
 
 ## Why PeakATail underperforms on PBMC — what we tested
 
@@ -63,9 +68,12 @@ among the high-recall tools (0.73–0.75 vs polyApipe 0.49–0.50).
 - **Dataset sensitivity is itself a finding**: PeakATail's precision spans 0.118 (PBMC/CellRanger),
   0.369 (testis/STARsolo), 0.447 (Laughney/STARsolo). Reporting a single accuracy number for any tool
   in this field is misleading; the benchmark should report per-dataset.
-- **Where PeakATail does stand out**: replicate reproducibility at high recall (0.73–0.75 vs polyApipe
-  0.49–0.50, whose F1 lead rides on depth-1 singletons), and the peak-based clustering novelty, which
-  is an orthogonal axis no competitor offers.
+- **Where PeakATail does stand out**: replicate reproducibility *relative to polyApipe* (0.73–0.75 vs
+  0.49–0.50, whose F1 lead rides on depth-1 singletons — 62% of its mouse calls are depth-1 and those
+  reproduce only 0.31 of the time vs 0.81 for its depth ≥2 calls). It is **not** the reproducibility
+  leader overall: scAPAtrap (0.79–0.88) and Sierra (0.79–0.83) both sit above it. The remaining
+  unambiguous differentiator is the peak-based clustering novelty, an orthogonal axis no competitor
+  offers.
 
 ## Reproduce
 

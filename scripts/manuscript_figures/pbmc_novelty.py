@@ -112,6 +112,11 @@ CT = pd.read_csv(os.path.join(SRC, "contingency_pas_x_celltype.tsv"),
 CT.index = CT.index.astype(str)
 AT = pd.read_csv(os.path.join(SRC, "atlas_support_tests.tsv"), sep="\t")
 FS = pd.read_csv(os.path.join(SRC, "feature_spaces.tsv"), sep="\t")
+KM = pd.read_csv(os.path.join(SRC, "feature_spaces_kmatched.tsv"), sep="\t")
+VM = pd.read_csv(os.path.join(SRC, "variance_matched.tsv"), sep="\t")
+UF = json.load(open(os.path.join(SRC, "usage_features_summary.json")))
+PM = pd.read_csv(os.path.join(SRC, "power_matched.tsv"), sep="\t")
+PWR = json.load(open(os.path.join(SRC, "power_matched.json")))
 LAUGH = pd.read_csv(
     os.path.join(OUTDIR, "clustering_concordance.tsv"), sep="\t")
 LAUGH = LAUGH[LAUGH.panel == "a"].pivot_table(
@@ -126,10 +131,10 @@ def rec(panel, record, key, value, note=""):
 
 
 # ----------------------------------------------------------------------------
-fig = plt.figure(figsize=(11.0, 12.6), facecolor=SURFACE)
+fig = plt.figure(figsize=(12.2, 12.9), facecolor=SURFACE)
 gs = fig.add_gridspec(
-    3, 3, height_ratios=[1.00, 1.02, 1.05], width_ratios=[1.0, 1.0, 1.12],
-    left=0.055, right=0.985, top=0.945, bottom=0.088, hspace=0.42, wspace=0.34)
+    3, 3, height_ratios=[0.98, 1.05, 1.00], width_ratios=[1.0, 1.0, 1.16],
+    left=0.075, right=0.978, top=0.925, bottom=0.175, hspace=0.46, wspace=0.62)
 
 # ============================================================ panel a: UMAPs
 def umap_panel(ax, xk, yk, title, sub):
@@ -171,8 +176,8 @@ for ct in CT_ORDER:
 axC = fig.add_subplot(gs[0, 2])
 pairs = [("AMI\nvs cell type", "AMI_pas_vs_celltype", "AMI_celltype_vs_pas"),
          ("ARI\nvs cell type", "ARI_pas_vs_celltype", "ARI_celltype_vs_pas"),
-         ("AMI\nvs GEX Leiden", "AMI_pas_vs_gexleiden", None),
-         ("ARI\nvs GEX Leiden", "ARI_pas_vs_gexleiden", None)]
+         ("AMI vs\nGEX Leiden", "AMI_pas_vs_gexleiden", None),
+         ("ARI vs\nGEX Leiden", "ARI_pas_vs_gexleiden", None)]
 LAU_MED = {"AMI_celltype_vs_pas": LAU["median_AMI_celltype_vs_pas"],
            "ARI_celltype_vs_pas": LAU["median_ARI_celltype_vs_pas"],
            None: None}
@@ -210,7 +215,7 @@ for i, (lab, kk, lk) in enumerate(pairs):
             "cohort median")
 axC.set_xticks(x)
 axC.set_xticklabels([p[0] for p in pairs], fontsize=6.8)
-axC.set_ylim(0, 0.95)
+axC.set_ylim(0, 1.06)
 axC.set_ylabel("agreement of PAS clusters with the GEX partition")
 axC.grid(axis="y", color=GRID, lw=0.6, zorder=0)
 axC.set_axisbelow(True)
@@ -251,58 +256,120 @@ for ct, cls in splits.items():
         i = list(frac.index).index(str(cl))
         axB.add_patch(Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False,
                                 edgecolor=C[1], lw=1.6, zorder=6))
-axB.set_title("b   PAS clusters vs marker-derived GEX types — 4 types are "
-              "split across 2 PAS clusters (orange)", fontsize=8.5, loc="left",
+axB.set_title("b   PAS cluster × marker-derived GEX type   "
+              "(orange = the four detected splits)", fontsize=8.5, loc="left",
               pad=4)
-cb = fig.colorbar(im, ax=axB, fraction=0.022, pad=0.012)
-cb.set_label("row fraction", fontsize=6.5)
-cb.ax.tick_params(labelsize=6)
+cax = axB.inset_axes([0.66, -0.235, 0.32, 0.022])
+cb = fig.colorbar(im, cax=cax, orientation="horizontal")
+cb.set_label("row fraction (composition of the PAS cluster)", fontsize=6.0,
+             labelpad=2)
+cb.ax.tick_params(labelsize=5.8, length=2, pad=1)
 cb.outline.set_edgecolor(GRID)
 
 # =================================== panel d: what the feature space encodes
 axD = fig.add_subplot(gs[1, 2])
-ORDER = ["published", "pas_counts", "gene_level", "atlas_only",
-         "nonatlas_only", "counts_top10k", "usage_top10k",
-         "usage_top10k_scaled"]
-PRETTY = {
-    "published": "PAS counts (shipped labels)",
-    "pas_counts": "PAS counts (rerun)",
-    "gene_level": "PAS summed per gene\n= 3′-end EXPRESSION",
-    "atlas_only": "atlas-supported PAS only",
-    "nonatlas_only": "NON-atlas PAS only",
-    "counts_top10k": "10k sites, as COUNTS",
-    "usage_top10k": "same 10k, as within-gene\nUSAGE (abundance removed)",
-    "usage_top10k_scaled": "same 10k, USAGE, scaled",
-}
-COLOR = {"published": C[0], "pas_counts": C[0], "gene_level": C[3],
-         "atlas_only": C[2], "nonatlas_only": C[4],
-         "counts_top10k": C[5], "usage_top10k": C[1],
-         "usage_top10k_scaled": C[1]}
 fs = FS.set_index("space")
-avail = [s for s in ORDER if s in fs.index]
-ypos = np.arange(len(avail))[::-1]
-for y, s in zip(ypos, avail):
-    v = fs.loc[s, "AMI_vs_celltype"]
-    axD.barh(y, v, 0.66, color=COLOR[s], lw=0,
-             alpha=(0.45 if s == "usage_top10k_scaled" else 1.0), zorder=3)
-    axD.text(v + 0.008, y, f"{v:.3f}", va="center", fontsize=6.5,
+km = KM.set_index("space")
+vm = VM.set_index("space")
+pm = PM.set_index("space")
+
+
+def best_of(tbl, a, b, col):
+    """Generous reading: report the better of the raw and column-scaled
+    variant of a continuous-feature space, so no result here can be blamed on
+    having crippled the representation."""
+    va = tbl.loc[a, col] if a in tbl.index else -np.inf
+    vb = tbl.loc[b, col] if b in tbl.index else -np.inf
+    return float(max(va, vb))
+
+
+BARS = [
+    # label, AMI at the pipeline's own resolution, AMI at k matched to 8 types,
+    # colour key, n features, note
+    ("all PAS, counts  (shipped)", float(CONC["AMI_pas_vs_celltype"]),
+     float(km.loc["pas_counts", "AMI_vs_celltype_kmatched"]), "counts",
+     275370, "the published result"),
+    ("summed per gene = EXPRESSION",
+     float(fs.loc["gene_level", "AMI_vs_celltype"]),
+     float(km.loc["gene_level", "AMI_vs_celltype_kmatched"]), "expr",
+     14891, "site resolution discarded"),
+    ("real PAS only, counts",
+     float(fs.loc["atlas_only", "AMI_vs_celltype"]),
+     float(km.loc["atlas_only", "AMI_vs_celltype_kmatched"]), "real",
+     32361, ""),
+    ("NON-PAS peaks only, counts",
+     float(fs.loc["nonatlas_only", "AMI_vs_celltype"]),
+     float(km.loc["nonatlas_only", "AMI_vs_celltype_kmatched"]), "fake",
+     243009, ""),
+    ("gene-DETECTION mask only",
+     float(fs.loc["detection_mask", "AMI_vs_celltype"]),
+     float(km.loc["detection_mask", "AMI_vs_celltype_kmatched"]), "mask",
+     10000, "no usage value at all"),
+    ("USAGE, top 10k sites",
+     best_of(fs, "usage_top10k", "usage_top10k_scaled", "AMI_vs_celltype"),
+     best_of(km, "usage_top10k", "usage_top10k_scaled",
+             "AMI_vs_celltype_kmatched"), "fake", 10000,
+     f"{1 - UF['atlas_frac_selected']:.0%} of them are NOT poly(A) sites"),
+    ("USAGE, REAL poly(A) sites only",
+     best_of(vm, "real_pas_usage_top", "real_pas_usage_top_scaled", "AMI_res1"),
+     best_of(vm, "real_pas_usage_top", "real_pas_usage_top_scaled",
+             "AMI_kmatched"), "real", 10000, "true APA signal"),
+    ("USAGE, NON-PAS (var-matched)",
+     best_of(vm, "decoy_usage_var_matched", "decoy_usage_var_matched_scaled",
+             "AMI_res1"),
+     best_of(vm, "decoy_usage_var_matched", "decoy_usage_var_matched_scaled",
+             "AMI_kmatched"), "fake", 10000, "same n, same usage variance"),
+    ("USAGE, NON-PAS (var + depth)",
+     best_of(pm, "decoy_usage_depth_and_var_matched",
+             "decoy_usage_depth_and_var_matched_scaled", "AMI_res1"),
+     best_of(pm, "decoy_usage_depth_and_var_matched",
+             "decoy_usage_depth_and_var_matched_scaled", "AMI_kmatched"),
+     "fake", 10000,
+     f"non-PAS counts thinned to p={PWR['thinning_p']:.2f} so per-gene depth "
+     f"matches the real-PAS set"),
+    ("USAGE shuffled (null)",
+     best_of(fs, "usage_shuffled", "usage_shuffled_scaled", "AMI_vs_celltype"),
+     best_of(km, "usage_shuffled", "usage_shuffled_scaled",
+             "AMI_vs_celltype_kmatched"), "null", 10000, ""),
+]
+KEYCOL = {"counts": C[0], "expr": C[3], "real": C[2], "fake": C[4],
+          "mask": MUTED, "null": "#B9C4C9"}
+ypos = np.arange(len(BARS))[::-1]
+for y, (lab, v1, vk, key, nf, note) in zip(ypos, BARS):
+    axD.barh(y, v1, 0.62, color=KEYCOL[key], lw=0, zorder=3)
+    axD.scatter([vk], [y], s=17, facecolor="white", edgecolor=INK, lw=0.9,
+                zorder=5)
+    axD.text(max(v1, vk) + 0.012, y, f"{v1:.2f}", va="center", fontsize=6.3,
              color=INK, fontweight="bold")
-    rec("d", s, "AMI_vs_celltype", round(float(v), 4),
-        f"n_features={int(fs.loc[s,'n_features'])}, "
-        f"n_clusters={int(fs.loc[s,'n_clusters'])}")
-    rec("d", s, "ARI_vs_celltype", round(float(fs.loc[s, "ARI_vs_celltype"]), 4),
-        "")
+    rec("d", lab, "AMI_vs_celltype_res1.0", round(v1, 4),
+        f"n_features={nf}; {note}")
+    rec("d", lab, "AMI_vs_celltype_k_matched_to_8_types", round(vk, 4), "")
 axD.set_yticks(ypos)
-axD.set_yticklabels([PRETTY[s] for s in avail], fontsize=6.2)
+axD.set_yticklabels([b[0] for b in BARS], fontsize=6.4)
 axD.set_xlabel("AMI vs marker-derived cell type")
-axD.set_xlim(0, max(0.85, fs["AMI_vs_celltype"].max() * 1.18))
+axD.set_xlim(0, 1.0)
 axD.grid(axis="x", color=GRID, lw=0.6, zorder=0)
 axD.set_axisbelow(True)
 for sp in ("top", "right"):
     axD.spines[sp].set_visible(False)
+axD.axvline(float(CONC["AMI_pas_vs_celltype"]), color=C[0], lw=0.8, ls=":",
+            zorder=2)
 axD.set_title("d   what the PAS space actually encodes\n"
-              "(identical pipeline, one kind of information removed each time)",
+              "identical pipeline, one kind of information\n"
+              "removed each time; Leiden resolution 1.0",
               fontsize=8.5, loc="left", pad=4)
+axD.legend(handles=[
+    Line2D([], [], marker="s", ls="", ms=5, color=C[2],
+           label="features are real PAS (atlas ≤100 bp)"),
+    Line2D([], [], marker="s", ls="", ms=5, color=C[4],
+           label="features are NOT PAS"),
+    Line2D([], [], marker="o", ls="", ms=4.2, markerfacecolor="white",
+           markeredgecolor=INK, label="same space, k matched to 8 types")],
+    loc="upper left", bbox_to_anchor=(0.0, -0.135), ncol=1, frameon=False,
+    fontsize=6.0, handletextpad=0.4, borderpad=0.0, labelspacing=0.35)
+axD.text(0.0, -0.315,
+         "Dotted line = the shipped result.",
+         transform=axD.transAxes, fontsize=6.0, color=MUTED, va="top")
 
 # ================================================= panel e: the novelty test
 axE = fig.add_subplot(gs[2, :])
@@ -324,8 +391,8 @@ CRITS = [
 at = AT.set_index("split")
 tags = [t for t in J["apa"] if t != "POOLED"]
 n_r, n_c = len(tags), len(CRITS)
-cw, ch = 1.0 / (n_c + 2.35), 1.0 / (n_r + 1.9)
-x0, y0 = 0.235, 0.80
+cw, ch = 1.0 / (n_c + 2.45), 1.0 / (n_r + 3.4)
+x0, y0 = 0.245, 0.80
 
 for j, (lab, _) in enumerate(CRITS):
     axE.text(x0 + (j + 0.5) * cw, y0 + 0.055, lab, ha="center", va="bottom",
@@ -386,9 +453,9 @@ verdict = (
     f"{pool['p_fisher_vs_candidates']:.3f}), and no better than the "
     f"{pool['atlas_frac_all_pas']:.1%} background of all PeakATail PBMC calls.  "
     "The 'APA-driven' signal is carried by peaks that are not poly(A) sites.")
-axE.add_patch(Rectangle((0.0, 0.005), 1.0, 0.215, transform=axE.transAxes,
+axE.add_patch(Rectangle((0.0, 0.0), 1.0, 0.205, transform=axE.transAxes,
                         facecolor="#FBF0EA", edgecolor=C[1], lw=0.9, zorder=1))
-axE.text(0.012, 0.115, verdict, transform=axE.transAxes, fontsize=6.6,
+axE.text(0.012, 0.1025, verdict, transform=axE.transAxes, fontsize=6.7,
          color=INK, va="center", ha="left", linespacing=1.45, zorder=2)
 rec("e", "POOLED", "n_apa_driven", int(pool["n_apa_driven"]), "")
 rec("e", "POOLED", "n_apa_driven_atlas_supported",
@@ -412,37 +479,58 @@ crit_txt = (
     f"the gene's TOTAL expression in the independent 10x GEX matrix  |  "
     f"confound flagged at >1.5× median ratio, expression at ≥10 DE genes "
     f"(q<0.05, |log2FC|>1), GEX-resolved at ARI ≥ {CRIT['GEX_RESOLVED_ARI']}")
-axE.text(0.0, -0.055, crit_txt, transform=axE.transAxes, fontsize=5.7,
+axE.text(0.0, -0.075, crit_txt, transform=axE.transAxes, fontsize=5.9,
          color=MUTED, va="top", ha="left", linespacing=1.45)
 
 # ============================================================== title/caveats
-fig.text(0.055, 0.982,
+fig.text(0.075, 0.988,
          "Poly(A)-site clustering reproduces gene-expression cell types on "
-         "public PBMC data — but every PAS-only population it adds is an "
-         "artefact",
-         fontsize=11.2, color=INK, fontweight="bold", ha="left", va="top")
-fig.text(0.055, 0.960,
+         "public PBMC data.",
+         fontsize=12.0, color=INK, fontweight="bold", ha="left", va="top")
+fig.text(0.075, 0.968,
+         "The signal is 3′-end expression, not poly(A)-site choice, and no "
+         "PAS-only population survives.",
+         fontsize=12.0, color=C[1], fontweight="bold", ha="left", va="top")
+fig.text(0.075, 0.949,
          "10x pbmc_10k_v3 (11,836 PAS cells / 11,043 GEX cells; "
          f"{CONC['n_shared_cells']:,} matched, "
          f"{CONC['coverage_pas_by_gex']:.1%} of PAS cells). "
-         "PeakATail PAS calls, TF-IDF/LSI/Leiden on PAS counts only.",
-         fontsize=7.4, color=MUTED, ha="left", va="top")
+         "PeakATail PAS calls, TF-IDF/LSI/Leiden on PAS counts only. "
+         "Independent replication of the Laughney-cohort result.",
+         fontsize=7.6, color=MUTED, ha="left", va="top")
 
-caveats = (
+import textwrap as _tw
+caveats = _tw.fill(
     "CAVEATS ON EVERY NUMBER ABOVE.  (1) The reference partition is "
-    "MARKER-DERIVED, not curated ground truth: canonical PBMC panels scored per "
-    "GEX-Leiden cluster, modal label; its errors are inherited here.  "
-    "(2) The PAS features are per-site COUNTS, which carry gene abundance — "
-    "panel d shows collapsing them to gene level costs almost nothing, so the "
-    "concordance is a 3′-end EXPRESSION result, not evidence of isoform choice.\n"
-    "(3) On this exact dataset PeakATail is LAST among de novo callers for PAS "
-    f"accuracy (F1 0.134 vs polyApipe 0.261); only {CONC['atlas_frac_all_pas']:.1%} "
-    "of its 275,370 PBMC sites lie within 100 bp of a PolyASite 2.0 site, which "
-    "is why panel e's atlas column is decisive and why panel d's "
-    "'non-atlas PAS only' arm matters.  (4) Splits are scored on the two "
-    "largest type-dominated PAS clusters only.  (5) One dataset, one donor.")
-fig.text(0.055, 0.028, caveats, fontsize=6.2, color=MUTED, ha="left",
-         va="top", linespacing=1.5)
+    "MARKER-DERIVED, not curated ground truth: canonical PBMC marker panels "
+    "scored per GEX-Leiden cluster, modal label; every error of that panel is "
+    "inherited here.  (2) The shipped PAS features are per-site COUNTS, which "
+    "carry gene abundance; panel d shows that collapsing them to gene totals "
+    "costs nothing, so the concordance is a 3′-end EXPRESSION result and is "
+    "not evidence of isoform choice.  (3) On this exact dataset PeakATail is "
+    "LAST among de novo callers for PAS accuracy (F1 0.134 vs polyApipe "
+    f"0.261) and only {CONC['atlas_frac_all_pas']:.1%} of its 275,370 PBMC "
+    "sites lie within 100 bp of a PolyASite 2.0 representative site; that is "
+    "why the atlas column of panel e and the real-PAS bars of panel d are "
+    "decisive.  (4) Absence of surviving splits is not proof that none exist: "
+    "splits are scored on the two largest type-dominated PAS clusters of each "
+    "type, and the atlas is itself incomplete.  (5) One dataset, one donor, "
+    "one parameter set.  (6) In panel d the two continuous usage spaces are "
+    "each shown at the better of their raw and column-scaled representation, "
+    "so the collapse of the real-poly(A)-site bar is not an artefact of "
+    "representation; the open circles repeat every space with its Leiden "
+    "resolution retuned so the cluster count matches the 8 cell types, which "
+    "removes granularity as an explanation.  (7) Real poly(A) sites are "
+    "sparser here (3 sites/gene, gene detected in "
+    f"{PWR['real_det_rate']:.1%} of cells) than PeakATail's non-PAS peaks "
+    f"(10 sites/gene, {PWR['nonpas_det_rate']:.1%}), so the last bar repeats "
+    "the non-PAS decoy after binomially thinning its counts to the same "
+    f"per-gene depth ({PWR['nonpas_thinned_det_rate']:.1%} detection, median "
+    f"gene total {PWR['nonpas_thinned_med_gene_total']:.0f} vs "
+    f"{PWR['real_med_gene_total']:.0f}): it still doubles the real-PAS score, "
+    "so measurement power is not the explanation.", width=178)
+fig.text(0.075, 0.108, caveats, fontsize=6.4, color=MUTED, ha="left",
+         va="top", linespacing=1.55)
 
 fig.savefig(PNG, dpi=300, facecolor=SURFACE)
 print("wrote", PNG)

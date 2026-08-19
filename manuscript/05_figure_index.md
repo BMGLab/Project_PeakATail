@@ -372,3 +372,105 @@ on-figure numbers match the TSV.
   against the calls without the anchor-offset explanation.
 - Methods trap documented in the script: with `bedtools getfasta -s`, asymmetric windows break
   minus-strand index mapping (phantom −525 hump); symmetric ±160 nt windows are immune.
+
+## 8. `benchmark_headtohead.png` / `.tsv` (+ `benchmark_consolidated.tsv`, 1,066 rows)
+
+**Finding.** Six PAS callers on two datasets describe a trade surface, not a ranking: precision,
+recall, replicate reproducibility and call count trade off against each other, every rank order
+changes between the two datasets, and **PeakATail ranks LAST of the five de novo tools on human PBMC**
+(F1@100 0.134) while placing second on mouse testis (0.258–0.260).
+
+**Headline numbers.**
+- PBMC F1@100 (detected-gene denominator): polyApipe **0.261** > SCAPTURE 0.199 > Sierra 0.177 >
+  scAPAtrap 0.150 > **PeakATail 0.134**. scUTRquant 0.290 shown but not ranked (annotation-based).
+- Testis F1@100: polyApipe **0.308/0.312** > PeakATail 0.258/0.260 ≈ scAPAtrap 0.248/0.248 ≈
+  SCAPTURE 0.253 (mouse1 only) > Sierra 0.177/0.195. scUTRquant 0.389, unranked.
+- SCAPTURE is the precision arm among the **de novo** tools on **both** datasets — P@100 0.652
+  (human, 35,759 calls) and 0.694 (mouse1, 23,645) — ahead of Sierra (0.256 human / 0.509–0.581
+  mouse). The fewest-calls arm is dataset-dependent: SCAPTURE on human (35,759 vs Sierra's 106,170),
+  Sierra on mouse (21.3k–22.6k vs SCAPTURE's 23,645). scAPAtrap calls the most (787,138 human) and is
+  least precise (0.100).
+- Call counts span 21k–787k (37-fold) across tools, so precision and recall are only interpretable
+  jointly (panel b).
+- Replicate reproducibility @100 bp (mouse, both directions): scAPAtrap 0.79–0.88, Sierra 0.79–0.83,
+  PeakATail 0.73–0.75, polyApipe 0.49–0.50. Chance level ≤0.009 (same query vs a genic-shuffled copy
+  of the other replicate).
+- **Depth stratification is the mechanism**: 62% of polyApipe's mouse calls are depth-1 singletons and
+  they reproduce only **0.31** of the time, against **0.81** for its depth ≥2 calls. PeakATail 2%
+  singletons, Sierra 1%, scAPAtrap 0% (its own `reducePeaks(min.cells=10, min.count=10)` removes them).
+- Resources, clean runs: wall time PBMC SCAPTURE 12:13 > scAPAtrap 4:04 (resumed) > PeakATail 3:27 ≈
+  polyApipe 3:26 > Sierra 2:43 > scUTRquant 0:30. Peak RSS PeakATail **100.7 GiB** on the human BAM vs
+  4–23 GiB for every other tool/dataset — the largest single resource gap in the benchmark.
+- Every real precision clears the 3-seed genic-shuffle null (~0.022 human, ~0.014 mouse), but by very
+  different margins: 4.4–36× on human (scAPAtrap 4.4×, PeakATail 5.2×, scUTRquant 36×) and 17–57× on
+  mouse. Do not quote a single "×above null" figure for the benchmark.
+
+**Verdict: VERIFIED (adversarial re-verification pass, 2026-08-19).** Nine plotted values were
+recomputed from scratch — straight from the genome-filtered point BEDs with `bedtools closest`, not
+from the score TSVs or the consolidated table — and all reproduce exactly: human P@100 PeakATail
+0.117538 / SCAPTURE 0.651808 / Sierra 0.255854, human R@100 PeakATail 0.156189 / scAPAtrap 0.300376
+(denominator 285,136), mouse P@100 SCAPTURE 0.693550 / PeakATail 0.369159 / polyApipe (m2) 0.411943 /
+Sierra (m2) 0.581064, mouse R@100 scAPAtrap 0.245315 (denominator 126,686). Scoring the same mouse
+point set against the *human* atlas gives 0.016 rather than 0.694, confirming the species split is
+real. All four panel-(d) concordances and polyApipe's depth stratification (62.9% depth-1, 0.3079 vs
+0.8093) were recomputed independently and match to 6 dp. All 1,066 consolidated rows round-trip
+against the correct per-dataset score TSV (910 values + 130 nulls + 26 replicate rows, zero
+mismatches). Runtimes were checked against the raw `time -v` logs, retries included. Corrected in
+this pass: the SCORING footnote paired 285,136 sites with the wrong gene count (14,851 → **14,949**);
+the deck called Sierra the fewest-calls arm, which is false on human; panel (e) hatched SCAPTURE's
+mouse bars for an *accuracy* caveat while its own footnote promised runtime-only hatching; "35-fold"
+→ 37-fold; "26–57× above null" → 4.4–57×; the panel-(d) SCAPTURE note quoted the human evaluated-peak
+count inside a mouse panel. Every accuracy number is
+harvested unmodified from the `score_*.tsv` files produced by the single scoring path
+(`scripts/benchmark_tools/score_tool.py`, itself validated against `benchmark_curated.tsv`), and every
+figure value that also appears in `manuscript/09_headtohead_results.md` or
+`scripts/benchmark_tools/README_STATUS.md` matches it exactly. The reproducibility panel reuses the
+same genome-filtered point sets `score_tool.py` wrote, and reproduces the committed
+`replicate_concordance.tsv` values to 6 dp for PeakATail, Sierra and polyApipe.
+
+**New in this figure (not in manuscript/09 — carry these forward):**
+- scAPAtrap mouse replicate concordance was "pending" in manuscript/09; it is now computed: **0.88
+  (m1→m2) / 0.79 (m2→m1)**, i.e. *above* PeakATail's 0.73–0.75 at higher recall. The sentence
+  "PeakATail is best-balanced on reproducibility among the high-recall tools" must be re-scoped: it
+  holds against polyApipe, not against scAPAtrap. The honest qualifier is that scAPAtrap's concordance
+  is measured on a set its own min.count=10 / min.cells=10 filter has already depth-cleaned, and it
+  buys that reproducibility at precision 0.24–0.25 vs PeakATail's 0.37.
+- SCAPTURE is the precision leader among de novo tools on both datasets. Any framing that calls Sierra
+  "the precision arm" is wrong on PBMC (Sierra 0.256 vs SCAPTURE 0.652) and second-place on testis.
+- The polyApipe singleton claim is now quantified end-to-end (0.31 vs 0.81 concordance), not inferred
+  from the singleton fraction alone.
+
+**Must travel with it.**
+- **Depth is not comparable across tools.** polyApipe depth = poly(A)-read `peakdepth`; PeakATail,
+  Sierra and scAPAtrap depth = total UMIs from their own count matrices. Never write a cross-tool
+  depth threshold; the panel compares each tool against *itself*.
+- SCAPTURE's mouse arm is **mouse1 only** — the mouse2 run was truncated by disk exhaustion and
+  SCAPTURE exited 0 anyway. It is hatched in panels (b) and (c) and must never be quoted as a
+  two-replicate result. It has no reproducibility bar and no depth at all (its BED score column is 0
+  for every evaluated peak — 162,346 human, 81,138 mouse1 — verified).
+- Hatching in panel (e) marks **runtime** caveats only, never accuracy. scAPAtrap's PBMC 4:04:29 is a
+  *resumed* run after an OOM kill at 8:54:21 that had already completed three stages — it understates a
+  from-scratch run (12:58:50 of machine time in total) and must be quoted with that sentence attached.
+  PeakATail's PBMC 3:27:06 is attempt 4 of 4; attempts 1–3 (1:33:21, 1:52:42, 4:52:58) died on three
+  CellRanger-input bugs and are disclosed, not summed. scUTRquant's mouse wall time is
+  BAM-conversion-dominated (64/54 min of 76/64 min) by a prep step this benchmark imposed.
+- scUTRquant is annotation-based; its precision against an annotation-derived atlas and its
+  cross-replicate agreement are both near-tautological. It is drawn open-marker/separated and must
+  never be ranked with the de novo tools.
+- SCAPTURE is annotation-**guided** (peaks called inside gene models, then filtered by the DeepPASS
+  sequence classifier). Its precision lead is best read as evidence for the evidence-type argument in
+  manuscript/09, not as a like-for-like coverage-caller comparison.
+- Recall is always against the per-dataset detected-gene-restricted atlas (human 285,136 sites /
+  14,949 PBMC-detected genes, `shared_refs_pbmc`; mouse 126,686 sites / 14,014 genes,
+  `gse104556/shared_refs`). It is not comparable to any recall computed against the full atlas, which
+  is also in `benchmark_consolidated.tsv` under `reference=atlas_full`.
+- **One exception, disclosed in the table's `notes`:** the non-plotted `sierra_summit` diagnostic arm
+  was scored against the older Laughney-derived human denominator (285,220 sites / 14,851 genes)
+  rather than `shared_refs_pbmc`. Its `atlas_detected` recall/F1 are therefore not comparable to the
+  other human arms (recall@100 0.064610 as scored; 0.064818 on the PBMC-native set). Every plotted
+  arm is on the correct per-dataset denominator.
+- Sensitivity/diagnostic arms (`polyapipe_all`, `scapture_all`, `sierra_summit`, `sierra_pooled`,
+  `peakatail_top{22000,36000,106000}`) are in `benchmark_consolidated.tsv` but deliberately **not**
+  plotted; do not mix them into the ranked comparison.
+- Concordance is a nearest-neighbour fraction, not a symmetric statistic: the two directions differ
+  only through their denominators (drawn as the vertical range on each bar).

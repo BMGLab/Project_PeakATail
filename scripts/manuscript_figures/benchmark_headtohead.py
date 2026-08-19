@@ -41,13 +41,13 @@ DEPTH SOURCES for panel (d), all mouse:
                 top-N ranking arms used, see manuscript/09)
     Sierra      row sums of counts/matrix.mtx.gz joined on counts/sitenames.tsv.gz
     scAPAtrap   per-peak UMI totals from counts.tsv.gz
-    SCAPTURE    NONE.  Its BED score column is 0 for all 162,346 evaluated peaks
-                (verified, see the pas.bed header) and this run produced no
-                per-PAS count matrix -- stated on the panel, never invented.
+    SCAPTURE    NONE.  Its BED score column is 0 for every evaluated peak
+                (162,346 human / 81,138 mouse1; verified) and this run produced
+                no per-PAS count matrix -- stated on the panel, never invented.
 
 Every plotted value is written to results/figures/manuscript/benchmark_headtohead.tsv.
 Re-runnable end to end; the depth/concordance step caches into
-results/benchmark_tools/gse104556/<tool>/depth_concordance.tsv.
+results/benchmark_tools/gse104556/depth_concordance.tsv.
 """
 import os
 import subprocess
@@ -126,7 +126,12 @@ ARMS = {
     "scapture_all":    (HUMAN, "SCAPTURE",   "scapture/score_scapture_all.tsv", "", False,
                         "sensitivity variant: all evaluated peaks, no DeepPASS filter"),
     "sierra_summit":   (HUMAN, "Sierra",     "sierra/score_sierra_summit.tsv", "", False,
-                        "sensitivity variant: MaxPosition coverage summit instead of 3' of fit"),
+                        "sensitivity variant: MaxPosition coverage summit instead of 3' of fit; "
+                        "DENOMINATOR CAVEAT: this arm alone was scored against the older "
+                        "Laughney-derived detected-gene atlas (285,220 sites / 14,851 genes), "
+                        "not shared_refs_pbmc (285,136 / 14,949) used by every other human arm, "
+                        "so its atlas_detected recall and F1 are NOT comparable to them "
+                        "(recall@100 0.064610 as scored; 0.064818 on the PBMC-native set)"),
     "peakatail_top22000":  (HUMAN, "PeakATail", "peakatail/topN/score_peakatail_top22000.tsv", "", False,
                             "diagnostic: top 22k PAS by total UMI (matched-N vs Sierra/SCAPTURE)"),
     "peakatail_top36000":  (HUMAN, "PeakATail", "peakatail/topN/score_peakatail_top36000.tsv", "", False,
@@ -243,8 +248,11 @@ RUNTIME_DERIVED = {
     "peakatail_top36000": "peakatail", "peakatail_top106000": "peakatail",
 }
 
-# arms whose numbers carry a hard caveat -> hatched + footnoted wherever drawn
-HATCHED = {"scapture_mouse1", "scapatrap", "peakatail"}
+# Two DIFFERENT kinds of caveat, deliberately not conflated:
+#   HATCHED_DATA   the arm's ACCURACY numbers carry a hard caveat
+#   HATCHED_RUN    only the arm's RUNTIME carries a caveat (retries / resumes)
+HATCHED_DATA = {"scapture_mouse1"}
+HATCHED_RUN = {"peakatail", "scapatrap", "scutrquant"}
 
 # ---------------------------------------------------------------------------
 # STEP 1 -- harvest every score TSV into one tidy source-of-truth table
@@ -403,7 +411,7 @@ def repro_table(force=False):
 # ---------------------------------------------------------------------------
 def hhmm(sec):
     h, r = divmod(int(round(sec)), 3600)
-    return f"{h}:{r//60:02d}" if h else f"0:{r//60:02d}"
+    return f"{h}:{r//60:02d}"
 
 
 def main():
@@ -425,12 +433,13 @@ def main():
     def ncall(arm):
         return int(cons[cons.arm == arm].n_called.iloc[0])
 
-    arms_of = lambda ds: [a for a in ARMS if a in prim and ARMS[a][0] == ds]
+    def arms_of(ds, tool=None):
+        return [a for a in ARMS if a in prim and ARMS[a][0] == ds
+                and (tool is None or ARMS[a][1] == tool)]
 
-    fig = plt.figure(figsize=(16.5, 17.4), facecolor=SURFACE)
-    gs = fig.add_gridspec(3, 4, left=0.055, right=0.985, top=0.885, bottom=0.135,
-                          hspace=0.46, wspace=0.42,
-                          height_ratios=[1.0, 1.05, 1.0])
+    fig = plt.figure(figsize=(16.6, 19.2), facecolor=SURFACE)
+    gs = fig.add_gridspec(3, 4, left=0.055, right=0.985, top=0.855, bottom=0.215,
+                          hspace=0.42, wspace=0.40, height_ratios=[1.0, 1.06, 1.0])
     axA = [fig.add_subplot(gs[0, 0:2]), fig.add_subplot(gs[0, 2:4])]
     axB = fig.add_subplot(gs[1, 0:2])
     axC = fig.add_subplot(gs[1, 2:4])
@@ -448,7 +457,7 @@ def main():
         ax.set_axisbelow(True)
 
     # ------------------------------------------------------------------ (a)
-    for ax, ds in zip(axA, (HUMAN, MOUSE)):
+    for i, (ax, ds) in enumerate(zip(axA, (HUMAN, MOUSE))):
         nul = []
         for arm in arms_of(ds):
             tool = ARMS[arm][1]
@@ -456,122 +465,126 @@ def main():
             nul.append([get(arm, "precision_null", "atlas_full", c) for c in CUTOFFS])
             rep_lbl = ARMS[arm][3]
             ls = "--" if rep_lbl == "mouse2" else "-"
-            hatch_arm = arm in HATCHED
             ax.plot(CUTOFFS, ys, ls, color=COLOR[tool], lw=2.1,
-                    marker="o" if rep_lbl != "mouse2" else "s", ms=5.5,
+                    marker=("s" if rep_lbl == "mouse2" else "o"), ms=5.5,
                     mfc="none" if tool == "scUTRquant" else COLOR[tool],
                     zorder=3, alpha=0.95)
-            if hatch_arm:
-                ax.plot(CUTOFFS, ys, ls, color=INK, lw=0.7, zorder=4, alpha=0.6)
             for c, y in zip(CUTOFFS, ys):
                 plotted.append(dict(panel="a_precision_vs_cutoff", dataset=ds, tool=tool,
                                     arm=arm, x=c, y=y, series="precision_vs_atlas_full"))
         nul = np.array(nul, float)
         lo, hi = np.nanmin(nul, 0), np.nanmax(nul, 0)
-        ax.fill_between(CUTOFFS, lo, hi, color=MUTED, alpha=0.28, zorder=1, lw=0)
+        ax.fill_between(CUTOFFS, lo, hi, color=MUTED, alpha=0.35, zorder=1, lw=0)
         ax.plot(CUTOFFS, np.nanmean(nul, 0), color=MUTED, lw=1.2, ls=":", zorder=2)
         for c, l, h in zip(CUTOFFS, lo, hi):
             plotted.append(dict(panel="a_precision_vs_cutoff", dataset=ds, tool="(null)",
                                 arm="genic_shuffle_null", x=c, y=(l + h) / 2,
-                                series=f"null band {l:.4f}-{h:.4f} (3 seeds x all arms)"))
-        ax.annotate("genic-shuffle null (3 seeds, all arms)",
-                    xy=(CUTOFFS[-1], hi[-1]), xytext=(-6, 12), textcoords="offset points",
-                    ha="right", fontsize=8.5, color=MUTED)
+                                series=f"null band {l:.4f}-{h:.4f} (envelope of per-arm 3-seed means)"))
+        # the null band is labelled by a legend, not an arrow, so it never
+        # crosses a tool's curve; each panel uses whichever corner is empty
+        ax.legend(handles=[Patch(facecolor=MUTED, alpha=0.35, edgecolor="none",
+                                 label="genic-shuffle null (envelope of per-arm 3-seed means)")],
+                  loc="upper left" if ds == HUMAN else "lower right",
+                  frameon=False, fontsize=8.4, labelcolor=MUTED)
         ax.set_xscale("log")
         ax.set_xticks(CUTOFFS)
         ax.set_xticklabels([str(c) for c in CUTOFFS])
         ax.set_xlabel("matching cutoff to nearest PolyASite 2.0 rep site (bp, log)", fontsize=9.5)
         ax.set_ylabel("precision", fontsize=9.5)
-        ax.set_ylim(0, 0.87)
-        ax.set_title(f"(a) precision vs cutoff — {DS_LABEL[ds]}",
-                     fontsize=11, color=INK, loc="left", pad=8)
+        ax.set_ylim(0, 0.90)
+        ax.set_title(f"(a{i+1}) precision vs cutoff — {DS_LABEL[ds]}",
+                     fontsize=11.5, color=INK, loc="left", pad=8)
     axA[1].annotate("solid = mouse1, dashed = mouse2\nSCAPTURE: mouse1 only (mouse2 run invalid)",
-                    xy=(0.02, 0.965), xycoords="axes fraction", va="top", fontsize=8.2, color=MUTED)
+                    xy=(0.02, 0.99), xycoords="axes fraction", va="top", ha="left",
+                    fontsize=8.4, color=MUTED)
 
     # ------------------------------------------------------------------ (b)
     MK = {HUMAN: "o", MOUSE: "^"}
+    # label offsets in points, tuned by hand so nothing overlaps
+    OFF_H = {"PeakATail": (10, -2, "left"), "polyApipe": (-9, 11, "right"),
+             "scAPAtrap": (-11, -11, "right"), "SCAPTURE": (-11, 1, "right"),
+             "scUTRquant": (-11, 2, "right"), "Sierra": (10, -3, "left")}
+    OFF_M = {"PeakATail": (-11, -12, "right"), "polyApipe": (10, 8, "left"),
+             "scAPAtrap": (12, 1, "left"), "SCAPTURE": (10, 3, "left"),
+             "scUTRquant": (11, 0, "left"), "Sierra": (-10, 8, "right")}
     for ds in (HUMAN, MOUSE):
-        for arm in arms_of(ds):
-            tool = ARMS[arm][1]
-            x = get(arm, "recall", "atlas_detected", 100)
-            y = get(arm, "precision", "atlas_full", 100)
-            n = ncall(arm)
-            axB.scatter([x], [y], s=165, marker=MK[ds], zorder=4,
-                        facecolor="none" if tool == "scUTRquant" else COLOR[tool],
-                        edgecolor=COLOR[tool] if tool == "scUTRquant" else INK,
-                        linewidth=1.9 if tool == "scUTRquant" else 0.8,
-                        hatch="////" if arm in HATCHED else None)
-            axB.annotate(f"{tool}\n{n/1000:.0f}k", (x, y), textcoords="offset points",
-                         xytext=(9, -4), fontsize=8.4, color=INK, va="center")
-            plotted.append(dict(panel="b_pr_at100", dataset=ds, tool=tool, arm=arm,
-                                x=x, y=y, series=f"n_called={n}"))
-    # replicate pairs joined
-    for tool in DE_NOVO + ["scUTRquant"]:
-        pair = [a for a in arms_of(MOUSE) if ARMS[a][1] == tool]
-        if len(pair) == 2:
-            axB.plot([get(pair[0], "recall", "atlas_detected", 100),
-                      get(pair[1], "recall", "atlas_detected", 100)],
-                     [get(pair[0], "precision", "atlas_full", 100),
-                      get(pair[1], "precision", "atlas_full", 100)],
-                     color=COLOR[tool], lw=1.0, alpha=0.55, zorder=3)
-    axB.set_xlabel("recall @100 bp vs detected-gene-restricted atlas\n"
+        for tool in TOOLS:
+            arms = arms_of(ds, tool)
+            xs = [get(a, "recall", "atlas_detected", 100) for a in arms]
+            ys = [get(a, "precision", "atlas_full", 100) for a in arms]
+            ns = [ncall(a) for a in arms]
+            for a, x, y, n in zip(arms, xs, ys, ns):
+                axB.scatter([x], [y], s=170, marker=MK[ds], zorder=4,
+                            facecolor="none" if tool == "scUTRquant" else COLOR[tool],
+                            edgecolor=COLOR[tool] if tool == "scUTRquant" else INK,
+                            linewidth=2.0 if tool == "scUTRquant" else 0.8,
+                            hatch="////" if a in HATCHED_DATA else None)
+                plotted.append(dict(panel="b_pr_at100", dataset=ds, tool=tool, arm=a,
+                                    x=x, y=y, series=f"n_called={n}"))
+            if len(arms) == 2:           # join the mouse replicate pair, label once
+                axB.plot(xs, ys, color=COLOR[tool], lw=1.1, alpha=0.6, zorder=3)
+            lo_n, hi_n = min(ns) / 1000, max(ns) / 1000
+            ntxt = f"{lo_n:.0f}k" if abs(hi_n - lo_n) < 1 else f"{lo_n:.0f}–{hi_n:.0f}k"
+            dx, dy, ha = (OFF_H if ds == HUMAN else OFF_M)[tool]
+            axB.annotate(f"{tool}\n{ntxt}", (float(np.mean(xs)), float(np.mean(ys))),
+                         textcoords="offset points", xytext=(dx, dy), ha=ha,
+                         fontsize=8.6, color=INK, va="center")
+    axB.set_xlabel("recall @100 bp vs the detected-gene-restricted atlas\n"
                    "(human 285,136 sites | mouse 126,686 sites)", fontsize=9.5)
     axB.set_ylabel("precision @100 bp vs PolyASite 2.0", fontsize=9.5)
-    axB.set_xlim(0, 0.345)
-    axB.set_ylim(0, 0.87)
+    axB.set_xlim(0.055, 0.345)
+    axB.set_ylim(0, 0.92)
     axB.set_title("(b) the trade surface: precision–recall @100 bp, labelled with n called",
-                  fontsize=11, color=INK, loc="left", pad=8)
+                  fontsize=11.5, color=INK, loc="left", pad=8)
     axB.legend(handles=[Line2D([], [], ls="", marker="o", mfc=MUTED, mec=INK, ms=9,
                                label="human PBMC"),
                         Line2D([], [], ls="", marker="^", mfc=MUTED, mec=INK, ms=9,
-                               label="mouse testis (2 replicates)"),
-                        Line2D([], [], ls="", marker="o", mfc="none", mec=MUTED, mew=1.9,
+                               label="mouse testis (line joins m1–m2)"),
+                        Line2D([], [], ls="", marker="o", mfc="none", mec=MUTED, mew=2.0,
                                ms=9, label="annotation-based (scUTRquant)"),
                         Patch(facecolor="white", edgecolor=INK, hatch="////",
                               label="caveated arm (see footnotes)")],
-               loc="upper right", frameon=False, fontsize=8.6)
+               loc="lower left", frameon=False, fontsize=8.8)
 
     # ------------------------------------------------------------------ (c)
     order = ["polyApipe", "SCAPTURE", "Sierra", "scAPAtrap", "PeakATail"]  # PBMC F1 rank
-    slots, labels = [], []
-    x = 0.0
-    for t in order:
-        slots.append((t, x)); labels.append(t); x += 1.0
-    x += 0.85                       # visual break before the annotation-based tool
-    slots.append(("scUTRquant", x)); labels.append("scUTRquant*")
-    W = 0.26
+    slots = [(t, float(i)) for i, t in enumerate(order)]
+    slots.append(("scUTRquant", float(len(order)) + 0.85))
+    labels = order + ["scUTRquant*"]
+    W = 0.28
     for tool, xc in slots:
-        vals = []
-        h = get([a for a in arms_of(HUMAN) if ARMS[a][1] == tool][0], "f1", "atlas_detected", 100)
-        vals.append(("human PBMC", -W, h,
-                     [a for a in arms_of(HUMAN) if ARMS[a][1] == tool][0]))
-        marms = [a for a in arms_of(MOUSE) if ARMS[a][1] == tool]
+        entries = [("human PBMC", -W, arms_of(HUMAN, tool)[0])]
+        marms = arms_of(MOUSE, tool)
         for i, a in enumerate(marms):
-            vals.append((f"mouse {ARMS[a][3][-1]}", (i + 0.02) * W + 0.02,
-                         get(a, "f1", "atlas_detected", 100), a))
-        for lbl, off, v, a in vals:
-            b = axC.bar(xc + off, v, W * 0.95, color=COLOR[tool], zorder=3,
-                        edgecolor=INK, linewidth=0.6,
-                        alpha=1.0 if "human" in lbl else 0.62,
-                        hatch="////" if a in HATCHED else None)
-            axC.text(xc + off, v + 0.006, f"{v:.3f}", ha="center", va="bottom",
-                     fontsize=7.6, color=INK, rotation=90)
+            entries.append((f"mouse{ARMS[a][3][-1]}", (0.0 if len(marms) == 1 else i * W), a))
+        for lbl, off, a in entries:
+            v = get(a, "f1", "atlas_detected", 100)
+            axC.bar(xc + off, v, W * 0.92, color=COLOR[tool], zorder=3,
+                    edgecolor=INK, linewidth=0.6,
+                    alpha=1.0 if "human" in lbl else 0.62,
+                    hatch="////" if a in HATCHED_DATA else None)
+            axC.text(xc + off, v + 0.007, f"{v:.3f}", ha="center", va="bottom",
+                     fontsize=7.8, color=INK, rotation=90)
             plotted.append(dict(panel="c_f1_at100", dataset=ARMS[a][0], tool=tool, arm=a,
                                 x=xc + off, y=v, series=lbl))
     axC.axvline(slots[-1][1] - 0.72, color=MUTED, lw=1.0, ls=":")
     axC.set_xticks([s[1] for s in slots])
     axC.set_xticklabels(labels, fontsize=9.5, color=INK)
+    axC.set_xlim(-0.72, slots[-1][1] + 0.72)
     axC.set_ylabel("F1 @100 bp (detected-gene denominator)", fontsize=9.5)
-    axC.set_ylim(0, 0.50)
-    axC.set_title("(c) F1 @100 bp — de novo tools ranked; scUTRquant* separated, not ranked",
-                  fontsize=11, color=INK, loc="left", pad=8)
-    axC.annotate("* annotation-based: a fixed UTRome catalog\nfiltered by detection. Precision against an\n"
-                 "annotation-derived atlas is near-tautological.",
-                 xy=(slots[-1][1] + 0.42, 0.455), ha="center", va="top",
+    axC.set_ylim(0, 0.60)
+    axC.set_title("(c) F1 @100 bp — de novo tools ranked by PBMC F1; scUTRquant* separated, not ranked",
+                  fontsize=11.5, color=INK, loc="left", pad=8)
+    axC.annotate("* annotation-based: a fixed UTRome\ncatalog filtered by detection. Precision\n"
+                 "against an annotation-derived atlas\nis near-tautological, so scUTRquant\n"
+                 "is shown but never ranked.",
+                 xy=(slots[-1][1] + 0.62, 0.585), ha="right", va="top",
                  fontsize=8.0, color=MUTED)
     axC.legend(handles=[Patch(facecolor=MUTED, edgecolor=INK, label="human PBMC"),
                         Patch(facecolor=MUTED, edgecolor=INK, alpha=0.62,
-                              label="mouse testis (m1, m2)")],
+                              label="mouse testis (m1, m2)"),
+                        Patch(facecolor="white", edgecolor=INK, hatch="////",
+                              label="caveated arm")],
                loc="upper left", frameon=False, fontsize=8.6)
 
     # ------------------------------------------------------------------ (d)
@@ -579,132 +592,153 @@ def main():
     strata = [("conc_all", "all calls", 1.00), ("conc_depth2plus", "depth $\\geq$ 2", 0.72),
               ("conc_depth1", "depth $\\leq$ 1", 0.42)]
     bw = 0.25
+    ticklabels = []
     for i, tool in enumerate(dorder):
         g = rep[rep.tool == tool]
         for j, (col, lbl, alpha) in enumerate(strata):
             vs = g[col].to_numpy(float)
-            v = float(np.nanmean(vs))
             xpos = i + (j - 1) * bw
-            axD.bar(xpos, v, bw * 0.9, color=COLOR[tool], alpha=alpha, zorder=3,
-                    edgecolor=INK, linewidth=0.6)
-            axD.plot([xpos, xpos], [np.nanmin(vs), np.nanmax(vs)], color=INK, lw=1.1, zorder=5)
-            if np.isfinite(v):
-                axD.text(xpos, v + 0.018, f"{v:.2f}", ha="center", fontsize=7.8, color=INK)
+            ncol = {"conc_all": "n_query", "conc_depth2plus": "n_depth2plus",
+                    "conc_depth1": "n_depth1"}[col]
+            if np.all(~np.isfinite(vs)):
+                axD.text(xpos, 0.02, "no calls\nat this\ndepth", ha="center", va="bottom",
+                         fontsize=7.4, color=MUTED)
             else:
-                axD.text(xpos, 0.03, "no\ndepth-1\ncalls", ha="center", fontsize=7.2,
-                         color=MUTED, va="bottom")
+                v = float(np.nanmean(vs))
+                axD.bar(xpos, v, bw * 0.9, color=COLOR[tool], alpha=alpha, zorder=3,
+                        edgecolor=INK, linewidth=0.6)
+                axD.plot([xpos, xpos], [np.nanmin(vs), np.nanmax(vs)], color=INK, lw=1.2, zorder=5)
+                axD.text(xpos, np.nanmax(vs) + 0.017, f"{v:.2f}", ha="center",
+                         fontsize=8.0, color=INK)
             for _, r in g.iterrows():
                 plotted.append(dict(panel="d_reproducibility", dataset=MOUSE, tool=tool,
                                     arm=f"{tool}_{r.direction}", x=xpos, y=r[col],
-                                    series=f"concordance@100 {lbl}; n={r['n_depth1' if col=='conc_depth1' else ('n_depth2plus' if col=='conc_depth2plus' else 'n_query')]}"))
+                                    series=f"concordance@100, {lbl}, n={int(r[ncol])}"))
         f1frac = float(g.frac_depth1.mean())
-        axD.text(i, -0.085, f"{f1frac*100:.0f}% of calls\nare depth $\\leq$ 1",
-                 ha="center", fontsize=8.0, color=MUTED, transform=axD.transData)
-        plotted.append(dict(panel="d_reproducibility", dataset=MOUSE, tool=tool,
-                            arm=tool, x=i, y=f1frac, series="fraction of calls with depth<=1"))
+        ticklabels.append(f"{tool}\n{f1frac*100:.0f}% depth $\\leq$ 1")
+        plotted.append(dict(panel="d_reproducibility", dataset=MOUSE, tool=tool, arm=tool,
+                            x=float(i), y=f1frac, series="fraction of calls with depth<=1"))
     nullmax = float(rep.conc_null.max())
-    axD.axhspan(0, nullmax, color=MUTED, alpha=0.28, lw=0, zorder=1)
-    axD.text(len(dorder) - 0.55, nullmax + 0.012,
-             f"chance level $\\leq${nullmax:.3f} (genic-shuffled replicate)",
-             fontsize=8.0, color=MUTED, ha="right")
+    axD.axhspan(0, nullmax, color=MUTED, alpha=0.4, lw=0, zorder=1)
+    axD.text(4.30, 0.30,
+             f"Chance level $\\leq$ {nullmax:.3f}\n(shaded strip at the axis floor):\n"
+             f"the same query set scored\nagainst a genic-shuffled\ncopy of the other replicate.",
+             fontsize=8.0, color=MUTED, ha="left", va="top")
     plotted.append(dict(panel="d_reproducibility", dataset=MOUSE, tool="(null)",
                         arm="genic_shuffle_null", x=np.nan, y=nullmax,
                         series="max chance concordance@100 over tools/directions"))
     axD.set_xticks(range(len(dorder)))
-    axD.set_xticklabels(dorder, fontsize=9.5, color=INK)
-    axD.set_xlim(-0.62, len(dorder) - 0.05)
-    axD.set_ylim(0, 1.0)
-    axD.set_ylabel("fraction of calls with a strand-matched\ncounterpart $\\leq$100 bp in the other mouse",
+    axD.set_xticklabels(ticklabels, fontsize=8.8, color=INK)
+    axD.set_xlim(-0.55, 6.05)
+    axD.set_ylim(0, 1.02)
+    axD.set_ylabel("fraction of calls with a strand-matched\ncounterpart $\\leq$ 100 bp in the other mouse",
                    fontsize=9.5)
-    axD.set_title("(d) replicate reproducibility, mouse testis — and what depth it rests on",
-                  fontsize=11, color=INK, loc="left", pad=8)
+    axD.set_title("(d) replicate reproducibility, mouse testis — and the call depth it rests on",
+                  fontsize=11.5, color=INK, loc="left", pad=8)
     axD.legend(handles=[Patch(facecolor=MUTED, edgecolor=INK, alpha=a, label=l)
                         for _, l, a in strata] +
-                       [Line2D([], [], color=INK, lw=1.1, label="m1$\\to$m2 / m2$\\to$m1 range")],
-               loc="lower left", bbox_to_anchor=(0.0, 0.02), frameon=False, fontsize=8.4, ncol=2)
-    axD.annotate("SCAPTURE: no bar. Its BED score column is 0 for all 162,346 evaluated peaks\n"
-                 "(verified) so it has no depth, and its mouse2 run was truncated by disk\n"
-                 "exhaustion, so there is no replicate pair either.  scUTRquant: excluded —\n"
-                 "cross-replicate agreement of a fixed catalog is tautological.",
-                 xy=(0.985, 0.97), xycoords="axes fraction", ha="right", va="top",
-                 fontsize=8.0, color=MUTED)
+                       [Line2D([], [], color=INK, lw=1.2, label="m1$\\to$m2 / m2$\\to$m1 range")],
+               loc="upper left", bbox_to_anchor=(0.735, 0.995), frameon=False,
+               fontsize=8.4, ncol=1)
+    axD.text(4.30, 0.72,
+             "Not shown, and why\n"
+             "SCAPTURE — BED score column is 0 for\n"
+             "every evaluated peak (162,346 human /\n"
+             "81,138 mouse1, verified), so no depth;\n"
+             "and its mouse2 run was truncated by\n"
+             "disk exhaustion, so no replicate pair.\n"
+             "scUTRquant — cross-replicate agreement\n"
+             "of a fixed catalog is tautological.",
+             fontsize=7.7, color=MUTED, ha="left", va="top")
 
     # ------------------------------------------------------------------ (e)
     eorder = ["PeakATail", "polyApipe", "scAPAtrap", "SCAPTURE", "scUTRquant", "Sierra"]
-    for ax, col, lab, title in ((axE1, "runtime_s", "clean-run wall time (h)",
-                                 "(e1) wall time"),
+    for ax, col, lab, title in ((axE1, "runtime_s", "clean-run wall time (h)", "(e1) wall time"),
                                 (axE2, "rss_gib", "peak RSS (GiB)", "(e2) peak memory")):
         for i, tool in enumerate(eorder):
             for ds, off, alpha in ((HUMAN, -0.19, 1.0), (MOUSE, 0.19, 0.62)):
-                arms = [a for a in arms_of(ds) if ARMS[a][1] == tool]
+                arms = arms_of(ds, tool)
                 vals = [cons[cons.arm == a][col].iloc[0] for a in arms]
-                vals = [v / 3600 for v in vals] if col == "runtime_s" else vals
+                if col == "runtime_s":
+                    vals = [v / 3600 for v in vals]
                 if not vals or not np.isfinite(np.nanmean(vals)):
                     continue
                 v = float(np.nanmean(vals))
-                hatched = any(a in HATCHED for a in arms)
+                # panel (e) hatching is RUNTIME-only by design; accuracy caveats
+                # (HATCHED_DATA) are hatched in (b)/(c), never here.
+                hatched = any(a in HATCHED_RUN for a in arms)
                 ax.bar(i + off, v, 0.34, color=COLOR[tool], alpha=alpha, zorder=3,
-                       edgecolor=INK, linewidth=0.6,
-                       hatch="////" if hatched else None)
+                       edgecolor=INK, linewidth=0.6, hatch="////" if hatched else None)
+                top = max(vals)
                 if len(vals) > 1:
-                    ax.plot([i + off, i + off], [min(vals), max(vals)], color=INK, lw=1.1, zorder=5)
-                ax.text(i + off, v, f"  {hhmm(v*3600) if col=='runtime_s' else f'{v:.0f}'}",
-                        ha="center", va="bottom", fontsize=7.4, color=INK, rotation=90)
+                    ax.plot([i + off, i + off], [min(vals), top], color=INK, lw=1.2, zorder=5)
+                ax.text(i + off, top, "  " + (hhmm(v * 3600) if col == "runtime_s" else f"{v:.0f}"),
+                        ha="center", va="bottom", fontsize=7.6, color=INK, rotation=90)
                 for a, raw in zip(arms, vals):
                     plotted.append(dict(panel="e_resources", dataset=ds, tool=tool, arm=a,
                                         x=i + off, y=raw, series=col))
         ax.set_xticks(range(len(eorder)))
-        ax.set_xticklabels(eorder, rotation=38, ha="right", fontsize=8.6, color=INK)
+        ax.set_xticklabels(eorder, rotation=40, ha="right", fontsize=8.8, color=INK)
         ax.set_ylabel(lab, fontsize=9.5)
-        ax.set_title(title, fontsize=11, color=INK, loc="left", pad=8)
-    axE1.set_ylim(0, 15.6)
-    axE2.set_ylim(0, 118)
+        ax.set_title(title, fontsize=11.5, color=INK, loc="left", pad=8)
+    axE1.set_ylim(0, 16.5)
+    axE2.set_ylim(0, 128)
     axE1.legend(handles=[Patch(facecolor=MUTED, edgecolor=INK, label="human"),
                          Patch(facecolor=MUTED, edgecolor=INK, alpha=0.62,
-                               label="mouse (mean of m1,m2)"),
+                               label="mouse (bar = mean of m1,m2)"),
                          Patch(facecolor="white", edgecolor=INK, hatch="////",
-                               label="retried run")],
+                               label="retried / resumed run (runtime only)")],
                 loc="upper right", frameon=False, fontsize=7.6)
+    axE2.annotate("PeakATail's 101 GiB on the human\nBAM is the largest single resource\ngap anywhere in this figure",
+                  xy=(0.97, 0.90), xycoords="axes fraction", fontsize=7.8, color=MUTED,
+                  ha="right", va="top")
 
     # ------------------------------------------------------------------ titles
-    fig.text(0.055, 0.972,
-             "Six PAS callers, two datasets: a trade surface, not a ranking — and PeakATail is last "
-             "of five de novo tools on human PBMC",
-             fontsize=16.5, color=INK, ha="left", va="top", fontweight="bold")
-    fig.text(0.055, 0.944,
-             "SCAPTURE is the precision arm on BOTH datasets (P@100 0.65 human / 0.69 mouse); polyApipe takes the best de novo F1 on both "
-             "(0.261 / 0.308–0.312) but 62% of its calls\n"
-             "are depth-1 singletons that reproduce across replicates only 0.31 of the time; PeakATail is 5th of 5 on PBMC (F1 0.134, P@100 0.118) "
-             "and 2nd of 5 on testis (0.258–0.260).\n"
-             "Every rank order changes between the two datasets — no single accuracy number describes any tool in this field.",
-             fontsize=10.6, color=MUTED, ha="left", va="top")
+    fig.text(0.055, 0.982,
+             "Six PAS callers, two datasets: a trade surface, not a ranking",
+             fontsize=19, color=INK, ha="left", va="top", fontweight="bold")
+    fig.text(0.055, 0.960,
+             "PeakATail ranks LAST of five de novo tools on human PBMC (F1 0.134) and second on mouse testis (0.258–0.260)",
+             fontsize=13.5, color=INK, ha="left", va="top")
+    fig.text(0.055, 0.938,
+             "SCAPTURE is the precision arm among the de novo tools on BOTH datasets (P@100 0.65 human / 0.69 mouse) on the fewest-to-middling calls; polyApipe takes the best\n"
+             "de novo F1 on both (0.261 human, 0.308–0.312 mouse) but 62% of its mouse calls are depth-1 singletons that reproduce across biological replicates only 0.31 of the\n"
+             "time, against 0.81 for its deeper calls; the fewest-calls arm is Sierra on mouse and SCAPTURE on human, and both buy precision that way; scAPAtrap calls the most\n"
+             "and is least precise. Every rank order changes between the two datasets — no single accuracy number describes any tool in this field.",
+             fontsize=10.6, color=MUTED, ha="left", va="top", linespacing=1.45)
 
-    foot = (
-        "SCORING  One path for all arms (scripts/benchmark_tools/score_tool.py): 1-bp inferred cleavage points, strand-matched `bedtools closest -s -d -t first` against curated "
-        "PolyASite 2.0 rep sites; recall/F1 use the per-dataset detected-gene-restricted atlas (human 285,136 sites / 14,851 genes; mouse 126,686 / 14,014). Null = 3 seeds of "
-        "width-preserving `bedtools shuffle` inside merged annotated gene bodies.\n"
-        "CAVEATED ARMS (hatched)  SCAPTURE mouse = mouse1 only; the mouse2 run was truncated by disk exhaustion and SCAPTURE exited 0 regardless, so no mouse replicate pair exists. "
-        "PeakATail human = attempt 4 of 4; attempts 1–3 (1:33:21, 1:52:42, 4:52:58) died on three CellRanger-input bugs, not summed into the plotted wall time. scAPAtrap human = a "
-        "resumed run (4:04:29) after attempt 1 was OOM-killed at 8:54:21; it skipped three already-finished stages, so its bar UNDERSTATES a from-scratch run (12:58:50 of machine "
-        "time in total). scUTRquant human needed a 4:53 salvage rerun after a missing-nbformat failure; scUTRquant mouse wall time is dominated by a STARsolo\u2192CellRanger-tag BAM "
-        "conversion this benchmark imposed (64/54 min of the 76/64 min total), not by the pipeline.\n"
-        "PANEL d  Depth is per-tool and NOT interconvertible: polyApipe = poly(A)-read peakdepth, PeakATail/Sierra/scAPAtrap = total UMIs. scAPAtrap has no depth\u22641 bar because its "
-        "own reducePeaks(min.cells=10, min.count=10) filter removes them before it reports a peak — its high concordance is measured on an already depth-filtered set. PeakATail's "
-        "depth\u22641 stratum includes 715/45,921 (m1) and 555/46,672 (m2) sites carrying zero UMIs in the filtered-cell matrix. Concordance is not symmetric: the two directions differ "
-        "only through their denominators (drawn as the vertical range).\n"
-        "READ WITH CARE  scUTRquant's numbers are near-tautological and are never ranked with the de novo tools. n called differs up to 35-fold across tools (21k–787k), so precision "
-        "and recall must always be read together with panel (b). SCAPTURE is annotation-guided (peaks are called inside gene models, then filtered by a DeepPASS sequence classifier), "
-        "which is the likeliest source of its precision lead. PeakATail's ranking is dataset-dependent, not fixed, and its PBMC deficit is NOT a threshold artefact (top-22k/36k/106k "
-        "by UMI give precision 0.119/0.120/0.118) nor a coordinate offset (@200 bp only 0.166 vs polyApipe 0.410). Sources: manuscript/09_headtohead_results.md; every plotted value in "
-        "benchmark_headtohead.tsv; full harvest in benchmark_consolidated.tsv."
-    )
-    fig.text(0.055, 0.118, foot, fontsize=7.7, color=MUTED, ha="left", va="top", linespacing=1.5)
+    paras = [
+        "SCORING — One path for every arm (scripts/benchmark_tools/score_tool.py): each tool's output reduced to 1-bp inferred cleavage points, strand-matched with "
+        "`bedtools closest -s -d -t first` against curated PolyASite 2.0 representative sites. Recall and F1 use the per-dataset detected-gene-restricted atlas (human "
+        "285,136 sites / 14,949 genes; mouse 126,686 sites / 14,014 genes) so denominators are identical across tools. Null = 3 seeds of width-preserving `bedtools shuffle` "
+        "inside merged annotated gene bodies. Full harvest: benchmark_consolidated.tsv; every plotted value: benchmark_headtohead.tsv; written-up conclusions: "
+        "manuscript/09_headtohead_results.md.",
+        "CAVEATED ARMS — SCAPTURE mouse (hatched in b, c) is mouse1 only: the mouse2 run was truncated by disk exhaustion and SCAPTURE exited 0 regardless, so no mouse "
+        "replicate pair exists and its mouse numbers are single-replicate. Hatching in panel (e) marks RUNTIME caveats only, never accuracy: PeakATail human is attempt 4 of 4 "
+        "(attempts 1-3 ran 1:33:21, 1:52:42 and 4:52:58 before dying on three separate CellRanger-input bugs; those are disclosed, not summed into the bar); scAPAtrap human is "
+        "a resumed run (4:04:29) after attempt 1 was OOM-killed at 8:54:21, and it skipped three already-finished stages, so its bar UNDERSTATES a from-scratch run (12:58:50 "
+        "of machine time in total); scUTRquant human needed a 4:53 salvage rerun after a missing-nbformat failure, and scUTRquant mouse wall time is dominated by a "
+        "STARsolo->CellRanger-tag BAM conversion this benchmark imposed (64 and 54 min of the 76 and 64 min totals), not by the pipeline itself.",
+        "PANEL (d) — Depth is per-tool and NOT interconvertible: polyApipe = poly(A)-read peakdepth from its GFF, PeakATail = total UMIs (annotated_matrix.mtx row sums), "
+        "Sierra = total UMIs (CountPeaks matrix row sums), scAPAtrap = total UMIs (counts.tsv.gz). scAPAtrap has no depth<=1 bar because its own "
+        "reducePeaks(min.cells=10, min.count=10) step removes such peaks before it reports them, so its high concordance is measured on an already depth-filtered set and is "
+        "not comparable to the others at face value. PeakATail's depth<=1 stratum includes 715/45,921 (mouse1) and 555/46,672 (mouse2) sites carrying zero UMIs in the "
+        "filtered-cell matrix. The two directions differ only through their denominators; the vertical line is their range.",
+        "READ WITH CARE — scUTRquant is annotation-based and its numbers are near-tautological; it is shown for context and never ranked with the de novo tools. n called "
+        "spans 21k-787k (37-fold), so precision and recall must always be read together with panel (b). SCAPTURE is annotation-GUIDED (peaks called inside gene models, then "
+        "filtered by the DeepPASS sequence classifier), the likeliest source of its precision lead. PeakATail's PBMC deficit is not a threshold artefact (its top 22k / 36k / "
+        "106k calls by UMI give precision 0.119 / 0.120 / 0.118, identical to the full set) and not a coordinate offset (relaxing to 200 bp lifts it only 0.118 -> 0.166 while "
+        "polyApipe goes 0.380 -> 0.410).",
+    ]
+    wrapped = "\n".join(textwrap.fill(p, 218) for p in paras)
+    fig.text(0.055, 0.185, wrapped, fontsize=7.6, color=MUTED, ha="left", va="top",
+             linespacing=1.55)
 
-    handles = [Line2D([], [], color=COLOR[t], lw=3, label=t) for t in TOOLS]
-    fig.legend(handles=handles, loc="upper right", bbox_to_anchor=(0.985, 0.995),
-               frameon=False, fontsize=10, ncol=2,
-               title="colour = tool (assigned alphabetically:\nno tool is visually privileged)",
-               title_fontsize=8.4)
+    fig.legend(handles=[Line2D([], [], color=COLOR[t], lw=3.4, label=t) for t in TOOLS],
+               loc="upper left", bbox_to_anchor=(0.055, 0.898), frameon=False,
+               fontsize=10, ncol=6, columnspacing=1.6, handlelength=1.6,
+               title="colour = tool, assigned in alphabetical order so that no tool is visually privileged",
+               title_fontsize=8.6, alignment="left")
 
     save_manuscript(fig, NAME, facecolor=SURFACE)
     plt.close(fig)
