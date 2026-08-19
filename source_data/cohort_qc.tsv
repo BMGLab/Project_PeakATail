@@ -1,0 +1,80 @@
+panel	metric	category	label	value	denominator	value_pct
+a	cells_retained_after_qc	Adjacent normal	GSM3516673-Normal	3979.0	3990.0	99.72
+a	cells_retained_after_qc	Adjacent normal	GSM3516676-Normal	3315.0	3320.0	99.85
+a	cells_retained_after_qc	Adjacent normal	GSM3516666-Normal	3001.0	3011.0	99.67
+a	cells_retained_after_qc	Adjacent normal	GSM3516675-Normal	2660.0	2666.0	99.77
+a	cells_retained_after_qc	Primary, stage I-II	GSM3516674-StageIA	4923.0	4959.0	99.27
+a	cells_retained_after_qc	Primary, stage I-II	GSM3516663-StageIA	4657.0	4662.0	99.89
+a	cells_retained_after_qc	Primary, stage I-II	GSM3516672-StageIB	4247.0	4272.0	99.41
+a	cells_retained_after_qc	Primary, stage I-II	GSM3516667-StageIA	4160.0	4184.0	99.43
+a	cells_retained_after_qc	Primary, stage I-II	GSM3516669-StageIIA	3420.0	3658.0	93.49
+a	cells_retained_after_qc	Primary, stage I-II	GSM3516662-StageIA	3418.0	3441.0	99.33
+a	cells_retained_after_qc	Primary, stage I-II	GSM3516670-StageIB	1036.0	1188.0	87.21
+a	cells_retained_after_qc	Primary, stage IV	GSM3516665-StageIVprimary	3659.0	3660.0	99.97
+a	cells_retained_after_qc	Metastasis	GSM3516668-MetBrain	4133.0	4557.0	90.7
+a	cells_retained_after_qc	Metastasis	GSM3516678-MetBrain	3241.0	3287.0	98.6
+a	cells_retained_after_qc	Metastasis	GSM3516677-MetAdrenal	2946.0	2963.0	99.43
+a	cells_retained_after_qc	Metastasis	GSM3516664-MetBone	1350.0	1375.0	98.18
+a	cells_retained_after_qc	Metastasis	GSM3516671-MetBrain	1277.0	1279.0	99.84
+b	genes_with_n_pas	single_PAS	1 PAS	4532.0	8039.0	56.38
+b	genes_with_n_pas	multi_PAS	2 PAS	1746.0	8039.0	21.72
+b	genes_with_n_pas	multi_PAS	3 PAS	742.0	8039.0	9.23
+b	genes_with_n_pas	multi_PAS	4+ PAS	1019.0	8039.0	12.68
+c	pas_by_tier	pas_detected_in_all_17_samples	TIER_1	16409.0	16500.0	99.448
+c	pas_by_tier	pas_detected_in_all_17_samples	TIER_2	91.0	16500.0	0.552
+c	pas_by_tier	pas_detected_in_all_17_samples	NOT_RETAINED_TIER_3_OR_INTERGENIC	0.0	16500.0	0.0
+c	pas_by_tier	all_called_peaks	TIER_1	181939.0	301860.0	60.273
+c	pas_by_tier	all_called_peaks	TIER_2	2356.0	301860.0	0.78
+c	pas_by_tier	all_called_peaks	NOT_RETAINED_TIER_3_OR_INTERGENIC	117565.0	301860.0	38.947
+d	pas_width_histogram	cohort_pas_set	71.0-85.0 bp	1.0	16500.0	0.006
+d	pas_width_histogram	cohort_pas_set	85.0-101.7 bp	2.0	16500.0	0.012
+d	pas_width_histogram	cohort_pas_set	101.7-121.7 bp	4.0	16500.0	0.024
+d	pas_width_histogram	cohort_pas_set	121.7-145.6 bp	5.0	16500.0	0.03
+d	pas_width_histogram	cohort_pas_set	145.6-174.2 bp	22.0	16500.0	0.133
+d	pas_width_histogram	cohort_pas_set	174.2-208.5 bp	32.0	16500.0	0.194
+d	pas_width_histogram	cohort_pas_set	208.5-249.5 bp	84.0	16500.0	0.509
+d	pas_width_histogram	cohort_pas_set	249.5-298.5 bp	208.0	16500.0	1.261
+d	pas_width_histogram	cohort_pas_set	298.5-357.2 bp	441.0	16500.0	2.673
+d	pas_width_histogram	cohort_pas_set	357.2-427.5 bp	972.0	16500.0	5.891
+d	pas_width_histogram	cohort_pas_set	427.5-511.6 bp	1731.0	16500.0	10.491
+d	pas_width_histogram	cohort_pas_set	511.6-612.2 bp	1880.0	16500.0	11.394
+d	pas_width_histogram	cohort_pas_set	612.2-732.6 bp	1841.0	16500.0	11.158
+d	pas_width_histogram	cohort_pas_set	732.6-876.6 bp	1804.0	16500.0	10.933
+d	pas_width_histogram	cohort_pas_set	876.6-1049.0 bp	1738.0	16500.0	10.533
+d	pas_width_histogram	cohort_pas_set	1049.0-1255.3 bp	1467.0	16500.0	8.891
+d	pas_width_histogram	cohort_pas_set	1255.3-1502.2 bp	1258.0	16500.0	7.624
+d	pas_width_histogram	cohort_pas_set	1502.2-1797.6 bp	1067.0	16500.0	6.467
+d	pas_width_histogram	cohort_pas_set	1797.6-2151.1 bp	726.0	16500.0	4.4
+d	pas_width_histogram	cohort_pas_set	2151.1-2574.1 bp	468.0	16500.0	2.836
+d	pas_width_histogram	cohort_pas_set	2574.1-3080.3 bp	328.0	16500.0	1.988
+d	pas_width_histogram	cohort_pas_set	3080.3-3686.0 bp	214.0	16500.0	1.297
+d	pas_width_histogram	cohort_pas_set	3686.0-4410.9 bp	99.0	16500.0	0.6
+d	pas_width_histogram	cohort_pas_set	4410.9-5278.3 bp	56.0	16500.0	0.339
+d	pas_width_histogram	cohort_pas_set	5278.3-6316.3 bp	30.0	16500.0	0.182
+d	pas_width_histogram	cohort_pas_set	6316.3-7558.4 bp	8.0	16500.0	0.048
+d	pas_width_histogram	cohort_pas_set	7558.4-9044.8 bp	6.0	16500.0	0.036
+d	pas_width_histogram	cohort_pas_set	9044.8-10823.4 bp	6.0	16500.0	0.036
+d	pas_width_histogram	cohort_pas_set	10823.4-12951.9 bp	1.0	16500.0	0.006
+d	pas_width_histogram	cohort_pas_set	12951.9-15498.9 bp	1.0	16500.0	0.006
+summary	total_cohort_pas	pas_detected_in_all_17_samples	pasbed.bed	16500.0	16500.0	100.0
+summary	called_peaks_total	all	posbed.bed + negbed.bed	301860.0	301860.0	100.0
+summary	gene_assigned_tier1_2_pas	all	annotatedpas.bed	184295.0	301860.0	61.05
+summary	called_peaks_dropped_tier3_intergenic	all	not in annotatedpas.bed	117565.0	301860.0	38.95
+summary	pas_detected_in_ge1_sample	all	union over 17 samples	183510.0	183510.0	100.0
+summary	cohort_set_share_of_union	pas_detected_in_all_17_samples	16,500 / union	16500.0	183510.0	8.99
+summary	cohort_pas_unannotated	all	no gene_id	0.0	16500.0	0.0
+summary	genes_with_ge1_pas	all	genes	8039.0	8039.0	100.0
+summary	multi_pas_genes	multi_PAS	genes with >=2 PAS	3507.0	8039.0	43.62
+summary	max_pas_per_gene	all	genes	32.0	8039.0	
+summary	samples	all	GSM dirs	17.0	17.0	100.0
+summary	cells_retained_total	all	cohort	55422.0	56472.0	98.14
+summary	cells_retained_min	all	per sample	1036.0		
+summary	cells_retained_max	all	per sample	4923.0		
+summary	cells_retained_median	all	per sample	3418.0		
+summary	pas_width_median_bp	cohort_pas_set	bp	811.0		
+summary	pas_width_p25_bp	cohort_pas_set	bp	544.0		
+summary	pas_width_p75_bp	cohort_pas_set	bp	1276.0		
+summary	pas_width_min_bp	cohort_pas_set	bp	71.0		
+summary	pas_width_max_bp	cohort_pas_set	bp	15195.0		
+summary	utr_median_bp_single_pas_genes	single_PAS	bp	1092.0		
+summary	utr_median_bp_multi_pas_genes	multi_PAS	bp	1856.0		

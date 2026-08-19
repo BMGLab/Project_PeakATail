@@ -1,51 +1,81 @@
-# PeakATail — working directory (BioLab)
+# Project_PeakATail
 
-Analysis working directory for the **PeakATail** single-cell APA / 3'UTR isoform tool
-(CLI name: `ema`; code lives in `tools/PeakATail`, upstream: https://github.com/BMGLab/PeakATail,
-docs: https://bmglab.github.io/PeakATail/). Goal: a Q1 methods+application manuscript —
-validation and benchmarking of PeakATail, then cell-type-specific APA biology in
-lung cancer (Laughney GSE123904), tumor-associated macrophages, and PBMC scRNA-seq.
+Analysis code, figure source data and environment specifications for the
+**PeakATail** manuscript — validation and benchmarking of single-cell poly(A)
+site detection, and cell-type-resolved alternative polyadenylation (APA)
+analyses in lung adenocarcinoma and mouse testis.
 
-Reorganized on 2026-08-12 — see `REORGANIZATION.md` for the full old→new path map.
+The **tool itself** lives in a separate repository:
+[BMGLab/PeakATail](https://github.com/BMGLab/PeakATail) (CLI name `ema`,
+docs at <https://bmglab.github.io/PeakATail/>). This repository is the
+companion analysis record for the paper.
 
 ## Layout
 
 ```
-data/         inputs (git-ignored)
-  laughney/     Laughney inputs: h5ads (17G), barcodes, samplesheets, luca rds, metadata
-  macrophage/   macrophage / A549 co-culture FASTQ symlinks (→ /mnt/lun2)
-  references/   STAR index (symlink), chrom.sizes, gene_end.bed (formerly ./test.bed)
-  testdata/     small dev BAMs (test.bam, KI270*, downsampled_aligned)
-scripts/      analysis code (tracked)
-  laughney/     Laughney notebooks & Rmds (scanpy QC, LuCA subsetting, downstream)
-  pipeline/     Nextflow pipeline: main.nf, main_ek.nf, config, envs, pat_down.R
-  misc/         utilities (createBW.sh, gtf2bed.py, random.chr.sh, steps.tmp.sh protocol log)
-results/      analysis outputs (git-ignored)
-  emaout/, ema_merge/, star/, utr_sampled/   April-2025 pipeline outputs
-  yktest/       YK's complete April-2025 ema runs (laughney/ 5.9G, macs/ 1.2G + bigwigs)
-  figures/      all figures (scanpy PDFs, UMAP panels, PAS-gene featureplots)
-  report_data/  copy of the July-2025 partial run staged for a report
-  laughney_rerun_2026-08_fixed -> /mnt/ssd2/Laugney_Aligned/peakatail_experiments/RERUN_2026-08_fixed
-manuscript/   manuscript planning & drafts (tracked) — start at manuscript/README.md
-tools/        PeakATail checkout (branch: biolab-manuscript = develop @ 3ce8cdc)
-archive/      moved-aside items (git-ignored): old nextflow scratch (work/ 32G),
-              amirtest/ (14G), empty placeholder files, rotated logs
+manuscript/          plans, reports and the figure index
+  figures/             final figures as PNG + vector PDF
+  github/              issue/PR text staged for the tool repo
+source_data/         the tables each manuscript figure is plotted from
+scripts/
+  manuscript_figures/  one script per figure
+  benchmark_tools/     seven-tool head-to-head harness + per-tool status files
+  pipeline/            Nextflow pipeline (Laughney application analyses)
+  laughney/            notebooks and Rmds for the LUAD cohort
+  misc/                utilities
+envs/                conda environment exports + TOOL_VERSIONS.md
+data/                only small tracked references (sample sheets, gene_end.bed)
+DATA_ACCESSIONS.md   every input traced to a public accession
 ```
 
-## Key external locations
+Raw data is **not** in this repository (~460 GB on the analysis machine).
+Every input is traceable through [`DATA_ACCESSIONS.md`](DATA_ACCESSIONS.md).
 
-- **Fresh cohort rerun (2026-08):** `/mnt/ssd2/Laugney_Aligned/peakatail_experiments/RERUN_2026-08_fixed/`
-  (17-sample Laughney cohort, strategy grid + PolyASite benchmarks, reannotate sweep;
-  per-celltype switch tasks failed on a `null/pasbed.bed` bug — needs fixed main.nf + `-resume`).
-- **Validation runs:** `/mnt/ssd2/Laugney_Aligned/peakatail_experiments/VALIDATION_de26d16/` (11/11 PASS audit).
-- Laughney h5ad store: `/mnt/ssd0/20250728_laughney_h5ad_files_ek/`.
+## Reproducing a figure
 
-## Running the Nextflow pipeline
+Each figure has one script in `scripts/manuscript_figures/` and one or more
+tables in `source_data/`. The tables are the plotted values, so figures can be
+regenerated without re-running the upstream pipeline:
 
 ```bash
-nextflow run scripts/pipeline/main.nf -w <scratch-dir> -resume   # from the repo root
+python scripts/manuscript_figures/benchmark_headtohead.py
 ```
 
-Known-good ownership quirks: `scripts/figures/`, `report_data/` (contents copied into
-`results/`), and root-owned `data/null`, `data/work` cannot be moved/removed without sudo —
-see REORGANIZATION.md.
+Note that the figure scripts contain absolute paths to the analysis machine
+(`/mnt/ssd1`, `/mnt/ssd2`, `/mnt/ssd0`). Re-running them end-to-end requires
+either the raw data in those locations or path edits; `source_data/` exists so
+that the plotted numbers are inspectable without either.
+
+## Benchmark
+
+Seven single-cell APA callers were run on identical input BAMs per dataset:
+PeakATail, polyApipe, scAPAtrap, SCAPTURE, scTail, scUTRquant and Sierra.
+Versions, pins and environment files are in
+[`envs/TOOL_VERSIONS.md`](envs/TOOL_VERSIONS.md); the input contract and
+scoring protocol are in `scripts/benchmark_tools/README.md`; per-tool install
+and smoke-test transcripts are in `scripts/benchmark_tools/status/`.
+
+Results are written up in `manuscript/09_headtohead_results.md` and
+`manuscript/07_curated_benchmark_report.md`. **These include negative results
+for PeakATail** — they are reported as found.
+
+## History
+
+This repository's history was rewritten once, before publication, to remove a
+451 MB intermediate matrix (`amirtest/macro/emaout/negmatrix.mtx`) that
+exceeded GitHub's file-size limit. All 41 commits are otherwise preserved;
+commit SHAs differ from the internal working repository.
+
+## Before release
+
+Items to settle before making this repository public and minting a DOI:
+
+- [ ] Replace the placeholder author list in [`CITATION.cff`](CITATION.cff) with the final manuscript author list and ORCIDs.
+- [ ] Add a `LICENSE` file (CITATION.cff currently declares MIT).
+- [ ] Push branch `biolab-manuscript` of BMGLab/PeakATail so the pinned benchmark commit `18678ef` resolves publicly — it is currently local-only, which blocks exact reproduction.
+- [ ] Confirm whether the three post-benchmark read-module fixes (up to `2e7fc0d`) change any reported number; the current `source_data/` predates them.
+- [ ] Flip the repository to public, then enable the Zenodo webhook and cut a release to mint the DOI.
+
+## License
+
+MIT (see `CITATION.cff`; a `LICENSE` file is still to be added).

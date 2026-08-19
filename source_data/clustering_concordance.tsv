@@ -1,0 +1,239 @@
+panel	record	gsm	stage_label	stage_group	plot_position	metric	value
+a	plotted	GSM3516664-MetBone	MetBone	Metastasis	0	AMI_celltype_vs_pas	0.3667
+a	plotted	GSM3516664-MetBone	MetBone	Metastasis	0	ARI_celltype_vs_pas	0.226
+a	plotted	GSM3516671-MetBrain	MetBrain	Metastasis	1	AMI_celltype_vs_pas	0.3877
+a	plotted	GSM3516671-MetBrain	MetBrain	Metastasis	1	ARI_celltype_vs_pas	0.2441
+a	plotted	GSM3516673-Normal	Normal	Normal	2	AMI_celltype_vs_pas	0.4469
+a	plotted	GSM3516673-Normal	Normal	Normal	2	ARI_celltype_vs_pas	0.2002
+a	plotted	GSM3516666-Normal	Normal	Normal	3	AMI_celltype_vs_pas	0.5334
+a	plotted	GSM3516666-Normal	Normal	Normal	3	ARI_celltype_vs_pas	0.2591
+a	plotted	GSM3516667-StageIA	StageIA	Stage I–II	4	AMI_celltype_vs_pas	0.5798
+a	plotted	GSM3516667-StageIA	StageIA	Stage I–II	4	ARI_celltype_vs_pas	0.4407
+a	plotted	GSM3516668-MetBrain	MetBrain	Metastasis	5	AMI_celltype_vs_pas	0.5966
+a	plotted	GSM3516668-MetBrain	MetBrain	Metastasis	5	ARI_celltype_vs_pas	0.3719
+a	plotted	GSM3516675-Normal	Normal	Normal	6	AMI_celltype_vs_pas	0.618
+a	plotted	GSM3516675-Normal	Normal	Normal	6	ARI_celltype_vs_pas	0.4218
+a	plotted	GSM3516669-StageIIA	StageIIA	Stage I–II	7	AMI_celltype_vs_pas	0.6527
+a	plotted	GSM3516669-StageIIA	StageIIA	Stage I–II	7	ARI_celltype_vs_pas	0.4627
+a	plotted	GSM3516663-StageIA	StageIA	Stage I–II	8	AMI_celltype_vs_pas	0.6616
+a	plotted	GSM3516663-StageIA	StageIA	Stage I–II	8	ARI_celltype_vs_pas	0.5736
+a	plotted	GSM3516677-MetAdrenal	MetAdrenal	Metastasis	9	AMI_celltype_vs_pas	0.6792
+a	plotted	GSM3516677-MetAdrenal	MetAdrenal	Metastasis	9	ARI_celltype_vs_pas	0.6155
+a	plotted	GSM3516670-StageIB	StageIB	Stage I–II	10	AMI_celltype_vs_pas	0.6826
+a	plotted	GSM3516670-StageIB	StageIB	Stage I–II	10	ARI_celltype_vs_pas	0.4564
+a	plotted	GSM3516676-Normal	Normal	Normal	11	AMI_celltype_vs_pas	0.6878
+a	plotted	GSM3516676-Normal	Normal	Normal	11	ARI_celltype_vs_pas	0.5793
+a	plotted	GSM3516665-StageIVprimary	StageIVprimary	Stage IV primary	12	AMI_celltype_vs_pas	0.7124
+a	plotted	GSM3516665-StageIVprimary	StageIVprimary	Stage IV primary	12	ARI_celltype_vs_pas	0.4939
+a	plotted	GSM3516678-MetBrain	MetBrain	Metastasis	13	AMI_celltype_vs_pas	0.7185
+a	plotted	GSM3516678-MetBrain	MetBrain	Metastasis	13	ARI_celltype_vs_pas	0.6513
+a	plotted	GSM3516662-StageIA	StageIA	Stage I–II	14	AMI_celltype_vs_pas	0.7634
+a	plotted	GSM3516662-StageIA	StageIA	Stage I–II	14	ARI_celltype_vs_pas	0.5445
+a	plotted	GSM3516674-StageIA	StageIA	Stage I–II	15	AMI_celltype_vs_pas	0.7739
+a	plotted	GSM3516674-StageIA	StageIA	Stage I–II	15	ARI_celltype_vs_pas	0.6705
+a	plotted	GSM3516672-StageIB	StageIB	Stage I–II	16	AMI_celltype_vs_pas	0.7795
+a	plotted	GSM3516672-StageIB	StageIB	Stage I–II	16	ARI_celltype_vs_pas	0.6611
+b	plotted	GSM3516662-StageIA	StageIA	Stage I–II		n_celltypes	12.0
+b	plotted	GSM3516662-StageIA	StageIA	Stage I–II		n_pas_clusters	14.0
+b	plotted	GSM3516663-StageIA	StageIA	Stage I–II		n_celltypes	11.0
+b	plotted	GSM3516663-StageIA	StageIA	Stage I–II		n_pas_clusters	14.0
+b	plotted	GSM3516664-MetBone	MetBone	Metastasis		n_celltypes	6.0
+b	plotted	GSM3516664-MetBone	MetBone	Metastasis		n_pas_clusters	10.0
+b	plotted	GSM3516665-StageIVprimary	StageIVprimary	Stage IV primary		n_celltypes	17.0
+b	plotted	GSM3516665-StageIVprimary	StageIVprimary	Stage IV primary		n_pas_clusters	15.0
+b	plotted	GSM3516666-Normal	Normal	Normal		n_celltypes	14.0
+b	plotted	GSM3516666-Normal	Normal	Normal		n_pas_clusters	15.0
+b	plotted	GSM3516667-StageIA	StageIA	Stage I–II		n_celltypes	14.0
+b	plotted	GSM3516667-StageIA	StageIA	Stage I–II		n_pas_clusters	13.0
+b	plotted	GSM3516668-MetBrain	MetBrain	Metastasis		n_celltypes	9.0
+b	plotted	GSM3516668-MetBrain	MetBrain	Metastasis		n_pas_clusters	14.0
+b	plotted	GSM3516669-StageIIA	StageIIA	Stage I–II		n_celltypes	15.0
+b	plotted	GSM3516669-StageIIA	StageIIA	Stage I–II		n_pas_clusters	15.0
+b	plotted	GSM3516670-StageIB	StageIB	Stage I–II		n_celltypes	9.0
+b	plotted	GSM3516670-StageIB	StageIB	Stage I–II		n_pas_clusters	10.0
+b	plotted	GSM3516671-MetBrain	MetBrain	Metastasis		n_celltypes	11.0
+b	plotted	GSM3516671-MetBrain	MetBrain	Metastasis		n_pas_clusters	13.0
+b	plotted	GSM3516672-StageIB	StageIB	Stage I–II		n_celltypes	15.0
+b	plotted	GSM3516672-StageIB	StageIB	Stage I–II		n_pas_clusters	16.0
+b	plotted	GSM3516673-Normal	Normal	Normal		n_celltypes	16.0
+b	plotted	GSM3516673-Normal	Normal	Normal		n_pas_clusters	16.0
+b	plotted	GSM3516674-StageIA	StageIA	Stage I–II		n_celltypes	14.0
+b	plotted	GSM3516674-StageIA	StageIA	Stage I–II		n_pas_clusters	16.0
+b	plotted	GSM3516675-Normal	Normal	Normal		n_celltypes	11.0
+b	plotted	GSM3516675-Normal	Normal	Normal		n_pas_clusters	16.0
+b	plotted	GSM3516676-Normal	Normal	Normal		n_celltypes	14.0
+b	plotted	GSM3516676-Normal	Normal	Normal		n_pas_clusters	15.0
+b	plotted	GSM3516677-MetAdrenal	MetAdrenal	Metastasis		n_celltypes	14.0
+b	plotted	GSM3516677-MetAdrenal	MetAdrenal	Metastasis		n_pas_clusters	13.0
+b	plotted	GSM3516678-MetBrain	MetBrain	Metastasis		n_celltypes	11.0
+b	plotted	GSM3516678-MetBrain	MetBrain	Metastasis		n_pas_clusters	15.0
+c	plotted	GSM3516668-MetBrain	MetBrain	Metastasis	0	coverage	0.2739
+c	plotted	GSM3516662-StageIA	StageIA	Stage I–II	1	coverage	0.313
+c	plotted	GSM3516669-StageIIA	StageIIA	Stage I–II	2	coverage	0.3257
+c	plotted	GSM3516670-StageIB	StageIB	Stage I–II	3	coverage	0.3542
+c	plotted	GSM3516672-StageIB	StageIB	Stage I–II	4	coverage	0.3781
+c	plotted	GSM3516674-StageIA	StageIA	Stage I–II	5	coverage	0.3969
+c	plotted	GSM3516666-Normal	Normal	Normal	6	coverage	0.4095
+c	plotted	GSM3516678-MetBrain	MetBrain	Metastasis	7	coverage	0.457
+c	plotted	GSM3516665-StageIVprimary	StageIVprimary	Stage IV primary	8	coverage	0.498
+c	plotted	GSM3516673-Normal	Normal	Normal	9	coverage	0.5544
+c	plotted	GSM3516663-StageIA	StageIA	Stage I–II	10	coverage	0.6592
+c	plotted	GSM3516671-MetBrain	MetBrain	Metastasis	11	coverage	0.6735
+c	plotted	GSM3516664-MetBone	MetBone	Metastasis	12	coverage	0.683
+c	plotted	GSM3516667-StageIA	StageIA	Stage I–II	13	coverage	0.6947
+c	plotted	GSM3516677-MetAdrenal	MetAdrenal	Metastasis	14	coverage	0.759
+c	plotted	GSM3516676-Normal	Normal	Normal	15	coverage	0.8422
+c	plotted	GSM3516675-Normal	Normal	Normal	16	coverage	0.8692
+-	source	GSM3516662-StageIA	StageIA	Stage I–II		pas_cells	3418.0
+-	source	GSM3516662-StageIA	StageIA	Stage I–II		gex_cells	1070.0
+-	source	GSM3516662-StageIA	StageIA	Stage I–II		matched_cells	1070.0
+-	source	GSM3516662-StageIA	StageIA	Stage I–II		n_gex_clusters	15.0
+-	source	GSM3516662-StageIA	StageIA	Stage I–II		AMI_gexleiden_vs_pas	0.7391
+-	source	GSM3516662-StageIA	StageIA	Stage I–II		ARI_gexleiden_vs_pas	0.4723
+-	source	GSM3516663-StageIA	StageIA	Stage I–II		pas_cells	4657.0
+-	source	GSM3516663-StageIA	StageIA	Stage I–II		gex_cells	3070.0
+-	source	GSM3516663-StageIA	StageIA	Stage I–II		matched_cells	3070.0
+-	source	GSM3516663-StageIA	StageIA	Stage I–II		n_gex_clusters	16.0
+-	source	GSM3516663-StageIA	StageIA	Stage I–II		AMI_gexleiden_vs_pas	0.6565
+-	source	GSM3516663-StageIA	StageIA	Stage I–II		ARI_gexleiden_vs_pas	0.5236
+-	source	GSM3516664-MetBone	MetBone	Metastasis		pas_cells	1350.0
+-	source	GSM3516664-MetBone	MetBone	Metastasis		gex_cells	922.0
+-	source	GSM3516664-MetBone	MetBone	Metastasis		matched_cells	922.0
+-	source	GSM3516664-MetBone	MetBone	Metastasis		n_gex_clusters	10.0
+-	source	GSM3516664-MetBone	MetBone	Metastasis		AMI_gexleiden_vs_pas	0.4918
+-	source	GSM3516664-MetBone	MetBone	Metastasis		ARI_gexleiden_vs_pas	0.3394
+-	source	GSM3516665-StageIVprimary	StageIVprimary	Stage IV primary		pas_cells	3659.0
+-	source	GSM3516665-StageIVprimary	StageIVprimary	Stage IV primary		gex_cells	1822.0
+-	source	GSM3516665-StageIVprimary	StageIVprimary	Stage IV primary		matched_cells	1822.0
+-	source	GSM3516665-StageIVprimary	StageIVprimary	Stage IV primary		n_gex_clusters	19.0
+-	source	GSM3516665-StageIVprimary	StageIVprimary	Stage IV primary		AMI_gexleiden_vs_pas	0.7207
+-	source	GSM3516665-StageIVprimary	StageIVprimary	Stage IV primary		ARI_gexleiden_vs_pas	0.5241
+-	source	GSM3516666-Normal	Normal	Normal		pas_cells	3001.0
+-	source	GSM3516666-Normal	Normal	Normal		gex_cells	1229.0
+-	source	GSM3516666-Normal	Normal	Normal		matched_cells	1229.0
+-	source	GSM3516666-Normal	Normal	Normal		n_gex_clusters	18.0
+-	source	GSM3516666-Normal	Normal	Normal		AMI_gexleiden_vs_pas	0.5116
+-	source	GSM3516666-Normal	Normal	Normal		ARI_gexleiden_vs_pas	0.1822
+-	source	GSM3516667-StageIA	StageIA	Stage I–II		pas_cells	4160.0
+-	source	GSM3516667-StageIA	StageIA	Stage I–II		gex_cells	2890.0
+-	source	GSM3516667-StageIA	StageIA	Stage I–II		matched_cells	2890.0
+-	source	GSM3516667-StageIA	StageIA	Stage I–II		n_gex_clusters	21.0
+-	source	GSM3516667-StageIA	StageIA	Stage I–II		AMI_gexleiden_vs_pas	0.576
+-	source	GSM3516667-StageIA	StageIA	Stage I–II		ARI_gexleiden_vs_pas	0.4037
+-	source	GSM3516668-MetBrain	MetBrain	Metastasis		pas_cells	4133.0
+-	source	GSM3516668-MetBrain	MetBrain	Metastasis		gex_cells	1132.0
+-	source	GSM3516668-MetBrain	MetBrain	Metastasis		matched_cells	1132.0
+-	source	GSM3516668-MetBrain	MetBrain	Metastasis		n_gex_clusters	11.0
+-	source	GSM3516668-MetBrain	MetBrain	Metastasis		AMI_gexleiden_vs_pas	0.5667
+-	source	GSM3516668-MetBrain	MetBrain	Metastasis		ARI_gexleiden_vs_pas	0.2795
+-	source	GSM3516669-StageIIA	StageIIA	Stage I–II		pas_cells	3420.0
+-	source	GSM3516669-StageIIA	StageIIA	Stage I–II		gex_cells	1114.0
+-	source	GSM3516669-StageIIA	StageIIA	Stage I–II		matched_cells	1114.0
+-	source	GSM3516669-StageIIA	StageIIA	Stage I–II		n_gex_clusters	17.0
+-	source	GSM3516669-StageIIA	StageIIA	Stage I–II		AMI_gexleiden_vs_pas	0.6518
+-	source	GSM3516669-StageIIA	StageIIA	Stage I–II		ARI_gexleiden_vs_pas	0.4386
+-	source	GSM3516670-StageIB	StageIB	Stage I–II		pas_cells	1036.0
+-	source	GSM3516670-StageIB	StageIB	Stage I–II		gex_cells	367.0
+-	source	GSM3516670-StageIB	StageIB	Stage I–II		matched_cells	367.0
+-	source	GSM3516670-StageIB	StageIB	Stage I–II		n_gex_clusters	9.0
+-	source	GSM3516670-StageIB	StageIB	Stage I–II		AMI_gexleiden_vs_pas	0.6826
+-	source	GSM3516670-StageIB	StageIB	Stage I–II		ARI_gexleiden_vs_pas	0.4564
+-	source	GSM3516671-MetBrain	MetBrain	Metastasis		pas_cells	1277.0
+-	source	GSM3516671-MetBrain	MetBrain	Metastasis		gex_cells	860.0
+-	source	GSM3516671-MetBrain	MetBrain	Metastasis		matched_cells	860.0
+-	source	GSM3516671-MetBrain	MetBrain	Metastasis		n_gex_clusters	14.0
+-	source	GSM3516671-MetBrain	MetBrain	Metastasis		AMI_gexleiden_vs_pas	0.4238
+-	source	GSM3516671-MetBrain	MetBrain	Metastasis		ARI_gexleiden_vs_pas	0.2738
+-	source	GSM3516672-StageIB	StageIB	Stage I–II		pas_cells	4247.0
+-	source	GSM3516672-StageIB	StageIB	Stage I–II		gex_cells	1606.0
+-	source	GSM3516672-StageIB	StageIB	Stage I–II		matched_cells	1606.0
+-	source	GSM3516672-StageIB	StageIB	Stage I–II		n_gex_clusters	22.0
+-	source	GSM3516672-StageIB	StageIB	Stage I–II		AMI_gexleiden_vs_pas	0.8063
+-	source	GSM3516672-StageIB	StageIB	Stage I–II		ARI_gexleiden_vs_pas	0.6712
+-	source	GSM3516673-Normal	Normal	Normal		pas_cells	3979.0
+-	source	GSM3516673-Normal	Normal	Normal		gex_cells	2206.0
+-	source	GSM3516673-Normal	Normal	Normal		matched_cells	2206.0
+-	source	GSM3516673-Normal	Normal	Normal		n_gex_clusters	19.0
+-	source	GSM3516673-Normal	Normal	Normal		AMI_gexleiden_vs_pas	0.4798
+-	source	GSM3516673-Normal	Normal	Normal		ARI_gexleiden_vs_pas	0.2122
+-	source	GSM3516674-StageIA	StageIA	Stage I–II		pas_cells	4923.0
+-	source	GSM3516674-StageIA	StageIA	Stage I–II		gex_cells	1954.0
+-	source	GSM3516674-StageIA	StageIA	Stage I–II		matched_cells	1954.0
+-	source	GSM3516674-StageIA	StageIA	Stage I–II		n_gex_clusters	20.0
+-	source	GSM3516674-StageIA	StageIA	Stage I–II		AMI_gexleiden_vs_pas	0.7889
+-	source	GSM3516674-StageIA	StageIA	Stage I–II		ARI_gexleiden_vs_pas	0.6311
+-	source	GSM3516675-Normal	Normal	Normal		pas_cells	2660.0
+-	source	GSM3516675-Normal	Normal	Normal		gex_cells	2312.0
+-	source	GSM3516675-Normal	Normal	Normal		matched_cells	2312.0
+-	source	GSM3516675-Normal	Normal	Normal		n_gex_clusters	17.0
+-	source	GSM3516675-Normal	Normal	Normal		AMI_gexleiden_vs_pas	0.6544
+-	source	GSM3516675-Normal	Normal	Normal		ARI_gexleiden_vs_pas	0.4227
+-	source	GSM3516676-Normal	Normal	Normal		pas_cells	3315.0
+-	source	GSM3516676-Normal	Normal	Normal		gex_cells	2792.0
+-	source	GSM3516676-Normal	Normal	Normal		matched_cells	2792.0
+-	source	GSM3516676-Normal	Normal	Normal		n_gex_clusters	19.0
+-	source	GSM3516676-Normal	Normal	Normal		AMI_gexleiden_vs_pas	0.6931
+-	source	GSM3516676-Normal	Normal	Normal		ARI_gexleiden_vs_pas	0.5586
+-	source	GSM3516677-MetAdrenal	MetAdrenal	Metastasis		pas_cells	2946.0
+-	source	GSM3516677-MetAdrenal	MetAdrenal	Metastasis		gex_cells	2236.0
+-	source	GSM3516677-MetAdrenal	MetAdrenal	Metastasis		matched_cells	2236.0
+-	source	GSM3516677-MetAdrenal	MetAdrenal	Metastasis		n_gex_clusters	17.0
+-	source	GSM3516677-MetAdrenal	MetAdrenal	Metastasis		AMI_gexleiden_vs_pas	0.6834
+-	source	GSM3516677-MetAdrenal	MetAdrenal	Metastasis		ARI_gexleiden_vs_pas	0.613
+-	source	GSM3516678-MetBrain	MetBrain	Metastasis		pas_cells	3241.0
+-	source	GSM3516678-MetBrain	MetBrain	Metastasis		gex_cells	1481.0
+-	source	GSM3516678-MetBrain	MetBrain	Metastasis		matched_cells	1481.0
+-	source	GSM3516678-MetBrain	MetBrain	Metastasis		n_gex_clusters	16.0
+-	source	GSM3516678-MetBrain	MetBrain	Metastasis		AMI_gexleiden_vs_pas	0.7202
+-	source	GSM3516678-MetBrain	MetBrain	Metastasis		ARI_gexleiden_vs_pas	0.4997
+a	summary					median_AMI_celltype_vs_pas	0.6616
+a	summary					median_ARI_celltype_vs_pas	0.4627
+a	summary					min_AMI_celltype_vs_pas	0.3667
+a	summary					max_AMI_celltype_vs_pas	0.7795
+a	summary					min_ARI_celltype_vs_pas	0.2002
+a	summary					max_ARI_celltype_vs_pas	0.6705
+a	summary					kruskal_H_AMI_by_stage_3groups	3.835714285714289
+a	summary					kruskal_p_AMI_by_stage_3groups	0.14692145674451634
+-	summary					kruskal_H_ARI_by_stage_3groups	3.317331932773108
+-	summary					kruskal_p_ARI_by_stage_3groups	0.19039280115746995
+-	summary					mannwhitney_U_AMI_Normal_vs_Met	11.0
+-	summary					mannwhitney_p_AMI_Normal_vs_Met	0.9047619047619049
+-	summary					median_AMI_gexleiden_vs_pas	0.6565
+-	summary					median_ARI_gexleiden_vs_pas	0.4564
+b	summary					n_samples_pas_gt_celltypes	12.0
+b	summary					n_samples_pas_eq_celltypes	2.0
+b	summary					n_samples_pas_lt_celltypes	3.0
+b	summary					mean_n_pas_clusters	14.117647058823529
+b	summary					mean_n_celltypes	12.529411764705882
+b	summary					median_n_pas_clusters	15.0
+b	summary					median_n_celltypes	14.0
+b	summary					mean_n_pas_clusters_full_clustering	14.823529411764707
+b	summary					spearman_rho_ncelltypes_vs_npas	0.5836061241405657
+b	summary					spearman_p_ncelltypes_vs_npas	0.01391539943241359
+c	summary					median_coverage	0.498
+c	summary					min_coverage	0.2739
+c	summary					max_coverage	0.8692
+c	summary					n_samples_coverage_below_0.5	9.0
+c	summary					spearman_rho_coverage_vs_AMI	-0.3382352941176471
+c	summary					spearman_p_coverage_vs_AMI	0.18421188285210166
+c	summary					spearman_rho_coverage_vs_ARI	-0.12009803921568628
+c	summary					spearman_p_coverage_vs_ARI	0.6461426985863066
+-	summary					max_abs_coverage_recompute_error	4.974036622029665e-05
+-	summary					matched_equals_gex_cells_all_samples	1.0
+-	summary					summary_json_agrees_with_csv	1.0
+a	summary			Normal		n_samples	4.0
+a	summary			Normal		median_AMI_celltype_vs_pas	0.5757
+a	summary			Normal		median_ARI_celltype_vs_pas	0.34045000000000003
+c	summary			Normal		median_coverage	0.6982999999999999
+a	summary			Stage I–II		n_samples	7.0
+a	summary			Stage I–II		median_AMI_celltype_vs_pas	0.6826
+a	summary			Stage I–II		median_ARI_celltype_vs_pas	0.5445
+c	summary			Stage I–II		median_coverage	0.3781
+a	summary			Stage IV primary		n_samples	1.0
+a	summary			Stage IV primary		median_AMI_celltype_vs_pas	0.7124
+a	summary			Stage IV primary		median_ARI_celltype_vs_pas	0.4939
+c	summary			Stage IV primary		median_coverage	0.498
+a	summary			Metastasis		n_samples	5.0
+a	summary			Metastasis		median_AMI_celltype_vs_pas	0.5966
+a	summary			Metastasis		median_ARI_celltype_vs_pas	0.3719
+c	summary			Metastasis		median_coverage	0.6735

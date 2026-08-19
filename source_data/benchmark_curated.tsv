@@ -1,0 +1,406 @@
+panel	arm	series	reference	cutoff_bp	replicate	n_query	n_matched	value	bar	passes
+precision	lg_annotate	real	atlas_full	10.000000	0	22629.000000	1939.000000	0.085687		
+precision	lg_annotate	real	atlas_full	25.000000	0	22629.000000	4356.000000	0.192496		
+precision	lg_annotate	real	atlas_full	50.000000	0	22629.000000	6724.000000	0.297141		
+precision	lg_annotate	real	atlas_full	100.000000	0	22629.000000	10125.000000	0.447435		
+precision	lg_annotate	real	atlas_full	200.000000	0	22629.000000	11847.000000	0.523532		
+precision	lg_annotate	real	tes	10.000000	0	22629.000000	710.000000	0.031376		
+precision	lg_annotate	real	tes	25.000000	0	22629.000000	1426.000000	0.063016		
+precision	lg_annotate	real	tes	50.000000	0	22629.000000	2418.000000	0.106854		
+precision	lg_annotate	real	tes	100.000000	0	22629.000000	6337.000000	0.280039		
+precision	lg_annotate	real	tes	200.000000	0	22629.000000	7135.000000	0.315303		
+precision	lg_annotate	null_genic	atlas_full	10.000000	1	22629.000000	57.000000	0.002519		
+precision	lg_annotate	null_genic	atlas_full	25.000000	1	22629.000000	145.000000	0.006408		
+precision	lg_annotate	null_genic	atlas_full	50.000000	1	22629.000000	270.000000	0.011932		
+precision	lg_annotate	null_genic	atlas_full	100.000000	1	22629.000000	480.000000	0.021212		
+precision	lg_annotate	null_genic	atlas_full	200.000000	1	22629.000000	890.000000	0.039330		
+precision	lg_annotate	null_genic	atlas_full	10.000000	2	22629.000000	48.000000	0.002121		
+precision	lg_annotate	null_genic	atlas_full	25.000000	2	22629.000000	118.000000	0.005215		
+precision	lg_annotate	null_genic	atlas_full	50.000000	2	22629.000000	253.000000	0.011180		
+precision	lg_annotate	null_genic	atlas_full	100.000000	2	22629.000000	476.000000	0.021035		
+precision	lg_annotate	null_genic	atlas_full	200.000000	2	22629.000000	917.000000	0.040523		
+precision	lg_annotate	null_genic	atlas_full	10.000000	3	22629.000000	69.000000	0.003049		
+precision	lg_annotate	null_genic	atlas_full	25.000000	3	22629.000000	157.000000	0.006938		
+precision	lg_annotate	null_genic	atlas_full	50.000000	3	22629.000000	298.000000	0.013169		
+precision	lg_annotate	null_genic	atlas_full	100.000000	3	22629.000000	535.000000	0.023642		
+precision	lg_annotate	null_genic	atlas_full	200.000000	3	22629.000000	964.000000	0.042600		
+precision	lp_annotate	real	atlas_full	10.000000	0	21470.000000	2225.000000	0.103633		
+precision	lp_annotate	real	atlas_full	25.000000	0	21470.000000	5099.000000	0.237494		
+precision	lp_annotate	real	atlas_full	50.000000	0	21470.000000	7549.000000	0.351607		
+precision	lp_annotate	real	atlas_full	100.000000	0	21470.000000	10567.000000	0.492175		
+precision	lp_annotate	real	atlas_full	200.000000	0	21470.000000	11960.000000	0.557056		
+precision	lp_annotate	real	tes	10.000000	0	21470.000000	830.000000	0.038659		
+precision	lp_annotate	real	tes	25.000000	0	21470.000000	1849.000000	0.086120		
+precision	lp_annotate	real	tes	50.000000	0	21470.000000	3088.000000	0.143829		
+precision	lp_annotate	real	tes	100.000000	0	21470.000000	6721.000000	0.313041		
+precision	lp_annotate	real	tes	200.000000	0	21470.000000	7467.000000	0.347788		
+precision	lp_annotate	null_genic	atlas_full	10.000000	1	21470.000000	53.000000	0.002469		
+precision	lp_annotate	null_genic	atlas_full	25.000000	1	21470.000000	120.000000	0.005589		
+precision	lp_annotate	null_genic	atlas_full	50.000000	1	21470.000000	219.000000	0.010200		
+precision	lp_annotate	null_genic	atlas_full	100.000000	1	21470.000000	430.000000	0.020028		
+precision	lp_annotate	null_genic	atlas_full	200.000000	1	21470.000000	788.000000	0.036702		
+precision	lp_annotate	null_genic	atlas_full	10.000000	2	21470.000000	51.000000	0.002375		
+precision	lp_annotate	null_genic	atlas_full	25.000000	2	21470.000000	133.000000	0.006195		
+precision	lp_annotate	null_genic	atlas_full	50.000000	2	21470.000000	251.000000	0.011691		
+precision	lp_annotate	null_genic	atlas_full	100.000000	2	21470.000000	478.000000	0.022264		
+precision	lp_annotate	null_genic	atlas_full	200.000000	2	21470.000000	829.000000	0.038612		
+precision	lp_annotate	null_genic	atlas_full	10.000000	3	21470.000000	53.000000	0.002469		
+precision	lp_annotate	null_genic	atlas_full	25.000000	3	21470.000000	129.000000	0.006008		
+precision	lp_annotate	null_genic	atlas_full	50.000000	3	21470.000000	247.000000	0.011504		
+precision	lp_annotate	null_genic	atlas_full	100.000000	3	21470.000000	478.000000	0.022264		
+precision	lp_annotate	null_genic	atlas_full	200.000000	3	21470.000000	889.000000	0.041407		
+precision	si_annotate	real	atlas_full	10.000000	0	43023.000000	2671.000000	0.062083		
+precision	si_annotate	real	atlas_full	25.000000	0	43023.000000	6046.000000	0.140529		
+precision	si_annotate	real	atlas_full	50.000000	0	43023.000000	9629.000000	0.223811		
+precision	si_annotate	real	atlas_full	100.000000	0	43023.000000	15292.000000	0.355438		
+precision	si_annotate	real	atlas_full	200.000000	0	43023.000000	18315.000000	0.425703		
+precision	si_annotate	real	tes	10.000000	0	43023.000000	852.000000	0.019803		
+precision	si_annotate	real	tes	25.000000	0	43023.000000	1789.000000	0.041582		
+precision	si_annotate	real	tes	50.000000	0	43023.000000	3095.000000	0.071938		
+precision	si_annotate	real	tes	100.000000	0	43023.000000	8790.000000	0.204309		
+precision	si_annotate	real	tes	200.000000	0	43023.000000	9944.000000	0.231132		
+precision	si_annotate	null_genic	atlas_full	10.000000	1	43023.000000	106.000000	0.002464		
+precision	si_annotate	null_genic	atlas_full	25.000000	1	43023.000000	249.000000	0.005788		
+precision	si_annotate	null_genic	atlas_full	50.000000	1	43023.000000	522.000000	0.012133		
+precision	si_annotate	null_genic	atlas_full	100.000000	1	43023.000000	950.000000	0.022081		
+precision	si_annotate	null_genic	atlas_full	200.000000	1	43023.000000	1763.000000	0.040978		
+precision	si_annotate	null_genic	atlas_full	10.000000	2	43023.000000	118.000000	0.002743		
+precision	si_annotate	null_genic	atlas_full	25.000000	2	43023.000000	257.000000	0.005974		
+precision	si_annotate	null_genic	atlas_full	50.000000	2	43023.000000	531.000000	0.012342		
+precision	si_annotate	null_genic	atlas_full	100.000000	2	43023.000000	985.000000	0.022895		
+precision	si_annotate	null_genic	atlas_full	200.000000	2	43023.000000	1777.000000	0.041303		
+precision	si_annotate	null_genic	atlas_full	10.000000	3	43023.000000	102.000000	0.002371		
+precision	si_annotate	null_genic	atlas_full	25.000000	3	43023.000000	264.000000	0.006136		
+precision	si_annotate	null_genic	atlas_full	50.000000	3	43023.000000	497.000000	0.011552		
+precision	si_annotate	null_genic	atlas_full	100.000000	3	43023.000000	961.000000	0.022337		
+precision	si_annotate	null_genic	atlas_full	200.000000	3	43023.000000	1774.000000	0.041234		
+precision	lg_ip_filter	real	atlas_full	10.000000	0	20605.000000	1787.000000	0.086727		
+precision	lg_ip_filter	real	atlas_full	25.000000	0	20605.000000	3994.000000	0.193836		
+precision	lg_ip_filter	real	atlas_full	50.000000	0	20605.000000	6159.000000	0.298908		
+precision	lg_ip_filter	real	atlas_full	100.000000	0	20605.000000	9421.000000	0.457219		
+precision	lg_ip_filter	real	atlas_full	200.000000	0	20605.000000	11018.000000	0.534725		
+precision	lg_ip_filter	real	tes	10.000000	0	20605.000000	653.000000	0.031691		
+precision	lg_ip_filter	real	tes	25.000000	0	20605.000000	1325.000000	0.064305		
+precision	lg_ip_filter	real	tes	50.000000	0	20605.000000	2258.000000	0.109585		
+precision	lg_ip_filter	real	tes	100.000000	0	20605.000000	6036.000000	0.292939		
+precision	lg_ip_filter	real	tes	200.000000	0	20605.000000	6797.000000	0.329871		
+precision	lg_ip_filter	null_genic	atlas_full	10.000000	1	20605.000000	45.000000	0.002184		
+precision	lg_ip_filter	null_genic	atlas_full	25.000000	1	20605.000000	112.000000	0.005436		
+precision	lg_ip_filter	null_genic	atlas_full	50.000000	1	20605.000000	221.000000	0.010726		
+precision	lg_ip_filter	null_genic	atlas_full	100.000000	1	20605.000000	418.000000	0.020286		
+precision	lg_ip_filter	null_genic	atlas_full	200.000000	1	20605.000000	802.000000	0.038923		
+precision	lg_ip_filter	null_genic	atlas_full	10.000000	2	20605.000000	41.000000	0.001990		
+precision	lg_ip_filter	null_genic	atlas_full	25.000000	2	20605.000000	113.000000	0.005484		
+precision	lg_ip_filter	null_genic	atlas_full	50.000000	2	20605.000000	240.000000	0.011648		
+precision	lg_ip_filter	null_genic	atlas_full	100.000000	2	20605.000000	458.000000	0.022228		
+precision	lg_ip_filter	null_genic	atlas_full	200.000000	2	20605.000000	864.000000	0.041932		
+precision	lg_ip_filter	null_genic	atlas_full	10.000000	3	20605.000000	54.000000	0.002621		
+precision	lg_ip_filter	null_genic	atlas_full	25.000000	3	20605.000000	127.000000	0.006164		
+precision	lg_ip_filter	null_genic	atlas_full	50.000000	3	20605.000000	235.000000	0.011405		
+precision	lg_ip_filter	null_genic	atlas_full	100.000000	3	20605.000000	443.000000	0.021500		
+precision	lg_ip_filter	null_genic	atlas_full	200.000000	3	20605.000000	830.000000	0.040281		
+precision	B1_cohort_full	real	atlas_full	10.000000	0	16497.000000	1690.000000	0.102443		
+precision	B1_cohort_full	real	atlas_full	25.000000	0	16497.000000	3691.000000	0.223738		
+precision	B1_cohort_full	real	atlas_full	50.000000	0	16497.000000	5434.000000	0.329393		
+precision	B1_cohort_full	real	atlas_full	100.000000	0	16497.000000	7828.000000	0.474511		
+precision	B1_cohort_full	real	atlas_full	200.000000	0	16497.000000	9193.000000	0.557253		
+precision	B1_cohort_full	real	tes	10.000000	0	16497.000000	833.000000	0.050494		
+precision	B1_cohort_full	real	tes	25.000000	0	16497.000000	1646.000000	0.099776		
+precision	B1_cohort_full	real	tes	50.000000	0	16497.000000	2509.000000	0.152088		
+precision	B1_cohort_full	real	tes	100.000000	0	16497.000000	4995.000000	0.302782		
+precision	B1_cohort_full	real	tes	200.000000	0	16497.000000	5734.000000	0.347578		
+precision	B1_cohort_full	null_genic	atlas_full	10.000000	1	16497.000000	41.000000	0.002485		
+precision	B1_cohort_full	null_genic	atlas_full	25.000000	1	16497.000000	101.000000	0.006122		
+precision	B1_cohort_full	null_genic	atlas_full	50.000000	1	16497.000000	189.000000	0.011457		
+precision	B1_cohort_full	null_genic	atlas_full	100.000000	1	16497.000000	355.000000	0.021519		
+precision	B1_cohort_full	null_genic	atlas_full	200.000000	1	16497.000000	675.000000	0.040917		
+precision	B1_cohort_full	null_genic	atlas_full	10.000000	2	16497.000000	48.000000	0.002910		
+precision	B1_cohort_full	null_genic	atlas_full	25.000000	2	16497.000000	105.000000	0.006365		
+precision	B1_cohort_full	null_genic	atlas_full	50.000000	2	16497.000000	205.000000	0.012427		
+precision	B1_cohort_full	null_genic	atlas_full	100.000000	2	16497.000000	364.000000	0.022065		
+precision	B1_cohort_full	null_genic	atlas_full	200.000000	2	16497.000000	682.000000	0.041341		
+precision	B1_cohort_full	null_genic	atlas_full	10.000000	3	16497.000000	37.000000	0.002243		
+precision	B1_cohort_full	null_genic	atlas_full	25.000000	3	16497.000000	97.000000	0.005880		
+precision	B1_cohort_full	null_genic	atlas_full	50.000000	3	16497.000000	200.000000	0.012123		
+precision	B1_cohort_full	null_genic	atlas_full	100.000000	3	16497.000000	375.000000	0.022731		
+precision	B1_cohort_full	null_genic	atlas_full	200.000000	3	16497.000000	658.000000	0.039886		
+recall	lg_annotate	real	atlas_full	10.000000	0	569005.000000	1944.000000	0.003416		
+recall	lg_annotate	real	atlas_full	25.000000	0	569005.000000	4776.000000	0.008394		
+recall	lg_annotate	real	atlas_full	50.000000	0	569005.000000	9169.000000	0.016114		
+recall	lg_annotate	real	atlas_full	100.000000	0	569005.000000	18932.000000	0.033272		
+recall	lg_annotate	real	atlas_full	200.000000	0	569005.000000	28049.000000	0.049295		
+recall	lg_annotate	real	atlas_detected	10.000000	0	285220.000000	1941.000000	0.006805		
+recall	lg_annotate	real	atlas_detected	25.000000	0	285220.000000	4756.000000	0.016675		
+recall	lg_annotate	real	atlas_detected	50.000000	0	285220.000000	9141.000000	0.032049		
+recall	lg_annotate	real	atlas_detected	100.000000	0	285220.000000	18853.000000	0.066100		
+recall	lg_annotate	real	atlas_detected	200.000000	0	285220.000000	27935.000000	0.097942		
+recall	lg_annotate	real	tes	10.000000	0	73439.000000	932.000000	0.012691		
+recall	lg_annotate	real	tes	25.000000	0	73439.000000	2055.000000	0.027982		
+recall	lg_annotate	real	tes	50.000000	0	73439.000000	3670.000000	0.049973		
+recall	lg_annotate	real	tes	100.000000	0	73439.000000	10952.000000	0.149131		
+recall	lg_annotate	real	tes	200.000000	0	73439.000000	12939.000000	0.176187		
+recall	lp_annotate	real	atlas_full	10.000000	0	569005.000000	2225.000000	0.003910		
+recall	lp_annotate	real	atlas_full	25.000000	0	569005.000000	5640.000000	0.009912		
+recall	lp_annotate	real	atlas_full	50.000000	0	569005.000000	10720.000000	0.018840		
+recall	lp_annotate	real	atlas_full	100.000000	0	569005.000000	20555.000000	0.036124		
+recall	lp_annotate	real	atlas_full	200.000000	0	569005.000000	29903.000000	0.052553		
+recall	lp_annotate	real	atlas_detected	10.000000	0	285220.000000	2220.000000	0.007783		
+recall	lp_annotate	real	atlas_detected	25.000000	0	285220.000000	5621.000000	0.019708		
+recall	lp_annotate	real	atlas_detected	50.000000	0	285220.000000	10693.000000	0.037490		
+recall	lp_annotate	real	atlas_detected	100.000000	0	285220.000000	20490.000000	0.071839		
+recall	lp_annotate	real	atlas_detected	200.000000	0	285220.000000	29802.000000	0.104488		
+recall	lp_annotate	real	tes	10.000000	0	73439.000000	1062.000000	0.014461		
+recall	lp_annotate	real	tes	25.000000	0	73439.000000	2697.000000	0.036724		
+recall	lp_annotate	real	tes	50.000000	0	73439.000000	4838.000000	0.065878		
+recall	lp_annotate	real	tes	100.000000	0	73439.000000	11677.000000	0.159003		
+recall	lp_annotate	real	tes	200.000000	0	73439.000000	13891.000000	0.189150		
+recall	si_annotate	real	atlas_full	10.000000	0	569005.000000	2678.000000	0.004706		
+recall	si_annotate	real	atlas_full	25.000000	0	569005.000000	6582.000000	0.011568		
+recall	si_annotate	real	atlas_full	50.000000	0	569005.000000	12840.000000	0.022566		
+recall	si_annotate	real	atlas_full	100.000000	0	569005.000000	27161.000000	0.047734		
+recall	si_annotate	real	atlas_full	200.000000	0	569005.000000	40061.000000	0.070405		
+recall	si_annotate	real	atlas_detected	10.000000	0	285220.000000	2672.000000	0.009368		
+recall	si_annotate	real	atlas_detected	25.000000	0	285220.000000	6553.000000	0.022975		
+recall	si_annotate	real	atlas_detected	50.000000	0	285220.000000	12793.000000	0.044853		
+recall	si_annotate	real	atlas_detected	100.000000	0	285220.000000	27029.000000	0.094765		
+recall	si_annotate	real	atlas_detected	200.000000	0	285220.000000	39866.000000	0.139773		
+recall	si_annotate	real	tes	10.000000	0	73439.000000	1111.000000	0.015128		
+recall	si_annotate	real	tes	25.000000	0	73439.000000	2554.000000	0.034777		
+recall	si_annotate	real	tes	50.000000	0	73439.000000	4634.000000	0.063100		
+recall	si_annotate	real	tes	100.000000	0	73439.000000	14815.000000	0.201732		
+recall	si_annotate	real	tes	200.000000	0	73439.000000	17565.000000	0.239178		
+recall	lg_ip_filter	real	atlas_full	10.000000	0	569005.000000	1792.000000	0.003149		
+recall	lg_ip_filter	real	atlas_full	25.000000	0	569005.000000	4386.000000	0.007708		
+recall	lg_ip_filter	real	atlas_full	50.000000	0	569005.000000	8429.000000	0.014814		
+recall	lg_ip_filter	real	atlas_full	100.000000	0	569005.000000	17702.000000	0.031110		
+recall	lg_ip_filter	real	atlas_full	200.000000	0	569005.000000	26253.000000	0.046138		
+recall	lg_ip_filter	real	atlas_detected	10.000000	0	285220.000000	1789.000000	0.006272		
+recall	lg_ip_filter	real	atlas_detected	25.000000	0	285220.000000	4369.000000	0.015318		
+recall	lg_ip_filter	real	atlas_detected	50.000000	0	285220.000000	8404.000000	0.029465		
+recall	lg_ip_filter	real	atlas_detected	100.000000	0	285220.000000	17627.000000	0.061801		
+recall	lg_ip_filter	real	atlas_detected	200.000000	0	285220.000000	26144.000000	0.091663		
+recall	lg_ip_filter	real	tes	10.000000	0	73439.000000	859.000000	0.011697		
+recall	lg_ip_filter	real	tes	25.000000	0	73439.000000	1908.000000	0.025981		
+recall	lg_ip_filter	real	tes	50.000000	0	73439.000000	3430.000000	0.046705		
+recall	lg_ip_filter	real	tes	100.000000	0	73439.000000	10459.000000	0.142418		
+recall	lg_ip_filter	real	tes	200.000000	0	73439.000000	12355.000000	0.168235		
+recall	B1_cohort_full	real	atlas_full	10.000000	0	569005.000000	1695.000000	0.002979		
+recall	B1_cohort_full	real	atlas_full	25.000000	0	569005.000000	4009.000000	0.007046		
+recall	B1_cohort_full	real	atlas_full	50.000000	0	569005.000000	7423.000000	0.013046		
+recall	B1_cohort_full	real	atlas_full	100.000000	0	569005.000000	14397.000000	0.025302		
+recall	B1_cohort_full	real	atlas_full	200.000000	0	569005.000000	21639.000000	0.038030		
+recall	B1_cohort_full	real	atlas_detected	10.000000	0	285220.000000	1695.000000	0.005943		
+recall	B1_cohort_full	real	atlas_detected	25.000000	0	285220.000000	3999.000000	0.014021		
+recall	B1_cohort_full	real	atlas_detected	50.000000	0	285220.000000	7402.000000	0.025952		
+recall	B1_cohort_full	real	atlas_detected	100.000000	0	285220.000000	14346.000000	0.050298		
+recall	B1_cohort_full	real	atlas_detected	200.000000	0	285220.000000	21560.000000	0.075591		
+recall	B1_cohort_full	real	tes	10.000000	0	73439.000000	1092.000000	0.014869		
+recall	B1_cohort_full	real	tes	25.000000	0	73439.000000	2428.000000	0.033061		
+recall	B1_cohort_full	real	tes	50.000000	0	73439.000000	3979.000000	0.054181		
+recall	B1_cohort_full	real	tes	100.000000	0	73439.000000	8776.000000	0.119501		
+recall	B1_cohort_full	real	tes	200.000000	0	73439.000000	10539.000000	0.143507		
+f1	lg_annotate	real	atlas_full	10.000000	0			0.006571		
+roadmap	lg_annotate	precision	atlas_full	10.000000	0			0.085687	0.700000	0.000000
+roadmap	lg_annotate	recall	atlas_full	10.000000	0			0.003416	0.600000	0.000000
+roadmap	lg_annotate	f1	atlas_full	10.000000	0			0.006571	0.650000	0.000000
+f1	lg_annotate	real	atlas_full	25.000000	0			0.016086		
+roadmap	lg_annotate	precision	atlas_full	25.000000	0			0.192496	0.700000	0.000000
+roadmap	lg_annotate	recall	atlas_full	25.000000	0			0.008394	0.600000	0.000000
+roadmap	lg_annotate	f1	atlas_full	25.000000	0			0.016086	0.650000	0.000000
+f1	lg_annotate	real	atlas_full	50.000000	0			0.030570		
+roadmap	lg_annotate	precision	atlas_full	50.000000	0			0.297141	0.700000	0.000000
+roadmap	lg_annotate	recall	atlas_full	50.000000	0			0.016114	0.600000	0.000000
+roadmap	lg_annotate	f1	atlas_full	50.000000	0			0.030570	0.650000	0.000000
+f1	lg_annotate	real	atlas_full	100.000000	0			0.061938		
+roadmap	lg_annotate	precision	atlas_full	100.000000	0			0.447435	0.700000	0.000000
+roadmap	lg_annotate	recall	atlas_full	100.000000	0			0.033272	0.600000	0.000000
+roadmap	lg_annotate	f1	atlas_full	100.000000	0			0.061938	0.650000	0.000000
+f1	lg_annotate	real	atlas_full	200.000000	0			0.090105		
+roadmap	lg_annotate	precision	atlas_full	200.000000	0			0.523532	0.700000	0.000000
+roadmap	lg_annotate	recall	atlas_full	200.000000	0			0.049295	0.600000	0.000000
+roadmap	lg_annotate	f1	atlas_full	200.000000	0			0.090105	0.650000	0.000000
+f1	lg_annotate	real	atlas_detected	10.000000	0			0.012609		
+roadmap	lg_annotate	precision	atlas_detected	10.000000	0			0.085687	0.700000	0.000000
+roadmap	lg_annotate	recall	atlas_detected	10.000000	0			0.006805	0.600000	0.000000
+roadmap	lg_annotate	f1	atlas_detected	10.000000	0			0.012609	0.650000	0.000000
+f1	lg_annotate	real	atlas_detected	25.000000	0			0.030691		
+roadmap	lg_annotate	precision	atlas_detected	25.000000	0			0.192496	0.700000	0.000000
+roadmap	lg_annotate	recall	atlas_detected	25.000000	0			0.016675	0.600000	0.000000
+roadmap	lg_annotate	f1	atlas_detected	25.000000	0			0.030691	0.650000	0.000000
+f1	lg_annotate	real	atlas_detected	50.000000	0			0.057858		
+roadmap	lg_annotate	precision	atlas_detected	50.000000	0			0.297141	0.700000	0.000000
+roadmap	lg_annotate	recall	atlas_detected	50.000000	0			0.032049	0.600000	0.000000
+roadmap	lg_annotate	f1	atlas_detected	50.000000	0			0.057858	0.650000	0.000000
+f1	lg_annotate	real	atlas_detected	100.000000	0			0.115184		
+roadmap	lg_annotate	precision	atlas_detected	100.000000	0			0.447435	0.700000	0.000000
+roadmap	lg_annotate	recall	atlas_detected	100.000000	0			0.066100	0.600000	0.000000
+roadmap	lg_annotate	f1	atlas_detected	100.000000	0			0.115184	0.650000	0.000000
+f1	lg_annotate	real	atlas_detected	200.000000	0			0.165013		
+roadmap	lg_annotate	precision	atlas_detected	200.000000	0			0.523532	0.700000	0.000000
+roadmap	lg_annotate	recall	atlas_detected	200.000000	0			0.097942	0.600000	0.000000
+roadmap	lg_annotate	f1	atlas_detected	200.000000	0			0.165013	0.650000	0.000000
+f1	lp_annotate	real	atlas_full	10.000000	0			0.007536		
+roadmap	lp_annotate	precision	atlas_full	10.000000	0			0.103633	0.700000	0.000000
+roadmap	lp_annotate	recall	atlas_full	10.000000	0			0.003910	0.600000	0.000000
+roadmap	lp_annotate	f1	atlas_full	10.000000	0			0.007536	0.650000	0.000000
+f1	lp_annotate	real	atlas_full	25.000000	0			0.019030		
+roadmap	lp_annotate	precision	atlas_full	25.000000	0			0.237494	0.700000	0.000000
+roadmap	lp_annotate	recall	atlas_full	25.000000	0			0.009912	0.600000	0.000000
+roadmap	lp_annotate	f1	atlas_full	25.000000	0			0.019030	0.650000	0.000000
+f1	lp_annotate	real	atlas_full	50.000000	0			0.035764		
+roadmap	lp_annotate	precision	atlas_full	50.000000	0			0.351607	0.700000	0.000000
+roadmap	lp_annotate	recall	atlas_full	50.000000	0			0.018840	0.600000	0.000000
+roadmap	lp_annotate	f1	atlas_full	50.000000	0			0.035764	0.650000	0.000000
+f1	lp_annotate	real	atlas_full	100.000000	0			0.067309		
+roadmap	lp_annotate	precision	atlas_full	100.000000	0			0.492175	0.700000	0.000000
+roadmap	lp_annotate	recall	atlas_full	100.000000	0			0.036124	0.600000	0.000000
+roadmap	lp_annotate	f1	atlas_full	100.000000	0			0.067309	0.650000	0.000000
+f1	lp_annotate	real	atlas_full	200.000000	0			0.096045		
+roadmap	lp_annotate	precision	atlas_full	200.000000	0			0.557056	0.700000	0.000000
+roadmap	lp_annotate	recall	atlas_full	200.000000	0			0.052553	0.600000	0.000000
+roadmap	lp_annotate	f1	atlas_full	200.000000	0			0.096045	0.650000	0.000000
+f1	lp_annotate	real	atlas_detected	10.000000	0			0.014479		
+roadmap	lp_annotate	precision	atlas_detected	10.000000	0			0.103633	0.700000	0.000000
+roadmap	lp_annotate	recall	atlas_detected	10.000000	0			0.007783	0.600000	0.000000
+roadmap	lp_annotate	f1	atlas_detected	10.000000	0			0.014479	0.650000	0.000000
+f1	lp_annotate	real	atlas_detected	25.000000	0			0.036395		
+roadmap	lp_annotate	precision	atlas_detected	25.000000	0			0.237494	0.700000	0.000000
+roadmap	lp_annotate	recall	atlas_detected	25.000000	0			0.019708	0.600000	0.000000
+roadmap	lp_annotate	f1	atlas_detected	25.000000	0			0.036395	0.650000	0.000000
+f1	lp_annotate	real	atlas_detected	50.000000	0			0.067756		
+roadmap	lp_annotate	precision	atlas_detected	50.000000	0			0.351607	0.700000	0.000000
+roadmap	lp_annotate	recall	atlas_detected	50.000000	0			0.037490	0.600000	0.000000
+roadmap	lp_annotate	f1	atlas_detected	50.000000	0			0.067756	0.650000	0.000000
+f1	lp_annotate	real	atlas_detected	100.000000	0			0.125378		
+roadmap	lp_annotate	precision	atlas_detected	100.000000	0			0.492175	0.700000	0.000000
+roadmap	lp_annotate	recall	atlas_detected	100.000000	0			0.071839	0.600000	0.000000
+roadmap	lp_annotate	f1	atlas_detected	100.000000	0			0.125378	0.650000	0.000000
+f1	lp_annotate	real	atlas_detected	200.000000	0			0.175969		
+roadmap	lp_annotate	precision	atlas_detected	200.000000	0			0.557056	0.700000	0.000000
+roadmap	lp_annotate	recall	atlas_detected	200.000000	0			0.104488	0.600000	0.000000
+roadmap	lp_annotate	f1	atlas_detected	200.000000	0			0.175969	0.650000	0.000000
+f1	si_annotate	real	atlas_full	10.000000	0			0.008750		
+roadmap	si_annotate	precision	atlas_full	10.000000	0			0.062083	0.700000	0.000000
+roadmap	si_annotate	recall	atlas_full	10.000000	0			0.004706	0.600000	0.000000
+roadmap	si_annotate	f1	atlas_full	10.000000	0			0.008750	0.650000	0.000000
+f1	si_annotate	real	atlas_full	25.000000	0			0.021376		
+roadmap	si_annotate	precision	atlas_full	25.000000	0			0.140529	0.700000	0.000000
+roadmap	si_annotate	recall	atlas_full	25.000000	0			0.011568	0.600000	0.000000
+roadmap	si_annotate	f1	atlas_full	25.000000	0			0.021376	0.650000	0.000000
+f1	si_annotate	real	atlas_full	50.000000	0			0.040998		
+roadmap	si_annotate	precision	atlas_full	50.000000	0			0.223811	0.700000	0.000000
+roadmap	si_annotate	recall	atlas_full	50.000000	0			0.022566	0.600000	0.000000
+roadmap	si_annotate	f1	atlas_full	50.000000	0			0.040998	0.650000	0.000000
+f1	si_annotate	real	atlas_full	100.000000	0			0.084165		
+roadmap	si_annotate	precision	atlas_full	100.000000	0			0.355438	0.700000	0.000000
+roadmap	si_annotate	recall	atlas_full	100.000000	0			0.047734	0.600000	0.000000
+roadmap	si_annotate	f1	atlas_full	100.000000	0			0.084165	0.650000	0.000000
+f1	si_annotate	real	atlas_full	200.000000	0			0.120828		
+roadmap	si_annotate	precision	atlas_full	200.000000	0			0.425703	0.700000	0.000000
+roadmap	si_annotate	recall	atlas_full	200.000000	0			0.070405	0.600000	0.000000
+roadmap	si_annotate	f1	atlas_full	200.000000	0			0.120828	0.650000	0.000000
+f1	si_annotate	real	atlas_detected	10.000000	0			0.016280		
+roadmap	si_annotate	precision	atlas_detected	10.000000	0			0.062083	0.700000	0.000000
+roadmap	si_annotate	recall	atlas_detected	10.000000	0			0.009368	0.600000	0.000000
+roadmap	si_annotate	f1	atlas_detected	10.000000	0			0.016280	0.650000	0.000000
+f1	si_annotate	real	atlas_detected	25.000000	0			0.039494		
+roadmap	si_annotate	precision	atlas_detected	25.000000	0			0.140529	0.700000	0.000000
+roadmap	si_annotate	recall	atlas_detected	25.000000	0			0.022975	0.600000	0.000000
+roadmap	si_annotate	f1	atlas_detected	25.000000	0			0.039494	0.650000	0.000000
+f1	si_annotate	real	atlas_detected	50.000000	0			0.074730		
+roadmap	si_annotate	precision	atlas_detected	50.000000	0			0.223811	0.700000	0.000000
+roadmap	si_annotate	recall	atlas_detected	50.000000	0			0.044853	0.600000	0.000000
+roadmap	si_annotate	f1	atlas_detected	50.000000	0			0.074730	0.650000	0.000000
+f1	si_annotate	real	atlas_detected	100.000000	0			0.149636		
+roadmap	si_annotate	precision	atlas_detected	100.000000	0			0.355438	0.700000	0.000000
+roadmap	si_annotate	recall	atlas_detected	100.000000	0			0.094765	0.600000	0.000000
+roadmap	si_annotate	f1	atlas_detected	100.000000	0			0.149636	0.650000	0.000000
+f1	si_annotate	real	atlas_detected	200.000000	0			0.210448		
+roadmap	si_annotate	precision	atlas_detected	200.000000	0			0.425703	0.700000	0.000000
+roadmap	si_annotate	recall	atlas_detected	200.000000	0			0.139773	0.600000	0.000000
+roadmap	si_annotate	f1	atlas_detected	200.000000	0			0.210448	0.650000	0.000000
+f1	lg_ip_filter	real	atlas_full	10.000000	0			0.006078		
+roadmap	lg_ip_filter	precision	atlas_full	10.000000	0			0.086727	0.700000	0.000000
+roadmap	lg_ip_filter	recall	atlas_full	10.000000	0			0.003149	0.600000	0.000000
+roadmap	lg_ip_filter	f1	atlas_full	10.000000	0			0.006078	0.650000	0.000000
+f1	lg_ip_filter	real	atlas_full	25.000000	0			0.014827		
+roadmap	lg_ip_filter	precision	atlas_full	25.000000	0			0.193836	0.700000	0.000000
+roadmap	lg_ip_filter	recall	atlas_full	25.000000	0			0.007708	0.600000	0.000000
+roadmap	lg_ip_filter	f1	atlas_full	25.000000	0			0.014827	0.650000	0.000000
+f1	lg_ip_filter	real	atlas_full	50.000000	0			0.028228		
+roadmap	lg_ip_filter	precision	atlas_full	50.000000	0			0.298908	0.700000	0.000000
+roadmap	lg_ip_filter	recall	atlas_full	50.000000	0			0.014814	0.600000	0.000000
+roadmap	lg_ip_filter	f1	atlas_full	50.000000	0			0.028228	0.650000	0.000000
+f1	lg_ip_filter	real	atlas_full	100.000000	0			0.058257		
+roadmap	lg_ip_filter	precision	atlas_full	100.000000	0			0.457219	0.700000	0.000000
+roadmap	lg_ip_filter	recall	atlas_full	100.000000	0			0.031110	0.600000	0.000000
+roadmap	lg_ip_filter	f1	atlas_full	100.000000	0			0.058257	0.650000	0.000000
+f1	lg_ip_filter	real	atlas_full	200.000000	0			0.084947		
+roadmap	lg_ip_filter	precision	atlas_full	200.000000	0			0.534725	0.700000	0.000000
+roadmap	lg_ip_filter	recall	atlas_full	200.000000	0			0.046138	0.600000	0.000000
+roadmap	lg_ip_filter	f1	atlas_full	200.000000	0			0.084947	0.650000	0.000000
+f1	lg_ip_filter	real	atlas_detected	10.000000	0			0.011699		
+roadmap	lg_ip_filter	precision	atlas_detected	10.000000	0			0.086727	0.700000	0.000000
+roadmap	lg_ip_filter	recall	atlas_detected	10.000000	0			0.006272	0.600000	0.000000
+roadmap	lg_ip_filter	f1	atlas_detected	10.000000	0			0.011699	0.650000	0.000000
+f1	lg_ip_filter	real	atlas_detected	25.000000	0			0.028392		
+roadmap	lg_ip_filter	precision	atlas_detected	25.000000	0			0.193836	0.700000	0.000000
+roadmap	lg_ip_filter	recall	atlas_detected	25.000000	0			0.015318	0.600000	0.000000
+roadmap	lg_ip_filter	f1	atlas_detected	25.000000	0			0.028392	0.650000	0.000000
+f1	lg_ip_filter	real	atlas_detected	50.000000	0			0.053642		
+roadmap	lg_ip_filter	precision	atlas_detected	50.000000	0			0.298908	0.700000	0.000000
+roadmap	lg_ip_filter	recall	atlas_detected	50.000000	0			0.029465	0.600000	0.000000
+roadmap	lg_ip_filter	f1	atlas_detected	50.000000	0			0.053642	0.650000	0.000000
+f1	lg_ip_filter	real	atlas_detected	100.000000	0			0.108885		
+roadmap	lg_ip_filter	precision	atlas_detected	100.000000	0			0.457219	0.700000	0.000000
+roadmap	lg_ip_filter	recall	atlas_detected	100.000000	0			0.061801	0.600000	0.000000
+roadmap	lg_ip_filter	f1	atlas_detected	100.000000	0			0.108885	0.650000	0.000000
+f1	lg_ip_filter	real	atlas_detected	200.000000	0			0.156498		
+roadmap	lg_ip_filter	precision	atlas_detected	200.000000	0			0.534725	0.700000	0.000000
+roadmap	lg_ip_filter	recall	atlas_detected	200.000000	0			0.091663	0.600000	0.000000
+roadmap	lg_ip_filter	f1	atlas_detected	200.000000	0			0.156498	0.650000	0.000000
+f1	B1_cohort_full	real	atlas_full	10.000000	0			0.005789		
+roadmap	B1_cohort_full	precision	atlas_full	10.000000	0			0.102443	0.700000	0.000000
+roadmap	B1_cohort_full	recall	atlas_full	10.000000	0			0.002979	0.600000	0.000000
+roadmap	B1_cohort_full	f1	atlas_full	10.000000	0			0.005789	0.650000	0.000000
+f1	B1_cohort_full	real	atlas_full	25.000000	0			0.013661		
+roadmap	B1_cohort_full	precision	atlas_full	25.000000	0			0.223738	0.700000	0.000000
+roadmap	B1_cohort_full	recall	atlas_full	25.000000	0			0.007046	0.600000	0.000000
+roadmap	B1_cohort_full	f1	atlas_full	25.000000	0			0.013661	0.650000	0.000000
+f1	B1_cohort_full	real	atlas_full	50.000000	0			0.025097		
+roadmap	B1_cohort_full	precision	atlas_full	50.000000	0			0.329393	0.700000	0.000000
+roadmap	B1_cohort_full	recall	atlas_full	50.000000	0			0.013046	0.600000	0.000000
+roadmap	B1_cohort_full	f1	atlas_full	50.000000	0			0.025097	0.650000	0.000000
+f1	B1_cohort_full	real	atlas_full	100.000000	0			0.048042		
+roadmap	B1_cohort_full	precision	atlas_full	100.000000	0			0.474511	0.700000	0.000000
+roadmap	B1_cohort_full	recall	atlas_full	100.000000	0			0.025302	0.600000	0.000000
+roadmap	B1_cohort_full	f1	atlas_full	100.000000	0			0.048042	0.650000	0.000000
+f1	B1_cohort_full	real	atlas_full	200.000000	0			0.071200		
+roadmap	B1_cohort_full	precision	atlas_full	200.000000	0			0.557253	0.700000	0.000000
+roadmap	B1_cohort_full	recall	atlas_full	200.000000	0			0.038030	0.600000	0.000000
+roadmap	B1_cohort_full	f1	atlas_full	200.000000	0			0.071200	0.650000	0.000000
+f1	B1_cohort_full	real	atlas_detected	10.000000	0			0.011234		
+roadmap	B1_cohort_full	precision	atlas_detected	10.000000	0			0.102443	0.700000	0.000000
+roadmap	B1_cohort_full	recall	atlas_detected	10.000000	0			0.005943	0.600000	0.000000
+roadmap	B1_cohort_full	f1	atlas_detected	10.000000	0			0.011234	0.650000	0.000000
+f1	B1_cohort_full	real	atlas_detected	25.000000	0			0.026388		
+roadmap	B1_cohort_full	precision	atlas_detected	25.000000	0			0.223738	0.700000	0.000000
+roadmap	B1_cohort_full	recall	atlas_detected	25.000000	0			0.014021	0.600000	0.000000
+roadmap	B1_cohort_full	f1	atlas_detected	25.000000	0			0.026388	0.650000	0.000000
+f1	B1_cohort_full	real	atlas_detected	50.000000	0			0.048113		
+roadmap	B1_cohort_full	precision	atlas_detected	50.000000	0			0.329393	0.700000	0.000000
+roadmap	B1_cohort_full	recall	atlas_detected	50.000000	0			0.025952	0.600000	0.000000
+roadmap	B1_cohort_full	f1	atlas_detected	50.000000	0			0.048113	0.650000	0.000000
+f1	B1_cohort_full	real	atlas_detected	100.000000	0			0.090955		
+roadmap	B1_cohort_full	precision	atlas_detected	100.000000	0			0.474511	0.700000	0.000000
+roadmap	B1_cohort_full	recall	atlas_detected	100.000000	0			0.050298	0.600000	0.000000
+roadmap	B1_cohort_full	f1	atlas_detected	100.000000	0			0.090955	0.650000	0.000000
+f1	B1_cohort_full	real	atlas_detected	200.000000	0			0.133123		
+roadmap	B1_cohort_full	precision	atlas_detected	200.000000	0			0.557253	0.700000	0.000000
+roadmap	B1_cohort_full	recall	atlas_detected	200.000000	0			0.075591	0.600000	0.000000
+roadmap	B1_cohort_full	f1	atlas_detected	200.000000	0			0.133123	0.650000	0.000000
+meta	lg_annotate	n_points			0	22633.000000	22629.000000	4.000000		
+meta	lp_annotate	n_points			0	21474.000000	21470.000000	4.000000		
+meta	si_annotate	n_points			0	43035.000000	43023.000000	12.000000		
+meta	lg_ip_filter	n_points			0	20609.000000	20605.000000	4.000000		
+meta	B1_cohort_full	n_points			0	16500.000000	16497.000000	3.000000		

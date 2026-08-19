@@ -1,0 +1,28 @@
+# NOTE: placeholder author list, mirroring the convention in the PeakATail tool
+# repository. The final, ordered author list (and ORCIDs) will be set to match
+# the manuscript author list at submission. See README "Before release".
+cff-version: 1.2.0
+message: "If you use this analysis code or its outputs, please cite the metadata below."
+type: software
+title: "Project_PeakATail: benchmarking and application analyses for PeakATail"
+abstract: >-
+  Analysis code, figure source data and environment specifications for the
+  PeakATail manuscript: validation of single-cell poly(A) site detection, a
+  seven-tool head-to-head benchmark of single-cell APA callers, and
+  cell-type-resolved APA analyses in lung adenocarcinoma and mouse testis.
+authors:
+  - name: "PeakATail manuscript authors (BMGLab)"
+  - family-names: "Koçakaya"
+    given-names: "Ebru"
+  - family-names: "Kaymaz"
+    given-names: "Yasin"
+  - family-names: "Amiri Tabat"
+    given-names: "Amir"
+repository-code: "https://github.com/BMGLab/Project_PeakATail"
+license: MIT
+keywords:
+  - bioinformatics
+  - scRNA-seq
+  - alternative polyadenylation
+  - benchmarking
+  - reproducibility
