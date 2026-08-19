@@ -1,8 +1,18 @@
 # Roadmap to submission
 
 **Target: Genome Biology (Method article), submission early November 2026.** Fallback chain that
-needs no restructuring: Genome Research → Briefings in Bioinformatics / NAR. Assessment of
-2026-08-13: ~40% ready overall — engineering ~80%, evidence ~30%, text ~20%.
+needs no restructuring: Genome Research → Briefings in Bioinformatics / NAR.
+
+**Status 2026-08-19 — POSITIONING CHANGED.** The evidence base is now large and largely negative on
+accuracy: PeakATail ranks last among de novo tools on public PBMC (F1 0.134 vs polyApipe 0.261) and
+mid-pack on testis, and neither differential test is FDR-calibrated. Accuracy-leadership and
+FDR-controlled-discovery framings are both retired. What remains defensible: (1) peak-based clustering
+novelty, (2) replicate reproducibility at high recall (0.73–0.75 vs polyApipe 0.49–0.50), (3) the
+benchmark methodology itself (nulls, per-dataset denominators, reproducibility metric, the ~90–105 nt
+cleavage-offset discovery). Readiness: engineering ~85%, evidence ~65%, text ~20% — but the evidence
+now argues for a different paper than originally planned. **Decision pending with Ebru/PI: reframe
+around clustering + reproducibility, or pause and improve the caller first (add poly(A) soft-clip
+evidence, the axis that separates the winners).**
 
 ## Owners
 
@@ -20,7 +30,11 @@ needs no restructuring: Genome Research → Briefings in Bioinformatics / NAR. A
 - [x] Null-control analysis proving the 18.4M-reference benchmark indefensible *(done, verified)*
 - [x] **Curated re-benchmark** vs PolyASite 2.0 point-mode/strand-matched + null *(done, verified — see 07_curated_benchmark_report.md)*
 - [x] **Motif validation** — atlas-independent accuracy *(done, verified; discovered the ~90–105 nt cleavage-offset)*
-- [ ] **Publish GitHub issues + PR** — review `manuscript/github/`, then run `manuscript/github/publish_github.sh` *(Ebru)*
+- [x] **GitHub issues + PR published** (Ebru ran publish_github.sh): issues #67–#72 filed, PR #73 open
+      with @TRextabat as reviewer, branch pushed.
+- [ ] **Publish the follow-ups**: `manuscript/github/publish_followups.sh` — issue 7 (neither diff test
+      is FDR-calibrated), issue 8 (three CellRanger-input bugs), comments on #67/#69. Also still unstaged:
+      an issue for the head-to-head negative result + the soft-clip-evidence proposal it implies.
 - [x] **Decision checkpoint — TRIGGERED (2026-08-19).** Point-mode precision vs curated PolyASite 2.0
       is 0.36–0.49 @100bp (~20× null) — under the 70% bar; recall is arithmetically capped at 0.06–0.15
       by set size, so the ≥60% bar is unreachable *by design*. Decisions:
@@ -40,10 +54,14 @@ needs no restructuring: Genome Research → Briefings in Bioinformatics / NAR. A
       (SCAPTURE) — PeakATail calls from coverage shape alone. Strategic consequence: drop any accuracy-
       leadership framing; lead with clustering novelty + reproducibility (PeakATail 0.73-0.75 vs
       polyApipe 0.49-0.50). Tool fix worth doing: add soft-clip polyA evidence to peak calling.
-- [x] ~~Head-to-head on **pbmc_10k_v3**~~ — RUNNING (2026-08-19): PeakATail, Sierra (txdbmaker shim), scAPAtrap,
-      SCAPTURE, polyApipe, scUTRquant all live; scTail inapplicable by chemistry (needs R1-preserved
-      libraries; 10x v3 R1 = CB+UMI only) — documented for the comparison table.
-- [~] **GSE104556 testis** build RUNNING (STARsolo path, mouse GRCm38 r102; ~6-9h)
+      Panel completed: PeakATail, Sierra, scAPAtrap, SCAPTURE, polyApipe, scUTRquant on both datasets;
+      scTail excluded by chemistry (needs R1-preserved libraries; 10x v3 R1 is CB+UMI only). Every tool
+      needed environment archaeology or bug fixes to run at all — reportable in its own right.
+- [x] **Three CellRanger-input bugs found in PeakATail** (commits ad59cdd, 6df8eed, 2e7fc0d): GEM-group
+      CB suffix, unmapped reads with reference_end None, underscore-bearing RG corrupting the sample_CB
+      composite. All were invisible to the STARsolo-only test suite. Issue 8 asks for a CellRanger
+      regression BAM in CI.
+- [x] **GSE104556 testis** built (STARsolo, GRCm38 r102; both mice, CB/UB-tagged) and fully benchmarked
 - [x] **FDR calibration** — DONE for fisher, verdict NEGATIVE: 20/20 null runs report q<0.05 hits
       (mean 42/run vs TRUE 40); causes = read pseudoreplication + marker double-dip. Issue 7 filed;
       nb_pairwise calibration DONE — also anti-conservative (21.3% null p<0.05); D4 cells-mode needs CLI exposure. Manuscript must not use
@@ -52,6 +70,16 @@ needs no restructuring: Genome Research → Briefings in Bioinformatics / NAR. A
 - [x] `--ip-filter` verified LIVE (annotate flags 3.8%, filter drops exactly flagged, default=off) —
       resolves the lg_ip_off duplicate as expected behavior; docs rows to delete (comment staged for #69)
 - [ ] Merge the point-mode benchmark PR after Amir's review
+
+### P1b — IN FLIGHT (2026-08-19, parallel)
+- [~] **PBMC novelty experiment** — does PAS-only clustering recover GEX cell types on public data
+      (replicating Laughney AMI 0.662 / ARI 0.463), and do peak-space-only populations survive confound
+      checks? THE decisive analysis for the paper's new positioning.
+- [~] **Consolidated benchmark figure** + single source-of-truth table + depth-stratified reproducibility
+- [~] **Spermatogenesis positive control** (testis, both mice) — textbook 3'UTR shortening gradient
+- [~] **Kinnex long-read Tier-1 truth** — 81.7M poly(A)-verified molecules; atlas-independent re-ranking
+      of every tool. If the unfavourable ranking flips here, that changes the accuracy story.
+- [~] **SCAPTURE testis mouse2** rerun (first attempt destroyed by the ssd1 disk-full event; now on ssd0)
 
 ### P2 — weeks 3–6 (ground truth + the make-or-break experiment)
 - [~] **Kinnex PBMC long-read** Tier-1 truth: 36GB downloading (dedup FLNC BAM + GEM-X mapped BAM);
