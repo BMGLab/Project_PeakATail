@@ -88,57 +88,98 @@ First numbers @100 bp (PeakATail rows PROVISIONAL — Laughney cohort, pbmc reru
 | PeakATail lg_annotate* | 22,629 | 0.447 | 0.066 | 0.022 |
 | PeakATail B1_cohort_full* | 16,497 | 0.475 | 0.050 | 0.022 |
 
-## GSE104556 mouse testis — Sierra scored (2026-08-19)
+## GSE104556 mouse testis — consolidated scoring round (2026-08-19)
 
-Sierra 0.99.27 finished on both GSE104556 testis replicates
-(`results/benchmark_tools/gse104556/sierra/mouse{1,2}/`, exit 0). Peaks converted with the
-PROVEN pbmc geometry (strand `1`=`+`/`-1`=`-`; strand-aware 3'-most base of the 1-based-closed
-`Fit.start..Fit.end` fitted interval; full derivation-proof comment block copied verbatim from
-the pbmc `pas.bed` header) by `results/benchmark_tools/gse104556/sierra/make_pas_bed.sh` into
-`mouse1/pas.bed` (22,583 pts), `mouse2/pas.bed` (21,365) and a cross-mouse exact-point dedup
-`pas.pooled.bed` (37,863; 6,085 (chrom,pos,strand) points shared exactly, mouse1 ID kept).
+Three tools finished and scored on both biological replicates (Mouse1/Mouse2 STARsolo BAMs,
+GRCm38): **PeakATail** (`results/benchmark_tools/gse104556/peakatail/`), **Sierra** 0.99.27
+(`.../sierra/`, geometry-proof conversion via `make_pas_bed.sh`), **scUTRquant** v0.5.1
+(`.../scutrquant/`, target `utrome_mm10_v2`; STARsolo→CellRanger-tag BAM prep required because
+patched kallisto segfaults on raw STARsolo BAMs). polyApipe is still running (mouse1 outputs
+exist, mouse2 mid-flight); scAPAtrap/SCAPTURE not finished — score with the SAME command when
+they land.
 
-**score_tool.py generalized**: new optional flags `--atlas --tes --genome --genebodies
---detected-atlas {path|none}`; human GRCh38 defaults untouched — PROOF: reran the pbmc
-`sierra` case with the modified script, output byte-identical to the existing
-`score_sierra.tsv` (md5 `3c8408a6c27e21f1703d1eded08e0adc` both). Mouse scoring used
-`polyasite2.GRCm38.96.rep_sites.bed6` (301,006), `tes.protein_coding.GRCm38.102.bed6`
-(52,513), `data/references/mouse/chrom.sizes.filt`, and the 3-seed shuffle null inside
-`gse104556/shared_refs/genebodies.merged.bed`. Outputs:
-`results/benchmark_tools/gse104556/sierra/score_sierra_{mouse1,mouse2,pooled}.tsv`.
+**Detected-gene restricted reference (denominator warning RESOLVED).** Built per
+`data/references/atlases/README.md` §6 into `results/benchmark_tools/gse104556/shared_refs/`
+(README + md5s there): detected genes = UNION of gene IDs in the two PeakATail runs'
+`annotatedpas.bed` = **14,014** ENSMUSG ids (mouse1 13,406, mouse2 13,332; all present exactly
+once in `gene_end.GRCm38.102.bed`); restricted atlas = strand-matched PolyASite2 mouse rep
+sites inside those gene bodies = **126,686** sites (42.1% of the 301,006-site atlas) =
+`pas2.in_detected_genes.bed`. Every mouse arm below now has `recall`/`f1`/`roadmap` rows vs
+`atlas_detected` on this ONE shared denominator — mouse recall flavors now mirror the pbmc
+figure and are directly comparable across tools.
 
-| arm (dataset gse104556) | n scored | P@50 atlas | P@100 atlas | P@50 TES | P@100 TES | null P@100 (3-seed mean) | recall@100 full atlas | TES recall@100 |
+**Scoring command** (all seven arms; the `--detected-atlas` guard in `score_tool.py` demands
+the full explicit mouse flag set):
+
+    python3 scripts/benchmark_tools/score_tool.py <pas.bed> <label> --outdir <tooldir> \
+      --atlas data/references/atlases/polyasite2.GRCm38.96.rep_sites.bed6 \
+      --tes data/references/atlases/tes.protein_coding.GRCm38.102.bed6 \
+      --genome data/references/mouse/chrom.sizes.filt \
+      --genebodies results/benchmark_tools/gse104556/shared_refs/genebodies.merged.bed \
+      --detected-atlas results/benchmark_tools/gse104556/shared_refs/pas2.in_detected_genes.bed
+
+Sierra re-scored with the new flag: all pre-existing rows (precision, null, full/TES recall,
+F1, roadmap, meta) **byte-identical** to the previously committed `score_sierra_*.tsv`; each
+arm only GAINED 25 `atlas_detected` rows.
+
+### Mouse table (tool × mouse; @100 bp unless noted; null = 3-seed genic-shuffle mean)
+
+| tool arm | n called (scored) | P@50 | P@100 | null P@100 | fold/null | R@100 full (301,006) | R@100 restricted (126,686) | R@100 TES | F1@100 restr. | wall / peak RSS | concordance ≤100 bp |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PeakATail mouse1 | 45,921 (45,907) | 0.226 | 0.369 | 0.0139 | 27× | 0.093 | **0.198** | 0.255 | **0.258** | 2:06:48 / 14.0 GiB | 0.746 (m1→m2) |
+| PeakATail mouse2 | 46,672 (46,654) | 0.227 | 0.368 | 0.0143 | 26× | 0.095 | **0.201** | 0.257 | **0.260** | 1:26:46 / 13.6 GiB | 0.734 (m2→m1) |
+| Sierra mouse1 | 22,583 (22,550) | 0.355 | 0.509 | 0.0144 | 35× | 0.057 | 0.107 | 0.170 | 0.177 | 1:12:48 / 4.39 GiB | 0.790 (m1→m2) |
+| Sierra mouse2 | 21,365 (21,335) | 0.396 | 0.581 | 0.0142 | 41× | 0.062 | 0.117 | 0.181 | 0.195 | 57:50 / 4.36 GiB | 0.834 (m2→m1) |
+| Sierra pooled | 37,863 (37,814) | 0.315 | 0.505 | 0.0139 | 36× | 0.068 | 0.130 | 0.193 | 0.207 | — | — |
+| scUTRquant mouse1 † | 35,745 (35,732) | 0.757 | 0.782 | 0.0138 | 57× | 0.151 | 0.259 | 0.603 | 0.389 | 11:26 (+1:04:32 BAM prep) / 4.0 GiB | n/a † |
+| scUTRquant mouse2 † | 35,858 (35,845) | 0.758 | 0.784 | 0.0142 | 55× | 0.152 | 0.259 | 0.604 | 0.389 | 10:16 (+53:34 BAM prep) / 4.0 GiB | n/a † |
+| polyApipe mouse1/2 | RUNNING | | | | | | | | | | |
+
+† scUTRquant is ANNOTATION-BASED: its sites are the fixed mm10 UTRome catalog filtered by
+detection (`mouse{1,2}/pas.bed` headers carry the full caveat +
+`scripts/benchmark_tools/scutrquant/gse104556/extract_pas_bed_mouse.py` derivation, identical
+to the pbmc one). Precision vs an annotation-derived atlas — and cross-replicate concordance
+of a fixed catalog — are near-tautological; footnote in any figure. Its recall is also
+bounded by the catalog. Runtime is dominated by the STARsolo→CR-tag BAM prep this benchmark
+imposed, not the pipeline itself.
+
+### Headline read (identical denominators, restricted recall)
+
+- **PeakATail vs Sierra** (both de novo): Sierra is the precision arm (0.51–0.58 vs 0.37 @100)
+  but calls half as many sites and reaches barely half PeakATail's restricted recall
+  (0.107–0.117 vs 0.198–0.201) — **PeakATail wins F1 on the shared denominator**
+  (0.258/0.260 vs 0.177/0.195; Sierra pooled 0.207 still below either PeakATail mouse).
+- **scUTRquant** posts the best raw numbers (P 0.78, R_restr 0.259, F1 0.389) but they are
+  catalog-tautological (see †) — report separated from the de novo tools.
+- All real precisions are 26–57× the genic-shuffle null (~0.014 @100) — mouse panel is
+  signal-dominated, same conclusion as pbmc.
+- polyApipe on the same denominators: pending its mouse2 finish; convert with
+  `convert_polyapipe.py`, then the same scoring command.
+
+### Replicate concordance (PeakATail vs Sierra, side by side)
+
+Same method both tools (strand-matched `bedtools closest -s -d -t first` between the
+genome-filtered point sets; `<tool>/replicate_concordance.tsv`):
+
+| tool | direction | n | ≤10 | ≤25 | ≤50 | ≤100 | ≤200 | exact |
 |---|---|---|---|---|---|---|---|---|
-| sierra_mouse1 | 22,550 | 0.355 | 0.509 | 0.230 | 0.293 | 0.0144 | 0.057 | 0.170 |
-| sierra_mouse2 | 21,335 | 0.396 | 0.581 | 0.251 | 0.326 | 0.0142 | 0.062 | 0.181 |
-| sierra_pooled | 37,814 | 0.315 | 0.505 | 0.168 | 0.248 | 0.0139 | 0.068 | 0.193 |
+| PeakATail | m1→m2 | 45,907 | 0.322 | 0.489 | 0.631 | 0.746 | 0.769 | 0.078 |
+| PeakATail | m2→m1 | 46,654 | 0.317 | 0.481 | 0.620 | 0.734 | 0.757 | — |
+| Sierra | m1→m2 | 22,550 | 0.442 | 0.626 | 0.747 | 0.790 | 0.811 | 0.269 |
+| Sierra | m2→m1 | 21,335 | 0.467 | 0.661 | 0.788 | 0.834 | 0.854 | — |
 
-Real precision is ~35–41x the genic null. Mouse-testis precision (~0.51–0.58 @100) is far
-above Sierra-on-pbmc (0.256), reflecting fold-over-null improvement (mouse 35-41x vs pbmc Sierra 11.5x; note the GRCm38 atlas is sparser, 301,006 vs 569,005 sites, so raw precisions are not cross-species comparable).
-Pooled precision < per-mouse because the union keeps single-replicate-only (less reproducible)
-points, while pooled recall is highest — expected union behavior.
+Read: ~73–75% of PeakATail calls reproduce within 100 bp across biological replicates vs
+~79–83% for Sierra — but on a call set twice the size (45.9k vs 22.6k); Sierra's higher
+per-call concordance mirrors its higher precision / lower recall trade-off. PeakATail's low
+exact-point fraction (7.8% vs Sierra 26.9%) reflects read-density peak summits vs Sierra's
+fitted-interval ends. NOTE the PeakATail matched counts are identical in both directions at
+every cutoff — verified real, not a bug: every ≤200 bp cross-replicate match is a MUTUAL
+nearest-neighbor pair (pair sets byte-identical both ways), so the cumulative histograms
+coincide; only the denominators differ.
 
-**Resources** (`/usr/bin/time -v`, whole per-replicate run: regtools junctions + FindPeaks +
-CountPeaks): mouse1 1:12:48 wall (4,368 s), max RSS 4,601,992 KiB = 4.39 GiB; mouse2 57:49.8
-(3,470 s), 4,569,940 KiB = 4.36 GiB.
+### Remaining for the mouse panel
 
-**Replicate concordance** (strand-matched `bedtools closest -s -d -t first` between the
-genome-filtered point sets; `results/benchmark_tools/gse104556/sierra/replicate_concordance.tsv`):
-
-| direction | n | ≤10 bp | ≤25 | ≤50 | ≤100 | ≤200 | exact |
-|---|---|---|---|---|---|---|---|
-| mouse1→mouse2 | 22,550 | 0.442 | 0.626 | 0.747 | 0.790 | 0.811 | 0.269 |
-| mouse2→mouse1 | 21,335 | 0.467 | 0.661 | 0.788 | 0.834 | 0.854 | — |
-
-~79–83% of calls reproduce within 100 bp across biological replicates — itself a benchmark
-metric (report alongside precision).
-
-**PENDING**: (a) detected-gene-restricted recall for gse104556 — needs the PeakATail testis
-run to define detected genes (scored with `--detected-atlas none` for now); (b) figure/TSV
-consolidation — `benchmark_tools_running.py` has no dataset facet yet (hardcoded pbmc tool
-list; it regenerates `benchmark_tools_running.tsv` itself, so no rows were appended manually);
-add a `dataset` facet + the three `score_sierra_*.tsv` in the consolidated pass.
-
-**Consolidation warning (denominators):** mouse recall rows currently use the FULL GRCm38 atlas
-denominator (301,006); the pbmc figure's recall panel uses detected-gene-restricted recall. Do not
-mix them in one panel until the mouse detected-gene set exists (pending PeakATail testis run).
+- polyApipe (running), scAPAtrap (mouse1 mid-flight), SCAPTURE — score with the same command
+  + add rows to the table above.
+- `benchmark_tools_running.py` still has no dataset facet (hardcoded pbmc tool list); add a
+  `dataset` facet and pull in the seven `score_*.tsv` above in the consolidated figure pass.
