@@ -116,8 +116,10 @@ def main():
     sc = pd.concat([load_scores(t) for t in tags], ignore_index=True)
     if sc.empty:
         sys.exit("no score TSVs found")
-    dec = pd.read_csv(ROOT / tag / f"{tag}_call_support_decomposition.tsv",
-                      sep="\t", comment="#")
+    decall = pd.read_csv(ROOT / tag / f"{tag}_call_support_decomposition.tsv",
+                         sep="\t", comment="#")
+    dec = decall[decall.gene_set == "all"].drop(columns=["gene_set"])
+    cov = decall[decall.gene_set == "lr_covered"].set_index("tool")
     cal = pd.read_csv(ROOT / tag / f"{tag}_truth_calibration.tsv", sep="\t", comment="#")
     thq = pd.read_csv(ROOT / tag / f"{tag}_truth_threshold_qc.tsv", sep="\t", comment="#")
 
@@ -136,26 +138,25 @@ def main():
                            "decoy_internal_priming", PALETTE[1])):
         sub = cal[cal.set == key].set_index("umi_bin").reindex(order)
         axA.plot(x, sub.hexamer_canonical, marker="o", ms=5.5, lw=2.2, color=col, label=lab)
-    axA.axhline(0.4111, ls="--", lw=1.3, color=MUTED)
-    axA.text(len(order) - 1.1, 0.4111, "PolyASite 2.0 rep sites (0.411)", fontsize=8,
-             color=MUTED, va="bottom", ha="right")
-    axA.axhline(0.3799, ls=":", lw=1.3, color=MUTED)
-    axA.text(len(order) - 1.1, 0.3799, "protein-coding TES (0.380)", fontsize=8,
-             color=MUTED, va="top", ha="right")
+    axA.axhline(0.4111, ls="--", lw=1.3, color=MUTED,
+                label="same measure on PolyASite 2.0 rep sites (0.411)")
+    axA.axhline(0.3799, ls=":", lw=1.3, color=MUTED,
+                label="same measure on protein-coding TES (0.380)")
     axA.axvline(0.5, color=PALETTE[1], lw=1.1, alpha=0.45)
-    axA.annotate("the plan's >=5 UMI cut sits at the noise floor at 104 M\n"
-                 "molecules -- so the truth is reported as a support sweep",
-                 xy=(0.5, 0.14), xycoords="data",
-                 xytext=(0.035, 0.70), textcoords="axes fraction",
+    axA.annotate("the plan's >=5 UMI cut sits at the noise floor at 104 M molecules\n"
+                 "-- so the truth set is reported as a molecular-support sweep",
+                 xy=(0.5, 0.075), xycoords="data",
+                 xytext=(0.34, 0.21), textcoords="axes fraction",
                  fontsize=8.2, color=MUTED, va="top", ha="left",
                  arrowprops=dict(arrowstyle="->", color=MUTED, lw=1.0,
-                                 connectionstyle="angle3,angleA=0,angleB=90"))
+                                 connectionstyle="angle3,angleA=0,angleB=-90"))
     axA.set_xticks(x); axA.set_xticklabels(order, rotation=35, ha="right", fontsize=8, color=INK)
     axA.set_xlabel("molecular support of the long-read peak (UMIs)", fontsize=9.5, color=INK)
     axA.set_ylabel("fraction with AATAAA / ATTAAA at -40..-10", fontsize=9.5, color=INK)
     axA.set_title("A  The truth set is real, but its support threshold is depth-dependent",
                   fontsize=10.5, color=INK, loc="left")
-    axA.legend(frameon=False, fontsize=8.2, labelcolor=MUTED, loc="upper left")
+    axA.legend(frameon=False, fontsize=8.2, labelcolor=MUTED, loc="upper left",
+               handlelength=1.9, labelspacing=0.38)
 
     # ---- B: precision -- atlas vs long-read truth ----------------------------
     axB = fig.add_subplot(gs[0, 1]); style(axB)
@@ -213,8 +214,18 @@ def main():
     axC.xaxis.grid(True, color=GRID, lw=0.8); axC.yaxis.grid(False)
     axC.set_title("C  What each tool's calls actually sit on (100 bp, strand-matched)",
                   fontsize=10.5, color=INK, loc="left")
+    if len(cov):
+        note = ("expression-matched control -- same measure restricted to the "
+                f"{int(cov.n_calls.max()):,}-call subset inside genes\ncarrying a >=100-UMI "
+                "long-read PAS: unsupported stays "
+                + ", ".join(f"{LABEL[t]} {cov.loc[t, 'no_lr_support']*100:.0f}%"
+                            for t in ("peakatail", "polyapipe", "sierra", "scapture")
+                            if t in cov.index)
+                + " -- so it is not a coverage artifact")
+        axC.text(0.0, -0.335, note, transform=axC.transAxes, fontsize=8.0, color=MUTED,
+                 va="top", ha="left")
     axC.legend(frameon=False, fontsize=8.4, labelcolor=MUTED, loc="upper left",
-               bbox_to_anchor=(0.0, -0.155), ncol=1, handlelength=1.4,
+               bbox_to_anchor=(0.0, -0.145), ncol=1, handlelength=1.4,
                handleheight=0.9, borderpad=0.0, labelspacing=0.42)
 
     # ---- D: F1 rank is not stable -------------------------------------------
@@ -287,7 +298,9 @@ def main():
         fh.write("\n# panel A: sequence-only truth calibration (hexamer vs support)\n")
         cal.to_csv(fh, sep="\t", index=False, float_format="%.6f")
         fh.write("\n# panel C: long-read support decomposition of each tool's calls\n")
-        dec.to_csv(fh, sep="\t", index=False, float_format="%.6f")
+        fh.write("# gene_set=lr_covered is the expression-matched control (calls inside genes\n")
+        fh.write("# that carry a >=100-UMI long-read PAS)\n")
+        decall.to_csv(fh, sep="\t", index=False, float_format="%.6f")
         fh.write("\n# truth-set size / independent atlas agreement per stringency\n")
         thq.to_csv(fh, sep="\t", index=False, float_format="%.6f")
         fh.write("\n# panel D: F1 ranks among de novo tools\n")

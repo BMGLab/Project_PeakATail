@@ -123,3 +123,71 @@ validate the extraction code and as a replicate; the 10x3p (v3.1) set remains pr
   (`data/references/atlases/`); the remainder = candidate novel sites, not errors.
 - Canonical polyA signal (AAUAAA + variants) in -40..-10 of rep sites: expect 80-90%.
 - Strand sanity: truth PAS antisense to overlapping gene < 2%.
+
+---
+
+# AS EXECUTED (2026-08-19) — deviations and what they cost
+
+Scripts live under `/mnt/ssd0/emaout/peakatail_benchmark/kinnex/` (working copies) and
+`scripts/benchmark_tools/{kinnex_decompose.sh}` + `scripts/manuscript_figures/kinnex_truth_validation.py`
+(repo copies). Markers: `ALIGN_PRIMARY.DONE.ok`, `EXTRACT_SECONDARY.DONE.ok`,
+`TRUTH2_GEMX.DONE.ok`, `SCORE_GEMX.DONE.ok`, `PRIMARY_CHAIN.DONE.ok`.
+
+## Step 0 — tag inspection: as planned, both datasets
+Both BAMs carry `CB:Z` / `XM:Z` (UMI) / `rc:i` / `ic:i` / `im:Z` / `it:Z`.
+**CB orientation is AS-IS, not reverse-complemented** — 72/72 sampled primary CBs and
+10,292/10,292 sampled secondary CBs matched the whitelist as written; 0 matched the
+reverse complement. `rc:i` concordance on the secondary is perfect (0 kept records with
+`rc != 1`, 0 dropped real-cell records), and the pbmm2-mapped secondary BAM turns out to be
+pre-filtered to real cells (`dropped_cb_not_realcell = 0`).
+Primary record count confirmed from the `.pbi` header: **81,678,354** dedup molecules.
+
+## Step 1 — alignment: `-t 8`, not `-t 96`
+The environment caps this session at 8 threads, so minimap2 ran
+`-ax splice:hq -uf -y --secondary=no -t 8` (~3.8 k molecules/s, ~6 h wall clock for the
+primary) instead of the plan's `-t 96`. Tag pass-through through
+`samtools fastq -T CB,XM,rc | minimap2 -y` was verified on a chr21 test before launch.
+
+## Steps 2-3 — as planned
+3'-softclip guard at 30 nt discards 1.7% of secondary molecules. Internal priming is called on
+the 18 genomic nt downstream in transcript direction; for '-' strand the transcript-strand A's
+are forward-strand T's, so no reverse complement is computed (`ip_flag.py`, whole genome held
+in memory — replaces `bedtools getfasta` for speed, identical result).
+
+## Step 4 — TWO substantive deviations, both forced by the data
+
+**(a) single-linkage -> greedy peak calling.** At 104 M molecules, single-linkage joining of
+termini <=25 nt apart CHAINS through highly expressed loci: MALAT1 came out as ONE 5,955 bp
+"PAS" and the MT rRNA locus as one 3,762 bp "PAS" (cluster width q99 = 155 bp, max 8,054 bp).
+Replaced with greedy peak calling on the terminus histogram using the same 25 nt radius as an
+exclusion window (`peak_call.py`): repeatedly take the highest-count remaining terminus, emit
+it, absorb everything within +/-25 nt. Peak width max is then 51 bp. The 25 nt merge radius of
+the plan is preserved; only the linkage rule changed.
+
+**(b) ">= 5 UMIs" is a noise-level threshold at this depth — the truth is reported as a sweep.**
+The plan's acceptance checks (20-60 k clusters; >=80% within 25 nt of an atlas site; 80-90%
+canonical hexamer) were calibrated for a far shallower dataset. At >=5 UMIs the GEM-X data
+gives 509,686 peaks, of which only 17.6% are within 25 nt of PolyASite 2.0 and 13.2% carry
+AATAAA/ATTAAA. That is not an extraction error: **75.1% of MOLECULES terminate within 25 nt of
+a PolyASite 2.0 site** (81.0% within 100 nt) — the mass is right, the low-count tail is noise.
+The sequence-only diagnostic settles it (`<tag>_truth_calibration.tsv`): canonical-hexamer
+content rises monotonically with molecular support (10.0% at 5-9 UMIs -> 63.5% at >=5000),
+while the internal-priming decoy set is FLAT at ~4.5-5.0% at every support level. So truth PAS
+are emitted at >=5 UMIs and **scored at >=5 / >=20 / >=100 / >=500 UMIs**, and no threshold was
+chosen using an atlas (atlas agreement is reported, never optimised).
+
+Also note the plan's "80-90% canonical hexamer" bar is unreachable by construction: the SAME
+code scores PolyASite 2.0 rep sites at 41.1% and protein-coding TES at 37.99%. The >=500 UMI
+truth set reaches 48.8%, i.e. it is BETTER localised than the atlas it is compared to.
+
+## Step 5 — cell types: NOT done
+The PAS x cell-barcode count matrix IS built (`<tag>_truth_pas_by_cb.triplets.tsv`,
+28.9 M nonzero entries for GEM-X), but Seurat clustering / cell-type transfer was not run:
+the first validation use (Step 4 of the task) is site-level, and the donor mismatch means the
+per-cell-type usage matrix cannot be compared to pbmc_10k_v3 cell-for-cell anyway.
+
+## Which dataset is primary
+`primary_10x3p` (10x 3' v3.1, 81.7 M molecules, 12,852 cells) remains the designated Tier-1
+substrate. `secondary_gemx3p` (GEM-X 3' v4, 105.8 M alignments -> 104.0 M usable termini,
+10,324 cells) was processed FIRST because it ships genome-aligned, and it is a genuine
+cross-chemistry, cross-donor replicate rather than a mere prototype.

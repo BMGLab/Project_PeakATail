@@ -18,21 +18,36 @@ awk -F'\t' 'NR==FNR{ok[$1]=1;next} ok[$1]' $GEN $G/${TAG}_truth_t5.point.bed | s
 awk -F'\t' 'NR==FNR{ok[$1]=1;next} ok[$1]' $GEN $G/${TAG}_decoy.point.bed    | sort -k1,1 -k2,2n > $S/decoy.bed
 sort -k1,1 -k2,2n $PAS2 > $S/pas2.bed
 
+# EXPRESSION-MATCHED CONTROL: genes that demonstrably carry long-read signal, i.e. that
+# contain at least one >=100-UMI long-read PAS. Restricting every tool to these genes removes
+# "the Kinnex donor just did not express that gene" as an explanation for unsupported calls.
+sort -k1,1 -k2,2n $WD/data/references/gene_end.bed > $S/genes.bed
+bedtools intersect -a $S/genes.bed -b <(sort -k1,1 -k2,2n $G/${TAG}_truth_t100.point.bed) -s -u \
+  > $S/genes_covered.bed
+NG=$(wc -l < $S/genes.bed); NC=$(wc -l < $S/genes_covered.bed)
+
 OUT=$G/${TAG}_call_support_decomposition.tsv
 { echo -e "# Kinnex $TAG long-read support decomposition of pbmc_10k_v3 PAS calls (100 bp, strand-matched)"
   echo -e "# CAVEAT: different donor and 10x chemistry from pbmc_10k_v3 -- site-level truth, not cell-matched."
-  echo -e "tool\tn_calls\tgenuine_pas\tip_artifact\tno_lr_support\tip_share_of_supported"; } > $OUT
+  echo -e "# gene_set=all         : every call on a scorable contig"
+  echo -e "# gene_set=lr_covered  : calls inside the $NC of $NG annotated genes carrying a >=100-UMI"
+  echo -e "#                        long-read PAS (expression-matched control)"
+  echo -e "gene_set\ttool\tn_calls\tgenuine_pas\tip_artifact\tno_lr_support\tip_share_of_supported"; } > $OUT
 for t in scutrquant scapture polyapipe sierra scapatrap peakatail; do
   B=$WD/results/benchmark_tools/pbmc_10k_v3/$t/pas.bed
   [ -s "$B" ] || continue
   grep -v '^#' $B | awk -F'\t' 'NR==FNR{ok[$1]=1;next} ok[$1]' $GEN - \
    | awk -F'\t' -v OFS='\t' '{if($6=="+"){s=$3-1;e=$3}else{s=$2;e=$2+1} print $1,s,e,NR,0,$6}' \
-   | sort -k1,1 -k2,2n > $S/q.bed
-  paste <(bedtools closest -s -d -t first -a $S/q.bed -b $S/truth5.bed 2>/dev/null | awk -F'\t' '{print $NF}') \
-        <(bedtools closest -s -d -t first -a $S/q.bed -b $S/decoy.bed  2>/dev/null | awk -F'\t' '{print $NF}') \
-   | awk -v T=$t -v OFS='\t' '{n++; g=($1>=0&&$1<=100); i=($2>=0&&$2<=100)
-        if(g) ng++; else if(i) ni++; else nn++}
-      END{printf "%s\t%d\t%.6f\t%.6f\t%.6f\t%.6f\n", T,n,ng/n,ni/n,nn/n,(ng+ni?ni/(ng+ni):0)}' >> $OUT
+   | sort -k1,1 -k2,2n > $S/q_all.bed
+  bedtools intersect -a $S/q_all.bed -b $S/genes_covered.bed -s -u > $S/q_cov.bed
+  for gs in all lr_covered; do
+    Q=$S/q_all.bed; [ $gs = lr_covered ] && Q=$S/q_cov.bed
+    paste <(bedtools closest -s -d -t first -a $Q -b $S/truth5.bed 2>/dev/null | awk -F'\t' '{print $NF}') \
+          <(bedtools closest -s -d -t first -a $Q -b $S/decoy.bed  2>/dev/null | awk -F'\t' '{print $NF}') \
+     | awk -v T=$t -v GS=$gs -v OFS='\t' '{n++; g=($1>=0&&$1<=100); i=($2>=0&&$2<=100)
+          if(g) ng++; else if(i) ni++; else nn++}
+        END{printf "%s\t%s\t%d\t%.6f\t%.6f\t%.6f\t%.6f\n", GS,T,n,ng/n,ni/n,nn/n,(ng+ni?ni/(ng+ni):0)}' >> $OUT
+  done
 done
 echo "wrote $OUT"; cat $OUT
 
