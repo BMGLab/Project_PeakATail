@@ -182,3 +182,44 @@ scUTRquant is **annotation-based**: its "calls" are the fixed hg38 UTRome catalo
 (GENCODE v39 3' ends + HCL cleavage sites, sites <200 nt apart merged) filtered by
 detection in this dataset. It cannot discover novel PAS, and precision vs an
 annotation-derived atlas is near-tautological — footnote this on any figure using pas.bed.
+
+---
+
+# ADDENDUM 2026-08-19 — GSE104556 mouse testis launch (10xv2, utrome_mm10_v2)
+
+State: **launched** (running; PID in results/benchmark_tools/gse104556/scutrquant/run.pid).
+
+- Mouse UTRome target EXISTS: `utrome_mm10_v2` in `extdata/targets/targets.yaml`
+  (also v1; v2 chosen — same methodology as hg38_v1: GENCODE M25 3' ends + merged
+  cleavage sites, files auto-downloaded by rule `download_utrome_mm10_v2`, ~65 MB + annots).
+  10xv2 whitelist `extdata/bxs/737K-august-2016.txt` already local; conda envs prebuilt
+  from the pbmc run (STAGE 1 no-ops).
+- Per-mouse configs (scUTRquant merges all sample-sheet rows into ONE SCE per
+  dataset_name, so Mouse1/Mouse2 are separate datasets `gse104556_mouse1/2`):
+  `scripts/benchmark_tools/scutrquant/gse104556/config_mouse{1,2}.yaml` + sample sheets.
+  tech 10xv2, --fr-stranded, min_umis 500, target utrome_mm10_v2.
+
+## CRITICAL incompatibility found + fix
+Patched `kallisto 0.46.2sq bus --bam` **SEGFAULTS (rc=139, silent, right after index
+load) on raw STARsolo BAMs**. Cause isolated on a 200k-record slice: it requires the
+CellRanger raw-tag invariant — `CR/CY/UR/UY` on every record. STARsolo emits only
+corrected `CB/UB` (with `-` when unassigned): raw BAM → segfault before read loop;
+CR/UR added only where CB/UB defined → segfault mid-loop at first record still lacking
+them; drop CB/UB=="-" records (~2-3%) + add CR/CY/UR/UY (copied from CB/UB, all-F
+quals) → **rc=0**, valid BUS (68,393/342,708 pseudoaligned on slice — low rate expected,
+UTRome = last 500 nt only).
+Fix implemented as STAGE 0 in `results/benchmark_tools/gse104556/scutrquant/run.sh`:
+`samtools view -h | awk -f scripts/benchmark_tools/scutrquant/gse104556/add_cr_tags.awk
+| samtools view -b` per mouse (~16 GB each, deleted after that mouse's pipeline
+succeeds). Dropped records lack a corrected barcode/UMI and would fail
+bustools correct/count anyway. NOTE for any future STARsolo+scUTRquant use.
+Also note: STAGE 0 must precede even `--conda-create-envs-only` — snakemake refuses to
+build the DAG while a sample-sheet input file is missing (first relaunch died on this).
+
+Expected outputs per mouse under `results/benchmark_tools/gse104556/scutrquant/mouse{1,2}/`:
+`gse104556_mouse{1,2}.txs.Rds`, `.genes.Rds`, `.umi_count.html`, kallisto/bustools
+mtx + barcodes/genes txt, run_info.json. DONE.ok / FAILED.err in the OUT root.
+pas.bed extraction (as for pbmc) still TODO after completion — reuse
+`scripts/benchmark_tools/scutrquant/extract_pas_bed.py` with the mm10 UTRome GTF
+(chrom naming: mm10 UTRome GTF uses UCSC names; our reference is Ensembl — same
+chr-strip/chrM->MT translation as pbmc).

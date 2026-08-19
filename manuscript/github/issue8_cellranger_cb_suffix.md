@@ -31,3 +31,5 @@ Happy to turn this into a PR onto `develop` with a regression test (synthetic BA
 2. **Multi-GEM-group inputs**: aggregated CellRanger BAMs carry `-1`, `-2`, … suffixes that distinguish samples; plain stripping merges them. The right general fix keeps the suffix as part of the sample identity (like the existing `rg_cb` composite) — worth deciding before the PR.
 
 @TRextabat
+
+**Update — second CellRanger-input bug in the same code path** (commit `6df8eed` locally): unmapped reads (kept, barcoded, in CellRanger BAMs) have `reference_end = None`, crashing `read_check` with a `TypeError` two hours into the run. Both bugs share a root cause: the read loop was only ever exercised on STARsolo BAMs pre-filtered to mapped 3′UTR reads. A regression test with a stock CellRanger BAM slice would catch this class.

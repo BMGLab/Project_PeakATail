@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """
 benchmark_tools_running.py -- the RUNNING cross-tool comparison table+figure.
-First external tool: polyApipe 0.1.0 on pbmc_10k_v3 (both variants), scored by
+External tools so far: polyApipe 0.1.0 and Sierra 0.99.27 on pbmc_10k_v3
+(each with two reduction variants), scored by
 scripts/benchmark_tools/score_tool.py with byte-identical machinery/references
-to benchmark_curated.py.  PeakATail rows (lg_annotate, B1_cohort_full) are
+to benchmark_curated.py.  Sierra variants: 3' of the fitted peak interval
+(Fit.start..Fit.end -> strand-aware 3' base; primary, matches how all tools
+are reduced) and MaxPosition raw-coverage summit (sensitivity).  PeakATail rows (lg_annotate, B1_cohort_full) are
 pulled from benchmark_curated.tsv and are PROVISIONAL: they come from the
 Laughney cohort -- the matched CellRanger pbmc_10k_v3 PeakATail run is still
 in progress.  Re-run this script as each new tool lands.
@@ -43,22 +46,31 @@ def save_manuscript(fig, name, **kw):
 INK, MUTED, GRID, SURFACE = "#1B2429", "#5A6B73", "#D8E0E3", "#FFFFFF"
 
 # entities (fixed order + fixed hue; shade-pairs group tool families)
-TOOLS = ["polyapipe", "polyapipe_all", "lg_annotate", "B1_cohort_full"]
+TOOLS = ["polyapipe", "polyapipe_all", "sierra", "sierra_summit",
+         "lg_annotate", "B1_cohort_full"]
 LAB = {"polyapipe": "polyApipe\n(misprime excl.)",
        "polyapipe_all": "polyApipe\n(all peaks)",
+       "sierra": "Sierra\n(3' of fit)",
+       "sierra_summit": "Sierra\n(summit)",
        "lg_annotate": "PeakATail\nlg_annotate*",
        "B1_cohort_full": "PeakATail\nB1_cohort_full*"}
 COLOR = {"polyapipe": "#0072B2", "polyapipe_all": "#56B4E9",
+         "sierra": "#009E73", "sierra_summit": "#66C6A3",
          "lg_annotate": "#D55E00", "B1_cohort_full": "#E69F00"}
 DATASET = {"polyapipe": "pbmc_10k_v3", "polyapipe_all": "pbmc_10k_v3",
+           "sierra": "pbmc_10k_v3", "sierra_summit": "pbmc_10k_v3",
            "lg_annotate": "laughney_cohort", "B1_cohort_full": "laughney_cohort"}
 PROVISIONAL = {"lg_annotate", "B1_cohort_full"}
 
 # ---------------------------------------------------------------- load scores
 PA_DIR = WD / "results/benchmark_tools/pbmc_10k_v3/polyapipe"
+SI_DIR = WD / "results/benchmark_tools/pbmc_10k_v3/sierra"
 parts = []
 for t in ("polyapipe", "polyapipe_all"):
     d = pd.read_csv(PA_DIR / f"score_{t}.tsv", sep="\t")
+    parts.append(d)
+for t in ("sierra", "sierra_summit"):
+    d = pd.read_csv(SI_DIR / f"score_{t}.tsv", sep="\t")
     parts.append(d)
 bc = pd.read_csv(OUTDIR / "benchmark_curated.tsv", sep="\t")
 parts.append(bc[bc["arm"].isin(["lg_annotate", "B1_cohort_full"])].copy())
@@ -73,11 +85,16 @@ df["note"] = np.where(df["provisional"] == 1,
 # polyApipe: /usr/bin/time -v in results/benchmark_tools/pbmc_10k_v3/polyapipe/run.log
 #   Elapsed 3:26:37 = 12397 s; Max RSS 13,723,976 kbytes (KiB) = 13.088 GiB.
 #   One run covers both variants (peaks GFF + counting).
+# Sierra: /usr/bin/time -v in results/benchmark_tools/pbmc_10k_v3/sierra/run.log
+#   Elapsed 2:25:04 = 8704 s; Max RSS 10,050,780 kbytes (KiB) = 9.585 GiB.
+#   One run (FindPeaks 16 cores + CountPeaks) covers both reduction variants.
 # PeakATail: resources.jsonl (5 s sampling of the pipeline process, GiB), full
 #   pipeline incl. clustering/differential -- much wider scope than polyApipe.
 RES = {  # tool -> (runtime_s, rss_gib, how)
     "polyapipe": (12397.0, 13723976 * 1024 / 1024**3,
                   "/usr/bin/time -v (whole run; shared by both variants)"),
+    "sierra": (8704.0, 10050780 * 1024 / 1024**3,
+               "/usr/bin/time -v (whole run; shared by both variants)"),
     "lg_annotate": (26323.989, 3.6043,
                     "resources.jsonl 5s samples (full pipeline incl. downstream)"),
     "B1_cohort_full": (62405.595, 9.2226,
@@ -92,15 +109,18 @@ for t, (rt, rss, how) in RES.items():
                              n_query=np.nan, n_matched=np.nan, value=val,
                              tool=t, dataset=DATASET[t],
                              provisional=int(t in PROVISIONAL),
-                             note=("polyApipe run also covers the _all variant"
-                                   if t == "polyapipe" else
-                                   "Laughney cohort; wider pipeline scope; "
-                                   "pbmc_10k_v3 rerun pending")))
-res_rows.append(dict(panel="resource", arm="polyapipe", series="max_rss_kbytes",
-                     reference="/usr/bin/time -v raw", cutoff_bp=np.nan,
-                     replicate=0, n_query=np.nan, n_matched=np.nan,
-                     value=13723976, tool="polyapipe", dataset="pbmc_10k_v3",
-                     provisional=0, note="raw kbytes (KiB) from run.log"))
+                             note={"polyapipe": "polyApipe run also covers "
+                                                "the _all variant",
+                                   "sierra": "Sierra run also covers the "
+                                             "_summit variant"}.get(
+                                   t, "Laughney cohort; wider pipeline scope; "
+                                      "pbmc_10k_v3 rerun pending")))
+for t, kb in (("polyapipe", 13723976), ("sierra", 10050780)):
+    res_rows.append(dict(panel="resource", arm=t, series="max_rss_kbytes",
+                         reference="/usr/bin/time -v raw", cutoff_bp=np.nan,
+                         replicate=0, n_query=np.nan, n_matched=np.nan,
+                         value=kb, tool=t, dataset="pbmc_10k_v3",
+                         provisional=0, note="raw kbytes (KiB) from run.log"))
 df = pd.concat([df, pd.DataFrame(res_rows)], ignore_index=True)
 df.to_csv(OUTDIR / f"{NAME}.tsv", sep="\t", index=False, float_format="%.6f")
 print("wrote", OUTDIR / f"{NAME}.tsv", f"({len(df)} rows)")
@@ -191,13 +211,16 @@ axR.set_title("Recall vs atlas in 14,851 detected-gene bodies (shared denominato
 # C n_called
 nv = [ncalled(t) for t in TOOLS]
 bars(axN, TOOLS, nv, lambda v: f"{v/1000:.0f}k", "PAS called (n scored)")
+axN.set_xticklabels([LAB[t].replace("\n", " ") for t in TOOLS],
+                    rotation=30, ha="right", fontsize=6.0)
 axN.yaxis.set_major_formatter(
     matplotlib.ticker.FuncFormatter(lambda v, _: f"{v/1000:.0f}k"))
 axN.set_title("Sites called")
 
 # D runtime  /  E peak RSS  (one bar per RUN; polyApipe run covers both variants)
-RTOOLS = ["polyapipe", "lg_annotate", "B1_cohort_full"]
-RLAB = dict(LAB, polyapipe="polyApipe\n(one run, both variants)")
+RTOOLS = ["polyapipe", "sierra", "lg_annotate", "B1_cohort_full"]
+RLAB = dict(LAB, polyapipe="polyApipe\n(one run,\nboth variants)",
+            sierra="Sierra\n(one run,\nboth variants)")
 tv = [RES[t][0] / 3600.0 for t in RTOOLS]
 bars(axT, RTOOLS, tv, lambda v: f"{v:.1f}h", "wall time (h)")
 axT.set_xticklabels([RLAB[t] for t in RTOOLS])
@@ -217,12 +240,12 @@ handles += [Line2D([], [], marker="D", ls="", color=INK, markersize=3,
 fig.legend(handles=handles, ncol=3, loc="lower center",
            bbox_to_anchor=(0.5, 0.055), frameon=False)
 
-fig.suptitle("Tool benchmark -- RUNNING comparison (1 external tool in)",
+fig.suptitle("Tool benchmark -- RUNNING comparison (2 external tools in)",
              x=0.065, ha="left", fontsize=10, fontweight="bold", color=INK)
 fig.text(0.065, 0.008,
          "CAVEATS: PeakATail bars (*) are PROVISIONAL -- scored on the Laughney cohort, not pbmc_10k_v3; the matched CellRanger pbmc_10k_v3 PeakATail run is still in progress. "
-         "polyApipe scored on pbmc_10k_v3 (CellRanger BAM). Cross-dataset precision/recall differences partly reflect dataset depth/composition, not tool quality alone.\n"
-         "Runtime/RSS scope differs: polyApipe = PAS calling + per-cell counting (/usr/bin/time, one run for both variants); PeakATail = full pipeline incl. clustering/differential (5 s process sampling, may miss subprocess peaks). "
+         "polyApipe and Sierra scored on pbmc_10k_v3 (CellRanger BAM); Sierra reduced to the strand-aware 3' base of Fit.start..Fit.end (primary) or MaxPosition summit (sensitivity). Cross-dataset precision/recall differences partly reflect dataset depth/composition, not tool quality alone.\n"
+         "Runtime/RSS scope differs: polyApipe/Sierra = PAS calling + per-cell counting (/usr/bin/time, one run for both variants); PeakATail = full pipeline incl. clustering/differential (5 s process sampling, may miss subprocess peaks). "
          "Recall denominator identical for all tools: 285,220 PolyASite 2.0 rep sites in the 14,851 Laughney-detected genes (recall flavor b of benchmark_curated.py).",
          fontsize=5.9, color=MUTED, va="bottom", wrap=True)
 

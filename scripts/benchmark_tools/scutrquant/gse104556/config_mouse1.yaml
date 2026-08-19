@@ -1,0 +1,11 @@
+dataset_name: "gse104556_mouse1"
+sample_file: "/mnt/ssd1/Projects/PeakATail_wd/scripts/benchmark_tools/scutrquant/gse104556/sample_sheet_mouse1.csv"
+cell_annots: null
+target: "utrome_mm10_v2"
+
+bx_whitelist: "extdata/bxs/737K-august-2016.txt"
+tech: "10xv2"
+strand: "--fr-stranded"
+
+min_umis: 500
+tmp_dir: "/mnt/ssd1/Projects/PeakATail_wd/scripts/benchmark_tools/scutrquant/gse104556/tmp"
