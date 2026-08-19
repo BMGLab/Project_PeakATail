@@ -16,3 +16,8 @@ gh issue comment -R $R 67 -b "Heads-up before the rerun: permutation-null calibr
 # Comment on #69: ip-filter live verification verdict
 gh issue comment -R $R 69 -b "Live verification done (small-BAM, three runs: no flags / annotate / filter — full write-up in PeakATail_wd/manuscript/08_ipfilter_live_check.md): the internal-priming filter IS wired and works — annotate mode writes True/False into the internal_priming column (3.8% flagged on the test BAM), filter mode drops exactly the flagged PAS (strict subset). And the default is genuinely ip-OFF: the no-flag run executes no ip code and is byte-identical to annotate's coordinates. So lg_ip_off duplicating lg_annotate is expected behavior — the sweep grid just needs relabeling, and the stale 'currently no-op' rows in docs/cli/run.md should be deleted.$footer"
 echo "FOLLOW-UPS POSTED"
+
+# Issue 8: CellRanger CB suffix bug
+gh issue create -R $R --label manuscript \
+  -t "Stock CellRanger BAMs silently produce empty runs: CB GEM-group suffix fails the cb_len check for 100% of reads" \
+  -b "$(cat issue8_cellranger_cb_suffix.md)$footer"

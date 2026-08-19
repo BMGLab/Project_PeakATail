@@ -118,3 +118,67 @@ scUTRquant's "PAS calls" are the fixed UTRome annotation, identical for every da
 dataset-specific signal is which isoforms get nonzero counts. For site-level comparison,
 take 3' ends of expressed isoforms from `rowRanges(sce)` (or the UTRome GTF) with
 expression thresholds from the txs counts matrix.
+
+---
+
+# ADDENDUM 2026-08-19 — pbmc_10k_v3 run + salvage
+
+State: **success-after-salvage** (quantification fully completed; R/SCE packaging failed on
+first run from a host-env module gap, fixed with one pip install and rerun — see below).
+
+## What completed on the first full run (run.log, /usr/bin/time -v)
+- STAGE 1 conda-env build: 00:42-02:50 (+03), two attempts (~2 h 08 m total incl. retry).
+- STAGE 2 pipeline (`-j 16`): wall **25:52.06**, 312% CPU, peak RSS **4.19 GB**, exit 1.
+  - kallisto bus --bam on the 22 GB CellRanger BAM: started 02:51:24; whole
+    kallisto+bustools chain (sort, correct, count txs+genes) done by ~03:16 (~25 min).
+  - 10 of 14 jobs finished. Outputs present in
+    `tools/scUTRquant/data/kallisto/utrome_hg38_v1/pbmc_10k_v3/`:
+    txs.mtx (1,082,852 barcodes x 49,410 merged isoforms, 33,845,069 nonzeros, 510 MB),
+    genes.mtx, barcodes/genes txt, output.sorted.bus (4.4 GB), run_info.json.
+- FAILED at rule `mtxs_to_sce_genes` (and would also have failed `mtxs_to_sce_txs`):
+  `ModuleNotFoundError: No module named 'nbformat'` at Snakefile:340.
+
+## Root cause (precise)
+The failure was in the **host snakemake env** (`bench_scutrquant`), not the rule's R conda
+env: snakemake 7.32.4's `script.py` does `import nbformat` (line 1458) whenever it executes
+any `script:` rule. `nbformat` happened to exist only in `~/.local` user site-packages; we
+run with `PYTHONNOUSERSITE=1` (correctly, to isolate the env), which hides it — so the env
+itself never had it. The pip snakemake install had also skipped it.
+
+## One-line fix (worked)
+```bash
+PYTHONNOUSERSITE=1 /home/biolab/miniconda3/envs/bench_scutrquant/bin/pip install nbformat
+# -> nbformat 5.11.1 into the env's own site-packages
+```
+Rerun of only the 4 remaining jobs (`--rerun-triggers mtime` so the deleted temp .bus
+intermediates did not trigger a kallisto redo), `-j 8`:
+log `results/benchmark_tools/pbmc_10k_v3/scutrquant/salvage_rerun.log`.
+RERUN RESULT: **SUCCESS** — 4/4 jobs (report_umis_per_cell, mtxs_to_sce_genes,
+mtxs_to_sce_txs, all), wall 4:53.13, peak RSS 2.39 GB, exit 0. All pipeline outputs now
+exist: `tools/scUTRquant/data/sce/utrome_hg38_v1/pbmc_10k_v3.txs.Rds` (87 MB),
+`pbmc_10k_v3.genes.Rds` (79 MB), `qc/umi_count/utrome_hg38_v1/pbmc_10k_v3.umi_count.html`.
+So final state is effectively **complete** (partial only in that it needed one manual
+env fix mid-run). Cross-validation of the independent extraction below vs the SCE:
+SCE is 49,410 isoforms x 12,253 cells (cell count identical to our >=500-UMI filter);
+all 40,532 pas.bed isoforms match SCE rownames; PAS positions agree 40,532/40,532 with
+3' ends of `unlist(range(rowRanges(sce)))`; SCE nonzero-count isoforms = 40,532 = bed rows.
+(SCE keeps UCSC chrom names, e.g. chr7; pas.bed is translated to Ensembl.)
+
+## Benchmark extraction (independent of SCE)
+`results/benchmark_tools/pbmc_10k_v3/scutrquant/pas.bed` — BED6 1-bp PAS points,
+Ensembl chrom names (chr stripped, chrM->MT), derivation in `#` header. Built by
+`scripts/benchmark_tools/scutrquant/extract_pas_bed.py` directly from txs.mtx +
+txs.genes.txt + the UTRome GTF (verified: all 49,410 merged-isoform IDs are
+representative transcript_ids present in the GTF; PAS = 3' end, +:GTF end / -:GTF start;
+spot-check NOC2L minus-strand 3' end chr1:944,203 correct).
+- Cells (barcodes with >=500 total UMIs, the run's own min_umis): **12,253**
+- Isoforms detected in cells: **40,532** (of 49,410 catalog; 40,696 over all barcodes)
+- Total UMIs in cells: 91,173,024
+- Companions: `pas_counts.tsv` (per-isoform cells/UMIs incl. all-barcode columns),
+  `pas_summary.tsv`.
+
+## MUST-STATE caveat for the comparison figure
+scUTRquant is **annotation-based**: its "calls" are the fixed hg38 UTRome catalog
+(GENCODE v39 3' ends + HCL cleavage sites, sites <200 nt apart merged) filtered by
+detection in this dataset. It cannot discover novel PAS, and precision vs an
+annotation-derived atlas is near-tautological — footnote this on any figure using pas.bed.

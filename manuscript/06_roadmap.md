@@ -38,8 +38,9 @@ needs no restructuring: Genome Research → Briefings in Bioinformatics / NAR. A
 - [~] **GSE104556 testis** build RUNNING (STARsolo path, mouse GRCm38 r102; ~6-9h)
 - [x] **FDR calibration** — DONE for fisher, verdict NEGATIVE: 20/20 null runs report q<0.05 hits
       (mean 42/run vs TRUE 40); causes = read pseudoreplication + marker double-dip. Issue 7 filed;
-      nb_pairwise calibration running; D4 cells-mode needs CLI exposure. Manuscript must not use
+      nb_pairwise calibration DONE — also anti-conservative (21.3% null p<0.05); D4 cells-mode needs CLI exposure. Manuscript must not use
       fisher q-values as-is.
+- [x] **FDR calibration (nb_pairwise)** — DONE (2026-08-19), verdict NEGATIVE too: 20/20 null runs report q<0.05 hits (mean 350/run vs TRUE 316; 21.3% null p<0.05, 12.0% null q<0.05, min null p 2.5e-36 — milder than fisher but still ~4x nominal; driver: per-PAS plug-in dispersion clipped at 1e-4 floor in 21% of null tests carrying ~half the false hits, no shrinkage, marker double-dip). nb_pairwise q-values also unusable at face value → manuscript significance needs D4 cells-mode (CLI exposure) or permutation-calibrated thresholds; figure: manuscript/figures/fdr_calibration.{png,pdf}.
 - [x] `--ip-filter` verified LIVE (annotate flags 3.8%, filter drops exactly flagged, default=off) —
       resolves the lg_ip_off duplicate as expected behavior; docs rows to delete (comment staged for #69)
 - [ ] Merge the point-mode benchmark PR after Amir's review

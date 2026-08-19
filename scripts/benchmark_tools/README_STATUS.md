@@ -57,3 +57,33 @@ prebuild; scUTRquant needs its env prebuild; scTail cannot do de novo detection 
 - scTail: either include as quantification-only (scTail-count vs a common PAS BED) with an explicit caveat, or add a long-R1 dataset (scTail paper's GSE deposits) for a fair detection comparison.
 - Dataset 2: run `fetch_gse104556.sh` + CellRanger/mm10 once dataset 1 head-to-head is underway.
 - Scoring: `evaluate_vs_reference.py` + `normalize_chroms.py` are written; remember PolyASite is bare-Ensembl like the BAM, so only UCSC-style tool outputs need translation.
+
+## Evaluation template + first head-to-head (2026-08-19)
+
+polyApipe FINISHED on pbmc_10k_v3 (3:26:37 wall, 13.09 GiB peak RSS, exit 0) and is the
+first externally scored tool. The per-tool evaluation path is now standardized:
+
+1. **Standard form**: `results/benchmark_tools/pbmc_10k_v3/<tool>/pas.bed` — BED6, one 1-bp
+   POINT per inferred PAS, `#` header documents the geometry derivation. polyApipe converter:
+   `scripts/benchmark_tools/convert_polyapipe.py` (PAS = GFF **end** for `+`/`f`, GFF **start**
+   for `-`/`r`; verified against polyApipe source and asserted per-feature against the peak
+   name). Variants: `pas.bed` = misprime-excluded DEFAULT (121,013), `pas_all.bed` (211,844).
+2. **Scoring**: `scripts/benchmark_tools/score_tool.py <pas.bed> <label>` — machinery adapted
+   verbatim from `scripts/manuscript_figures/benchmark_curated.py` (point mode, strand-matched
+   closest, cutoffs 10/25/50/100/200, 3-seed genic-shuffle null, recall vs full atlas AND vs
+   the shared 285,220-site detected-gene reference in `results/benchmark_tools/shared_refs/`).
+   VALIDATED: rerunning it on `lg_annotate/pasbed.bed` reproduces every benchmark_curated.tsv
+   precision/recall/F1 row (incl. null seeds) exactly.
+3. **Running comparison**: `scripts/manuscript_figures/benchmark_tools_running.py` regenerates
+   `results/figures/manuscript/benchmark_tools_running.{tsv,png}` (+ PNG/PDF in
+   `manuscript/figures/`). Re-run after each new tool's `score_<label>.tsv` lands (add the
+   label to `TOOLS`/`RES` in the script).
+
+First numbers @100 bp (PeakATail rows PROVISIONAL — Laughney cohort, pbmc rerun pending):
+
+| tool | n scored | precision | recall (detected-gene) | null prec (mean) |
+|---|---|---|---|---|
+| polyApipe (misprime excl.) | 120,916 | 0.380 | 0.197 | 0.022 |
+| polyApipe (all peaks) | 211,706 | 0.277 | 0.242 | 0.022 |
+| PeakATail lg_annotate* | 22,629 | 0.447 | 0.066 | 0.022 |
+| PeakATail B1_cohort_full* | 16,497 | 0.475 | 0.050 | 0.022 |
