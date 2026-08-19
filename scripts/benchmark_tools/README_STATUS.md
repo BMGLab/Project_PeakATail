@@ -90,13 +90,15 @@ First numbers @100 bp (PeakATail rows PROVISIONAL — Laughney cohort, pbmc reru
 
 ## GSE104556 mouse testis — consolidated scoring round (2026-08-19)
 
-Three tools finished and scored on both biological replicates (Mouse1/Mouse2 STARsolo BAMs,
+Four tools finished and scored on both biological replicates (Mouse1/Mouse2 STARsolo BAMs,
 GRCm38): **PeakATail** (`results/benchmark_tools/gse104556/peakatail/`), **Sierra** 0.99.27
 (`.../sierra/`, geometry-proof conversion via `make_pas_bed.sh`), **scUTRquant** v0.5.1
 (`.../scutrquant/`, target `utrome_mm10_v2`; STARsolo→CellRanger-tag BAM prep required because
-patched kallisto segfaults on raw STARsolo BAMs). polyApipe is still running (mouse1 outputs
-exist, mouse2 mid-flight); scAPAtrap/SCAPTURE not finished — score with the SAME command when
-they land.
+patched kallisto segfaults on raw STARsolo BAMs), and **polyApipe** 0.1.0 (`.../polyapipe/`,
+finished 09:38 +03 2026-08-19; converted with `convert_polyapipe.py` — same proven geometry as
+pbmc, per-feature name/coordinate assertions all passed; default = misprime-excluded `pas.bed`,
+`pas_all.bed` scored as the `_all` arms). scAPAtrap/SCAPTURE not finished — score with the SAME
+command when they land.
 
 **Detected-gene restricted reference (denominator warning RESOLVED).** Built per
 `data/references/atlases/README.md` §6 into `results/benchmark_tools/gse104556/shared_refs/`
@@ -108,7 +110,7 @@ sites inside those gene bodies = **126,686** sites (42.1% of the 301,006-site at
 `atlas_detected` on this ONE shared denominator — mouse recall flavors now mirror the pbmc
 figure and are directly comparable across tools.
 
-**Scoring command** (all seven arms; the `--detected-atlas` guard in `score_tool.py` demands
+**Scoring command** (all eleven arms; the `--detected-atlas` guard in `score_tool.py` demands
 the full explicit mouse flag set):
 
     python3 scripts/benchmark_tools/score_tool.py <pas.bed> <label> --outdir <tooldir> \
@@ -133,7 +135,10 @@ arm only GAINED 25 `atlas_detected` rows.
 | Sierra pooled | 37,863 (37,814) | 0.315 | 0.505 | 0.0139 | 36× | 0.068 | 0.130 | 0.193 | 0.207 | — | — |
 | scUTRquant mouse1 † | 35,745 (35,732) | 0.757 | 0.782 | 0.0138 | 57× | 0.151 | 0.259 | 0.603 | 0.389 | 11:26 (+1:04:32 BAM prep) / 4.0 GiB | n/a † |
 | scUTRquant mouse2 † | 35,858 (35,845) | 0.758 | 0.784 | 0.0142 | 55× | 0.152 | 0.259 | 0.604 | 0.389 | 10:16 (+53:34 BAM prep) / 4.0 GiB | n/a † |
-| polyApipe mouse1/2 | RUNNING | | | | | | | | | | |
+| polyApipe mouse1 | 89,588 (89,527) | 0.385 | 0.401 | 0.0142 | 28× | 0.168 | **0.250** | 0.294 | **0.308** | 1:18:36 / 6.77 GiB | 0.494 (m1→m2) |
+| polyApipe mouse2 | 88,037 (87,983) | 0.396 | 0.412 | 0.0145 | 28× | 0.170 | **0.251** | 0.295 | **0.312** | 1:02:59 / 6.76 GiB | 0.503 (m2→m1) |
+| polyApipe mouse1 all ‡ | 100,049 (99,984) | 0.364 | 0.380 | 0.0141 | 27× | 0.179 | 0.267 | 0.311 | 0.313 | (same run) | — |
+| polyApipe mouse2 all ‡ | 96,929 (96,871) | 0.378 | 0.394 | 0.0146 | 27× | 0.179 | 0.265 | 0.311 | 0.317 | (same run) | — |
 
 † scUTRquant is ANNOTATION-BASED: its sites are the fixed mm10 UTRome catalog filtered by
 detection (`mouse{1,2}/pas.bed` headers carry the full caveat +
@@ -143,6 +148,10 @@ of a fixed catalog — are near-tautological; footnote in any figure. Its recall
 bounded by the catalog. Runtime is dominated by the STARsolo→CR-tag BAM prep this benchmark
 imposed, not the pipeline itself.
 
+‡ polyApipe `_all` arms = `pas_all.bed` incl. misprime="True" peaks (sensitivity variant);
+the misprime-excluded `pas.bed` is the tool's DEFAULT and the arm to quote. Concordance was
+computed on the default variant only.
+
 ### Headline read (identical denominators, restricted recall)
 
 - **PeakATail vs Sierra** (both de novo): Sierra is the precision arm (0.51–0.58 vs 0.37 @100)
@@ -151,15 +160,21 @@ imposed, not the pipeline itself.
   (0.258/0.260 vs 0.177/0.195; Sierra pooled 0.207 still below either PeakATail mouse).
 - **scUTRquant** posts the best raw numbers (P 0.78, R_restr 0.259, F1 0.389) but they are
   catalog-tautological (see †) — report separated from the de novo tools.
+- **polyApipe** (de novo) lands ABOVE both on F1@100 restricted: **0.308/0.312**
+  (vs PeakATail 0.258/0.260, Sierra 0.177/0.195; `_all` variant 0.313/0.317). It pairs
+  PeakATail-like precision (0.40–0.41 vs 0.37 @100) with the best de novo restricted recall
+  (0.250/0.251 vs 0.198/0.201) on a call set ~2× PeakATail / ~4× Sierra (88–90k scored). The
+  trade-off shows up in replicate concordance: only ~0.49–0.50 of calls reproduce within
+  100 bp (vs 0.73–0.75 PeakATail, 0.79–0.83 Sierra) — 62–63% of its misprime-excluded peaks
+  are depth-1 singletons.
 - All real precisions are 26–57× the genic-shuffle null (~0.014 @100) — mouse panel is
   signal-dominated, same conclusion as pbmc.
-- polyApipe on the same denominators: pending its mouse2 finish; convert with
-  `convert_polyapipe.py`, then the same scoring command.
 
-### Replicate concordance (PeakATail vs Sierra, side by side)
+### Replicate concordance (PeakATail vs Sierra vs polyApipe, side by side)
 
-Same method both tools (strand-matched `bedtools closest -s -d -t first` between the
-genome-filtered point sets; `<tool>/replicate_concordance.tsv`):
+Same method all tools (strand-matched `bedtools closest -s -d -t first` between the
+genome-filtered point sets; `<tool>/replicate_concordance.tsv`; polyApipe on its
+misprime-excluded default):
 
 | tool | direction | n | ≤10 | ≤25 | ≤50 | ≤100 | ≤200 | exact |
 |---|---|---|---|---|---|---|---|---|
@@ -167,6 +182,8 @@ genome-filtered point sets; `<tool>/replicate_concordance.tsv`):
 | PeakATail | m2→m1 | 46,654 | 0.317 | 0.481 | 0.620 | 0.734 | 0.757 | — |
 | Sierra | m1→m2 | 22,550 | 0.442 | 0.626 | 0.747 | 0.790 | 0.811 | 0.269 |
 | Sierra | m2→m1 | 21,335 | 0.467 | 0.661 | 0.788 | 0.834 | 0.854 | — |
+| polyApipe | m1→m2 | 89,527 | 0.436 | 0.461 | 0.475 | 0.494 | 0.517 | 0.255 |
+| polyApipe | m2→m1 | 87,983 | 0.444 | 0.469 | 0.483 | 0.503 | 0.526 | — |
 
 Read: ~73–75% of PeakATail calls reproduce within 100 bp across biological replicates vs
 ~79–83% for Sierra — but on a call set twice the size (45.9k vs 22.6k); Sierra's higher
@@ -175,11 +192,21 @@ exact-point fraction (7.8% vs Sierra 26.9%) reflects read-density peak summits v
 fitted-interval ends. NOTE the PeakATail matched counts are identical in both directions at
 every cutoff — verified real, not a bug: every ≤200 bp cross-replicate match is a MUTUAL
 nearest-neighbor pair (pair sets byte-identical both ways), so the cumulative histograms
-coincide; only the denominators differ.
+coincide; only the denominators differ. polyApipe shows the same mutual-NN signature at
+cutoffs ≤100 (matched counts identical both directions; they differ by 5 at ≤200) and a
+distinctive flat curve: 0.44 already at ≤10 bp (exact-coordinate peak calls, 25.5% exact)
+but only ~0.49–0.50 by ≤100 — the half of its calls that do reproduce match near-exactly,
+while the depth-1 singleton half (62–63% of peaks) mostly has no counterpart in the other
+replicate.
 
 ### Remaining for the mouse panel
 
-- polyApipe (running), scAPAtrap (mouse1 mid-flight), SCAPTURE — score with the same command
-  + add rows to the table above.
+- scAPAtrap (mouse1 mid-flight), SCAPTURE — score with the same command + add rows to the
+  table above.
 - `benchmark_tools_running.py` still has no dataset facet (hardcoded pbmc tool list); add a
-  `dataset` facet and pull in the seven `score_*.tsv` above in the consolidated figure pass.
+  `dataset` facet and pull in the eleven `score_*.tsv` above in the consolidated figure pass.
+
+**Next-analysis note (consolidation pass):** depth-stratified reproducibility panel — polyApipe's
+F1 lead rides on depth-1 singletons (62-63% of its calls; concordance 0.31 vs 0.81 for depth>1).
+Plot per-tool concordance-vs-depth and F1-vs-reproducibility; report tool DEFAULT arms as primary,
+post-hoc depth filters only as a labeled sensitivity view.
