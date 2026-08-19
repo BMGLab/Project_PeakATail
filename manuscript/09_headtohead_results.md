@@ -84,3 +84,37 @@ python3 scripts/benchmark_tools/score_tool.py <pas.bed> <label> \
 # mouse: add --atlas/--tes/--genome/--genebodies for GRCm38 (see scripts/benchmark_tools/README_STATUS.md)
 ```
 Per-arm TSVs: `results/benchmark_tools/<dataset>/<tool>/score_*.tsv`.
+
+---
+
+## Atlas-independent confirmation (PacBio Kinnex long reads, 2026-08-19)
+
+104 M deduplicated poly(A)-verified FLNC molecules, donor-mismatched so this is **site-level** truth.
+Figure: `manuscript/figures/kinnex_truth_validation.*`.
+
+**The precision ordering replicates against orthogonal evidence** (de novo Spearman ρ = 0.90):
+
+| tool | P@100 vs PolyASite | P@100 vs long-read truth | genuine PAS | internal priming | no long-read support |
+|---|---:|---:|---:|---:|---:|
+| scUTRquant\* | 0.793 | 0.64 | 64% | 5% | 31% |
+| SCAPTURE | 0.652 | 0.58 | 58% | 22% | 20% |
+| polyApipe | 0.380 | 0.46 | 46% | 7% | 47% |
+| Sierra | 0.256 | 0.41 | 41% | **50%** | 9% |
+| scAPAtrap | 0.100 | 0.21 | 21% | 26% | 53% |
+| **PeakATail** | 0.118 | 0.20 | **20%** | **30%** | **51%** |
+
+\*annotation-based, shown but not ranked with de novo tools.
+
+**Three findings.**
+1. **PeakATail's position is confirmed, not an atlas artefact** — last/tied-last among de novo tools under
+   truth that owes nothing to PolyASite. Its precision does rise (0.118 → 0.20) because the long-read truth
+   set is denser, but its rank does not move.
+2. **30% of PeakATail's calls are internal-priming artefacts** — now measured directly (long-read-supported
+   3' ends with genomic A-rich downstream), not inferred. `--ip-filter` is off by default. This is a second,
+   independent, cheap lever alongside poly(A)-clip seeding.
+3. **Sierra's atlas precision was half internal priming** (50% of its calls) — those artefacts are present in
+   the atlas, so atlas-only benchmarking flattered it. A caution for the field, not just for us.
+
+**Methodological note:** F1 rank is *not* stable here (panel D) — a fixed call set scored against truth sets
+differing 53-fold in size reorders every tool except PeakATail. Precision and recall are the reportable
+quantities; quote F1 only with its truth set fixed and named.
