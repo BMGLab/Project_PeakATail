@@ -29,6 +29,11 @@ INPUT: BED6 whose intervals are the inferred PAS. '#' comments allowed.
 OUTPUT: <outdir>/score_<label>.tsv with the benchmark_curated.tsv columns
   (panel arm series reference cutoff_bp replicate n_query n_matched value bar
   passes); arm == <label>.
+
+REFERENCES: default to the human GRCh38 set (unchanged behavior, byte-identical
+  output).  For other genomes override with --atlas/--tes/--genome/--genebodies
+  and pass --detected-atlas none (or a path) -- 'none' skips the
+  detected-gene-restricted recall flavor (and its f1/roadmap rows) entirely.
 """
 import argparse
 import os
@@ -120,7 +125,27 @@ def main():
                     help="default: directory of pas_bed")
     ap.add_argument("--workdir", default=None,
                     help="scratch dir for intermediates (default: <outdir>/.work_<label>)")
+    ap.add_argument("--atlas", default=None,
+                    help=f"rep-site atlas BED6 (default: {PAS2})")
+    ap.add_argument("--tes", default=None,
+                    help=f"protein-coding TES BED6 (default: {TES})")
+    ap.add_argument("--genome", default=None,
+                    help=f"chrom sizes for filtering + shuffle (default: {GENOME})")
+    ap.add_argument("--genebodies", default=None,
+                    help=f"merged gene-body BED for the null shuffle "
+                         f"(default: {GENIC}, auto-built)")
+    ap.add_argument("--detected-atlas", default=None,
+                    help=f"detected-gene-restricted atlas BED, or 'none' to "
+                         f"skip that recall flavor (default: {REF_DET}, "
+                         f"auto-built + count-asserted, human only)")
     a = ap.parse_args()
+
+    # Safety guard: a non-default --atlas with --detected-atlas/--genebodies
+    # left at their HUMAN defaults would silently score another species
+    # against human references. Refuse unless overrides are explicit.
+    if a.atlas is not None and (a.detected_atlas is None or a.genebodies is None):
+        ap.error("--atlas overridden but --detected-atlas/--genebodies left at human "
+                 "defaults; pass matching references (or --detected-atlas none) explicitly.")
 
     src = Path(a.pas_bed).resolve()
     label = a.label
@@ -129,14 +154,35 @@ def main():
     for d in (outdir, work):
         d.mkdir(parents=True, exist_ok=True)
 
-    ensure_shared_refs()
-    refs = {"atlas_full": PAS2, "atlas_detected": REF_DET, "tes": TES}
+    atlas = Path(a.atlas) if a.atlas else PAS2
+    tes = Path(a.tes) if a.tes else TES
+    genome = Path(a.genome) if a.genome else GENOME
+    genic = Path(a.genebodies) if a.genebodies else GENIC
+    if a.detected_atlas is None:
+        det = REF_DET
+    elif a.detected_atlas.lower() == "none":
+        det = None
+    else:
+        det = Path(a.detected_atlas)
+
+    # human shared_refs machinery (build + count assertions) only when the
+    # human defaults are actually in play
+    if genic == GENIC or det == REF_DET:
+        ensure_shared_refs()
+    for p in [atlas, tes, genome, genic] + ([det] if det else []):
+        if not p.exists():
+            sys.exit(f"missing reference file: {p}")
+    refs = {"atlas_full": atlas, "tes": tes}
+    if det is not None:
+        refs["atlas_detected"] = det
+    refs = {k: refs[k] for k in ("atlas_full", "atlas_detected", "tes")
+            if k in refs}  # preserve original human iteration order
 
     # 1. genome-filter (drop chroms absent from GENOME), sort, reduce to point
     raw_n = int(sh_out(f"grep -vc '^#' {src} || true").strip())
     iv, pt = work / f"{label}.iv.bed", work / f"{label}.pt.bed"
     sh(f"grep -v '^#' {src} | "
-       f"awk -F'\\t' 'NR==FNR{{ok[$1]=1;next}} ok[$1]' {GENOME} - "
+       f"awk -F'\\t' 'NR==FNR{{ok[$1]=1;next}} ok[$1]' {genome} - "
        f"| sort -k1,1 -k2,2n > {iv}")
     make_point(iv, pt)
     n = int(sh_out(f"wc -l < {pt}").strip())
@@ -147,8 +193,8 @@ def main():
     for seed in range(1, N_SEEDS + 1):
         siv = work / f"{label}.null.s{seed}.iv.bed"
         spt = work / f"{label}.null.s{seed}.pt.bed"
-        sh(f"bedtools shuffle -i {iv} -g {GENOME} -chrom "
-           f"-noOverlapping -maxTries 5000 -seed {seed} -incl {GENIC} "
+        sh(f"bedtools shuffle -i {iv} -g {genome} -chrom "
+           f"-noOverlapping -maxTries 5000 -seed {seed} -incl {genic} "
            f"2>/dev/null | sort -k1,1 -k2,2n > {siv}")
         make_point(siv, spt)
         null_pt[seed] = spt
@@ -170,7 +216,7 @@ def main():
                    value=hits[c] / nq)
     nullp = {}
     for seed in range(1, N_SEEDS + 1):
-        nq, hits = closest_hist(null_pt[seed], PAS2)
+        nq, hits = closest_hist(null_pt[seed], atlas)
         nullp[seed] = {c: hits[c] / nq for c in CUTOFFS}
         for c in CUTOFFS:
             record(panel="precision", arm=label, series="null_genic",
@@ -189,11 +235,13 @@ def main():
             record(panel="recall", arm=label, series="real", reference=refkey,
                    cutoff_bp=c, replicate=0, n_query=nq, n_matched=hits[c],
                    value=hits[c] / nq)
+    det_msg = (f"detected {R['atlas_detected'][100]:.4f}"
+               if "atlas_detected" in R else "detected SKIPPED")
     print(f"[recall] {label}: @100bp full {R['atlas_full'][100]:.4f} | "
-          f"detected {R['atlas_detected'][100]:.4f} | TES {R['tes'][100]:.4f}")
+          f"{det_msg} | TES {R['tes'][100]:.4f}")
 
     # 5. F1 + roadmap pass/fail (F1 pairs atlas_full precision w/ each recall flavor)
-    for flav in ("atlas_full", "atlas_detected"):
+    for flav in [f for f in ("atlas_full", "atlas_detected") if f in R]:
         for c in CUTOFFS:
             v = f1(P["atlas_full"][c], R[flav][c])
             record(panel="f1", arm=label, series="real", reference=flav,

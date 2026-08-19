@@ -87,3 +87,58 @@ First numbers @100 bp (PeakATail rows PROVISIONAL — Laughney cohort, pbmc reru
 | polyApipe (all peaks) | 211,706 | 0.277 | 0.242 | 0.022 |
 | PeakATail lg_annotate* | 22,629 | 0.447 | 0.066 | 0.022 |
 | PeakATail B1_cohort_full* | 16,497 | 0.475 | 0.050 | 0.022 |
+
+## GSE104556 mouse testis — Sierra scored (2026-08-19)
+
+Sierra 0.99.27 finished on both GSE104556 testis replicates
+(`results/benchmark_tools/gse104556/sierra/mouse{1,2}/`, exit 0). Peaks converted with the
+PROVEN pbmc geometry (strand `1`=`+`/`-1`=`-`; strand-aware 3'-most base of the 1-based-closed
+`Fit.start..Fit.end` fitted interval; full derivation-proof comment block copied verbatim from
+the pbmc `pas.bed` header) by `results/benchmark_tools/gse104556/sierra/make_pas_bed.sh` into
+`mouse1/pas.bed` (22,583 pts), `mouse2/pas.bed` (21,365) and a cross-mouse exact-point dedup
+`pas.pooled.bed` (37,863; 6,085 (chrom,pos,strand) points shared exactly, mouse1 ID kept).
+
+**score_tool.py generalized**: new optional flags `--atlas --tes --genome --genebodies
+--detected-atlas {path|none}`; human GRCh38 defaults untouched — PROOF: reran the pbmc
+`sierra` case with the modified script, output byte-identical to the existing
+`score_sierra.tsv` (md5 `3c8408a6c27e21f1703d1eded08e0adc` both). Mouse scoring used
+`polyasite2.GRCm38.96.rep_sites.bed6` (301,006), `tes.protein_coding.GRCm38.102.bed6`
+(52,513), `data/references/mouse/chrom.sizes.filt`, and the 3-seed shuffle null inside
+`gse104556/shared_refs/genebodies.merged.bed`. Outputs:
+`results/benchmark_tools/gse104556/sierra/score_sierra_{mouse1,mouse2,pooled}.tsv`.
+
+| arm (dataset gse104556) | n scored | P@50 atlas | P@100 atlas | P@50 TES | P@100 TES | null P@100 (3-seed mean) | recall@100 full atlas | TES recall@100 |
+|---|---|---|---|---|---|---|---|---|
+| sierra_mouse1 | 22,550 | 0.355 | 0.509 | 0.230 | 0.293 | 0.0144 | 0.057 | 0.170 |
+| sierra_mouse2 | 21,335 | 0.396 | 0.581 | 0.251 | 0.326 | 0.0142 | 0.062 | 0.181 |
+| sierra_pooled | 37,814 | 0.315 | 0.505 | 0.168 | 0.248 | 0.0139 | 0.068 | 0.193 |
+
+Real precision is ~35–41x the genic null. Mouse-testis precision (~0.51–0.58 @100) is far
+above Sierra-on-pbmc (0.256), reflecting fold-over-null improvement (mouse 35-41x vs pbmc Sierra 11.5x; note the GRCm38 atlas is sparser, 301,006 vs 569,005 sites, so raw precisions are not cross-species comparable).
+Pooled precision < per-mouse because the union keeps single-replicate-only (less reproducible)
+points, while pooled recall is highest — expected union behavior.
+
+**Resources** (`/usr/bin/time -v`, whole per-replicate run: regtools junctions + FindPeaks +
+CountPeaks): mouse1 1:12:48 wall (4,368 s), max RSS 4,601,992 KiB = 4.39 GiB; mouse2 57:49.8
+(3,470 s), 4,569,940 KiB = 4.36 GiB.
+
+**Replicate concordance** (strand-matched `bedtools closest -s -d -t first` between the
+genome-filtered point sets; `results/benchmark_tools/gse104556/sierra/replicate_concordance.tsv`):
+
+| direction | n | ≤10 bp | ≤25 | ≤50 | ≤100 | ≤200 | exact |
+|---|---|---|---|---|---|---|---|
+| mouse1→mouse2 | 22,550 | 0.442 | 0.626 | 0.747 | 0.790 | 0.811 | 0.269 |
+| mouse2→mouse1 | 21,335 | 0.467 | 0.661 | 0.788 | 0.834 | 0.854 | — |
+
+~79–83% of calls reproduce within 100 bp across biological replicates — itself a benchmark
+metric (report alongside precision).
+
+**PENDING**: (a) detected-gene-restricted recall for gse104556 — needs the PeakATail testis
+run to define detected genes (scored with `--detected-atlas none` for now); (b) figure/TSV
+consolidation — `benchmark_tools_running.py` has no dataset facet yet (hardcoded pbmc tool
+list; it regenerates `benchmark_tools_running.tsv` itself, so no rows were appended manually);
+add a `dataset` facet + the three `score_sierra_*.tsv` in the consolidated pass.
+
+**Consolidation warning (denominators):** mouse recall rows currently use the FULL GRCm38 atlas
+denominator (301,006); the pbmc figure's recall panel uses detected-gene-restricted recall. Do not
+mix them in one panel until the mouse detected-gene set exists (pending PeakATail testis run).
