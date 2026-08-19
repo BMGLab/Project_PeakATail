@@ -1,0 +1,193 @@
+panel	dataset	tool	arm	x	y	series
+a_precision_vs_cutoff	pbmc_10k_v3	PeakATail	peakatail	10.000000	0.016354	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	PeakATail	peakatail	25.000000	0.037508	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	PeakATail	peakatail	50.000000	0.064270	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	PeakATail	peakatail	100.000000	0.117538	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	PeakATail	peakatail	200.000000	0.166338	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	polyApipe	polyapipe	10.000000	0.292749	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	polyApipe	polyapipe	25.000000	0.340914	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	polyApipe	polyapipe	50.000000	0.358546	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	polyApipe	polyapipe	100.000000	0.379966	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	polyApipe	polyapipe	200.000000	0.409747	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	scAPAtrap	scapatrap	10.000000	0.023907	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	scAPAtrap	scapatrap	25.000000	0.040840	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	scAPAtrap	scapatrap	50.000000	0.062257	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	scAPAtrap	scapatrap	100.000000	0.099919	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	scAPAtrap	scapatrap	200.000000	0.141912	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	SCAPTURE	scapture	10.000000	0.302441	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	SCAPTURE	scapture	25.000000	0.522917	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	SCAPTURE	scapture	50.000000	0.626723	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	SCAPTURE	scapture	100.000000	0.651808	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	SCAPTURE	scapture	200.000000	0.670740	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	scUTRquant	scutrquant	10.000000	0.572324	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	scUTRquant	scutrquant	25.000000	0.709470	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	scUTRquant	scutrquant	50.000000	0.754856	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	scUTRquant	scutrquant	100.000000	0.792591	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	scUTRquant	scutrquant	200.000000	0.832523	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	Sierra	sierra	10.000000	0.083536	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	Sierra	sierra	25.000000	0.151804	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	Sierra	sierra	50.000000	0.214279	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	Sierra	sierra	100.000000	0.255854	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	Sierra	sierra	200.000000	0.298182	precision_vs_atlas_full
+a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	10.000000	0.002485	null band 0.0023-0.0027 (3 seeds x all arms)
+a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	25.000000	0.006139	null band 0.0058-0.0065 (3 seeds x all arms)
+a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	50.000000	0.011954	null band 0.0117-0.0122 (3 seeds x all arms)
+a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	100.000000	0.022351	null band 0.0220-0.0227 (3 seeds x all arms)
+a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	200.000000	0.040768	null band 0.0400-0.0416 (3 seeds x all arms)
+a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse1	10.000000	0.060318	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse1	25.000000	0.128913	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse1	50.000000	0.226327	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse1	100.000000	0.369159	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse1	200.000000	0.428083	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse2	10.000000	0.061367	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse2	25.000000	0.130428	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse2	50.000000	0.227290	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse2	100.000000	0.367878	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse2	200.000000	0.425108	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	polyApipe	polyapipe_mouse1	10.000000	0.319937	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	polyApipe	polyapipe_mouse1	25.000000	0.366973	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	polyApipe	polyapipe_mouse1	50.000000	0.385012	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	polyApipe	polyapipe_mouse1	100.000000	0.400516	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	polyApipe	polyapipe_mouse1	200.000000	0.420164	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	polyApipe	polyapipe_mouse2	10.000000	0.332644	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	polyApipe	polyapipe_mouse2	25.000000	0.380073	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	polyApipe	polyapipe_mouse2	50.000000	0.396395	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	polyApipe	polyapipe_mouse2	100.000000	0.411943	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	polyApipe	polyapipe_mouse2	200.000000	0.430606	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scAPAtrap	scapatrap_mouse1	10.000000	0.108420	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scAPAtrap	scapatrap_mouse1	25.000000	0.157410	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scAPAtrap	scapatrap_mouse1	50.000000	0.201051	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scAPAtrap	scapatrap_mouse1	100.000000	0.250247	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scAPAtrap	scapatrap_mouse1	200.000000	0.287860	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scAPAtrap	scapatrap_mouse2	10.000000	0.100622	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scAPAtrap	scapatrap_mouse2	25.000000	0.147234	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scAPAtrap	scapatrap_mouse2	50.000000	0.189890	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scAPAtrap	scapatrap_mouse2	100.000000	0.238911	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scAPAtrap	scapatrap_mouse2	200.000000	0.273488	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	SCAPTURE	scapture_mouse1	10.000000	0.363925	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	SCAPTURE	scapture_mouse1	25.000000	0.558258	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	SCAPTURE	scapture_mouse1	50.000000	0.667075	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	SCAPTURE	scapture_mouse1	100.000000	0.693550	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	SCAPTURE	scapture_mouse1	200.000000	0.708564	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scUTRquant	scutrquant_mouse1	10.000000	0.597895	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scUTRquant	scutrquant_mouse1	25.000000	0.723217	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scUTRquant	scutrquant_mouse1	50.000000	0.756745	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scUTRquant	scutrquant_mouse1	100.000000	0.782464	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scUTRquant	scutrquant_mouse1	200.000000	0.813361	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scUTRquant	scutrquant_mouse2	10.000000	0.598354	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scUTRquant	scutrquant_mouse2	25.000000	0.724090	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scUTRquant	scutrquant_mouse2	50.000000	0.757874	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scUTRquant	scutrquant_mouse2	100.000000	0.783708	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	scUTRquant	scutrquant_mouse2	200.000000	0.814479	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse1	10.000000	0.211929	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse1	25.000000	0.289667	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse1	50.000000	0.355211	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse1	100.000000	0.508736	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse1	200.000000	0.610953	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse2	10.000000	0.226060	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse2	25.000000	0.313007	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse2	50.000000	0.396485	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse2	100.000000	0.581064	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse2	200.000000	0.651840	precision_vs_atlas_full
+a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	10.000000	0.001767	null band 0.0016-0.0019 (3 seeds x all arms)
+a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	25.000000	0.004246	null band 0.0041-0.0044 (3 seeds x all arms)
+a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	50.000000	0.007892	null band 0.0076-0.0082 (3 seeds x all arms)
+a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	100.000000	0.014068	null band 0.0137-0.0145 (3 seeds x all arms)
+a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	200.000000	0.026301	null band 0.0257-0.0269 (3 seeds x all arms)
+b_pr_at100	pbmc_10k_v3	PeakATail	peakatail	0.156189	0.117538	n_called=277111
+b_pr_at100	pbmc_10k_v3	polyApipe	polyapipe	0.198796	0.379966	n_called=120916
+b_pr_at100	pbmc_10k_v3	scAPAtrap	scapatrap	0.300376	0.099919	n_called=787138
+b_pr_at100	pbmc_10k_v3	SCAPTURE	scapture	0.117561	0.651808	n_called=35759
+b_pr_at100	pbmc_10k_v3	scUTRquant	scutrquant	0.177663	0.792591	n_called=40519
+b_pr_at100	pbmc_10k_v3	Sierra	sierra	0.135006	0.255854	n_called=106170
+b_pr_at100	gse104556	PeakATail	peakatail_mouse1	0.197962	0.369159	n_called=45907
+b_pr_at100	gse104556	PeakATail	peakatail_mouse2	0.200930	0.367878	n_called=46654
+b_pr_at100	gse104556	polyApipe	polyapipe_mouse1	0.249878	0.400516	n_called=89527
+b_pr_at100	gse104556	polyApipe	polyapipe_mouse2	0.250762	0.411943	n_called=87983
+b_pr_at100	gse104556	scAPAtrap	scapatrap_mouse1	0.245315	0.250247	n_called=135538
+b_pr_at100	gse104556	scAPAtrap	scapatrap_mouse2	0.258576	0.238911	n_called=151140
+b_pr_at100	gse104556	SCAPTURE	scapture_mouse1	0.155092	0.693550	n_called=23645
+b_pr_at100	gse104556	scUTRquant	scutrquant_mouse1	0.258632	0.782464	n_called=35732
+b_pr_at100	gse104556	scUTRquant	scutrquant_mouse2	0.258884	0.783708	n_called=35845
+b_pr_at100	gse104556	Sierra	sierra_mouse1	0.107052	0.508736	n_called=22550
+b_pr_at100	gse104556	Sierra	sierra_mouse2	0.117298	0.581064	n_called=21335
+c_f1_at100	pbmc_10k_v3	polyApipe	polyapipe	-0.280000	0.261026	human PBMC
+c_f1_at100	gse104556	polyApipe	polyapipe_mouse1	0.000000	0.307752	mouse1
+c_f1_at100	gse104556	polyApipe	polyapipe_mouse2	0.280000	0.311751	mouse2
+c_f1_at100	pbmc_10k_v3	SCAPTURE	scapture	0.720000	0.199196	human PBMC
+c_f1_at100	gse104556	SCAPTURE	scapture_mouse1	1.000000	0.253497	mouse1
+c_f1_at100	pbmc_10k_v3	Sierra	sierra	1.720000	0.176748	human PBMC
+c_f1_at100	gse104556	Sierra	sierra_mouse1	2.000000	0.176883	mouse1
+c_f1_at100	gse104556	Sierra	sierra_mouse2	2.280000	0.195193	mouse2
+c_f1_at100	pbmc_10k_v3	scAPAtrap	scapatrap	2.720000	0.149956	human PBMC
+c_f1_at100	gse104556	scAPAtrap	scapatrap_mouse1	3.000000	0.247757	mouse1
+c_f1_at100	gse104556	scAPAtrap	scapatrap_mouse2	3.280000	0.248355	mouse2
+c_f1_at100	pbmc_10k_v3	PeakATail	peakatail	3.720000	0.134134	human PBMC
+c_f1_at100	gse104556	PeakATail	peakatail_mouse1	4.000000	0.257721	mouse1
+c_f1_at100	gse104556	PeakATail	peakatail_mouse2	4.280000	0.259904	mouse2
+c_f1_at100	pbmc_10k_v3	scUTRquant	scutrquant	5.570000	0.290262	human PBMC
+c_f1_at100	gse104556	scUTRquant	scutrquant_mouse1	5.850000	0.388763	mouse1
+c_f1_at100	gse104556	scUTRquant	scutrquant_mouse2	6.130000	0.389202	mouse2
+d_reproducibility	gse104556	scAPAtrap	scAPAtrap_mouse1->mouse2	-0.250000	0.883951	concordance@100, all calls, n=135538
+d_reproducibility	gse104556	scAPAtrap	scAPAtrap_mouse2->mouse1	-0.250000	0.792729	concordance@100, all calls, n=151140
+d_reproducibility	gse104556	scAPAtrap	scAPAtrap_mouse1->mouse2	0.000000	0.883951	concordance@100, depth $\geq$ 2, n=135538
+d_reproducibility	gse104556	scAPAtrap	scAPAtrap_mouse2->mouse1	0.000000	0.792729	concordance@100, depth $\geq$ 2, n=151140
+d_reproducibility	gse104556	scAPAtrap	scAPAtrap_mouse1->mouse2	0.250000		concordance@100, depth $\leq$ 1, n=0
+d_reproducibility	gse104556	scAPAtrap	scAPAtrap_mouse2->mouse1	0.250000		concordance@100, depth $\leq$ 1, n=0
+d_reproducibility	gse104556	scAPAtrap	scAPAtrap	0.000000	0.000000	fraction of calls with depth<=1
+d_reproducibility	gse104556	Sierra	Sierra_mouse1->mouse2	0.750000	0.789933	concordance@100, all calls, n=22550
+d_reproducibility	gse104556	Sierra	Sierra_mouse2->mouse1	0.750000	0.833513	concordance@100, all calls, n=21335
+d_reproducibility	gse104556	Sierra	Sierra_mouse1->mouse2	1.000000	0.790237	concordance@100, depth $\geq$ 2, n=22268
+d_reproducibility	gse104556	Sierra	Sierra_mouse2->mouse1	1.000000	0.833666	concordance@100, depth $\geq$ 2, n=21066
+d_reproducibility	gse104556	Sierra	Sierra_mouse1->mouse2	1.250000	0.767857	concordance@100, depth $\leq$ 1, n=280
+d_reproducibility	gse104556	Sierra	Sierra_mouse2->mouse1	1.250000	0.821561	concordance@100, depth $\leq$ 1, n=269
+d_reproducibility	gse104556	Sierra	Sierra	1.000000	0.012513	fraction of calls with depth<=1
+d_reproducibility	gse104556	PeakATail	PeakATail_mouse1->mouse2	1.750000	0.745899	concordance@100, all calls, n=45907
+d_reproducibility	gse104556	PeakATail	PeakATail_mouse2->mouse1	1.750000	0.733956	concordance@100, all calls, n=46654
+d_reproducibility	gse104556	PeakATail	PeakATail_mouse1->mouse2	2.000000	0.746420	concordance@100, depth $\geq$ 2, n=44972
+d_reproducibility	gse104556	PeakATail	PeakATail_mouse2->mouse1	2.000000	0.733616	concordance@100, depth $\geq$ 2, n=45915
+d_reproducibility	gse104556	PeakATail	PeakATail_mouse1->mouse2	2.250000	0.720856	concordance@100, depth $\leq$ 1, n=935
+d_reproducibility	gse104556	PeakATail	PeakATail_mouse2->mouse1	2.250000	0.755074	concordance@100, depth $\leq$ 1, n=739
+d_reproducibility	gse104556	PeakATail	PeakATail	2.000000	0.018104	fraction of calls with depth<=1
+d_reproducibility	gse104556	polyApipe	polyApipe_mouse1->mouse2	2.750000	0.493896	concordance@100, all calls, n=89527
+d_reproducibility	gse104556	polyApipe	polyApipe_mouse2->mouse1	2.750000	0.502563	concordance@100, all calls, n=87983
+d_reproducibility	gse104556	polyApipe	polyApipe_mouse1->mouse2	3.000000	0.809269	concordance@100, depth $\geq$ 2, n=33209
+d_reproducibility	gse104556	polyApipe	polyApipe_mouse2->mouse1	3.000000	0.814663	concordance@100, depth $\geq$ 2, n=33512
+d_reproducibility	gse104556	polyApipe	polyApipe_mouse1->mouse2	3.250000	0.307930	concordance@100, depth $\leq$ 1, n=56318
+d_reproducibility	gse104556	polyApipe	polyApipe_mouse2->mouse1	3.250000	0.310551	concordance@100, depth $\leq$ 1, n=54471
+d_reproducibility	gse104556	polyApipe	polyApipe	3.000000	0.624085	fraction of calls with depth<=1
+d_reproducibility	gse104556	(null)	genic_shuffle_null		0.009439	max chance concordance@100 over tools/directions
+e_resources	pbmc_10k_v3	PeakATail	peakatail	-0.190000	3.451667	runtime_s
+e_resources	gse104556	PeakATail	peakatail_mouse1	0.190000	2.113333	runtime_s
+e_resources	gse104556	PeakATail	peakatail_mouse2	0.190000	1.446111	runtime_s
+e_resources	pbmc_10k_v3	polyApipe	polyapipe	0.810000	3.443611	runtime_s
+e_resources	gse104556	polyApipe	polyapipe_mouse1	1.190000	1.310000	runtime_s
+e_resources	gse104556	polyApipe	polyapipe_mouse2	1.190000	1.049722	runtime_s
+e_resources	pbmc_10k_v3	scAPAtrap	scapatrap	1.810000	4.074722	runtime_s
+e_resources	gse104556	scAPAtrap	scapatrap_mouse1	2.190000	3.698333	runtime_s
+e_resources	gse104556	scAPAtrap	scapatrap_mouse2	2.190000	2.771389	runtime_s
+e_resources	pbmc_10k_v3	SCAPTURE	scapture	2.810000	12.228333	runtime_s
+e_resources	gse104556	SCAPTURE	scapture_mouse1	3.190000	8.489514	runtime_s
+e_resources	pbmc_10k_v3	scUTRquant	scutrquant	3.810000	0.512553	runtime_s
+e_resources	gse104556	scUTRquant	scutrquant_mouse1	4.190000	1.266111	runtime_s
+e_resources	gse104556	scUTRquant	scutrquant_mouse2	4.190000	1.063961	runtime_s
+e_resources	pbmc_10k_v3	Sierra	sierra	4.810000	2.732583	runtime_s
+e_resources	gse104556	Sierra	sierra_mouse1	5.190000	1.324669	runtime_s
+e_resources	gse104556	Sierra	sierra_mouse2	5.190000	1.053269	runtime_s
+e_resources	pbmc_10k_v3	PeakATail	peakatail	-0.190000	100.656528	rss_gib
+e_resources	gse104556	PeakATail	peakatail_mouse1	0.190000	14.039829	rss_gib
+e_resources	gse104556	PeakATail	peakatail_mouse2	0.190000	13.622570	rss_gib
+e_resources	pbmc_10k_v3	polyApipe	polyapipe	0.810000	13.088203	rss_gib
+e_resources	gse104556	polyApipe	polyapipe_mouse1	1.190000	6.766846	rss_gib
+e_resources	gse104556	polyApipe	polyapipe_mouse2	1.190000	6.762283	rss_gib
+e_resources	pbmc_10k_v3	scAPAtrap	scapatrap	1.810000	14.304951	rss_gib
+e_resources	gse104556	scAPAtrap	scapatrap_mouse1	2.190000	7.874557	rss_gib
+e_resources	gse104556	scAPAtrap	scapatrap_mouse2	2.190000	7.765820	rss_gib
+e_resources	pbmc_10k_v3	SCAPTURE	scapture	2.810000	23.041031	rss_gib
+e_resources	gse104556	SCAPTURE	scapture_mouse1	3.190000	4.105835	rss_gib
+e_resources	pbmc_10k_v3	scUTRquant	scutrquant	3.810000	4.003296	rss_gib
+e_resources	gse104556	scUTRquant	scutrquant_mouse1	4.190000	4.002441	rss_gib
+e_resources	gse104556	scUTRquant	scutrquant_mouse2	4.190000	4.003296	rss_gib
+e_resources	pbmc_10k_v3	Sierra	sierra	4.810000	9.585171	rss_gib
+e_resources	gse104556	Sierra	sierra_mouse1	5.190000	4.388802	rss_gib
+e_resources	gse104556	Sierra	sierra_mouse2	5.190000	4.358234	rss_gib

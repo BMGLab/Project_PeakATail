@@ -1,0 +1,152 @@
+panel	record	key	value	note
+a	CD4-T	n_cells	2988	marker-derived label, matched cells
+a	CD8-T	n_cells	1661	marker-derived label, matched cells
+a	NK	n_cells	576	marker-derived label, matched cells
+a	B	n_cells	1578	marker-derived label, matched cells
+a	CD14-Mono	n_cells	3339	marker-derived label, matched cells
+a	FCGR3A-Mono	n_cells	382	marker-derived label, matched cells
+a	DC	n_cells	297	marker-derived label, matched cells
+a	Platelet	n_cells	220	marker-derived label, matched cells
+c	pbmc_10k_v3	AMI_pas_vs_celltype	0.708	this dataset
+c	laughney_n17	median_AMI_celltype_vs_pas	0.6616	range 0.367-0.779
+c	pbmc_10k_v3	ARI_pas_vs_celltype	0.5023	this dataset
+c	laughney_n17	median_ARI_celltype_vs_pas	0.4627	range 0.200-0.670
+c	pbmc_10k_v3	AMI_pas_vs_gexleiden	0.772	this dataset
+c	laughney_n17	AMI_pas_vs_gexleiden_median	0.6565	cohort median
+c	pbmc_10k_v3	ARI_pas_vs_gexleiden	0.6089	this dataset
+c	laughney_n17	ARI_pas_vs_gexleiden_median	0.4564	cohort median
+b	pas0	Platelet	153	cells
+b	pas1	Platelet	17	cells
+b	pas2	CD14-Mono	1233	cells
+b	pas2	DC	3	cells
+b	pas2	Platelet	9	cells
+b	pas3	CD4-T	35	cells
+b	pas3	CD8-T	3	cells
+b	pas3	NK	1	cells
+b	pas3	B	3	cells
+b	pas3	CD14-Mono	22	cells
+b	pas3	FCGR3A-Mono	5	cells
+b	pas3	DC	3	cells
+b	pas4	CD14-Mono	16	cells
+b	pas4	FCGR3A-Mono	363	cells
+b	pas4	Platelet	4	cells
+b	pas5	CD4-T	2	cells
+b	pas5	CD14-Mono	242	cells
+b	pas5	FCGR3A-Mono	2	cells
+b	pas5	DC	1	cells
+b	pas5	Platelet	1	cells
+b	pas6	CD4-T	644	cells
+b	pas6	CD8-T	20	cells
+b	pas6	B	1	cells
+b	pas7	CD4-T	11	cells
+b	pas7	CD8-T	643	cells
+b	pas8	CD4-T	1733	cells
+b	pas8	CD8-T	165	cells
+b	pas8	NK	2	cells
+b	pas8	DC	1	cells
+b	pas8	Platelet	1	cells
+b	pas9	CD14-Mono	66	cells
+b	pas9	Platelet	1	cells
+b	pas10	CD14-Mono	1760	cells
+b	pas10	FCGR3A-Mono	12	cells
+b	pas10	DC	23	cells
+b	pas10	Platelet	22	cells
+b	pas11	CD4-T	452	cells
+b	pas11	CD8-T	323	cells
+b	pas11	Platelet	6	cells
+b	pas12	CD4-T	2	cells
+b	pas12	NK	3	cells
+b	pas12	B	597	cells
+b	pas13	B	977	cells
+b	pas13	Platelet	4	cells
+b	pas14	DC	155	cells
+b	pas15	CD4-T	65	cells
+b	pas15	CD8-T	89	cells
+b	pas15	Platelet	1	cells
+b	pas16	CD4-T	7	cells
+b	pas16	CD8-T	402	cells
+b	pas16	NK	2	cells
+b	pas16	Platelet	1	cells
+b	pas17	CD4-T	36	cells
+b	pas17	CD8-T	16	cells
+b	pas17	NK	568	cells
+b	pas17	DC	1	cells
+b	pas18	DC	84	cells
+b	pas19	CD4-T	1	cells
+b	pas19	DC	26	cells
+d	all 275k PAS, COUNTS  (shipped)	AMI_vs_celltype_res1.0	0.708	n_features=275370; the published result
+d	all 275k PAS, COUNTS  (shipped)	AMI_vs_celltype_k_matched_to_8_types	0.7878	
+d	→ summed per gene = EXPRESSION	AMI_vs_celltype_res1.0	0.6978	n_features=14891; site resolution discarded
+d	→ summed per gene = EXPRESSION	AMI_vs_celltype_k_matched_to_8_types	0.7602	
+d	atlas-supported PAS only, counts	AMI_vs_celltype_res1.0	0.7202	n_features=32361; 
+d	atlas-supported PAS only, counts	AMI_vs_celltype_k_matched_to_8_types	0.8247	
+d	NON-atlas peaks only, counts	AMI_vs_celltype_res1.0	0.6962	n_features=243009; 
+d	NON-atlas peaks only, counts	AMI_vs_celltype_k_matched_to_8_types	0.8214	
+d	gene-DETECTION mask only (binary)	AMI_vs_celltype_res1.0	0.7233	n_features=10000; no usage value at all
+d	gene-DETECTION mask only (binary)	AMI_vs_celltype_k_matched_to_8_types	0.7107	
+d	within-gene USAGE, top 10k sites	AMI_vs_celltype_res1.0	0.7797	n_features=10000; 89% of them are NOT poly(A) sites
+d	within-gene USAGE, top 10k sites	AMI_vs_celltype_k_matched_to_8_types	0.7997	
+d	USAGE over REAL poly(A) sites only	AMI_vs_celltype_res1.0	0.3166	n_features=10000; true APA signal
+d	USAGE over REAL poly(A) sites only	AMI_vs_celltype_k_matched_to_8_types	0.3166	
+d	USAGE over NON-PAS, variance-matched	AMI_vs_celltype_res1.0	0.7391	n_features=10000; same n, same usage variance
+d	USAGE over NON-PAS, variance-matched	AMI_vs_celltype_k_matched_to_8_types	0.7528	
+d	usage values shuffled (null)	AMI_vs_celltype_res1.0	0.0003	n_features=10000; 
+d	usage values shuffled (null)	AMI_vs_celltype_k_matched_to_8_types	0.0003	
+e	B_PAS13_vs_PAS12	depth	pass	1.4× AUC 0.20
+e	B_PAS13_vs_PAS12	gexdepth	FAIL	1.5×
+e	B_PAS13_vs_PAS12	mito	pass	1.0×
+e	B_PAS13_vs_PAS12	doublet	pass	1.4×
+e	B_PAS13_vs_PAS12	ambient	pass	1.4× Mono
+e	B_PAS13_vs_PAS12	expression	FAIL	18 DE genes
+e	B_PAS13_vs_PAS12	gexres	FAIL	ARI 0.90
+e	B_PAS13_vs_PAS12	atlas	FAIL	12/73 =16%
+e	B_PAS13_vs_PAS12	n_candidates	467	
+e	B_PAS13_vs_PAS12	n_significant_q05	76	per-cell MWU, BH
+e	B_PAS13_vs_PAS12	n_apa_driven	73	sig & expr comparable
+e	B_PAS13_vs_PAS12	n_apa_driven_atlas_supported	12	
+e	B_PAS13_vs_PAS12	null_sig_mean	0.9	20 within-split relabellings
+e	CD14-Mono_PAS10_vs_PAS2	depth	FAIL	2.2× AUC 0.97
+e	CD14-Mono_PAS10_vs_PAS2	gexdepth	FAIL	2.0×
+e	CD14-Mono_PAS10_vs_PAS2	mito	pass	1.1×
+e	CD14-Mono_PAS10_vs_PAS2	doublet	pass	1.3×
+e	CD14-Mono_PAS10_vs_PAS2	ambient	pass	1.0× Platelet
+e	CD14-Mono_PAS10_vs_PAS2	expression	pass	0 DE genes
+e	CD14-Mono_PAS10_vs_PAS2	gexres	pass	ARI 0.09
+e	CD14-Mono_PAS10_vs_PAS2	atlas	pass	4/10 =40%
+e	CD14-Mono_PAS10_vs_PAS2	n_candidates	165	
+e	CD14-Mono_PAS10_vs_PAS2	n_significant_q05	10	per-cell MWU, BH
+e	CD14-Mono_PAS10_vs_PAS2	n_apa_driven	10	sig & expr comparable
+e	CD14-Mono_PAS10_vs_PAS2	n_apa_driven_atlas_supported	4	
+e	CD14-Mono_PAS10_vs_PAS2	null_sig_mean	1.05	20 within-split relabellings
+e	CD4-T_PAS8_vs_PAS6	depth	pass	1.1× AUC 0.65
+e	CD4-T_PAS8_vs_PAS6	gexdepth	pass	1.1×
+e	CD4-T_PAS8_vs_PAS6	mito	pass	1.0×
+e	CD4-T_PAS8_vs_PAS6	doublet	FAIL	1.5×
+e	CD4-T_PAS8_vs_PAS6	ambient	pass	1.0× Mono
+e	CD4-T_PAS8_vs_PAS6	expression	FAIL	16 DE genes
+e	CD4-T_PAS8_vs_PAS6	gexres	FAIL	ARI 0.59
+e	CD4-T_PAS8_vs_PAS6	atlas	FAIL	5/51 =10%
+e	CD4-T_PAS8_vs_PAS6	n_candidates	277	
+e	CD4-T_PAS8_vs_PAS6	n_significant_q05	53	per-cell MWU, BH
+e	CD4-T_PAS8_vs_PAS6	n_apa_driven	51	sig & expr comparable
+e	CD4-T_PAS8_vs_PAS6	n_apa_driven_atlas_supported	5	
+e	CD4-T_PAS8_vs_PAS6	null_sig_mean	0.65	20 within-split relabellings
+e	CD8-T_PAS7_vs_PAS16	depth	pass	1.0× AUC 0.52
+e	CD8-T_PAS7_vs_PAS16	gexdepth	pass	1.1×
+e	CD8-T_PAS7_vs_PAS16	mito	pass	1.1×
+e	CD8-T_PAS7_vs_PAS16	doublet	FAIL	1.9×
+e	CD8-T_PAS7_vs_PAS16	ambient	FAIL	2.6× NK
+e	CD8-T_PAS7_vs_PAS16	expression	FAIL	24 DE genes
+e	CD8-T_PAS7_vs_PAS16	gexres	FAIL	ARI 0.80
+e	CD8-T_PAS7_vs_PAS16	atlas	FAIL	0/33 =0%
+e	CD8-T_PAS7_vs_PAS16	n_candidates	362	
+e	CD8-T_PAS7_vs_PAS16	n_significant_q05	36	per-cell MWU, BH
+e	CD8-T_PAS7_vs_PAS16	n_apa_driven	33	sig & expr comparable
+e	CD8-T_PAS7_vs_PAS16	n_apa_driven_atlas_supported	0	
+e	CD8-T_PAS7_vs_PAS16	null_sig_mean	1.85	20 within-split relabellings
+e	POOLED	n_apa_driven	167	
+e	POOLED	n_apa_driven_atlas_supported	21	
+e	POOLED	atlas_frac_apa_driven	0.1257	
+e	POOLED	atlas_frac_candidate_universe	0.1998	
+e	POOLED	fisher_OR_vs_candidates	0.5377	
+e	POOLED	fisher_p_vs_candidates	0.0093060997863336	

@@ -1,0 +1,102 @@
+panel	arm	arm_label	series	cutoff_bp	value	numerator	denominator	bed_lines	pasbed_md5	median_peak_width_bp	mean_peak_width_bp	total_peak_bp
+b	lg_annotate	lambda_gradient (default)	n_pas_called		22633.0	22633		22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	precision	50	0.9974	22574	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_annotate	lambda_gradient (default)	recall_atlas_coverage	50	0.0298	549403	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	null_precision_shuffled_mean3seeds	50	0.7344	16622	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	precision	100	0.9986	22602	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_annotate	lambda_gradient (default)	recall_atlas_coverage	100	0.0326	601230	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	null_precision_shuffled_mean3seeds	100	0.7534	17051	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	precision	200	0.9989	22607	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_annotate	lambda_gradient (default)	recall_atlas_coverage	200	0.0371	684695	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	null_precision_shuffled_mean3seeds	200	0.7821	17702	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	precision	500	0.9993	22618	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_annotate	lambda_gradient (default)	recall_atlas_coverage	500	0.049	903340	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	null_precision_shuffled_mean3seeds	500	0.8349	18897	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	precision	1000	0.9997	22627	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_annotate	lambda_gradient (default)	recall_atlas_coverage	1000	0.0669	1233134	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	null_precision_shuffled_mean3seeds	1000	0.8743	19787	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	precision	5000	0.9998	22629	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_annotate	lambda_gradient (default)	recall_atlas_coverage	5000	0.1642	3026246	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_annotate	lambda_gradient (default)	null_precision_shuffled_mean3seeds	5000	0.9285	21014	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+b	lp_annotate	lambda_poisson	n_pas_called		21474.0	21474		21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	precision	50	0.9959	21386	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+c	lp_annotate	lambda_poisson	recall_atlas_coverage	50	0.0172	316811	18432135	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	null_precision_shuffled_mean3seeds	50	0.6709	14408	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	precision	100	0.998	21432	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+c	lp_annotate	lambda_poisson	recall_atlas_coverage	100	0.0201	369931	18432135	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	null_precision_shuffled_mean3seeds	100	0.7012	15057	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	precision	200	0.9986	21443	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+c	lp_annotate	lambda_poisson	recall_atlas_coverage	200	0.0248	458014	18432135	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	null_precision_shuffled_mean3seeds	200	0.7436	15969	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	precision	500	0.9992	21456	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+c	lp_annotate	lambda_poisson	recall_atlas_coverage	500	0.0376	692756	18432135	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	null_precision_shuffled_mean3seeds	500	0.8148	17497	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	precision	1000	0.9997	21467	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+c	lp_annotate	lambda_poisson	recall_atlas_coverage	1000	0.0562	1035224	18432135	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	null_precision_shuffled_mean3seeds	1000	0.8655	18586	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	precision	5000	0.9998	21470	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+c	lp_annotate	lambda_poisson	recall_atlas_coverage	5000	0.1545	2847155	18432135	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+a	lp_annotate	lambda_poisson	null_precision_shuffled_mean3seeds	5000	0.9283	19935	21474	21474	72a9204663600f1d4fb2d6221a6a301b	403	440.4	9456909
+b	si_annotate	sierra_iterative	n_pas_called		43035.0	43035		43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	precision	50	0.9964	42882	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+c	si_annotate	sierra_iterative	recall_atlas_coverage	50	0.0448	825078	18432135	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	null_precision_shuffled_mean3seeds	50	0.7105	30575	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	precision	100	0.9981	42952	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+c	si_annotate	sierra_iterative	recall_atlas_coverage	100	0.0501	923123	18432135	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	null_precision_shuffled_mean3seeds	100	0.733	31546	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	precision	200	0.9986	42976	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+c	si_annotate	sierra_iterative	recall_atlas_coverage	200	0.0582	1072952	18432135	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	null_precision_shuffled_mean3seeds	200	0.7671	33012	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	precision	500	0.9991	42998	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+c	si_annotate	sierra_iterative	recall_atlas_coverage	500	0.0789	1454922	18432135	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	null_precision_shuffled_mean3seeds	500	0.8258	35540	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	precision	1000	0.9994	43011	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+c	si_annotate	sierra_iterative	recall_atlas_coverage	1000	0.1089	2006810	18432135	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	null_precision_shuffled_mean3seeds	1000	0.8703	37454	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	precision	5000	0.9997	43021	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+c	si_annotate	sierra_iterative	recall_atlas_coverage	5000	0.2526	4655888	18432135	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+a	si_annotate	sierra_iterative	null_precision_shuffled_mean3seeds	5000	0.9268	39886	43035	43035	56855a2b45d5630210509eb54c1a7ae0	522	676.7	29123031
+b	lg_ip_filter	lambda_gradient + IP filter	n_pas_called		20609.0	20609		20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	precision	50	0.9972	20551	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+c	lg_ip_filter	lambda_gradient + IP filter	recall_atlas_coverage	50	0.027	498584	18432135	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	null_precision_shuffled_mean3seeds	50	0.735	15148	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	precision	100	0.9985	20579	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+c	lg_ip_filter	lambda_gradient + IP filter	recall_atlas_coverage	100	0.0296	546085	18432135	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	null_precision_shuffled_mean3seeds	100	0.7535	15528	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	precision	200	0.9988	20584	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+c	lg_ip_filter	lambda_gradient + IP filter	recall_atlas_coverage	200	0.0337	622073	18432135	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	null_precision_shuffled_mean3seeds	200	0.7821	16119	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	precision	500	0.9993	20594	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+c	lg_ip_filter	lambda_gradient + IP filter	recall_atlas_coverage	500	0.0447	823121	18432135	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	null_precision_shuffled_mean3seeds	500	0.8339	17187	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	precision	1000	0.9997	20603	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+c	lg_ip_filter	lambda_gradient + IP filter	recall_atlas_coverage	1000	0.0613	1129666	18432135	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	null_precision_shuffled_mean3seeds	1000	0.8752	18037	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	precision	5000	0.9998	20605	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+c	lg_ip_filter	lambda_gradient + IP filter	recall_atlas_coverage	5000	0.154	2838963	18432135	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+a	lg_ip_filter	lambda_gradient + IP filter	null_precision_shuffled_mean3seeds	5000	0.9289	19144	20609	20609	24afd66541bf3b0f8201984160dd37c0	636	817.3	16843840
+b	lg_ip_off	lambda_gradient, IP off	n_pas_called		22633.0	22633		22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	precision	50	0.9974	22574	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_ip_off	lambda_gradient, IP off	recall_atlas_coverage	50	0.0298	549403	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	null_precision_shuffled_mean3seeds	50	0.7344	16622	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	precision	100	0.9986	22602	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_ip_off	lambda_gradient, IP off	recall_atlas_coverage	100	0.0326	601230	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	null_precision_shuffled_mean3seeds	100	0.7534	17051	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	precision	200	0.9989	22607	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_ip_off	lambda_gradient, IP off	recall_atlas_coverage	200	0.0371	684695	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	null_precision_shuffled_mean3seeds	200	0.7821	17702	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	precision	500	0.9993	22618	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_ip_off	lambda_gradient, IP off	recall_atlas_coverage	500	0.049	903340	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	null_precision_shuffled_mean3seeds	500	0.8349	18897	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	precision	1000	0.9997	22627	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_ip_off	lambda_gradient, IP off	recall_atlas_coverage	1000	0.0669	1233134	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	null_precision_shuffled_mean3seeds	1000	0.8743	19787	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	precision	5000	0.9998	22629	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+c	lg_ip_off	lambda_gradient, IP off	recall_atlas_coverage	5000	0.1642	3026246	18432135	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	lg_ip_off	lambda_gradient, IP off	null_precision_shuffled_mean3seeds	5000	0.9285	21014	22633	22633	20cb455024723dfa4256c1329f262386	640	821.3	18587741
+a	(reference)	PolyASite 3.0 atlas	frac_genome_within_cutoff_of_any_atlas_site	50	0.3864	1193426767	3088269832					
+a	(reference)	PolyASite 3.0 atlas	frac_genome_within_cutoff_of_any_atlas_site	100	0.5149	1590113129	3088269832					
+a	(reference)	PolyASite 3.0 atlas	frac_genome_within_cutoff_of_any_atlas_site	200	0.6355	1962733733	3088269832					
+a	(reference)	PolyASite 3.0 atlas	frac_genome_within_cutoff_of_any_atlas_site	500	0.7724	2385404092	3088269832					
+a	(reference)	PolyASite 3.0 atlas	frac_genome_within_cutoff_of_any_atlas_site	1000	0.849	2621803657	3088269832					
+a	(reference)	PolyASite 3.0 atlas	frac_genome_within_cutoff_of_any_atlas_site	5000	0.9267	2861785826	3088269832					

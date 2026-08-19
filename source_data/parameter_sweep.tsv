@@ -1,0 +1,40 @@
+panel	series	branch	x_label	metric	median	q1_or_min	q3_or_max	n_datasets	p25	p75	n_datasets_changed
+a	include_extended = on	A2_trim_d1000_ext	1000	final_pas	26596.0000	22270.0000	33078.0000	17			
+b	include_extended = on	A2_trim_d1000_ext	1000	final_cells	3421.0000	2956.0000	4170.0000	17			
+a	include_extended = on	A2_trim_d2000_ext	2000	final_pas	26790.0000	22378.0000	33254.0000	17			
+b	include_extended = on	A2_trim_d2000_ext	2000	final_cells	3421.0000	2957.0000	4170.0000	17			
+a	include_extended = on	A2_trim_d3000_ext	3000	final_pas	26995.0000	22518.0000	33435.0000	17			
+b	include_extended = on	A2_trim_d3000_ext	3000	final_cells	3421.0000	2957.0000	4170.0000	17			
+a	include_extended = on	A2_trim_d5000_ext	5000	final_pas	27423.0000	22788.0000	33864.0000	17			
+b	include_extended = on	A2_trim_d5000_ext	5000	final_cells	3421.0000	2958.0000	4170.0000	17			
+a	include_extended = on	A2_trim_d10000_ext	10000	final_pas	28417.0000	23333.0000	34820.0000	17			
+b	include_extended = on	A2_trim_d10000_ext	10000	final_cells	3421.0000	2959.0000	4170.0000	17			
+a	include_extended = off (default)	A2_trim_default	5000	final_pas	24136.0000	20355.0000	30198.0000	17			
+b	include_extended = off (default)	A2_trim_default	5000	final_cells	3418.0000	2946.0000	4133.0000	17			
+c	n leiden clusters	A3_res0.5	res 0.5	n_clusters	11.0000	9.0000	12.0000	17			
+c	n leiden clusters	A2_trim_default	res 1.0 (default)	n_clusters	15.0000	14.0000	16.0000	17			
+c	n leiden clusters	A3_res2.0	res 2.0	n_clusters	23.0000	21.0000	24.0000	17			
+c	n leiden clusters	A3_nn15	nn 15	n_clusters	17.0000	15.0000	18.0000	17			
+c	n leiden clusters	A3_nn50	nn 50	n_clusters	14.0000	12.0000	15.0000	17			
+c	n leiden clusters	A3_libsize	libsize norm.	n_clusters	17.0000	14.0000	18.0000	17			
+d	paired % change in final_pas	A2_trim_d1000_ext -> A2_trim_d10000_ext	max_gene distance 1k→2k…10k	final_pas	6.3974	4.6995	7.7197	17	5.2663	6.8469	17.0000
+d	paired % change in n_clusters	A2_trim_d1000_ext -> A2_trim_d10000_ext	max_gene distance 1k→2k…10k	n_clusters	0.0000	-13.3333	6.6667	17	0.0000	0.0000	7.0000
+d	paired % change in final_cells	A2_trim_d1000_ext -> A2_trim_d10000_ext	max_gene distance 1k→2k…10k	final_cells	0.0000	0.0000	1.2057	17	0.0000	0.0617	7.0000
+d	paired % change in final_pas	A2_trim_default -> A2_trim_d5000_ext	include extended off→on	final_pas	13.2042	11.3208	15.7004	17	12.1399	13.7420	17.0000
+d	paired % change in n_clusters	A2_trim_default -> A2_trim_d5000_ext	include extended off→on	n_clusters	0.0000	-9.0909	13.3333	17	0.0000	6.6667	9.0000
+d	paired % change in final_cells	A2_trim_default -> A2_trim_d5000_ext	include extended off→on	final_cells	0.1413	0.0000	3.0244	17	0.0000	0.2404	11.0000
+d	paired % change in final_pas	A2_trim_mult1.5 -> A2_trim_mult3.0	utr multiplier 1.5→3.0	final_pas	1.1261	0.8615	1.6126	17	1.0387	1.3473	17.0000
+d	paired % change in n_clusters	A2_trim_mult1.5 -> A2_trim_mult3.0	utr multiplier 1.5→3.0	n_clusters	0.0000	-11.7647	12.5000	17	-5.8824	0.0000	8.0000
+d	paired % change in final_cells	A2_trim_mult1.5 -> A2_trim_mult3.0	utr multiplier 1.5→3.0	final_cells	0.0000	0.0000	0.5578	17	0.0000	0.0240	6.0000
+d	paired % change in final_pas	A3_res0.5 -> A3_res2.0	leiden resolution 0.5→2.0	final_pas	0.0000	0.0000	0.0000	17	0.0000	0.0000	0.0000
+d	paired % change in n_clusters	A3_res0.5 -> A3_res2.0	leiden resolution 0.5→2.0	n_clusters	112.5000	71.4286	200.0000	17	91.6667	136.3636	17.0000
+d	paired % change in final_cells	A3_res0.5 -> A3_res2.0	leiden resolution 0.5→2.0	final_cells	0.0000	0.0000	0.0000	17	0.0000	0.0000	0.0000
+d	paired % change in final_pas	A3_nn15 -> A3_nn50	n_neighbors  15→50	final_pas	0.0000	0.0000	0.0000	17	0.0000	0.0000	0.0000
+d	paired % change in n_clusters	A3_nn15 -> A3_nn50	n_neighbors  15→50	n_clusters	-14.2857	-31.2500	-5.8824	17	-20.0000	-11.7647	17.0000
+d	paired % change in final_cells	A3_nn15 -> A3_nn50	n_neighbors  15→50	final_cells	0.0000	0.0000	0.0000	17	0.0000	0.0000	0.0000
+d	paired % change in final_pas	A2_trim_default -> A3_libsize	cluster method tfidf→libsize	final_pas	0.0000	0.0000	0.0000	17	0.0000	0.0000	0.0000
+d	paired % change in n_clusters	A2_trim_default -> A3_libsize	cluster method tfidf→libsize	n_clusters	5.8824	-41.6667	93.3333	17	-6.6667	28.5714	14.0000
+d	paired % change in final_cells	A2_trim_default -> A3_libsize	cluster method tfidf→libsize	final_cells	0.0000	0.0000	0.0000	17	0.0000	0.0000	0.0000
+a	caption number	A2_trim_default	pas_retention (%)	pas_retention_pct	23.1223	16.7634	28.5568	17			
+a	caption number	A2_trim_d1000_ext	between-dataset IQR / distance effect	ratio	5.9352	10808.0000	1821.0000	17			
+b	caption number	all ordered branch pairs	final_cells paired change (%)	final_cells_worst_case	0.1413	0.0000	3.8322	17			

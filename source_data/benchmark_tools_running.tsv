@@ -1,0 +1,501 @@
+panel	arm	series	reference	cutoff_bp	replicate	n_query	n_matched	value	bar	passes	tool	dataset	provisional	note
+precision	polyapipe	real	atlas_full	10.000000	0	120916.000000	35398.000000	0.292749			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	real	atlas_full	25.000000	0	120916.000000	41222.000000	0.340914			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	real	atlas_full	50.000000	0	120916.000000	43354.000000	0.358546			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	real	atlas_full	100.000000	0	120916.000000	45944.000000	0.379966			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	real	atlas_full	200.000000	0	120916.000000	49545.000000	0.409747			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	real	tes	10.000000	0	120916.000000	12011.000000	0.099333			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	real	tes	25.000000	0	120916.000000	12737.000000	0.105338			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	real	tes	50.000000	0	120916.000000	13390.000000	0.110738			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	real	tes	100.000000	0	120916.000000	14319.000000	0.118421			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	real	tes	200.000000	0	120916.000000	15656.000000	0.129478			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	10.000000	1	120916.000000	283.000000	0.002340			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	25.000000	1	120916.000000	711.000000	0.005880			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	50.000000	1	120916.000000	1390.000000	0.011496			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	100.000000	1	120916.000000	2661.000000	0.022007			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	200.000000	1	120916.000000	4877.000000	0.040334			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	10.000000	2	120916.000000	276.000000	0.002283			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	25.000000	2	120916.000000	706.000000	0.005839			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	50.000000	2	120916.000000	1442.000000	0.011926			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	100.000000	2	120916.000000	2656.000000	0.021966			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	200.000000	2	120916.000000	4923.000000	0.040714			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	10.000000	3	120916.000000	299.000000	0.002473			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	25.000000	3	120916.000000	782.000000	0.006467			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	50.000000	3	120916.000000	1508.000000	0.012471			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	100.000000	3	120916.000000	2806.000000	0.023206			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe	null_genic	atlas_full	200.000000	3	120916.000000	4996.000000	0.041318			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	atlas_full	10.000000	0	569005.000000	35404.000000	0.062221			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	atlas_full	25.000000	0	569005.000000	41828.000000	0.073511			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	atlas_full	50.000000	0	569005.000000	51669.000000	0.090806			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	atlas_full	100.000000	0	569005.000000	67592.000000	0.118790			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	atlas_full	200.000000	0	569005.000000	88608.000000	0.155724			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	atlas_detected	10.000000	0	285220.000000	28106.000000	0.098541			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	atlas_detected	25.000000	0	285220.000000	33431.000000	0.117211			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	atlas_detected	50.000000	0	285220.000000	42197.000000	0.147945			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	atlas_detected	100.000000	0	285220.000000	56293.000000	0.197367			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	atlas_detected	200.000000	0	285220.000000	74719.000000	0.261970			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	tes	10.000000	0	73439.000000	16567.000000	0.225589			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	tes	25.000000	0	73439.000000	18493.000000	0.251814			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	tes	50.000000	0	73439.000000	20251.000000	0.275753			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	tes	100.000000	0	73439.000000	22347.000000	0.304293			polyapipe	pbmc_10k_v3	0	
+recall	polyapipe	real	tes	200.000000	0	73439.000000	25430.000000	0.346274			polyapipe	pbmc_10k_v3	0	
+f1	polyapipe	real	atlas_full	10.000000	0			0.102629			polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	precision	atlas_full	10.000000	0			0.292749	0.700000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	recall	atlas_full	10.000000	0			0.062221	0.600000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	f1	atlas_full	10.000000	0			0.102629	0.650000	0.000000	polyapipe	pbmc_10k_v3	0	
+f1	polyapipe	real	atlas_full	25.000000	0			0.120943			polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	precision	atlas_full	25.000000	0			0.340914	0.700000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	recall	atlas_full	25.000000	0			0.073511	0.600000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	f1	atlas_full	25.000000	0			0.120943	0.650000	0.000000	polyapipe	pbmc_10k_v3	0	
+f1	polyapipe	real	atlas_full	50.000000	0			0.144911			polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	precision	atlas_full	50.000000	0			0.358546	0.700000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	recall	atlas_full	50.000000	0			0.090806	0.600000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	f1	atlas_full	50.000000	0			0.144911	0.650000	0.000000	polyapipe	pbmc_10k_v3	0	
+f1	polyapipe	real	atlas_full	100.000000	0			0.180995			polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	precision	atlas_full	100.000000	0			0.379966	0.700000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	recall	atlas_full	100.000000	0			0.118790	0.600000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	f1	atlas_full	100.000000	0			0.180995	0.650000	0.000000	polyapipe	pbmc_10k_v3	0	
+f1	polyapipe	real	atlas_full	200.000000	0			0.225679			polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	precision	atlas_full	200.000000	0			0.409747	0.700000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	recall	atlas_full	200.000000	0			0.155724	0.600000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	f1	atlas_full	200.000000	0			0.225679	0.650000	0.000000	polyapipe	pbmc_10k_v3	0	
+f1	polyapipe	real	atlas_detected	10.000000	0			0.147450			polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	precision	atlas_detected	10.000000	0			0.292749	0.700000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	recall	atlas_detected	10.000000	0			0.098541	0.600000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	f1	atlas_detected	10.000000	0			0.147450	0.650000	0.000000	polyapipe	pbmc_10k_v3	0	
+f1	polyapipe	real	atlas_detected	25.000000	0			0.174446			polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	precision	atlas_detected	25.000000	0			0.340914	0.700000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	recall	atlas_detected	25.000000	0			0.117211	0.600000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	f1	atlas_detected	25.000000	0			0.174446	0.650000	0.000000	polyapipe	pbmc_10k_v3	0	
+f1	polyapipe	real	atlas_detected	50.000000	0			0.209462			polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	precision	atlas_detected	50.000000	0			0.358546	0.700000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	recall	atlas_detected	50.000000	0			0.147945	0.600000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	f1	atlas_detected	50.000000	0			0.209462	0.650000	0.000000	polyapipe	pbmc_10k_v3	0	
+f1	polyapipe	real	atlas_detected	100.000000	0			0.259790			polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	precision	atlas_detected	100.000000	0			0.379966	0.700000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	recall	atlas_detected	100.000000	0			0.197367	0.600000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	f1	atlas_detected	100.000000	0			0.259790	0.650000	0.000000	polyapipe	pbmc_10k_v3	0	
+f1	polyapipe	real	atlas_detected	200.000000	0			0.319603			polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	precision	atlas_detected	200.000000	0			0.409747	0.700000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	recall	atlas_detected	200.000000	0			0.261970	0.600000	0.000000	polyapipe	pbmc_10k_v3	0	
+roadmap	polyapipe	f1	atlas_detected	200.000000	0			0.319603	0.650000	0.000000	polyapipe	pbmc_10k_v3	0	
+meta	polyapipe	n_points			0	121013.000000	120916.000000	97.000000			polyapipe	pbmc_10k_v3	0	
+precision	polyapipe_all	real	atlas_full	10.000000	0	211706.000000	40275.000000	0.190240			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	real	atlas_full	25.000000	0	211706.000000	50035.000000	0.236342			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	real	atlas_full	50.000000	0	211706.000000	54170.000000	0.255874			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	real	atlas_full	100.000000	0	211706.000000	58686.000000	0.277205			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	real	atlas_full	200.000000	0	211706.000000	65414.000000	0.308985			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	real	tes	10.000000	0	211706.000000	13084.000000	0.061803			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	real	tes	25.000000	0	211706.000000	14203.000000	0.067088			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	real	tes	50.000000	0	211706.000000	15058.000000	0.071127			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	real	tes	100.000000	0	211706.000000	16264.000000	0.076824			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	real	tes	200.000000	0	211706.000000	17997.000000	0.085009			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	10.000000	1	211706.000000	576.000000	0.002721			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	25.000000	1	211706.000000	1379.000000	0.006514			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	50.000000	1	211706.000000	2595.000000	0.012258			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	100.000000	1	211706.000000	4819.000000	0.022763			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	200.000000	1	211706.000000	8749.000000	0.041326			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	10.000000	2	211706.000000	564.000000	0.002664			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	25.000000	2	211706.000000	1302.000000	0.006150			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	50.000000	2	211706.000000	2535.000000	0.011974			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	100.000000	2	211706.000000	4746.000000	0.022418			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	200.000000	2	211706.000000	8712.000000	0.041151			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	10.000000	3	211706.000000	551.000000	0.002603			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	25.000000	3	211706.000000	1278.000000	0.006037			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	50.000000	3	211706.000000	2491.000000	0.011766			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	100.000000	3	211706.000000	4702.000000	0.022210			polyapipe_all	pbmc_10k_v3	0	
+precision	polyapipe_all	null_genic	atlas_full	200.000000	3	211706.000000	8673.000000	0.040967			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	atlas_full	10.000000	0	569005.000000	40283.000000	0.070796			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	atlas_full	25.000000	0	569005.000000	50964.000000	0.089567			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	atlas_full	50.000000	0	569005.000000	63925.000000	0.112345			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	atlas_full	100.000000	0	569005.000000	83998.000000	0.147623			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	atlas_full	200.000000	0	569005.000000	111334.000000	0.195664			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	atlas_detected	10.000000	0	285220.000000	31390.000000	0.110055			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	atlas_detected	25.000000	0	285220.000000	40218.000000	0.141007			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	atlas_detected	50.000000	0	285220.000000	51532.000000	0.180675			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	atlas_detected	100.000000	0	285220.000000	69103.000000	0.242280			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	atlas_detected	200.000000	0	285220.000000	92781.000000	0.325296			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	tes	10.000000	0	73439.000000	17884.000000	0.243522			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	tes	25.000000	0	73439.000000	20425.000000	0.278122			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	tes	50.000000	0	73439.000000	22513.000000	0.306554			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	tes	100.000000	0	73439.000000	25070.000000	0.341372			polyapipe_all	pbmc_10k_v3	0	
+recall	polyapipe_all	real	tes	200.000000	0	73439.000000	28804.000000	0.392217			polyapipe_all	pbmc_10k_v3	0	
+f1	polyapipe_all	real	atlas_full	10.000000	0			0.103190			polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	precision	atlas_full	10.000000	0			0.190240	0.700000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	recall	atlas_full	10.000000	0			0.070796	0.600000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	f1	atlas_full	10.000000	0			0.103190	0.650000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+f1	polyapipe_all	real	atlas_full	25.000000	0			0.129904			polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	precision	atlas_full	25.000000	0			0.236342	0.700000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	recall	atlas_full	25.000000	0			0.089567	0.600000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	f1	atlas_full	25.000000	0			0.129904	0.650000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+f1	polyapipe_all	real	atlas_full	50.000000	0			0.156136			polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	precision	atlas_full	50.000000	0			0.255874	0.700000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	recall	atlas_full	50.000000	0			0.112345	0.600000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	f1	atlas_full	50.000000	0			0.156136	0.650000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+f1	polyapipe_all	real	atlas_full	100.000000	0			0.192651			polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	precision	atlas_full	100.000000	0			0.277205	0.700000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	recall	atlas_full	100.000000	0			0.147623	0.600000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	f1	atlas_full	100.000000	0			0.192651	0.650000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+f1	polyapipe_all	real	atlas_full	200.000000	0			0.239601			polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	precision	atlas_full	200.000000	0			0.308985	0.700000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	recall	atlas_full	200.000000	0			0.195664	0.600000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	f1	atlas_full	200.000000	0			0.239601	0.650000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+f1	polyapipe_all	real	atlas_detected	10.000000	0			0.139442			polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	precision	atlas_detected	10.000000	0			0.190240	0.700000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	recall	atlas_detected	10.000000	0			0.110055	0.600000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	f1	atlas_detected	10.000000	0			0.139442	0.650000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+f1	polyapipe_all	real	atlas_detected	25.000000	0			0.176632			polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	precision	atlas_detected	25.000000	0			0.236342	0.700000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	recall	atlas_detected	25.000000	0			0.141007	0.600000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	f1	atlas_detected	25.000000	0			0.176632	0.650000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+f1	polyapipe_all	real	atlas_detected	50.000000	0			0.211797			polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	precision	atlas_detected	50.000000	0			0.255874	0.700000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	recall	atlas_detected	50.000000	0			0.180675	0.600000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	f1	atlas_detected	50.000000	0			0.211797	0.650000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+f1	polyapipe_all	real	atlas_detected	100.000000	0			0.258568			polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	precision	atlas_detected	100.000000	0			0.277205	0.700000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	recall	atlas_detected	100.000000	0			0.242280	0.600000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	f1	atlas_detected	100.000000	0			0.258568	0.650000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+f1	polyapipe_all	real	atlas_detected	200.000000	0			0.316931			polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	precision	atlas_detected	200.000000	0			0.308985	0.700000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	recall	atlas_detected	200.000000	0			0.325296	0.600000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+roadmap	polyapipe_all	f1	atlas_detected	200.000000	0			0.316931	0.650000	0.000000	polyapipe_all	pbmc_10k_v3	0	
+meta	polyapipe_all	n_points			0	211844.000000	211706.000000	138.000000			polyapipe_all	pbmc_10k_v3	0	
+precision	sierra	real	atlas_full	10.000000	0	106170.000000	8869.000000	0.083536			sierra	pbmc_10k_v3	0	
+precision	sierra	real	atlas_full	25.000000	0	106170.000000	16117.000000	0.151804			sierra	pbmc_10k_v3	0	
+precision	sierra	real	atlas_full	50.000000	0	106170.000000	22750.000000	0.214279			sierra	pbmc_10k_v3	0	
+precision	sierra	real	atlas_full	100.000000	0	106170.000000	27164.000000	0.255854			sierra	pbmc_10k_v3	0	
+precision	sierra	real	atlas_full	200.000000	0	106170.000000	31658.000000	0.298182			sierra	pbmc_10k_v3	0	
+precision	sierra	real	tes	10.000000	0	106170.000000	7365.000000	0.069370			sierra	pbmc_10k_v3	0	
+precision	sierra	real	tes	25.000000	0	106170.000000	8986.000000	0.084638			sierra	pbmc_10k_v3	0	
+precision	sierra	real	tes	50.000000	0	106170.000000	10936.000000	0.103005			sierra	pbmc_10k_v3	0	
+precision	sierra	real	tes	100.000000	0	106170.000000	12147.000000	0.114411			sierra	pbmc_10k_v3	0	
+precision	sierra	real	tes	200.000000	0	106170.000000	13340.000000	0.125648			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	10.000000	1	106170.000000	250.000000	0.002355			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	25.000000	1	106170.000000	667.000000	0.006282			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	50.000000	1	106170.000000	1259.000000	0.011858			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	100.000000	1	106170.000000	2396.000000	0.022568			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	200.000000	1	106170.000000	4394.000000	0.041386			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	10.000000	2	106170.000000	234.000000	0.002204			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	25.000000	2	106170.000000	616.000000	0.005802			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	50.000000	2	106170.000000	1204.000000	0.011340			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	100.000000	2	106170.000000	2269.000000	0.021371			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	200.000000	2	106170.000000	4272.000000	0.040237			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	10.000000	3	106170.000000	266.000000	0.002505			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	25.000000	3	106170.000000	666.000000	0.006273			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	50.000000	3	106170.000000	1301.000000	0.012254			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	100.000000	3	106170.000000	2410.000000	0.022699			sierra	pbmc_10k_v3	0	
+precision	sierra	null_genic	atlas_full	200.000000	3	106170.000000	4332.000000	0.040802			sierra	pbmc_10k_v3	0	
+recall	sierra	real	atlas_full	10.000000	0	569005.000000	8785.000000	0.015439			sierra	pbmc_10k_v3	0	
+recall	sierra	real	atlas_full	25.000000	0	569005.000000	16259.000000	0.028574			sierra	pbmc_10k_v3	0	
+recall	sierra	real	atlas_full	50.000000	0	569005.000000	27025.000000	0.047495			sierra	pbmc_10k_v3	0	
+recall	sierra	real	atlas_full	100.000000	0	569005.000000	40896.000000	0.071873			sierra	pbmc_10k_v3	0	
+recall	sierra	real	atlas_full	200.000000	0	569005.000000	58950.000000	0.103602			sierra	pbmc_10k_v3	0	
+recall	sierra	real	atlas_detected	10.000000	0	285220.000000	8189.000000	0.028711			sierra	pbmc_10k_v3	0	
+recall	sierra	real	atlas_detected	25.000000	0	285220.000000	15191.000000	0.053261			sierra	pbmc_10k_v3	0	
+recall	sierra	real	atlas_detected	50.000000	0	285220.000000	25323.000000	0.088784			sierra	pbmc_10k_v3	0	
+recall	sierra	real	atlas_detected	100.000000	0	285220.000000	38357.000000	0.134482			sierra	pbmc_10k_v3	0	
+recall	sierra	real	atlas_detected	200.000000	0	285220.000000	55344.000000	0.194040			sierra	pbmc_10k_v3	0	
+recall	sierra	real	tes	10.000000	0	73439.000000	10238.000000	0.139408			sierra	pbmc_10k_v3	0	
+recall	sierra	real	tes	25.000000	0	73439.000000	12962.000000	0.176500			sierra	pbmc_10k_v3	0	
+recall	sierra	real	tes	50.000000	0	73439.000000	16243.000000	0.221177			sierra	pbmc_10k_v3	0	
+recall	sierra	real	tes	100.000000	0	73439.000000	18702.000000	0.254660			sierra	pbmc_10k_v3	0	
+recall	sierra	real	tes	200.000000	0	73439.000000	21352.000000	0.290745			sierra	pbmc_10k_v3	0	
+f1	sierra	real	atlas_full	10.000000	0			0.026062			sierra	pbmc_10k_v3	0	
+roadmap	sierra	precision	atlas_full	10.000000	0			0.083536	0.700000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	recall	atlas_full	10.000000	0			0.015439	0.600000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	f1	atlas_full	10.000000	0			0.026062	0.650000	0.000000	sierra	pbmc_10k_v3	0	
+f1	sierra	real	atlas_full	25.000000	0			0.048096			sierra	pbmc_10k_v3	0	
+roadmap	sierra	precision	atlas_full	25.000000	0			0.151804	0.700000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	recall	atlas_full	25.000000	0			0.028574	0.600000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	f1	atlas_full	25.000000	0			0.048096	0.650000	0.000000	sierra	pbmc_10k_v3	0	
+f1	sierra	real	atlas_full	50.000000	0			0.077756			sierra	pbmc_10k_v3	0	
+roadmap	sierra	precision	atlas_full	50.000000	0			0.214279	0.700000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	recall	atlas_full	50.000000	0			0.047495	0.600000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	f1	atlas_full	50.000000	0			0.077756	0.650000	0.000000	sierra	pbmc_10k_v3	0	
+f1	sierra	real	atlas_full	100.000000	0			0.112221			sierra	pbmc_10k_v3	0	
+roadmap	sierra	precision	atlas_full	100.000000	0			0.255854	0.700000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	recall	atlas_full	100.000000	0			0.071873	0.600000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	f1	atlas_full	100.000000	0			0.112221	0.650000	0.000000	sierra	pbmc_10k_v3	0	
+f1	sierra	real	atlas_full	200.000000	0			0.153775			sierra	pbmc_10k_v3	0	
+roadmap	sierra	precision	atlas_full	200.000000	0			0.298182	0.700000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	recall	atlas_full	200.000000	0			0.103602	0.600000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	f1	atlas_full	200.000000	0			0.153775	0.650000	0.000000	sierra	pbmc_10k_v3	0	
+f1	sierra	real	atlas_detected	10.000000	0			0.042735			sierra	pbmc_10k_v3	0	
+roadmap	sierra	precision	atlas_detected	10.000000	0			0.083536	0.700000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	recall	atlas_detected	10.000000	0			0.028711	0.600000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	f1	atlas_detected	10.000000	0			0.042735	0.650000	0.000000	sierra	pbmc_10k_v3	0	
+f1	sierra	real	atlas_detected	25.000000	0			0.078855			sierra	pbmc_10k_v3	0	
+roadmap	sierra	precision	atlas_detected	25.000000	0			0.151804	0.700000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	recall	atlas_detected	25.000000	0			0.053261	0.600000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	f1	atlas_detected	25.000000	0			0.078855	0.650000	0.000000	sierra	pbmc_10k_v3	0	
+f1	sierra	real	atlas_detected	50.000000	0			0.125549			sierra	pbmc_10k_v3	0	
+roadmap	sierra	precision	atlas_detected	50.000000	0			0.214279	0.700000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	recall	atlas_detected	50.000000	0			0.088784	0.600000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	f1	atlas_detected	50.000000	0			0.125549	0.650000	0.000000	sierra	pbmc_10k_v3	0	
+f1	sierra	real	atlas_detected	100.000000	0			0.176298			sierra	pbmc_10k_v3	0	
+roadmap	sierra	precision	atlas_detected	100.000000	0			0.255854	0.700000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	recall	atlas_detected	100.000000	0			0.134482	0.600000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	f1	atlas_detected	100.000000	0			0.176298	0.650000	0.000000	sierra	pbmc_10k_v3	0	
+f1	sierra	real	atlas_detected	200.000000	0			0.235094			sierra	pbmc_10k_v3	0	
+roadmap	sierra	precision	atlas_detected	200.000000	0			0.298182	0.700000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	recall	atlas_detected	200.000000	0			0.194040	0.600000	0.000000	sierra	pbmc_10k_v3	0	
+roadmap	sierra	f1	atlas_detected	200.000000	0			0.235094	0.650000	0.000000	sierra	pbmc_10k_v3	0	
+meta	sierra	n_points			0	106221.000000	106170.000000	51.000000			sierra	pbmc_10k_v3	0	
+precision	sierra_summit	real	atlas_full	10.000000	0	105143.000000	1998.000000	0.019003			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	real	atlas_full	25.000000	0	105143.000000	4615.000000	0.043893			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	real	atlas_full	50.000000	0	105143.000000	7930.000000	0.075421			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	real	atlas_full	100.000000	0	105143.000000	13116.000000	0.124744			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	real	atlas_full	200.000000	0	105143.000000	28246.000000	0.268644			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	real	tes	10.000000	0	105143.000000	339.000000	0.003224			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	real	tes	25.000000	0	105143.000000	789.000000	0.007504			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	real	tes	50.000000	0	105143.000000	1406.000000	0.013372			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	real	tes	100.000000	0	105143.000000	2492.000000	0.023701			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	real	tes	200.000000	0	105143.000000	11967.000000	0.113816			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	10.000000	1	105143.000000	281.000000	0.002673			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	25.000000	1	105143.000000	661.000000	0.006287			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	50.000000	1	105143.000000	1269.000000	0.012069			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	100.000000	1	105143.000000	2372.000000	0.022560			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	200.000000	1	105143.000000	4306.000000	0.040954			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	10.000000	2	105143.000000	254.000000	0.002416			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	25.000000	2	105143.000000	611.000000	0.005811			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	50.000000	2	105143.000000	1241.000000	0.011803			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	100.000000	2	105143.000000	2344.000000	0.022293			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	200.000000	2	105143.000000	4283.000000	0.040735			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	10.000000	3	105143.000000	258.000000	0.002454			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	25.000000	3	105143.000000	646.000000	0.006144			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	50.000000	3	105143.000000	1272.000000	0.012098			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	100.000000	3	105143.000000	2377.000000	0.022607			sierra_summit	pbmc_10k_v3	0	
+precision	sierra_summit	null_genic	atlas_full	200.000000	3	105143.000000	4352.000000	0.041391			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	atlas_full	10.000000	0	569005.000000	2005.000000	0.003524			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	atlas_full	25.000000	0	569005.000000	4904.000000	0.008619			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	atlas_full	50.000000	0	569005.000000	9617.000000	0.016901			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	atlas_full	100.000000	0	569005.000000	19503.000000	0.034276			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	atlas_full	200.000000	0	569005.000000	54744.000000	0.096210			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	atlas_detected	10.000000	0	285220.000000	1910.000000	0.006697			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	atlas_detected	25.000000	0	285220.000000	4631.000000	0.016237			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	atlas_detected	50.000000	0	285220.000000	9092.000000	0.031877			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	atlas_detected	100.000000	0	285220.000000	18428.000000	0.064610			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	atlas_detected	200.000000	0	285220.000000	51535.000000	0.180685			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	tes	10.000000	0	73439.000000	362.000000	0.004929			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	tes	25.000000	0	73439.000000	868.000000	0.011819			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	tes	50.000000	0	73439.000000	1626.000000	0.022141			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	tes	100.000000	0	73439.000000	3167.000000	0.043124			sierra_summit	pbmc_10k_v3	0	
+recall	sierra_summit	real	tes	200.000000	0	73439.000000	20396.000000	0.277727			sierra_summit	pbmc_10k_v3	0	
+f1	sierra_summit	real	atlas_full	10.000000	0			0.005945			sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	precision	atlas_full	10.000000	0			0.019003	0.700000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	recall	atlas_full	10.000000	0			0.003524	0.600000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	f1	atlas_full	10.000000	0			0.005945	0.650000	0.000000	sierra_summit	pbmc_10k_v3	0	
+f1	sierra_summit	real	atlas_full	25.000000	0			0.014408			sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	precision	atlas_full	25.000000	0			0.043893	0.700000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	recall	atlas_full	25.000000	0			0.008619	0.600000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	f1	atlas_full	25.000000	0			0.014408	0.650000	0.000000	sierra_summit	pbmc_10k_v3	0	
+f1	sierra_summit	real	atlas_full	50.000000	0			0.027615			sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	precision	atlas_full	50.000000	0			0.075421	0.700000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	recall	atlas_full	50.000000	0			0.016901	0.600000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	f1	atlas_full	50.000000	0			0.027615	0.650000	0.000000	sierra_summit	pbmc_10k_v3	0	
+f1	sierra_summit	real	atlas_full	100.000000	0			0.053776			sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	precision	atlas_full	100.000000	0			0.124744	0.700000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	recall	atlas_full	100.000000	0			0.034276	0.600000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	f1	atlas_full	100.000000	0			0.053776	0.650000	0.000000	sierra_summit	pbmc_10k_v3	0	
+f1	sierra_summit	real	atlas_full	200.000000	0			0.141680			sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	precision	atlas_full	200.000000	0			0.268644	0.700000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	recall	atlas_full	200.000000	0			0.096210	0.600000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	f1	atlas_full	200.000000	0			0.141680	0.650000	0.000000	sierra_summit	pbmc_10k_v3	0	
+f1	sierra_summit	real	atlas_detected	10.000000	0			0.009903			sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	precision	atlas_detected	10.000000	0			0.019003	0.700000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	recall	atlas_detected	10.000000	0			0.006697	0.600000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	f1	atlas_detected	10.000000	0			0.009903	0.650000	0.000000	sierra_summit	pbmc_10k_v3	0	
+f1	sierra_summit	real	atlas_detected	25.000000	0			0.023704			sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	precision	atlas_detected	25.000000	0			0.043893	0.700000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	recall	atlas_detected	25.000000	0			0.016237	0.600000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	f1	atlas_detected	25.000000	0			0.023704	0.650000	0.000000	sierra_summit	pbmc_10k_v3	0	
+f1	sierra_summit	real	atlas_detected	50.000000	0			0.044814			sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	precision	atlas_detected	50.000000	0			0.075421	0.700000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	recall	atlas_detected	50.000000	0			0.031877	0.600000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	f1	atlas_detected	50.000000	0			0.044814	0.650000	0.000000	sierra_summit	pbmc_10k_v3	0	
+f1	sierra_summit	real	atlas_detected	100.000000	0			0.085128			sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	precision	atlas_detected	100.000000	0			0.124744	0.700000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	recall	atlas_detected	100.000000	0			0.064610	0.600000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	f1	atlas_detected	100.000000	0			0.085128	0.650000	0.000000	sierra_summit	pbmc_10k_v3	0	
+f1	sierra_summit	real	atlas_detected	200.000000	0			0.216055			sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	precision	atlas_detected	200.000000	0			0.268644	0.700000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	recall	atlas_detected	200.000000	0			0.180685	0.600000	0.000000	sierra_summit	pbmc_10k_v3	0	
+roadmap	sierra_summit	f1	atlas_detected	200.000000	0			0.216055	0.650000	0.000000	sierra_summit	pbmc_10k_v3	0	
+meta	sierra_summit	n_points			0	105194.000000	105143.000000	51.000000			sierra_summit	pbmc_10k_v3	0	
+precision	lg_annotate	real	atlas_full	10.000000	0	22629.000000	1939.000000	0.085687			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	real	atlas_full	25.000000	0	22629.000000	4356.000000	0.192496			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	real	atlas_full	50.000000	0	22629.000000	6724.000000	0.297141			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	real	atlas_full	100.000000	0	22629.000000	10125.000000	0.447435			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	real	atlas_full	200.000000	0	22629.000000	11847.000000	0.523532			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	real	tes	10.000000	0	22629.000000	710.000000	0.031376			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	real	tes	25.000000	0	22629.000000	1426.000000	0.063016			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	real	tes	50.000000	0	22629.000000	2418.000000	0.106854			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	real	tes	100.000000	0	22629.000000	6337.000000	0.280039			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	real	tes	200.000000	0	22629.000000	7135.000000	0.315303			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	10.000000	1	22629.000000	57.000000	0.002519			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	25.000000	1	22629.000000	145.000000	0.006408			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	50.000000	1	22629.000000	270.000000	0.011932			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	100.000000	1	22629.000000	480.000000	0.021212			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	200.000000	1	22629.000000	890.000000	0.039330			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	10.000000	2	22629.000000	48.000000	0.002121			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	25.000000	2	22629.000000	118.000000	0.005215			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	50.000000	2	22629.000000	253.000000	0.011180			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	100.000000	2	22629.000000	476.000000	0.021035			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	200.000000	2	22629.000000	917.000000	0.040523			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	10.000000	3	22629.000000	69.000000	0.003049			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	25.000000	3	22629.000000	157.000000	0.006938			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	50.000000	3	22629.000000	298.000000	0.013169			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	100.000000	3	22629.000000	535.000000	0.023642			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	lg_annotate	null_genic	atlas_full	200.000000	3	22629.000000	964.000000	0.042600			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	real	atlas_full	10.000000	0	16497.000000	1690.000000	0.102443			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	real	atlas_full	25.000000	0	16497.000000	3691.000000	0.223738			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	real	atlas_full	50.000000	0	16497.000000	5434.000000	0.329393			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	real	atlas_full	100.000000	0	16497.000000	7828.000000	0.474511			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	real	atlas_full	200.000000	0	16497.000000	9193.000000	0.557253			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	real	tes	10.000000	0	16497.000000	833.000000	0.050494			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	real	tes	25.000000	0	16497.000000	1646.000000	0.099776			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	real	tes	50.000000	0	16497.000000	2509.000000	0.152088			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	real	tes	100.000000	0	16497.000000	4995.000000	0.302782			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	real	tes	200.000000	0	16497.000000	5734.000000	0.347578			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	10.000000	1	16497.000000	41.000000	0.002485			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	25.000000	1	16497.000000	101.000000	0.006122			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	50.000000	1	16497.000000	189.000000	0.011457			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	100.000000	1	16497.000000	355.000000	0.021519			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	200.000000	1	16497.000000	675.000000	0.040917			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	10.000000	2	16497.000000	48.000000	0.002910			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	25.000000	2	16497.000000	105.000000	0.006365			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	50.000000	2	16497.000000	205.000000	0.012427			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	100.000000	2	16497.000000	364.000000	0.022065			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	200.000000	2	16497.000000	682.000000	0.041341			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	10.000000	3	16497.000000	37.000000	0.002243			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	25.000000	3	16497.000000	97.000000	0.005880			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	50.000000	3	16497.000000	200.000000	0.012123			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	100.000000	3	16497.000000	375.000000	0.022731			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+precision	B1_cohort_full	null_genic	atlas_full	200.000000	3	16497.000000	658.000000	0.039886			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	atlas_full	10.000000	0	569005.000000	1944.000000	0.003416			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	atlas_full	25.000000	0	569005.000000	4776.000000	0.008394			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	atlas_full	50.000000	0	569005.000000	9169.000000	0.016114			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	atlas_full	100.000000	0	569005.000000	18932.000000	0.033272			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	atlas_full	200.000000	0	569005.000000	28049.000000	0.049295			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	atlas_detected	10.000000	0	285220.000000	1941.000000	0.006805			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	atlas_detected	25.000000	0	285220.000000	4756.000000	0.016675			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	atlas_detected	50.000000	0	285220.000000	9141.000000	0.032049			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	atlas_detected	100.000000	0	285220.000000	18853.000000	0.066100			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	atlas_detected	200.000000	0	285220.000000	27935.000000	0.097942			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	tes	10.000000	0	73439.000000	932.000000	0.012691			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	tes	25.000000	0	73439.000000	2055.000000	0.027982			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	tes	50.000000	0	73439.000000	3670.000000	0.049973			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	tes	100.000000	0	73439.000000	10952.000000	0.149131			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	lg_annotate	real	tes	200.000000	0	73439.000000	12939.000000	0.176187			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	atlas_full	10.000000	0	569005.000000	1695.000000	0.002979			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	atlas_full	25.000000	0	569005.000000	4009.000000	0.007046			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	atlas_full	50.000000	0	569005.000000	7423.000000	0.013046			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	atlas_full	100.000000	0	569005.000000	14397.000000	0.025302			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	atlas_full	200.000000	0	569005.000000	21639.000000	0.038030			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	atlas_detected	10.000000	0	285220.000000	1695.000000	0.005943			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	atlas_detected	25.000000	0	285220.000000	3999.000000	0.014021			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	atlas_detected	50.000000	0	285220.000000	7402.000000	0.025952			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	atlas_detected	100.000000	0	285220.000000	14346.000000	0.050298			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	atlas_detected	200.000000	0	285220.000000	21560.000000	0.075591			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	tes	10.000000	0	73439.000000	1092.000000	0.014869			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	tes	25.000000	0	73439.000000	2428.000000	0.033061			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	tes	50.000000	0	73439.000000	3979.000000	0.054181			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	tes	100.000000	0	73439.000000	8776.000000	0.119501			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+recall	B1_cohort_full	real	tes	200.000000	0	73439.000000	10539.000000	0.143507			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	lg_annotate	real	atlas_full	10.000000	0			0.006571			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	precision	atlas_full	10.000000	0			0.085687	0.700000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	recall	atlas_full	10.000000	0			0.003416	0.600000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	f1	atlas_full	10.000000	0			0.006571	0.650000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	lg_annotate	real	atlas_full	25.000000	0			0.016086			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	precision	atlas_full	25.000000	0			0.192496	0.700000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	recall	atlas_full	25.000000	0			0.008394	0.600000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	f1	atlas_full	25.000000	0			0.016086	0.650000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	lg_annotate	real	atlas_full	50.000000	0			0.030570			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	precision	atlas_full	50.000000	0			0.297141	0.700000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	recall	atlas_full	50.000000	0			0.016114	0.600000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	f1	atlas_full	50.000000	0			0.030570	0.650000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	lg_annotate	real	atlas_full	100.000000	0			0.061938			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	precision	atlas_full	100.000000	0			0.447435	0.700000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	recall	atlas_full	100.000000	0			0.033272	0.600000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	f1	atlas_full	100.000000	0			0.061938	0.650000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	lg_annotate	real	atlas_full	200.000000	0			0.090105			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	precision	atlas_full	200.000000	0			0.523532	0.700000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	recall	atlas_full	200.000000	0			0.049295	0.600000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	f1	atlas_full	200.000000	0			0.090105	0.650000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	lg_annotate	real	atlas_detected	10.000000	0			0.012609			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	precision	atlas_detected	10.000000	0			0.085687	0.700000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	recall	atlas_detected	10.000000	0			0.006805	0.600000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	f1	atlas_detected	10.000000	0			0.012609	0.650000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	lg_annotate	real	atlas_detected	25.000000	0			0.030691			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	precision	atlas_detected	25.000000	0			0.192496	0.700000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	recall	atlas_detected	25.000000	0			0.016675	0.600000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	f1	atlas_detected	25.000000	0			0.030691	0.650000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	lg_annotate	real	atlas_detected	50.000000	0			0.057858			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	precision	atlas_detected	50.000000	0			0.297141	0.700000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	recall	atlas_detected	50.000000	0			0.032049	0.600000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	f1	atlas_detected	50.000000	0			0.057858	0.650000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	lg_annotate	real	atlas_detected	100.000000	0			0.115184			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	precision	atlas_detected	100.000000	0			0.447435	0.700000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	recall	atlas_detected	100.000000	0			0.066100	0.600000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	f1	atlas_detected	100.000000	0			0.115184	0.650000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	lg_annotate	real	atlas_detected	200.000000	0			0.165013			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	precision	atlas_detected	200.000000	0			0.523532	0.700000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	recall	atlas_detected	200.000000	0			0.097942	0.600000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	lg_annotate	f1	atlas_detected	200.000000	0			0.165013	0.650000	0.000000	lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	B1_cohort_full	real	atlas_full	10.000000	0			0.005789			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	precision	atlas_full	10.000000	0			0.102443	0.700000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	recall	atlas_full	10.000000	0			0.002979	0.600000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	f1	atlas_full	10.000000	0			0.005789	0.650000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	B1_cohort_full	real	atlas_full	25.000000	0			0.013661			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	precision	atlas_full	25.000000	0			0.223738	0.700000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	recall	atlas_full	25.000000	0			0.007046	0.600000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	f1	atlas_full	25.000000	0			0.013661	0.650000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	B1_cohort_full	real	atlas_full	50.000000	0			0.025097			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	precision	atlas_full	50.000000	0			0.329393	0.700000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	recall	atlas_full	50.000000	0			0.013046	0.600000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	f1	atlas_full	50.000000	0			0.025097	0.650000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	B1_cohort_full	real	atlas_full	100.000000	0			0.048042			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	precision	atlas_full	100.000000	0			0.474511	0.700000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	recall	atlas_full	100.000000	0			0.025302	0.600000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	f1	atlas_full	100.000000	0			0.048042	0.650000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	B1_cohort_full	real	atlas_full	200.000000	0			0.071200			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	precision	atlas_full	200.000000	0			0.557253	0.700000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	recall	atlas_full	200.000000	0			0.038030	0.600000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	f1	atlas_full	200.000000	0			0.071200	0.650000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	B1_cohort_full	real	atlas_detected	10.000000	0			0.011234			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	precision	atlas_detected	10.000000	0			0.102443	0.700000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	recall	atlas_detected	10.000000	0			0.005943	0.600000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	f1	atlas_detected	10.000000	0			0.011234	0.650000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	B1_cohort_full	real	atlas_detected	25.000000	0			0.026388			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	precision	atlas_detected	25.000000	0			0.223738	0.700000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	recall	atlas_detected	25.000000	0			0.014021	0.600000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	f1	atlas_detected	25.000000	0			0.026388	0.650000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	B1_cohort_full	real	atlas_detected	50.000000	0			0.048113			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	precision	atlas_detected	50.000000	0			0.329393	0.700000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	recall	atlas_detected	50.000000	0			0.025952	0.600000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	f1	atlas_detected	50.000000	0			0.048113	0.650000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	B1_cohort_full	real	atlas_detected	100.000000	0			0.090955			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	precision	atlas_detected	100.000000	0			0.474511	0.700000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	recall	atlas_detected	100.000000	0			0.050298	0.600000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	f1	atlas_detected	100.000000	0			0.090955	0.650000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+f1	B1_cohort_full	real	atlas_detected	200.000000	0			0.133123			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	precision	atlas_detected	200.000000	0			0.557253	0.700000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	recall	atlas_detected	200.000000	0			0.075591	0.600000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+roadmap	B1_cohort_full	f1	atlas_detected	200.000000	0			0.133123	0.650000	0.000000	B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+meta	lg_annotate	n_points			0	22633.000000	22629.000000	4.000000			lg_annotate	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+meta	B1_cohort_full	n_points			0	16500.000000	16497.000000	3.000000			B1_cohort_full	laughney_cohort	1	Laughney cohort; pbmc_10k_v3 PeakATail rerun pending
+resource	polyapipe	runtime_s	/usr/bin/time -v (whole run; shared by both variants)		0			12397.000000			polyapipe	pbmc_10k_v3	0	polyApipe run also covers the _all variant
+resource	polyapipe	runtime_h	/usr/bin/time -v (whole run; shared by both variants)		0			3.443611			polyapipe	pbmc_10k_v3	0	polyApipe run also covers the _all variant
+resource	polyapipe	max_rss_gib	/usr/bin/time -v (whole run; shared by both variants)		0			13.088203			polyapipe	pbmc_10k_v3	0	polyApipe run also covers the _all variant
+resource	sierra	runtime_s	/usr/bin/time -v (whole run; shared by both variants)		0			8704.000000			sierra	pbmc_10k_v3	0	Sierra run also covers the _summit variant
+resource	sierra	runtime_h	/usr/bin/time -v (whole run; shared by both variants)		0			2.417778			sierra	pbmc_10k_v3	0	Sierra run also covers the _summit variant
+resource	sierra	max_rss_gib	/usr/bin/time -v (whole run; shared by both variants)		0			9.585171			sierra	pbmc_10k_v3	0	Sierra run also covers the _summit variant
+resource	lg_annotate	runtime_s	resources.jsonl 5s samples (full pipeline incl. downstream)		0			26323.989000			lg_annotate	laughney_cohort	1	Laughney cohort; wider pipeline scope; pbmc_10k_v3 rerun pending
+resource	lg_annotate	runtime_h	resources.jsonl 5s samples (full pipeline incl. downstream)		0			7.312219			lg_annotate	laughney_cohort	1	Laughney cohort; wider pipeline scope; pbmc_10k_v3 rerun pending
+resource	lg_annotate	max_rss_gib	resources.jsonl 5s samples (full pipeline incl. downstream)		0			3.604300			lg_annotate	laughney_cohort	1	Laughney cohort; wider pipeline scope; pbmc_10k_v3 rerun pending
+resource	B1_cohort_full	runtime_s	resources.jsonl 5s samples (full pipeline incl. downstream)		0			62405.595000			B1_cohort_full	laughney_cohort	1	Laughney cohort; wider pipeline scope; pbmc_10k_v3 rerun pending
+resource	B1_cohort_full	runtime_h	resources.jsonl 5s samples (full pipeline incl. downstream)		0			17.334888			B1_cohort_full	laughney_cohort	1	Laughney cohort; wider pipeline scope; pbmc_10k_v3 rerun pending
+resource	B1_cohort_full	max_rss_gib	resources.jsonl 5s samples (full pipeline incl. downstream)		0			9.222600			B1_cohort_full	laughney_cohort	1	Laughney cohort; wider pipeline scope; pbmc_10k_v3 rerun pending
+resource	polyapipe	max_rss_kbytes	/usr/bin/time -v raw		0			13723976.000000			polyapipe	pbmc_10k_v3	0	raw kbytes (KiB) from run.log
+resource	sierra	max_rss_kbytes	/usr/bin/time -v raw		0			10050780.000000			sierra	pbmc_10k_v3	0	raw kbytes (KiB) from run.log
