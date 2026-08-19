@@ -111,7 +111,7 @@ def test_real_run_bed_order_is_not_row_order(m):
     Guard on the SHIPPED artifacts: if these ever coincide the unit test above
     would stop discriminating.  Skips when the benchmark outputs are absent.
     """
-    run = (Path("/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/gse104556")
+    run = (HERE.parents[2] / "results/benchmark_tools/gse104556"
            / "peakatail" / m / "run")
     bed = run / "pasbed.bed"
     ids = run / "05_annotated_matrix" / "default" / "annotated_pas_ids.tsv"

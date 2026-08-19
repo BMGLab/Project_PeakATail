@@ -84,7 +84,6 @@ def main():
 
     order = sorted(names, key=lambda p: (-depth[p], int(p)))
     a.outdir.mkdir(parents=True, exist_ok=True)
-    by_name = {r[3]: r for r in rows}
     for n in a.n:
         keep = set(order[:n])
         out = a.outdir / f"pas_top{n}.bed"
@@ -99,7 +98,6 @@ def main():
                                         str(depth[r[3]]), r[5]]) + "\n")
         print(f"wrote {out}  n={len(keep)}  "
               f"depth range {depth[order[n-1]]}..{depth[order[0]]}")
-    del by_name
 
 
 if __name__ == "__main__":

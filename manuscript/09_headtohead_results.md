@@ -51,7 +51,9 @@ calls), and it buys that reproducibility at precision 0.24–0.25 vs PeakATail's
    > *conclusion is unchanged and strengthened*. The three digits above are left as published pending
    > sign-off; see the PENDING RE-VERIFICATION block in `manuscript/05_figure_index.md` §8 for the
    > full delta table. `conc_all` replicate concordance (0.73–0.75, below) is depth-free and
-   > unaffected.
+   > unaffected. **The re-keyed 0.120/0.118/0.118 are themselves provisional: they are read
+   > correctly from a matrix that bug 0a (uncommitted) says is 99.87% mis-keyed at the tool level, so
+   > this ranking is not yet attributable to PeakATail. Do not publish either triple until 0a lands.**
 2. **Not the cleavage offset.** Relaxing the cutoff to 200 bp lifts it only 0.118 → 0.166, while
    polyApipe goes 0.380 → 0.410. The gap is not a coordinate shift.
 3. **Not simply "far from gene ends" — that is partly the dataset.** On the *same* BAM, median distance

@@ -433,8 +433,10 @@ re-rendered).** `benchmark_headtohead.py` built PeakATail's per-PAS depth as
 `dict(zip(pasbed.bed names, annotated_matrix.mtx row sums))`. `pasbed.bed` is **coordinate**-sorted;
 the matrix rows are **pas_id**-ordered (`05_annotated_matrix/<strategy>/annotated_pas_ids.tsv`). The
 two are permutations of the same id set, so `assert len(names) == len(sums)` passed while
-**45,921/45,921 (mouse1) and 46,672/46,672 (mouse2) PAS — 100% — were given another PAS's depth**
-(PBMC: 276,596/277,164 = 99.80% changed value). Fixed in `depth_map()`, re-keyed on
+**45,921/45,921 (mouse1) and 46,672/46,672 (mouse2) PAS — 100% — were paired with another PAS's
+matrix row** (the two orderings differ at every single position). The depth *value* actually changed
+for 45,756/45,921 = 99.64% (mouse1), 46,475/46,672 = 99.58% (mouse2) and 276,596/277,164 = 99.80%
+(PBMC); the small remainder is coincidental ties (mostly depth 0/1). Fixed in `depth_map()`, re-keyed on
 `annotated_pas_ids.tsv`, with a set-equality assert replacing the length assert
 (`scripts/manuscript_figures/tests/test_headtohead_depth_keying.py`). **The numbers below are the
 shipped ones; they are reported here, not silently rewritten. Nothing outside PeakATail's depth is
@@ -476,7 +478,23 @@ committed as `scripts/manuscript_figures/peakatail_topn_rank.py`.
 depth-1 / 0.3079 vs 0.8093 stratification is untouched; every `conc_all` and every accuracy number in
 panels (a)–(c) and (e) is depth-free and untouched.
 
-**To clear this flag:** regenerate with `python3 scripts/manuscript_figures/benchmark_headtohead.py`
+**⚠ THE RE-KEYED COLUMN IS NOT THE FINAL ANSWER — IT IS BLOCKED ON BUG 0a.** Fix 0g makes the
+harness read the matrix with the tool's *own* row index, which is the only correct thing a harness
+can do; it does **not** make the counts in that matrix correct. Item **0a** of
+`manuscript/10_caller_fix_plan.md` records that `annotate()` looks rows up by *position* in a
+compacted `pas_ids` list against a full-height matrix, so **45,860/45,921 = 99.87% of annotated PAS
+on this same testis mouse1 run carry another PAS's counts**, and that fix is still **uncommitted** —
+every run produced after `04e0b3a` (2026-03-23) is affected, including the 2026-08-19 benchmark runs
+behind panel (d) and the top-N arms. Cross-check on the shipped artifacts: after the 0g re-key, only
+**226/45,921 = 0.49%** of mouse1 PAS have an annotated depth equal to the row `pas_id − 1` of
+`filterdmatrix.mtx` (the row 0a identifies as the correct one), and `filterdmatrix.mtx` has 1,540
+all-zero rows — exactly the condition that makes the positional lookup skew. **So the "re-keyed"
+column above is "correctly read from a known-corrupt matrix", not "correct". It will move again when
+0a lands, and the "PeakATail's own depth ranking carries no PAS information" reading of the top-N
+result cannot be attributed to PeakATail's ranking until then.**
+
+**To clear this flag:** land 0a first (otherwise the numbers below are re-verified against a matrix
+that is itself mis-keyed), then regenerate with `python3 scripts/manuscript_figures/benchmark_headtohead.py`
 (the `depth_concordance.tsv` cache has already been rebuilt with the fix; the pre-fix copy is kept
 beside it as `depth_concordance.pre0g_buggy.tsv`), update the three top-N precisions in the figure's
 hardcoded "READ WITH CARE" footnote, in `manuscript/09_headtohead_results.md` claim 1 and in
