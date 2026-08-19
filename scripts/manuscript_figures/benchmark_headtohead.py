@@ -36,9 +36,15 @@ STEP 2 -- panels
 
 DEPTH SOURCES for panel (d), all mouse:
     polyApipe   GFF peakdepth (carried in the pas.bed score column)
-    PeakATail   per-PAS UMI totals = row sums of run/annotated_matrix.mtx
-                (rows are 1:1 with run/pasbed.bed lines -- the same mapping the
-                top-N ranking arms used, see manuscript/09)
+    PeakATail   per-PAS UMI totals = row sums of run/annotated_matrix.mtx,
+                keyed on 05_annotated_matrix/<strategy>/annotated_pas_ids.tsv.
+                NOT on pasbed.bed line order: pasbed.bed is coordinate-sorted
+                and the matrix rows are pas_id-ordered, so zipping them (this
+                script before 2026-08-19, and the manuscript/09 top-N ranking
+                arms) mis-pairs 99.8% of PAS with another PAS's depth while
+                len(names)==len(sums) still passes.  Fix 0g of
+                manuscript/10_caller_fix_plan.md; the top-N arms in
+                manuscript/09 are NOT yet re-scored.
     Sierra      row sums of counts/matrix.mtx.gz joined on counts/sitenames.tsv.gz
     scAPAtrap   per-peak UMI totals from counts.tsv.gz
     SCAPTURE    NONE.  Its BED score column is 0 for every evaluated peak
@@ -333,17 +339,41 @@ def _mtx_rowsums(path, gz=False):
     return [int(x) for x in out.split()]
 
 
+def _peakatail_row_ids(run):
+    """
+    PAS ids in ANNOTATED-MATRIX ROW ORDER for a PeakATail run directory.
+
+    This is NOT the order of pasbed.bed.  pasbed.bed is coordinate-sorted;
+    the matrix rows follow the pas_id ordering recorded by the annotation
+    step in 05_annotated_matrix/<strategy>/annotated_pas_ids.tsv.  Zipping
+    the two (as this script did before 2026-08-19) hands almost every PAS
+    another PAS's depth while `len(names) == len(sums)` still passes, because
+    the two orderings are permutations of the same id set.  See
+    manuscript/10_caller_fix_plan.md item 0g.
+    """
+    cands = sorted((run / "05_annotated_matrix").glob("*/annotated_pas_ids.tsv"))
+    assert len(cands) == 1, f"expected exactly one annotated_pas_ids.tsv under {run}: {cands}"
+    lines = cands[0].read_text().splitlines()
+    assert lines and lines[0].strip() == "pas_id", f"unexpected header in {cands[0]}: {lines[:1]}"
+    return [l.strip() for l in lines[1:] if l.strip()]
+
+
 def depth_map(tool, m):
     """name -> depth for one tool/replicate."""
     kind = REPRO[tool]["depth"]
     if kind == "score_col":
         return None  # depth already in the BED score column
     if kind == "peakatail_mtx":
-        names = [l.split("\t")[3] for l in
-                 (BT / MOUSE / f"peakatail/{m}/run/pasbed.bed").read_text().splitlines()]
-        sums = _mtx_rowsums(BT / MOUSE / f"peakatail/{m}/run/annotated_matrix.mtx")
-        assert len(names) == len(sums), (len(names), len(sums))
-        return dict(zip(names, sums))
+        run = BT / MOUSE / f"peakatail/{m}/run"
+        bed_names = [l.split("\t")[3] for l in (run / "pasbed.bed").read_text().splitlines()]
+        row_ids = _peakatail_row_ids(run)          # matrix row order -- the real key
+        sums = _mtx_rowsums(run / "annotated_matrix.mtx")
+        assert len(row_ids) == len(sums), (len(row_ids), len(sums))
+        # length agreement is NOT evidence of correct pairing; assert the sets.
+        assert set(bed_names) == set(row_ids), (
+            f"pasbed.bed names and annotated_pas_ids.tsv disagree for {m}: "
+            f"{len(set(bed_names) ^ set(row_ids))} ids differ")
+        return dict(zip(row_ids, sums))
     if kind == "sierra_counts":
         c = BT / MOUSE / f"sierra/{m}/counts"
         names = sh_out(f"zcat {c/'sitenames.tsv.gz'}").split()

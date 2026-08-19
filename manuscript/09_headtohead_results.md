@@ -44,6 +44,14 @@ calls), and it buys that reproducibility at precision 0.24–0.25 vs PeakATail's
 1. **Not a threshold/ranking problem.** Ranking its 277k calls by total UMI count and scoring the top
    22k / 36k / 106k gives precision 0.119 / 0.120 / 0.118 — *identical to the full set*. Its internal
    ranking does not enrich for atlas-supported sites at all.
+   > **⚠ numbers pending re-verification (harness bug 0g).** The depth used for this ranking was
+   > mis-keyed (coordinate-ordered `pas.bed` zipped onto pas_id-ordered matrix rows), so the top-N
+   > sets were wrong — the shipped top-22k shares only 7.89% of its members with the correctly-ranked
+   > one. Re-scored with correct keying the precisions are **0.120 / 0.118 / 0.118**, i.e. the
+   > *conclusion is unchanged and strengthened*. The three digits above are left as published pending
+   > sign-off; see the PENDING RE-VERIFICATION block in `manuscript/05_figure_index.md` §8 for the
+   > full delta table. `conc_all` replicate concordance (0.73–0.75, below) is depth-free and
+   > unaffected.
 2. **Not the cleavage offset.** Relaxing the cutoff to 200 bp lifts it only 0.118 → 0.166, while
    polyApipe goes 0.380 → 0.410. The gap is not a coordinate shift.
 3. **Not simply "far from gene ends" — that is partly the dataset.** On the *same* BAM, median distance
