@@ -59,12 +59,18 @@ Results are written up in `manuscript/09_headtohead_results.md` and
 `manuscript/07_curated_benchmark_report.md`. **These include negative results
 for PeakATail** — they are reported as found.
 
-## History
+## History and syncing
 
 This repository's history was rewritten once, before publication, to remove a
 451 MB intermediate matrix (`amirtest/macro/emaout/negmatrix.mtx`) that
 exceeded GitHub's file-size limit. All 41 commits are otherwise preserved;
 commit SHAs differ from the internal working repository.
+
+Because of that rewrite this repository cannot be updated with a plain `git
+pull` from the internal working directory. Use
+[`maintenance/sync_from_working_dir.sh`](maintenance/sync_from_working_dir.sh),
+which re-runs the identical filter (deterministic, so unchanged commits keep
+their SHAs) and replays the packaging commits on top.
 
 ## Before release
 
