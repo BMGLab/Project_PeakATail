@@ -32,7 +32,15 @@ needs no restructuring: Genome Research → Briefings in Bioinformatics / NAR. A
           so *relative* standing is what the paper argues.
 
 ### P1 — weeks 1–3 (competitive evidence)
-- [~] Head-to-head on **pbmc_10k_v3** — RUNNING (2026-08-19): PeakATail, Sierra (txdbmaker shim), scAPAtrap,
+- [x] **Head-to-head COMPLETE (2026-08-19) — see 09_headtohead_results.md. RESULT IS NEGATIVE for
+      accuracy claims:** PeakATail ranks LAST among de novo tools on pbmc_10k_v3 (F1 0.134 vs polyApipe
+      0.261) and mid-pack on testis (F1 0.258-0.260, 2nd of 4). Not a threshold artifact (top-N ranking
+      gives identical precision) nor a cleavage-offset artifact (@200bp still 0.166 vs 0.410). The
+      discriminator is EVIDENCE TYPE: winners use poly(A) soft-clips (polyApipe) or sequence models
+      (SCAPTURE) — PeakATail calls from coverage shape alone. Strategic consequence: drop any accuracy-
+      leadership framing; lead with clustering novelty + reproducibility (PeakATail 0.73-0.75 vs
+      polyApipe 0.49-0.50). Tool fix worth doing: add soft-clip polyA evidence to peak calling.
+- [x] ~~Head-to-head on **pbmc_10k_v3**~~ — RUNNING (2026-08-19): PeakATail, Sierra (txdbmaker shim), scAPAtrap,
       SCAPTURE, polyApipe, scUTRquant all live; scTail inapplicable by chemistry (needs R1-preserved
       libraries; 10x v3 R1 = CB+UMI only) — documented for the comparison table.
 - [~] **GSE104556 testis** build RUNNING (STARsolo path, mouse GRCm38 r102; ~6-9h)

@@ -33,3 +33,5 @@ Happy to turn this into a PR onto `develop` with a regression test (synthetic BA
 @TRextabat
 
 **Update — second CellRanger-input bug in the same code path** (commit `6df8eed` locally): unmapped reads (kept, barcoded, in CellRanger BAMs) have `reference_end = None`, crashing `read_check` with a `TypeError` two hours into the run. Both bugs share a root cause: the read loop was only ever exercised on STARsolo BAMs pre-filtered to mapped 3′UTR reads. A regression test with a stock CellRanger BAM slice would catch this class.
+
+**Update — THIRD CellRanger-input bug, same loop** (local commit `2e7fc0d`): CellRanger RG IDs contain underscores (`pbmc_10k_v3:0:1:<flowcell>:1`), but `BarcodeIndex` splits the `<sample>_<CB>` composite on the *first* underscore — so every barcode collapsed into one invalid column and clustering received 1 cell × 0 PAS after an otherwise perfect 277k-PAS run. Fix: fall back to the sanitized run-level sample id whenever RG violates the underscore-free contract. Together the three bugs make the case for (a) a stock-CellRanger regression BAM in CI and (b) fail-fast guards on zero usable barcodes.
