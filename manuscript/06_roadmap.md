@@ -86,7 +86,7 @@ evidence, the axis that separates the winners).**
 
 ### Stage 1 — DONE (2026-08-20, verified SOUND)
 - [x] **Clip-seeded calling built, verified SOUND, and MERGED as PR #92** (develop 6697b0d, 2026-08-20
-      18:20; first run of the new CI gate triggered on it). chr19+21 slice, identical scoring: shipped F1 0.177 → clip_seeded both-tiers **0.291**
+      18:20). **CI green on develop post-merge (3.11 + 3.12, run 32402648097)** — the gate from #84 works and the merged caller passes it. chr19+21 slice, identical scoring: shipped F1 0.177 → clip_seeded both-tiers **0.291**
       (1.65×), clip-supported tier-1 **0.348** (P 0.359 / R 0.338, at the evidence recall ceiling).
       Verifier independently re-scored the BEDs, hand-checked clip_site on 365,606 real reads
       (0 mismatches), and confirmed three-path agreement. +71 tests, zero regressions.
