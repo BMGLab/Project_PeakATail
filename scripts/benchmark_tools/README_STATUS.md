@@ -234,3 +234,12 @@ files — self-describing header, harvest by name not position.)
 
 Same denominator (126,686 sites), null ~0.015. Combined F1 +15% over shipped; tier-1 at parity with
 polyApipe's F1 at markedly higher precision. PBMC arms (the gate) still running.
+
+### Stage 2 finding (2026-08-20): tier-1 quantification regression — Stage 1b opened
+
+Both mice replicate the accuracy gain (m2: F1 0.260 -> 0.307, tier-1 0.320 at P 0.570) AND a
+10x count-mass loss (m1 4.14M vs 41.9M; m2 4.48M vs ~42M). Cause: `_flush_seeded` writes tier-1 matrix
+rows from `ClipSeeder.flush()`'s clip-only cb dict (~1% of reads). Side effect: min_read=1500 kept
+1,256 cells of which 995 real — lost 23% of STARsolo cells. Coordinates (and therefore all F1/precision
+numbers) are unaffected; every count-based output of the Stage-2 runs is NOT usable until Stage 1b
+(count tier-1 from all read ends in a cleavage window) lands and the matrices are regenerated.

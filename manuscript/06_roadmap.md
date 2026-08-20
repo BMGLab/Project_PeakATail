@@ -90,6 +90,11 @@ evidence, the axis that separates the winners).**
       (1.65×), clip-supported tier-1 **0.348** (P 0.359 / R 0.338, at the evidence recall ceiling).
       Verifier independently re-scored the BEDs, hand-checked clip_site on 365,606 real reads
       (0 mismatches), and confirmed three-path agreement. +71 tests, zero regressions.
+- [ ] **Stage 1b (opened 2026-08-20): tier-1 quantification.** Stage 2 testis arms show clip_seeded
+      counts tier-1 PAS from clip reads only -> 10x less matrix mass, 23% of real cells lost to min_read.
+      Coordinates/accuracy unaffected. Fix = count all read ends in a cleavage window; acceptance = mass
+      within 0.8-1.2x shipped, >=98% STARsolo cell recovery, pas.bed byte-identical. Then regenerate
+      Stage-2 matrices (second re-run; disclosed).
 - [~] **Stage 2 LAUNCHED (2026-08-20)** from the rebased branch (f0370f7 on develop a3ddf4e, byte-identical
       slice output vs the verified build). Four concurrent arms via scripts/benchmark_tools/stage2_launch.sh:
       PBMC clip_seeded, PBMC clip_seeded + --ip-filter filter (human FASTA), testis m1, testis m2. Each
