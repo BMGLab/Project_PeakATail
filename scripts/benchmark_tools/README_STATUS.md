@@ -221,3 +221,16 @@ replicate concordance 0.700/0.688 @100bp (22.2% exact) — between Sierra (0.79-
 PeakATail (0.73-0.75). All 6 tools × 2 datasets now have verified scores; nothing pending.
 (scapture/replicate_concordance.tsv column order differs slightly from the sierra/peakatail
 files — self-describing header, harvest by name not position.)
+
+## Stage 2 — clip-seeded caller, first arm (testis mouse1, 2026-08-20)
+
+| arm | n | P@100 | R_det | F1@100 | wall | RSS |
+|---|---:|---:|---:|---:|---:|---:|
+| shipped lambda_gradient | 45,921 | 0.369 | 0.198 | 0.258 | 2:06:48 | 14.0 GiB |
+| **clip_seeded, both tiers** | 58,848 | 0.399 | 0.236 | **0.296** | **43:39** | **2.0 GiB** |
+| clip_seeded tier-1 (38,690) | | 0.544 | 0.212 | 0.305 | | |
+| clip_seeded tier-2 (20,158) | | 0.119 | 0.024 | 0.040 | | |
+| *polyApipe (ref.)* | *89,527* | *0.401* | *0.250* | *0.308* | | |
+
+Same denominator (126,686 sites), null ~0.015. Combined F1 +15% over shipped; tier-1 at parity with
+polyApipe's F1 at markedly higher precision. PBMC arms (the gate) still running.
