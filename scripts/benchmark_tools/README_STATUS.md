@@ -210,3 +210,14 @@ replicate.
 F1 lead rides on depth-1 singletons (62-63% of its calls; concordance 0.31 vs 0.81 for depth>1).
 Plot per-tool concordance-vs-depth and F1-vs-reproducibility; report tool DEFAULT arms as primary,
 post-hoc depth filters only as a labeled sensitivity view.
+
+## Benchmark matrix COMPLETE (2026-08-20)
+
+SCAPTURE mouse2 rescued: PAScall succeeded on the ssd0 rerun (24,076 PAS points; the earlier
+"failure" was PASquant-only, not needed for site scoring). Final mouse de novo F1@100:
+polyApipe 0.308/0.312 > PeakATail 0.258/0.260 > SCAPTURE 0.253/0.241 ≈ scAPAtrap 0.248/0.248 >
+Sierra 0.177/0.195. SCAPTURE is the mouse precision arm (0.694/0.672) as on human. SCAPTURE
+replicate concordance 0.700/0.688 @100bp (22.2% exact) — between Sierra (0.79-0.83) and
+PeakATail (0.73-0.75). All 6 tools × 2 datasets now have verified scores; nothing pending.
+(scapture/replicate_concordance.tsv column order differs slightly from the sierra/peakatail
+files — self-describing header, harvest by name not position.)

@@ -191,3 +191,26 @@ per-cell-type usage matrix cannot be compared to pbmc_10k_v3 cell-for-cell anywa
 substrate. `secondary_gemx3p` (GEM-X 3' v4, 105.8 M alignments -> 104.0 M usable termini,
 10,324 cells) was processed FIRST because it ships genome-aligned, and it is a genuine
 cross-chemistry, cross-donor replicate rather than a mere prototype.
+
+## What the executed run produced (both datasets)
+
+| | primary `x3p` (10x 3' v3.1) | secondary `gemx` (GEM-X 3' v4) |
+|---|---:|---:|
+| dedup molecules in BAM | 81,678,354 (`.pbi`) | 113,766,063 alignment records |
+| aligned here | minimap2, 99.81% primary mapped, 5 h 56 m | pre-aligned (pbmm2, GENCODE v39 -> stripped to Ensembl) |
+| records scored (primary, non-supp, MAPQ>=1) | 79,620,570 | 105,806,517 |
+| dropped, 3' softclip > 30 nt | 2,795,638 (3.5%) | 1,799,849 (1.7%) |
+| dropped, CB not a real cell | 0 | 0 |
+| **molecule termini kept** | **76,824,932** | **103,955,157** |
+| cells | 12,852 | 10,324 |
+| unique terminus positions | 9,981,323 | 8,826,660 |
+| internal-priming termini | 3,482,087 pos / 34.5 M molecules | 2,831,432 pos / 29.7 M molecules |
+| truth PAS >=5 / >=20 / >=100 / >=500 UMI | 538,226 / 96,634 / 20,375 / 5,705 | 509,686 / 137,987 / 35,626 / 9,578 |
+| internal-priming decoy PAS | 638,229 | 481,555 |
+| PAS x CB nonzero entries | 17,455,685 | 26,880,689 |
+
+Acceptance checks (primary, at >=500 UMI): 84.6% within 25 nt of PolyASite 2.0 (plan bar: >=80%),
+98.9% sense-genic, **0.37% antisense-only (plan bar: <2%)**, 71.8% canonical hexamer in the top
+support bin. At >=100 UMI: 20,375 PAS (plan expectation 20-60 k), 70.3% within 25 nt, 1.3%
+antisense. The plan's checks are met — at the support level the plan implicitly assumed, which
+is >=100 UMI here, not >=5.

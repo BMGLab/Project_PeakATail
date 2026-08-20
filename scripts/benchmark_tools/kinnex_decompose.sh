@@ -17,11 +17,11 @@ S=/mnt/ssd0/emaout/peakatail_benchmark/kinnex/scratch/${TAG}_dec; mkdir -p $S
 awk -F'\t' 'NR==FNR{ok[$1]=1;next} ok[$1]' $GEN $G/${TAG}_truth_t5.point.bed | sort -k1,1 -k2,2n > $S/truth5.bed
 awk -F'\t' 'NR==FNR{ok[$1]=1;next} ok[$1]' $GEN $G/${TAG}_decoy.point.bed    | sort -k1,1 -k2,2n > $S/decoy.bed
 sort -k1,1 -k2,2n $PAS2 > $S/pas2.bed
+sort -k1,1 -k2,2n $WD/data/references/gene_end.bed > $S/genes.bed
 
 # EXPRESSION-MATCHED CONTROL: genes that demonstrably carry long-read signal, i.e. that
 # contain at least one >=100-UMI long-read PAS. Restricting every tool to these genes removes
 # "the Kinnex donor just did not express that gene" as an explanation for unsupported calls.
-sort -k1,1 -k2,2n $WD/data/references/gene_end.bed > $S/genes.bed
 bedtools intersect -a $S/genes.bed -b <(sort -k1,1 -k2,2n $G/${TAG}_truth_t100.point.bed) -s -u \
   > $S/genes_covered.bed
 NG=$(wc -l < $S/genes.bed); NC=$(wc -l < $S/genes_covered.bed)
@@ -86,12 +86,20 @@ PY
 echo "wrote $QC"; cat $QC
 
 TH=$G/${TAG}_truth_threshold_qc.tsv
-{ echo -e "# Truth-set size and independent QC at each molecular-support threshold."
-  echo -e "umi_threshold\tn_pas\tfrac_within25bp_polyasite2\tfrac_within100bp_polyasite2"; } > $TH
+{ echo -e "# Truth-set size and INDEPENDENT QC at each molecular-support threshold."
+  echo -e "# frac_novel = >25 bp from any strand-matched PolyASite 2.0 rep site (candidate novel PAS)."
+  echo -e "# Plan acceptance check: antisense-only should be < 2%."
+  echo -e "umi_threshold\tn_pas\tfrac_within25bp_polyasite2\tfrac_within100bp_polyasite2\tfrac_novel\tfrac_sense_genic\tfrac_antisense_only\tfrac_intergenic"; } > $TH
 for T in 5 20 100 500; do
-  B=$G/${TAG}_truth_t${T}.point.bed; N=$(wc -l < $B)
-  bedtools closest -s -d -t first -a <(sort -k1,1 -k2,2n $B) -b $S/pas2.bed 2>/dev/null \
-   | awk -F'\t' -v N=$N -v T=$T -v OFS='\t' '{d=$NF; if(d>=0&&d<=25)c++; if(d>=0&&d<=100)e++}
-       END{printf "%d\t%d\t%.6f\t%.6f\n", T,N,c/N,e/N}' >> $TH
+  B=$S/th_t${T}.bed
+  awk -F'\t' 'NR==FNR{ok[$1]=1;next} ok[$1]' $GEN $G/${TAG}_truth_t${T}.point.bed | sort -k1,1 -k2,2n > $B
+  N=$(wc -l < $B)
+  SS=$(bedtools intersect -a $B -b $S/genes.bed -s -u | wc -l)
+  AS=$(bedtools intersect -a $B -b $S/genes.bed -S -u | bedtools intersect -a - -b $S/genes.bed -s -v | wc -l)
+  IG=$((N - $(bedtools intersect -a $B -b $S/genes.bed -u | wc -l)))
+  bedtools closest -s -d -t first -a $B -b $S/pas2.bed 2>/dev/null \
+   | awk -F'\t' -v N=$N -v T=$T -v SS=$SS -v AS=$AS -v IG=$IG -v OFS='\t' \
+       '{d=$NF; if(d>=0&&d<=25)c++; if(d>=0&&d<=100)e++; if(d<0||d>25)nv++}
+        END{printf "%d\t%d\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\n", T,N,c/N,e/N,nv/N,SS/N,AS/N,IG/N}' >> $TH
 done
 echo "wrote $TH"; cat $TH

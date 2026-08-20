@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-kinnex_truth_validation.py [tag ...]   (default: gemx)
+kinnex_truth_validation.py [primary_tag] [replicate_tag]   (default: x3p gemx)
 
 TIER-1, ATLAS-INDEPENDENT validation of the pbmc_10k_v3 head-to-head (manuscript/09) using
 PacBio Kinnex single-cell Iso-Seq long reads as ground truth.
@@ -111,8 +111,9 @@ def style(ax):
 
 
 def main():
-    tags = sys.argv[1:] or ["gemx"]
+    tags = sys.argv[1:] or ["x3p", "gemx"]
     tag = tags[0]
+    rep = tags[1] if len(tags) > 1 else None
     sc = pd.concat([load_scores(t) for t in tags], ignore_index=True)
     if sc.empty:
         sys.exit("no score TSVs found")
@@ -120,12 +121,17 @@ def main():
                          sep="\t", comment="#")
     dec = decall[decall.gene_set == "all"].drop(columns=["gene_set"])
     cov = decall[decall.gene_set == "lr_covered"].set_index("tool")
+    repdec = (pd.read_csv(ROOT / rep / f"{rep}_call_support_decomposition.tsv", sep="\t",
+                          comment="#").query('gene_set == "all"').set_index("tool")
+              if rep else None)
+    repcal = (pd.read_csv(ROOT / rep / f"{rep}_truth_calibration.tsv", sep="\t", comment="#")
+              if rep else None)
     cal = pd.read_csv(ROOT / tag / f"{tag}_truth_calibration.tsv", sep="\t", comment="#")
     thq = pd.read_csv(ROOT / tag / f"{tag}_truth_threshold_qc.tsv", sep="\t", comment="#")
 
-    fig = plt.figure(figsize=(14.2, 11.6))
+    fig = plt.figure(figsize=(14.2, 12.1))
     gs = fig.add_gridspec(2, 2, hspace=0.40, wspace=0.24,
-                          left=0.072, right=0.986, top=0.895, bottom=0.215)
+                          left=0.072, right=0.986, top=0.900, bottom=0.235)
 
     # ---- A: sequence-only calibration of the truth set -----------------------
     axA = fig.add_subplot(gs[0, 0]); style(axA)
@@ -138,15 +144,20 @@ def main():
                            "decoy_internal_priming", PALETTE[1])):
         sub = cal[cal.set == key].set_index("umi_bin").reindex(order)
         axA.plot(x, sub.hexamer_canonical, marker="o", ms=5.5, lw=2.2, color=col, label=lab)
+        if repcal is not None:
+            rs = repcal[repcal.set == key].set_index("umi_bin").reindex(order)
+            axA.plot(x, rs.hexamer_canonical, marker="o", ms=3.5, lw=1.2, color=col,
+                     alpha=0.45, ls="--",
+                     label="   same, independent GEM-X replicate (other donor)")
     axA.axhline(0.4111, ls="--", lw=1.3, color=MUTED,
                 label="same measure on PolyASite 2.0 rep sites (0.411)")
     axA.axhline(0.3799, ls=":", lw=1.3, color=MUTED,
                 label="same measure on protein-coding TES (0.380)")
     axA.axvline(0.5, color=PALETTE[1], lw=1.1, alpha=0.45)
-    axA.annotate("the plan's >=5 UMI cut sits at the noise floor at 104 M molecules\n"
-                 "-- so the truth set is reported as a molecular-support sweep",
-                 xy=(0.5, 0.075), xycoords="data",
-                 xytext=(0.34, 0.21), textcoords="axes fraction",
+    axA.annotate("at this depth the plan's >=5 UMI cut sits at the\n"
+                 "noise floor -- truth is reported as a support sweep",
+                 xy=(0.5, 0.09), xycoords="data",
+                 xytext=(0.40, 0.145), textcoords="axes fraction",
                  fontsize=8.2, color=MUTED, va="top", ha="left",
                  arrowprops=dict(arrowstyle="->", color=MUTED, lw=1.0,
                                  connectionstyle="angle3,angleA=0,angleB=-90"))
@@ -161,10 +172,11 @@ def main():
     # ---- B: precision -- atlas vs long-read truth ----------------------------
     axB = fig.add_subplot(gs[0, 1]); style(axB)
     s5 = sc[(sc.truth == tag) & (sc.umi_threshold == 5)].set_index("tool")
+    r5 = (sc[(sc.truth == rep) & (sc.umi_threshold == 5)].set_index("tool")
+          if rep is not None else None)
     present = [t for t in TOOLS if t in s5.index]
 
     def spread(vals, gap):
-        """nudge label y-positions apart, preserving order"""
         idx = sorted(range(len(vals)), key=lambda i: vals[i])
         out = list(vals)
         for k in range(1, len(idx)):
@@ -173,25 +185,31 @@ def main():
                 out[b] = out[a] + gap
         return out
 
-    lft = spread([ATLAS[t][0] for t in present], 0.030)
-    rgt = spread([s5.loc[t, "precision_vs_truth"] for t in present], 0.030)
+    cols_x = [0, 1, 2] if r5 is not None else [0, 1]
+    series = {t: ([ATLAS[t][0], s5.loc[t, "precision_vs_truth"]]
+                  + ([r5.loc[t, "precision_vs_truth"]] if r5 is not None else []))
+              for t in present}
+    lft = spread([series[t][0] for t in present], 0.030)
+    rgt = spread([series[t][-1] for t in present], 0.030)
     for t, ly, ry in zip(present, lft, rgt):
-        axB.plot([0, 1], [ATLAS[t][0], s5.loc[t, "precision_vs_truth"]],
-                 color=COLOR[t], lw=2.4, marker="o", ms=8)
-        axB.text(-0.045, ly, LABEL[t], ha="right", va="center",
-                 fontsize=8.8, color=COLOR[t])
-        axB.text(1.045, ry, LABEL[t], ha="left", va="center",
+        axB.plot(cols_x, series[t], color=COLOR[t], lw=2.4, marker="o", ms=8)
+        axB.text(-0.055, ly, LABEL[t], ha="right", va="center", fontsize=8.8, color=COLOR[t])
+        axB.text(cols_x[-1] + 0.055, ry, LABEL[t], ha="left", va="center",
                  fontsize=8.8, color=COLOR[t])
     dn = [t for t in DENOVO if t in s5.index]
     rho = spearmanr([ATLAS[t][0] for t in dn],
                     [s5.loc[t, "precision_vs_truth"] for t in dn]).statistic
-    axB.set_xlim(-0.62, 1.62); axB.set_xticks([0, 1])
+    rho2 = (spearmanr([s5.loc[t, "precision_vs_truth"] for t in dn],
+                      [r5.loc[t, "precision_vs_truth"] for t in dn]).statistic
+            if r5 is not None else np.nan)
+    axB.set_xlim(-0.78, cols_x[-1] + 0.78); axB.set_xticks(cols_x)
     axB.set_xticklabels(["PolyASite 2.0 atlas\n(manuscript/09)",
-                         "Kinnex long-read truth\n(>=5 UMI, this figure)"],
-                        fontsize=9, color=INK)
+                         "Kinnex 10x 3' v3.1\n(>=5 UMI, primary)",
+                         "Kinnex GEM-X 3' v4\n(other donor, replicate)"][:len(cols_x)],
+                        fontsize=8.6, color=INK)
     axB.set_ylabel(f"precision @ {CUT} bp", fontsize=9.5, color=INK)
-    axB.set_title(f"B  Precision ordering replicates (de novo Spearman rho = {rho:.2f})",
-                  fontsize=10.5, color=INK, loc="left")
+    axB.set_title(f"B  Precision ordering replicates (rho = {rho:.2f} vs atlas, "
+                  f"{rho2:.2f} between donors)", fontsize=10.5, color=INK, loc="left")
 
     # ---- C: what the calls actually sit on ----------------------------------
     axC = fig.add_subplot(gs[1, 0]); style(axC)
@@ -215,14 +233,21 @@ def main():
     axC.set_title("C  What each tool's calls actually sit on (100 bp, strand-matched)",
                   fontsize=10.5, color=INK, loc="left")
     if len(cov):
-        note = ("expression-matched control -- same measure restricted to the "
-                f"{int(cov.n_calls.max()):,}-call subset inside genes\ncarrying a >=100-UMI "
-                "long-read PAS: unsupported stays "
+        note = ("expression-matched control -- restricted to calls inside genes carrying a "
+                ">=100-UMI long-read PAS, 'no long-read 3' end' stays\n"
                 + ", ".join(f"{LABEL[t]} {cov.loc[t, 'no_lr_support']*100:.0f}%"
                             for t in ("peakatail", "polyapipe", "sierra", "scapture")
                             if t in cov.index)
-                + " -- so it is not a coverage artifact")
-        axC.text(0.0, -0.335, note, transform=axC.transAxes, fontsize=8.0, color=MUTED,
+                + ": not a coverage artifact")
+        if repdec is not None:
+            note += ("\nindependent GEM-X replicate (other donor, 3' v4), genuine / "
+                     "internal-priming / none:  "
+                     + ";  ".join(f"{LABEL[t]} {repdec.loc[t,'genuine_pas']*100:.0f}/"
+                                  f"{repdec.loc[t,'ip_artifact']*100:.0f}/"
+                                  f"{repdec.loc[t,'no_lr_support']*100:.0f}%"
+                                  for t in ("peakatail", "sierra", "scapture")
+                                  if t in repdec.index))
+        axC.text(0.0, -0.325, note, transform=axC.transAxes, fontsize=7.9, color=MUTED,
                  va="top", ha="left")
     axC.legend(frameon=False, fontsize=8.4, labelcolor=MUTED, loc="upper left",
                bbox_to_anchor=(0.0, -0.145), ncol=1, handlelength=1.4,
@@ -239,12 +264,24 @@ def main():
         o = sorted([t for t in DENOVO if t in s.index], key=lambda t: -s.loc[t, "f1_vs_truth"])
         ranks[str(T)] = {t: o.index(t) + 1 for t in o}
     xs = np.arange(len(cols))
+    rranks = {}
+    if rep is not None:
+        for T in THRESH:
+            sr = sc[(sc.truth == rep) & (sc.umi_threshold == T)].set_index("tool")
+            o = sorted([t for t in DENOVO if t in sr.index],
+                       key=lambda t: -sr.loc[t, "f1_vs_truth"])
+            rranks[str(T)] = {t: o.index(t) + 1 for t in o}
     for t in DENOVO:
         ys = [len(DENOVO) + 1 - ranks[c].get(t, np.nan) for c in cols]
-        axD.plot(xs, ys, color=COLOR[t], lw=2.4, marker="o", ms=7.5)
-        axD.text(xs[-1] + 0.12, ys[-1], LABEL[t], fontsize=8.8, color=COLOR[t], va="center")
+        axD.plot(xs, ys, color=COLOR[t], lw=2.4, marker="o", ms=7.5, zorder=3)
+        axD.text(xs[-1] + 0.42, ys[-1], LABEL[t], fontsize=8.8, color=COLOR[t], va="center")
+        if rranks:
+            rx = [xs[i] + 0.17 for i, c in enumerate(cols) if c in rranks]
+            ry = [len(DENOVO) + 1 - rranks[c][t] for c in cols if c in rranks]
+            axD.plot(rx, ry, ls="none", marker="o", ms=8.5, mfc="none", mew=1.6,
+                     color=COLOR[t], zorder=4)
     axD.axvline(0.5, color=MUTED, lw=1.0, ls="--")
-    axD.set_xlim(-0.35, len(cols) + 0.9)
+    axD.set_xlim(-0.35, len(cols) + 1.25)
     axD.set_xticks(xs)
     axD.set_xticklabels(["PolyASite\natlas"] + [f">={t} UMI" for t in THRESH],
                         fontsize=8.6, color=INK)
@@ -256,8 +293,12 @@ def main():
     axD.yaxis.grid(True, color=GRID, lw=0.8)
     axD.set_ylabel("F1 rank among de novo tools", fontsize=9.5, color=INK)
     npas = dict(zip(thq.umi_threshold, thq.n_pas))
-    axD.set_title("D  The F1 ranking does NOT survive; only PeakATail's position does",
+    axD.set_title("D  Atlas F1 ranking does not survive; long-read ranking reproduces",
                   fontsize=10.5, color=INK, loc="left")
+    axD.plot([], [], ls="none", marker="o", ms=8.5, mfc="none", mew=1.6, color=MUTED,
+             label="GEM-X replicate (other donor)")
+    axD.legend(frameon=False, fontsize=8.0, labelcolor=MUTED, loc="lower left",
+               bbox_to_anchor=(0.0, -0.02))
     axD.text(0.0, -0.235, "truth PAS:   "
              + "    ".join(f">={t}: {npas[t]:,}" for t in THRESH),
              transform=axD.transAxes, fontsize=8.0, color=MUTED)
@@ -265,22 +306,26 @@ def main():
     fig.suptitle("Atlas-independent validation of the pbmc_10k_v3 head-to-head against "
                  "PacBio Kinnex single-cell long reads", fontsize=13.5, color=INK,
                  x=0.072, ha="left", y=0.962)
-    fig.text(0.072, 0.016,
-             "CAVEAT  The Kinnex donor is NOT the pbmc_10k_v3 donor and the 10x chemistries differ (Kinnex GEM-X 3' v4 vs pbmc_10k_v3 3' v3): this is SITE-LEVEL truth and validates PAS POSITIONS, not per-cell usage.\n"
-             "Truth = 104.0 M dedup FLNC molecules (isoseq refine --require-polya), real-cell CB, 3' softclip <=30 nt, internal priming = >=12 A or >=6 consecutive A in the 18 nt downstream, greedy +/-25 nt peak calling.\n"
-             "F1 compares a fixed call set against truth sets that differ 53-fold in size, so it is not a stable ranking statistic here; precision and recall (panel B) are. scUTRquant* is annotation-based (fixed catalog) and is shown but not ranked with de novo tools.",
-             fontsize=7.6, color=MUTED, ha="left", va="bottom")
+    fig.text(0.072, 0.012,
+             "CAVEAT  Neither Kinnex donor is the pbmc_10k_v3 donor and the 10x chemistries differ (Kinnex 10x 3' v3.1 and GEM-X 3' v4 vs pbmc_10k_v3 3' v3): this is SITE-LEVEL truth. It validates PAS POSITIONS, not per-cell usage.\n"
+             "Primary truth = 76.8 M dedup FLNC molecules from 12,852 cells: isoseq refine --require-polya, minimap2 -ax splice:hq -uf, real-cell CB, 3' softclip <=30 nt, greedy +/-25 nt peak calling on the terminus histogram.\n"
+             "Internal priming = >=12 A or >=6 consecutive A in the 18 genomic nt downstream of the cleavage site, read in transcript direction. No threshold anywhere was chosen using an atlas; atlas agreement is only reported.\n"
+             "F1 compares a fixed call set against truth sets differing 99-fold in size, so its ranking moves with stringency even though it reproduces between donors at a given stringency; the precision ordering (B) does not.\n"
+             "scUTRquant* is annotation-based (a fixed UTRome catalog filtered by detection): it is shown for scale but is not ranked with the de novo tools.",
+             fontsize=7.5, color=MUTED, ha="left", va="bottom")
 
     save_manuscript(fig, NAME, facecolor="white")
     plt.close(fig)
 
     # ---- every plotted value ------------------------------------------------
     out = OUTDIR / f"{NAME}.tsv"
-    rankdf = pd.DataFrame([{"tool": t, **{f"f1_rank_{c}": ranks[c].get(t) for c in cols}}
-                           for t in DENOVO])
+    rankdf = pd.DataFrame([{"tool": t, **{f"f1_rank_{tag}_{c}": ranks[c].get(t) for c in cols},
+                            **{f"f1_rank_{rep}_{c}": rranks[c].get(t)
+                               for c in rranks}} for t in DENOVO])
     corr = []
     for T in THRESH:
         s = sc[(sc.truth == tag) & (sc.umi_threshold == T)].set_index("tool")
+        sr = sc[(sc.truth == rep) & (sc.umi_threshold == T)].set_index("tool") if rep else None
         dn = [t for t in DENOVO if t in s.index]
         corr.append(dict(umi_threshold=T,
                          spearman_precision=spearmanr([ATLAS[t][0] for t in dn],
@@ -288,7 +333,11 @@ def main():
                          spearman_recall=spearmanr([ATLAS[t][1] for t in dn],
                                                    [s.loc[t, "recall_of_truth"] for t in dn]).statistic,
                          spearman_f1=spearmanr([ATLAS[t][2] for t in dn],
-                                               [s.loc[t, "f1_vs_truth"] for t in dn]).statistic))
+                                               [s.loc[t, "f1_vs_truth"] for t in dn]).statistic,
+                         spearman_f1_between_long_read_donors=(
+                             spearmanr([s.loc[t, "f1_vs_truth"] for t in dn],
+                                       [sr.loc[t, "f1_vs_truth"] for t in dn]).statistic
+                             if sr is not None else np.nan)))
     with open(out, "w") as fh:
         fh.write(f"# {NAME}: Kinnex long-read truth vs pbmc_10k_v3 tool calls. truth tag(s): "
                  + ",".join(tags) + "\n")
