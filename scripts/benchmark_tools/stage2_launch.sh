@@ -27,6 +27,7 @@ run_arm() {
   mkdir -p "$out"; local run=$out/run; rm -rf "$run"
   {
     echo "=== $label start $(date) | strategy clip_seeded | extra: $* ==="
+    echo "code commit: $(git -C $WD/tools/pa-polya rev-parse HEAD)  (tree must stay frozen for the run)"
     "$VENV_PY" -c 'import ema.strategies.clip_seeded as m; assert "pa-polya" in m.__file__, m.__file__; print("code:", m.__file__)'
     /usr/bin/time -v -o "$out/runtime_mem.txt" \
       "$VENV_PY" -c 'from ema.cli import main; main()' run \

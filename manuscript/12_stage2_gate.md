@@ -1,21 +1,37 @@
 # Stage 2 gate — full PBMC re-run of the clip-seeded caller (2026-08-20)
 
-Pre-registered gate (10_caller_fix_plan.md §Stage 2): **F1@100 > 0.261 (polyApipe) on full pbmc_10k_v3**,
-detected-gene denominator (285,136 sites), tiers reported separately. Numbers below are self-scored by
-the launcher; an adversarial verification is running and must land before any of this is quoted.
+**CORRECTED 2026-08-21 after adversarial verification (verdict PROBLEM on the framing, not the data).**
+The pre-registered gate in 10_caller_fix_plan.md is TWO-SIDED — §5 trigger 2: fall back if
+"Stage 2 PBMC F1@100 ≤ 0.261 **OR P@100 < 0.38**" (line 180 sets the target P@100 ≥ 0.38). The first
+draft of this file quoted only the F1 half. All numbers below reproduced to 6 decimals by the verifier.
 
 | arm (pbmc_10k_v3) | n called | P@100 | R_det | **F1@100** | gate |
 |---|---:|---:|---:|---:|:--:|
 | shipped lambda_gradient | 277,111 | 0.118 | 0.156 | 0.134 | — |
 | **clip_seeded, default output (both tiers)** | 377,236 | 0.188 | 0.314 | **0.235** | **FAIL** |
-| clip_seeded **tier-1** (clip-supported) | 197,410 | 0.308 | 0.274 | **0.290** | PASS |
+| clip_seeded **tier-1** (clip-supported) | 197,410 | 0.308 | 0.274 | **0.290** | F1 pass / **P FAIL** |
 | clip_seeded tier-2 (coverage-only) | 179,826 | 0.057 | 0.040 | 0.047 | — |
-| clip_seeded + IP filter, tier-1 | 142,400 | 0.362 | 0.241 | **0.290** | PASS |
+| clip_seeded + IP filter, tier-1 | 142,400 | 0.362 | 0.241 | **0.290** | F1 pass / **P FAIL (0.362 < 0.38)** |
 | *polyApipe (best de novo, default output)* | *120,916* | *0.380* | *0.199* | *0.261* | *ref* |
 
 Runtime 3:03 h, peak RSS 140 GB (plain) / 127 GB (IP) — still the heaviest tool in the panel.
 
-## Honest reading
+## Honest reading — REVISED
+
+**Under the full pre-registered gate, NO arm passes.** Tier-1's F1 advantage over polyApipe is entirely
+recall-driven: its precision is BELOW polyApipe's at every cutoff (P@10 0.191 vs 0.293; P@100 0.308 vs
+0.380). The remaining gap is precision. The previous "product decision" framing (adopt tier-1 as default
+and the gate passes) was wrong and is withdrawn.
+
+Additional verifier corrections: (i) relative to the tool's OWN merged output, tier-1-as-default IS a
+recall-sacrificing filter (R_det 0.314 → 0.274, −12.6%), removing 179,826 calls of which 94.3% are >100 bp
+from any atlas site; (ii) polyApipe's 120,916-call set is its misprime-excluded subset, not its raw default
+(all-peaks F1 0.259 — immaterial); (iii) the pa-polya worktree was modified by Stage-1b work while the
+Stage-2 run was in flight — pas.bed provably used f0370f7 (module cache; the new log line appears 0 times),
+but the downstream count stages re-imported edited code: one more reason those matrices are void. Runs must
+freeze their code tree and log the commit hash.
+
+## Original reading (superseded, kept for the record)
 
 1. **As shipped by default, the fix does not clear the gate**: 0.235 < 0.261 (though 1.75× the old caller).
    The coverage-only tier (F1 0.047, P 0.057 vs genic null ~0.022) drags the combined number down.
