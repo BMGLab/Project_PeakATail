@@ -95,7 +95,11 @@ evidence, the axis that separates the winners).**
       Coordinates/accuracy unaffected. Fix = count all read ends in a cleavage window; acceptance = mass
       within 0.8-1.2x shipped, >=98% STARsolo cell recovery, pas.bed byte-identical. Then regenerate
       Stage-2 matrices (second re-run; disclosed).
-- [~] **Stage 2 LAUNCHED (2026-08-20)** from the rebased branch (f0370f7 on develop a3ddf4e, byte-identical
+- [x] **Stage 2 PBMC GATE RESULT (2026-08-20, verification pending — see 12_stage2_gate.md):** default
+      (both-tier) output F1 0.235 = FAIL vs 0.261; clip-supported tier-1 F1 0.290 = PASS with recall 0.274
+      > polyApipe 0.199 on a larger call set (so not a recall-sacrificing filter). Decision for the PI:
+      adopt tier-1 as default output (disclosed as post-hoc) or report the fail.
+- [x] ~~Stage 2 LAUNCHED (2026-08-20)~~ from the rebased branch (f0370f7 on develop a3ddf4e, byte-identical
       slice output vs the verified build). Four concurrent arms via scripts/benchmark_tools/stage2_launch.sh:
       PBMC clip_seeded, PBMC clip_seeded + --ip-filter filter (human FASTA), testis m1, testis m2. Each
       self-scores (both tiers + combined) on its dataset's denominator and writes DONE.ok/FAILED.err.
