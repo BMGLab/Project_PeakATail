@@ -60,8 +60,8 @@ PBMC tier-1 output (same denominator, same scorer):
 | tier-1 support | n | P@100 | R_det | F1@100 | full gate (P≥0.38 & F1>0.261) |
 |---|---:|---:|---:|---:|:--:|
 | ≥1 clip read (as run) | 197,410 | 0.308 | 0.274 | 0.290 | P fail |
-| **≥2 clip reads** | see n above | **0.500** | **0.203** | **0.288** | **PASS both** |
-| ≥3 clip reads | — | 0.664 | 0.166 | 0.265 | PASS both (narrow) |
+| **≥2 clip reads** | 79,782 | **0.500** | **0.203** | **0.288** | **PASS both** |
+| ≥3 clip reads | 45,866 | 0.664 | 0.166 | 0.265 | PASS both (narrow) |
 | ≥5 clip reads | 26,662 | 0.824 | 0.129 | 0.223 | F1 fail |
 | *polyApipe* | *120,916* | *0.380* | *0.199* | *0.261* | *ref* |
 
