@@ -121,3 +121,14 @@ Unrestricted check: scoring the RAW clip-seeded output (652,665 PAS, no gene-dis
 tier-1 P 0.273 / R_det 0.301 / F1 0.286 vs the gene-filtered tier-1's 0.308 / 0.274 / 0.290 — the
 filter trades ~2.7 pp recall for ~3.5 pp precision at unchanged F1. It is not what drives the
 precision number, in either direction.
+
+## Stage 1b verdict (2026-08-21): PROBLEM on the stated metric, accepted on the corrected baseline
+The verifier reproduced everything and returned PROBLEM because the pre-set rule "annotated mass within
+0.8–1.2× of 41,944,353" was built on a wrong number (that figure = counts + the MatrixMarket nnz line)
+and a wrong baseline (the shipped annotated matrix is itself mis-keyed by bug 0a). The like-for-like
+comparison — correctly keyed shipped gene-assigned mass on the same 9,564 cells — is **1.053×**
+(per-gene Spearman 0.991). Cell recovery 1,294/1,294; caller-level BEDs byte-identical. Accepted on that
+basis; the rule, not the fix, was wrong — recorded here so the re-baselining is auditable.
+Residuals folded into Stage 1c: a minor clip-fallback double count at rare clusters, test debris, a
+CHANGELOG nit. Stage 1c also makes clip evidence UMI-deduplicated with -F 3844 semantics (the sweep
+verifier's finding) WITHOUT changing defaults, so the final re-run's default output is pre-specified.
