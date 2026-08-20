@@ -243,3 +243,15 @@ rows from `ClipSeeder.flush()`'s clip-only cb dict (~1% of reads). Side effect: 
 1,256 cells of which 995 real — lost 23% of STARsolo cells. Coordinates (and therefore all F1/precision
 numbers) are unaffected; every count-based output of the Stage-2 runs is NOT usable until Stage 1b
 (count tier-1 from all read ends in a cleavage window) lands and the matrices are regenerated.
+
+### Stage 1b landed (2026-08-21): tier-1 quantification fixed (commits 7a54b01, 002d976 on feat/polya-evidence)
+
+Tier-1 PAS now count all read ends at the cleavage site (partition of suppressed coverage candidates —
+shipped mass conserved to the read — plus the in-window remainder the old caller never assigned to any
+PAS). Acceptance on testis mouse1: 1,294/1,294 STARsolo cells recovered; every caller-level BED
+byte-identical; like-for-like gene-assigned mass 1.053x shipped (51.8M vs 49.2M on the same 9,564 cells,
+per-gene Spearman 0.991). CORRECTION to our own target: "41,944,353 shipped counts" was counts + the
+MatrixMarket nnz line; true shipped annotated total is 31.8M and is itself mis-keyed (bug 0a).
+Side effect: 85,993 gene-assigned PAS now survive min_cells (vs 45,921) because tier-1 rows carry real
+counts -> scored set grows, mouse1 F1 0.296 -> 0.361 (tier-1 0.374 at P 0.499). Hence ALL Stage-2 gate
+numbers are stale and the post-1c re-run is the only one that counts. +15 tests, suite 1189 pass.
