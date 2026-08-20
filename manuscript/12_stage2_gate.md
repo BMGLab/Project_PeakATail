@@ -69,3 +69,44 @@ PBMC tier-1 output (same denominator, same scorer):
 pre-identified in the plan as the evidence ceiling polyApipe itself sits on, not invented here — but the
 manuscript must say the default was set post hoc, and report the ≥1 output alongside. At ≥2, PeakATail's
 tier-1 beats polyApipe on precision (0.500 vs 0.380) at equal-or-better recall (0.203 vs 0.199).
+
+## CORRECTION to the sweep section (verifier verdict PROBLEM, 2026-08-21)
+
+1. **The "≥2 was pre-identified in the plan" defence is withdrawn.** The plan's ceiling paragraph was a
+   calibration remark about atlas-site read support, not a caller threshold; the plan knowingly
+   registered a threshold-free gate with `--polya-min-reads` default 1. The sweep directory was created
+   12 minutes after the gate FAIL was recorded. **It is post hoc, full stop.**
+2. **BED column 5 counts raw clip READS — including PCR duplicates and secondary alignments — not
+   molecules.** `read_check` applies no duplicate/secondary filter. Among the 79,751 "≥2-read" tier-1
+   sites, **18,864 (23.7%) are a single (CB,UMI) molecule duplicated**; of sites with exactly 2 reads,
+   47.7% are one molecule. The sweep is therefore NOT what `--polya-min-reads 2` (documented as distinct
+   molecules) would emit.
+3. **Recall "above the ceiling" (0.203 vs 0.1986) is the signature of duplicate counting**, not a
+   better caller. Applying the ceiling's own read definition (-F 3844) gives R_det 0.1815 ≤ ceiling.
+4. **Molecule-honest operating points** (verifier's bedtools pipeline, same denominator):
+
+| tier-1 threshold | n | P@100 | R_det | F1 | full gate | vs polyApipe recall 0.199 |
+|---|---:|---:|---:|---:|:--:|---|
+| ≥1 read (as run, default) | 197,345 | 0.308 | 0.274 | 0.290 | P fail | above |
+| **≥2 distinct UMIs** | 60,887 | **0.593** | **0.189** | **0.286** | passes numerically | **below** |
+| ≥2 UMIs, primary non-dup reads only | 54,844 | 0.599 | 0.175 | 0.270 | passes (narrow) | below |
+| ≥3 distinct UMIs | 36,836 | 0.739 | 0.152 | 0.253 | F1 fail | below |
+| matched-recall draw (R = 0.199) | ~76,370 | **0.510** | 0.199 | 0.286 | passes | equal |
+
+   The earlier sentence "beats polyApipe on precision at equal-or-better recall" is **false for
+   molecules**; at matched recall the precision advantage (0.51 vs 0.38) holds, as a post-hoc comparison.
+5. **Benchmark fairness caveat (all arms, all tools):** PeakATail's scored set is the gene-proximal subset
+   after `max_gene_distance` 5,000 bp drops 42% of raw calls (652,665 → 377,236; same for the shipped arm,
+   477,153 → 277,164). Whether polyApipe's misprime-excluded set carries an equivalent restriction is
+   unexamined and must be checked before any cross-tool precision sentence is final.
+
+## Tool defects this surfaces → Stage 1c
+- Clip evidence must be **UMI-deduplicated** and exclude secondary/duplicate/supplementary alignments
+  (mirror `-F 3844`); BED score should carry distinct molecules, with raw reads as a second annotation.
+- `--polya-min-reads` documents molecules; the gate and the score column must use the same unit.
+
+## Defensible statements, all labelled post hoc
+(a) default output F1 0.134 → 0.290 (the largest single improvement in the campaign), precision 0.308
+fails the 0.38 floor; (b) at polyApipe-matched recall, tier-1 precision is 0.51 vs 0.38; (c) molecule-
+thresholded (≥2 UMIs) tier-1 clears the numeric gate at P 0.59 / F1 0.286 with recall 0.189, just below
+polyApipe's 0.199. **None of these is "the gate passed."**

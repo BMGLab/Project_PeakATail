@@ -95,11 +95,12 @@ evidence, the axis that separates the winners).**
       Coordinates/accuracy unaffected. Fix = count all read ends in a cleavage window; acceptance = mass
       within 0.8-1.2x shipped, >=98% STARsolo cell recovery, pas.bed byte-identical. Then regenerate
       Stage-2 matrices (second re-run; disclosed).
-- [x] **Stage 2 PBMC GATE RESULT (verified 2026-08-21 — 12_stage2_gate.md): NO ARM PASSES the full
-      pre-registered gate (F1 > 0.261 AND P ≥ 0.38).** Tier-1: F1 0.290 (pass) but P 0.308 (fail);
-      with IP filter P 0.362 (fail, narrowly). The gap is precision; tier-1 beats polyApipe on F1 only
-      via recall. Earlier "adopt tier-1 and it passes" framing withdrawn. Next: a pre-specifiable
-      precision lever (clip-support threshold sweep; IP filter already +5pp).
+- [x] **Stage 2 PBMC GATE: NOT CLEARED (two verifier passes, 12_stage2_gate.md).** Default output F1
+      0.290 / P 0.308 fails the P≥0.38 floor. Post-hoc sweeps examined and disclosed: read-count ≥2 was
+      duplicate-inflated (23.7% single molecules); molecule-based ≥2 UMIs gives P 0.593 / R 0.189 /
+      F1 0.286 (numeric pass, recall below polyApipe 0.199); matched-recall precision 0.51 vs 0.38.
+- [ ] **Stage 1c: UMI-dedup clip evidence** (-F 3844 semantics; BED score = molecules, reads as annotation;
+      align --polya-min-reads unit). Then re-run Stage 2 once, with the default set BEFORE the run.
 - [x] ~~Stage 2 LAUNCHED (2026-08-20)~~ from the rebased branch (f0370f7 on develop a3ddf4e, byte-identical
       slice output vs the verified build). Four concurrent arms via scripts/benchmark_tools/stage2_launch.sh:
       PBMC clip_seeded, PBMC clip_seeded + --ip-filter filter (human FASTA), testis m1, testis m2. Each
