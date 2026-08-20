@@ -132,3 +132,7 @@ basis; the rule, not the fix, was wrong — recorded here so the re-baselining i
 Residuals folded into Stage 1c: a minor clip-fallback double count at rare clusters, test debris, a
 CHANGELOG nit. Stage 1c also makes clip evidence UMI-deduplicated with -F 3844 semantics (the sweep
 verifier's finding) WITHOUT changing defaults, so the final re-run's default output is pre-specified.
+Verifier's independent re-baselining figures, for the record: v2 vs shipped filterdmatrix keyed by the
+shipped pasbed's own pasnumbers = 49,213,169 → **1.071×**; raw caller matrices 140.74M vs 132.93M =
+**1.059×**; post-cell-filter filterdmatrix 74.46M vs 69.33M = **1.074×**; v2 annotated matrix correctly
+keyed 85,993/85,993 (bug-0a fix 51cbe67 is an ancestor). "Growth is retention/keying, not over-counting."
