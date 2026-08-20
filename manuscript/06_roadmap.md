@@ -3,6 +3,12 @@
 **Target: Genome Biology (Method article), submission early November 2026.** Fallback chain that
 needs no restructuring: Genome Research → Briefings in Bioinformatics / NAR.
 
+**Status 2026-08-21 — PI DECISION: reliability-first positioning (13_reliability_positioning.md).**
+Clustering-novelty claim DROPPED. Claims = low-FP PAS detection, reliable cell-type APA switches, UTR
+length, trusted de novo PAS. Precision-first default output pre-registered BEFORE the final run
+(tier-1 ∩ IP-pass ∩ ≥2 molecules; gate P ≥ 0.50 both datasets). Stage 3 = reliability program
+(recalibration + replication filter + trusted-novel definition validated on Kinnex).
+
 **Status 2026-08-19 — POSITIONING CHANGED.** The evidence base is now large and largely negative on
 accuracy: PeakATail ranks last among de novo tools on public PBMC (F1 0.134 vs polyApipe 0.261) and
 mid-pack on testis, and neither differential test is FDR-calibrated. Accuracy-leadership and

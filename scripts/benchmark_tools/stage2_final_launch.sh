@@ -3,6 +3,8 @@
 # Defaults are PRE-SPECIFIED here, before any number is seen:
 #   * default output = clip_seeded at --polya-min-umis 1 (tool defaults), both tiers emitted, tiers scored separately
 #   * secondary, LABELLED POST-HOC SENSITIVITY arm = tier-1 subset with >=2 distinct molecules (col5 >= 2), scored alongside
+#   * PRE-REGISTERED precision-first default (PI, 2026-08-21, BEFORE this run): ipfilt arm, tier-1, >=2 molecules;
+#     gate for it: P@100 >= 0.50 on pbmc AND both testis mice (F1 reported, not gated)
 # Gate (unchanged, two-sided): F1@100 > 0.261 AND P@100 >= 0.38 on pbmc_10k_v3 default output. Tiers reported separately.
 set -uo pipefail
 export LC_ALL=C PEAKATAIL_NO_TIMESTAMP=1
@@ -45,9 +47,12 @@ run_arm() {
     awk -F'\t' '$5>0'  "$out/pas.bed" > "$out/pas_tier1.bed"
     awk -F'\t' '$5==0' "$out/pas.bed" > "$out/pas_tier2.bed"
     awk -F'\t' '$5>=2' "$out/pas.bed" > "$out/pas_tier1_ge2umi_POSTHOC.bed"
+    # PRE-REGISTERED precision-first default (PI decision 2026-08-21, manuscript/13_reliability_positioning.md):
+    # tier-1 only, >=2 distinct molecules; meaningful on the --ip-filter arm (IP-flagged sites already dropped there)
+    awk -F'\t' '$5>=2' "$out/pas.bed" > "$out/pas_PRESPEC_precision_default.bed"
     [[ -s $run/annotated_matrix.mtx ]] && cp "$run/annotated_matrix.mtx" "$out/counts.mtx"
     echo "pas.bed $(wc -l < $out/pas.bed) | tier1 $(wc -l < $out/pas_tier1.bed) | tier2 $(wc -l < $out/pas_tier2.bed) | tier1>=2umi $(wc -l < $out/pas_tier1_ge2umi_POSTHOC.bed)"
-    for v in pas pas_tier1 pas_tier2 pas_tier1_ge2umi_POSTHOC; do
+    for v in pas pas_tier1 pas_tier2 pas_tier1_ge2umi_POSTHOC pas_PRESPEC_precision_default; do
       local lab=${label}_${v#pas}; lab=${lab%_}
       if [[ $species == human ]]; then "$VENV_PY" "$SCORE" "$out/$v.bed" "$lab" --outdir "$out" "${HUMAN_DET[@]}"
       else "$VENV_PY" "$SCORE" "$out/$v.bed" "$lab" --outdir "$out" "${MOUSE_REFS[@]}"; fi
