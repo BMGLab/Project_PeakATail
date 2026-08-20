@@ -117,3 +117,7 @@ clip_seeded 99.7%, scUTRquant 99.9%, SCAPTURE 99.0%, Sierra 98.3%, polyApipe 96.
 Every tool is ≥95% gene-proximal on its own, so PeakATail's `max_gene_distance` restriction does not
 materially bias the cross-tool comparison (the ≤5% intergenic calls other tools keep are, if anything,
 lower-precision). The comparison stands as apples-to-apples on this axis.
+Unrestricted check: scoring the RAW clip-seeded output (652,665 PAS, no gene-distance filter) gives
+tier-1 P 0.273 / R_det 0.301 / F1 0.286 vs the gene-filtered tier-1's 0.308 / 0.274 / 0.290 — the
+filter trades ~2.7 pp recall for ~3.5 pp precision at unchanged F1. It is not what drives the
+precision number, in either direction.
