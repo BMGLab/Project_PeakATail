@@ -87,7 +87,10 @@ evidence, the axis that separates the winners).**
       (1.65×), clip-supported tier-1 **0.348** (P 0.359 / R 0.338, at the evidence recall ceiling).
       Verifier independently re-scored the BEDs, hand-checked clip_site on 365,606 real reads
       (0 mismatches), and confirmed three-path agreement. +71 tests, zero regressions.
-- [ ] **Stage 2 next**: full re-run + re-score after Amir merges #81–#84 and reviews this branch.
+- [~] **Stage 2 LAUNCHED (2026-08-20)** from the rebased branch (f0370f7 on develop a3ddf4e, byte-identical
+      slice output vs the verified build). Four concurrent arms via scripts/benchmark_tools/stage2_launch.sh:
+      PBMC clip_seeded, PBMC clip_seeded + --ip-filter filter (human FASTA), testis m1, testis m2. Each
+      self-scores (both tiers + combined) on its dataset's denominator and writes DONE.ok/FAILED.err.
       Gate unchanged: F1@100 > 0.261 on full PBMC. Pre-registered: tier-1 P is not final until the
       internal-priming filter runs on human; tiers reported separately, always.
 
