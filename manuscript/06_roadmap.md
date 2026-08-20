@@ -69,7 +69,10 @@ evidence, the axis that separates the winners).**
 - [x] **FDR calibration (nb_pairwise)** — DONE (2026-08-19), verdict NEGATIVE too: 20/20 null runs report q<0.05 hits (mean 350/run vs TRUE 316; 21.3% null p<0.05, 12.0% null q<0.05, min null p 2.5e-36 — milder than fisher but still ~4x nominal; driver: per-PAS plug-in dispersion clipped at 1e-4 floor in 21% of null tests carrying ~half the false hits, no shrinkage, marker double-dip). nb_pairwise q-values also unusable at face value → manuscript significance needs D4 cells-mode (CLI exposure) or permutation-calibrated thresholds; figure: manuscript/figures/fdr_calibration.{png,pdf}.
 - [x] `--ip-filter` verified LIVE (annotate flags 3.8%, filter drops exactly flagged, default=off) —
       resolves the lg_ip_off duplicate as expected behavior; docs rows to delete (comment staged for #69)
-- [ ] Merge the point-mode benchmark PR after Amir's review
+- [x] Point-mode benchmark PR #73 merged; Stage-0 PRs #81-#84 merged; Stage-1 PR #92 merged.
+- [ ] **#67 SWITCH_CELLTYPE rerun is now UNBLOCKED** (#82 merged): Amir backfills `layers['counts']`
+      from `06_preprocessing/*/preprocessed.h5ad`, passes `--pasbed` + `--counts-layer`, reruns only
+      B2+combine+switch (half a day). Use `--count-mode cells` (#86) for fisher.
 
 ### P1b — IN FLIGHT (2026-08-19, parallel)
 - [~] **PBMC novelty experiment** — does PAS-only clustering recover GEX cell types on public data
@@ -82,8 +85,8 @@ evidence, the axis that separates the winners).**
 - [~] **SCAPTURE testis mouse2** rerun (first attempt destroyed by the ssd1 disk-full event; now on ssd0)
 
 ### Stage 1 — DONE (2026-08-20, verified SOUND)
-- [x] **Clip-seeded calling built and it works**: branch `feat/polya-evidence` @ e8c931f (stacked on
-      PR #83). chr19+21 slice, identical scoring: shipped F1 0.177 → clip_seeded both-tiers **0.291**
+- [x] **Clip-seeded calling built, verified SOUND, and MERGED as PR #92** (develop 6697b0d, 2026-08-20
+      18:20; first run of the new CI gate triggered on it). chr19+21 slice, identical scoring: shipped F1 0.177 → clip_seeded both-tiers **0.291**
       (1.65×), clip-supported tier-1 **0.348** (P 0.359 / R 0.338, at the evidence recall ceiling).
       Verifier independently re-scored the BEDs, hand-checked clip_site on 365,606 real reads
       (0 mismatches), and confirmed three-path agreement. +71 tests, zero regressions.
