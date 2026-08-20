@@ -110,3 +110,10 @@ tier-1 beats polyApipe on precision (0.500 vs 0.380) at equal-or-better recall (
 fails the 0.38 floor; (b) at polyApipe-matched recall, tier-1 precision is 0.51 vs 0.38; (c) molecule-
 thresholded (≥2 UMIs) tier-1 clears the numeric gate at P 0.59 / F1 0.286 with recall 0.189, just below
 polyApipe's 0.199. **None of these is "the gate passed."**
+
+### Fairness caveat (item 5) — CHECKED and resolved (2026-08-21)
+Fraction of each tool's PBMC call set within 5 kb of an annotated gene body: PeakATail 99.7%,
+clip_seeded 99.7%, scUTRquant 99.9%, SCAPTURE 99.0%, Sierra 98.3%, polyApipe 96.2%, scAPAtrap 95.0%.
+Every tool is ≥95% gene-proximal on its own, so PeakATail's `max_gene_distance` restriction does not
+materially bias the cross-tool comparison (the ≤5% intergenic calls other tools keep are, if anything,
+lower-precision). The comparison stands as apples-to-apples on this axis.
