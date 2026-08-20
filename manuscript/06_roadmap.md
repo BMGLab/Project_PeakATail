@@ -81,6 +81,16 @@ evidence, the axis that separates the winners).**
       of every tool. If the unfavourable ranking flips here, that changes the accuracy story.
 - [~] **SCAPTURE testis mouse2** rerun (first attempt destroyed by the ssd1 disk-full event; now on ssd0)
 
+### Stage 1 — DONE (2026-08-20, verified SOUND)
+- [x] **Clip-seeded calling built and it works**: branch `feat/polya-evidence` @ e8c931f (stacked on
+      PR #83). chr19+21 slice, identical scoring: shipped F1 0.177 → clip_seeded both-tiers **0.291**
+      (1.65×), clip-supported tier-1 **0.348** (P 0.359 / R 0.338, at the evidence recall ceiling).
+      Verifier independently re-scored the BEDs, hand-checked clip_site on 365,606 real reads
+      (0 mismatches), and confirmed three-path agreement. +71 tests, zero regressions.
+- [ ] **Stage 2 next**: full re-run + re-score after Amir merges #81–#84 and reviews this branch.
+      Gate unchanged: F1@100 > 0.261 on full PBMC. Pre-registered: tier-1 P is not final until the
+      internal-priming filter runs on human; tiers reported separately, always.
+
 ### P2 — weeks 3–6 (ground truth + the make-or-break experiment)
 - [~] **Kinnex PBMC long-read** Tier-1 truth: 36GB downloading (dedup FLNC BAM + GEM-X mapped BAM);
       extraction plan in scripts/benchmark_tools/kinnex_truth_plan.md

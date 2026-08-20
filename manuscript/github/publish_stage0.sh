@@ -8,7 +8,7 @@ T=/mnt/ssd1/Projects/PeakATail_wd/tools/PeakATail
 footer=$'\n\n---\n*Prepared by Claude (AI assistant) for the Stage-0 fix campaign (PI-approved); adversarially verified before staging. gh account per `gh auth status`.*\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)'
 
 # fast-forward the original read-path branch onto its repaired head
-git -C "$T" branch -f fix/cellranger-input-compat fix/cellranger-input-compat-repair
+if [ "$(git -C "$T" branch --show-current)" = "fix/cellranger-input-compat" ]; then git -C "$T" merge --ff-only fix/cellranger-input-compat-repair; else git -C "$T" branch -f fix/cellranger-input-compat fix/cellranger-input-compat-repair; fi
 
 declare -A HEAD=( [matrix]=fix/matrix-pas-id-keying [switch]=fix/switch-length-strand-counts
                   [readpath]=fix/cellranger-input-compat [ci]=chore/ci-and-fixture )
