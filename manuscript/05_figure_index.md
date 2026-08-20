@@ -546,3 +546,8 @@ hardcoded "READ WITH CARE" footnote, in `manuscript/09_headtohead_results.md` cl
   plotted; do not mix them into the ranked comparison.
 - Concordance is a nearest-neighbour fraction, not a symmetric statistic: the two directions differ
   only through their denominators (drawn as the vertical range on each bar).
+
+## QUARANTINE NOTE (2026-08-20)
+`spermatogenesis_control.*` and `kinnex_truth_validation.*`: adversarial verdicts PROBLEM — science
+reproduces, prose overstates. Binding corrections in `11_verifier_corrections.md`; do not quote either
+figure until regenerated (scheduled with the Stage 3 re-tests).
