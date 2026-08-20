@@ -21,4 +21,6 @@ Tier-1 recall sits at the measured evidence ceiling (~34% of atlas sites carry c
 
 Internal-priming filter not yet applied on human (tier-1 precision is not final); tier-2 F1 is poor and the tiers must be reported separately downstream; UMI dedup of clip stacks is partial. Full-genome verdict comes from the Stage 2 re-run (pre-registered gate: F1 > 0.261 on full PBMC).
 
-**Stacked on #83** — merge that first. +71 tests, suite failure set identical to base.
+## Rebased onto current develop (post #81–#91)
+
+Rebased cleanly onto `a3ddf4e` (only CHANGELOG needed a manual merge). One deliberate interaction with #90's `--auto-cleavage-offset`: that correction shifts every PAS 3′ end downstream by the estimated R2-read-length offset, but **clip-seeded tier-1 PAS are already placed at the observed cleavage site** — shifting them would push them past it. `rewrite_bed_3prime_offset` therefore gains `skip_supported=`, and `main.py` sets it whenever the strategy is `clip_seeded`, so only the coverage-only tier (score 0) is shifted. Covered by `tests/test_cleavage_offset_skips_clip_supported.py` (both tiers, both strands, zero-offset no-op). Base: develop. +74 tests.
