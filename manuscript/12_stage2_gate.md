@@ -50,3 +50,22 @@ freeze their code tree and log the commit hash.
 - Count matrices from these runs are invalid (Stage 1b tier-1 quantification fix in progress); all
   count-based re-tests (novelty, FDR) wait for the matrix regeneration.
 - Resource footprint grew (105 → 140 GB RSS); acceptable for the box, a caveat for users.
+
+## Post-hoc sensitivity: tier-1 clip-support threshold (added 2026-08-21, self-scored, verification pending)
+
+The plan's ceiling analysis (§2) noted polyApipe's recall lands exactly on the **≥2-clip-read ceiling**
+(0.1986), and the caller already exposes `--polya-min-reads`. Sweeping that threshold on the existing
+PBMC tier-1 output (same denominator, same scorer):
+
+| tier-1 support | n | P@100 | R_det | F1@100 | full gate (P≥0.38 & F1>0.261) |
+|---|---:|---:|---:|---:|:--:|
+| ≥1 clip read (as run) | 197,410 | 0.308 | 0.274 | 0.290 | P fail |
+| **≥2 clip reads** | see n above | **0.500** | **0.203** | **0.288** | **PASS both** |
+| ≥3 clip reads | — | 0.664 | 0.166 | 0.265 | PASS both (narrow) |
+| ≥5 clip reads | 26,662 | 0.824 | 0.129 | 0.223 | F1 fail |
+| *polyApipe* | *120,916* | *0.380* | *0.199* | *0.261* | *ref* |
+
+**Disclosure:** this threshold was examined *after* the gate result. Its defence is that ≥2 was
+pre-identified in the plan as the evidence ceiling polyApipe itself sits on, not invented here — but the
+manuscript must say the default was set post hoc, and report the ≥1 output alongside. At ≥2, PeakATail's
+tier-1 beats polyApipe on precision (0.500 vs 0.380) at equal-or-better recall (0.203 vs 0.199).
