@@ -74,7 +74,11 @@ evidence, the axis that separates the winners).**
   99.7% sign agreement, 0 in 15 null pairings. Negatives: UMI-weighted index reverses at RS→ES (protamine
   ceiling); 16-gene literature panel does not reproduce (dropped); per_isoform degenerate-pair defect →
   issue11 draft. Switch queue DONE 15:47 (17/17 GSMs); replication driver running.
-- Pending: Stage-3 patient-level replication → verifier → 19_stage3_replication.md (`stage2_final_launch.sh`,
+- **PRs #96 + #97 MERGED by Amir 2026-08-21 ~16:10** → develop tip 9dfdefb (IP-strand fix + perf, on 1b/1c).
+  **v2 re-run LAUNCHED 16:14** from frozen tools/pa-polya-run-9dfdefb3 (suite: 1,277 passed, only the 2 known env
+  failures), OUT_TAG=final_v2, same gates. Expect: PBMC default P@100 ~0.706 (from the measured IP-fix impact),
+  mice ~0.746/0.759; runtime ~30 min PBMC.
+- Pending: v2 arms → gate verifier → 15_final_gate_v2; Kinnex v2; Stage-3 patient-level replication (running) → verifier → 19_stage3_replication.md (`stage2_final_launch.sh`,
   gate P ≥ 0.50 on the pre-registered default) → Stage-3 numbers (replication on 17 Laughney
   patients + 2 mice; trusted-novel on Kinnex).
 
