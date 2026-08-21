@@ -78,7 +78,15 @@ evidence, the axis that separates the winners).**
   **v2 re-run LAUNCHED 16:14** from frozen tools/pa-polya-run-9dfdefb3 (suite: 1,277 passed, only the 2 known env
   failures), OUT_TAG=final_v2, same gates. Expect: PBMC default P@100 ~0.706 (from the measured IP-fix impact),
   mice ~0.746/0.759; runtime ~30 min PBMC.
-- Pending: v2 arms → gate verifier → 15_final_gate_v2; Kinnex v2; Stage-3 patient-level replication (running) → verifier → 19_stage3_replication.md (`stage2_final_launch.sh`,
+- **v2 gate — VERIFIED FIXED** ([19_final_gate_v2.md](19_final_gate_v2.md)): PRESPEC P@100 0.7062/0.7450/0.7572,
+  gate PASS all three; #97 identity confirmed byte-for-byte; #96 impact residual 0; PBMC 12.5 GB / ~28-35 min.
+  Paper numbers move to v2.
+- **Stage-3 v1 chain COMPLETE 17:08** (replication done; PROVISIONAL): patient-unit K2 PAS 14,541 replicated
+  (13,888 with floor) over 1.98M (pair,feature); gene level 9,618; K3 4,976/3,559; **0 replicated in all 10 null
+  combos at every level**. CAVEAT: MetBone was INCLUDED — the pre-registered primary (13 addendum 8) excludes it;
+  verifier is running the excluded primary + full checks.
+- Pending: Stage-3 verifier (incl. MetBone-excluded primary) → 20_stage3_replication.md; Kinnex-v2 adversarial
+  check → 16 v2 section; Fig 2 + outline v2 number refresh; Stage-3 v2 cohort re-run. (`stage2_final_launch.sh`,
   gate P ≥ 0.50 on the pre-registered default) → Stage-3 numbers (replication on 17 Laughney
   patients + 2 mice; trusted-novel on Kinnex).
 
