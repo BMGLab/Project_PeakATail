@@ -25,6 +25,15 @@ read `tools/pa-prime/PRIME_PLAN.md` for what the branch is actually changing.
 requested tree before a run starts. Picking up the wrong worktree has invalidated results on this
 project before.
 
+This is not hypothetical, and it fails **silently** without the assertion: `ema` is importable with
+**no `PYTHONPATH` at all**, resolving to
+`/home/biolab/Projects/PeakATail_wd/tools/PeakATail/ema/__init__.py` — the `develop` worktree,
+through an editable install and the bind mount (`/home/biolab/Projects/PeakATail_wd` and
+`/mnt/ssd1/Projects/PeakATail_wd` are the same directory). A forgotten `PYTHONPATH` therefore runs
+**develop**, not prime, and produces plausible output. Demonstrated: `assert_code` on a tree with no
+`ema/` fails with `AssertionError: WRONG TREE: ema -> /home/biolab/.../tools/PeakATail/ema/__init__.py`.
+Every run writes the resolved path to `<label>/modpath.txt`; check it before believing a number.
+
 **Compete with the Stage-3 chain.** `guard_load` refuses to start if load1 is above 60 or less than
 20 GB is available, and `run_slice.sh` refuses `--threads > 8`. The replication chain under
 `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/` owns 24 cores and is never touched.
