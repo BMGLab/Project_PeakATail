@@ -55,7 +55,11 @@ evidence, the axis that separates the winners).**
   and memory/CPU (perf/clip-memory); PR each to Amir; after merge pull the new version and RE-RUN the
   benchmark + Stage 3 from a fresh frozen snapshot. Publishing from this session is blocked by the permission
   classifier → publish scripts in manuscript/github/ (publish_stage1bc.sh staged).
-- Pending: Stage-3 Laughney chain (`stage2_final_launch.sh`,
+- **Stage 1d-A IP-filter strand fix — DONE, verified FIXED, ready for PR** (branch fix/ip-filter-strand, 3 commits;
+  19 new tests; '+' byte-identical; measured: corrected rule ≈ re-run would give PBMC default P@100 0.717 → ~0.706
+  with +2,100 sites / +0.5 pp recall; mice 0.741 → 0.746, 0.755 → 0.759; all gates still pass). Publish:
+  `bash manuscript/github/publish_stage1d_ipfilter.sh` (after publish_stage1bc.sh).
+- Pending: Stage 1d-B memory/CPU (perf/clip-memory, running); Stage-3 Laughney chain (`stage2_final_launch.sh`,
   gate P ≥ 0.50 on the pre-registered default) → Stage-3 numbers (replication on 17 Laughney
   patients + 2 mice; trusted-novel on Kinnex).
 
