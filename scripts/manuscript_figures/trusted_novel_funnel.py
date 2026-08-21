@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 """
 trusted_novel_funnel.py -- the pre-registered "trusted de novo PAS" definition (13 §3) on the
-final PBMC precision default (IP arm, code 4efeb125) against Kinnex long-read truth.
+final PBMC precision default (IP arm) against Kinnex long-read truth.
 
-Verdict (manuscript/16, verified FIXED): the pre-registered definition reaches 0.521 within
-25 bp of a Kinnex x3p poly(A)-verified 3' end at >=5 UMI; the pre-registered target was >=0.70.
-NEGATIVE RESULT. Every number on the figure is read from files under
-results/reliability/trusted_novel_final_pbmc/ (nothing is typed in):
+VERSION SWITCH -- env var TRUSTED_NOVEL_VERSION picks the source run:
+  v2  (default; THE PAPER NUMBERS)  code 9dfdefb (#96 IP-filter strand fix + #97),
+      results/reliability/trusted_novel_final_v2_pbmc/ -- REPORT_PROVISIONAL.md
+      STATUS: VERIFIED (adversarial verifier, verdict FIXED); manuscript/19 §4.
+  v1  (TRUSTED_NOVEL_VERSION=v1; kept selectable for the record)  code 4efeb125,
+      results/reliability/trusted_novel_final_pbmc/, manuscript/16 (verified FIXED).
+
+Verdict: the pre-registered definition reaches 0.485 (v2; v1 0.521) within 25 bp of a Kinnex
+x3p poly(A)-verified 3' end at >=5 UMI; the pre-registered target was >=0.70. NEGATIVE RESULT.
+Every number on the figure is read from files under the selected run directory (nothing typed in):
 
   call_primary/funnel.tsv                         panel a  counts per stage
   validate_incl_genebodies/validation.tsv         panels a,b  concordance + Wilson CI + null per stage/set/threshold
@@ -44,12 +50,32 @@ mpl.rcParams["pdf.fonttype"] = 42
 mpl.rcParams["ps.fonttype"] = 42
 
 WD = "/mnt/ssd1/Projects/PeakATail_wd"
-SRC = f"{WD}/results/reliability/trusted_novel_final_pbmc"
 FIGDIR = f"{WD}/manuscript/figures"
 TSVDIR = f"{WD}/results/figures/manuscript"
 os.makedirs(FIGDIR, exist_ok=True); os.makedirs(TSVDIR, exist_ok=True)
 NAME = "trusted_novel_funnel"
-CODE = "4efeb125"            # frozen snapshot of the run (15_final_gate.md / 16); checked against run_manifest below
+
+# ---------------------------------------------------------------------------
+# Which caller run feeds the funnel: v2 (default, the paper numbers) or v1 (record).
+# Only the source directory, the code commit and the expected caller arm differ;
+# the definition, target, window, truth sets and null are identical in both.
+# ---------------------------------------------------------------------------
+VERSION = os.environ.get("TRUSTED_NOVEL_VERSION", "v2").lower()
+assert VERSION in ("v1", "v2"), f"TRUSTED_NOVEL_VERSION must be v1 or v2, got {VERSION!r}"
+VERSIONS = {
+    "v2": dict(src="results/reliability/trusted_novel_final_v2_pbmc", code="9dfdefb",
+               arm="peakatail_clipseeded_final_v2_ipfilt",
+               writeup="manuscript/19_final_gate_v2.md §4 (+ 16 for the v1 record)",
+               status="REPORT_PROVISIONAL.md STATUS: VERIFIED (adversarial verifier, verdict FIXED)",
+               prev=dict(label="v1 run (pre-fix caller, code 4efeb125)", frac=0.521, n_tn=6628, decoy=0.245)),
+    "v1": dict(src="results/reliability/trusted_novel_final_pbmc", code="4efeb125",
+               arm="peakatail_clipseeded_final_ipfilt",
+               writeup="manuscript/16_trusted_novel_kinnex.md (verified FIXED)",
+               status="REPORT_PROVISIONAL.md §1-9 (verifier-reproduced)",
+               prev=None),
+}[VERSION]
+SRC = f"{WD}/{VERSIONS['src']}"
+CODE = VERSIONS["code"]      # frozen snapshot of the input run; checked against run_manifest below
 TARGET = 0.70                # pre-registered target (13 §3), committed before any number existed
 WINDOW_BP = 25
 Z95 = 1.959964
@@ -105,7 +131,8 @@ for c in ("frac_t5", "frac_t20"):
 verifier_txt = open(f"{SRC}/verifier_crosscheck/RESULTS.txt").read()
 report_txt = open(f"{SRC}/REPORT_PROVISIONAL.md").read()
 manifest_txt = open(f"{SRC}/call_primary/run_manifest.json").read()
-assert "peakatail_clipseeded_final_ipfilt/pas_PRESPEC_precision_default.bed" in manifest_txt, "input is not the pre-registered precision default"
+assert f"{VERSIONS['arm']}/pas_PRESPEC_precision_default.bed" in manifest_txt, \
+    f"input is not the {VERSION} pre-registered precision default ({VERSIONS['arm']})"
 assert re.search(rf"commit={CODE}[0-9a-f]*", report_txt), f"REPORT_PROVISIONAL.md does not record commit {CODE} for the input run"
 assert (val["window_bp"] == WINDOW_BP).all() and (val["strand_aware"] == 1).all()
 assert (val["null_seeds"] == 10).all()
@@ -119,8 +146,10 @@ r = vrow("trusted_novel", "t5")
 lo, hi = wilson(r["n_hit"], r["n_query"])
 assert abs(lo - r["wilson95_lo"]) < 2e-4 and abs(hi - r["wilson95_hi"]) < 2e-4, (lo, hi, r["wilson95_lo"], r["wilson95_hi"])
 
-m = re.search(r"\(([\d,]+) distinct genes;", report_txt)
+m = (re.search(r"\(([\d,]+) distinct genes;", report_txt)                        # v1 prose
+     or re.search(r"distinct genes \|\s*trusted-novel ([\d,]+)", report_txt))     # v2 verifier table
 N_GENES = m.group(1) if m else None
+assert N_GENES, "could not read the distinct-gene count from REPORT_PROVISIONAL.md"
 
 def verifier_frac(pattern):
     """parse 'label: k/n=frac' lines from the verifier's RESULTS.txt"""
@@ -245,7 +274,7 @@ ref_rows = [
     dict(item="enrichment_trusted_novel_t5", value=float(TN["enrichment"]), source="validation.tsv"),
     dict(item="empirical_p_floor", value=float(TN["empirical_p"]), source="validation.tsv (1/(10 seeds + 1))"),
     dict(item="n_genes_trusted_novel", value=(int(N_GENES.replace(",", "")) if N_GENES else np.nan), source="REPORT_PROVISIONAL.md §5 (gene_id in run/annotatedpas.bed; subtitle only)"),
-    dict(item="n_sites_default_incl_offcontig", value=int(funnel.loc["input", "n_pass"]), source="call_primary/funnel.tsv 'input' (denominator of frac_of_input; 19 off-contig sites excluded before the funnel)"),
+    dict(item="n_sites_default_incl_offcontig", value=int(funnel.loc["input", "n_pass"]), source=f"call_primary/funnel.tsv 'input' (denominator of frac_of_input; {int(funnel.loc['input', 'n_pass']) - int(funnel.loc['on_listed_contigs', 'n_pass'])} off-contig sites excluded before the funnel)"),
 ]
 pd.DataFrame(ref_rows).to_csv(f"{TSVDIR}/{NAME}_reference_lines.tsv", sep="\t", index=False)
 
@@ -433,6 +462,12 @@ fig.text(0.055, 0.962, textwrap.fill(
     f"{float(vrow('trusted_novel', 't500')['frac_hit']):.3f} at >=20 / >=100 / >=500 UMI.", 150),
     ha="left", va="top", fontsize=6.0, color=INK, linespacing=1.35)
 
+_prev = VERSIONS["prev"]
+prev_note = "" if not _prev else (
+    f"The {_prev['label']} gave {_prev['frac']:.3f} on {_prev['n_tn']:,} trusted-novel sites and "
+    f"{_prev['decoy']:.1%} decoy proximity; the corrected IP filter (#96) admits more raw peaks, so the negative result stands and "
+    f"slightly strengthens -- the leniency of the IP *rule*, not the strand bug, is the cause (19 §4). ")
+
 caveat = (
     f"Truth caveats: both Kinnex sets come from donors other than the PBMC 10k v3 donor, so a site used in this sample but absent (or <5 UMI) in the "
     f"long-read donor counts as a miss -- the atlas-known hexamer-pass complement scores {float(vrow('CAL_atlas_known_hexpass', 't5')['frac_hit']):.3f} under the same truth, "
@@ -441,21 +476,38 @@ caveat = (
     f"{rob['pooled_t5_50bp']['frac']:.3f} at 50 bp, {rob['pooled_t5_100bp']['frac']:.3f} at 100 bp -- the pre-registered 25-bp metric is missed under every truth choice. "
     f"Null = sites shuffled within gene bodies (10 seeds; mean {float(TN['null_mean']):.4f} at >=5 UMI, enrichment {float(TN['enrichment']):.0f}x, empirical p at the "
     f"{float(TN['empirical_p']):.3f} = 1/11 floor): the sites are far from random, but the target is an absolute fraction. Funnel stages clip / >=2 molecules / "
-    f"not-IP remove nothing because the caller already enforces them (re-deriving IP from the genome would flag <=3%); PolyA_DB could not be used (hg19 only). "
+    f"not-IP remove nothing (the caller enforces them); PolyA_DB could not be used (hg19 only). "
     f"The hexamer stage adds +{float(A.loc[2, 'delta_frac_vs_previous']):.3f} on the whole set but nothing among atlas-novel sites "
     f"(hexamer-FAIL {float(vrow('CAL_atlas_novel_hexfail', 't5')['frac_hit']):.3f} vs trusted-novel {FRAC_TN:.3f}); the atlas-novelty stage costs "
-    f"{float(A.loc[3, 'delta_frac_vs_previous']):.3f}. Panel d is exploratory: every stratum was chosen after seeing the data, no stratum is a definition, "
-    f"and none has been validated on held-out data (candidate v2: 3'UTR-restricted and/or >=5 molecules and/or a Kinnex-style IP rule, Stage-1d). "
-    f"Single PBMC donor, single CellRanger BAM. Sources: results/reliability/trusted_novel_final_pbmc/ (REPORT_PROVISIONAL.md §1-9, verifier-reproduced), "
-    f"manuscript/16_trusted_novel_kinnex.md (verified FIXED). Every plotted value: results/figures/manuscript/{NAME}*.tsv."
+    f"{float(A.loc[3, 'delta_frac_vs_previous']):.3f}. Panel d is exploratory: strata chosen after seeing the data, none is a definition, "
+    f"none validated on held-out data (candidate: 3'UTR-restricted and/or >=5 molecules and/or `--ip-rule kinnex`, Stage-1d). "
+    + prev_note +
+    f"Single PBMC donor, single CellRanger BAM. Sources: {VERSIONS['src']}/ ({VERSIONS['status']}), "
+    f"{VERSIONS['writeup']}. Every plotted value: results/figures/manuscript/{NAME}*.tsv."
 )
-fig.text(0.055, 0.046, textwrap.fill(caveat, 168), ha="left", va="top", fontsize=5.3, color=MUTED, linespacing=1.38)
+_cav = textwrap.fill(caveat, 168)
+assert _cav.count("\n") + 1 <= 12, f"caveat block is {_cav.count(chr(10)) + 1} lines (approved layout: <= 12)"
+fig.text(0.055, 0.046, _cav, ha="left", va="top", fontsize=5.3, color=MUTED, linespacing=1.38)
 
 fig.savefig(f"{TSVDIR}/{NAME}.png", dpi=300, bbox_inches="tight", pad_inches=0.06)
 for ext in ("png", "pdf"):
     p = f"{FIGDIR}/{NAME}.{ext}"
     fig.savefig(p, bbox_inches="tight", pad_inches=0.06, **({"dpi": 300} if ext == "png" else {}))
     print("wrote", p)
+# edge check: nothing may be clipped; the outer 8 px of the PNG must be blank
+try:
+    from PIL import Image
+    im = np.asarray(Image.open(f"{FIGDIR}/{NAME}.png").convert("L"))
+    edge = 8
+    border = np.concatenate([im[:edge, :].ravel(), im[-edge:, :].ravel(),
+                             im[:, :edge].ravel(), im[:, -edge:].ravel()])
+    ink = int((border < 250).sum())
+    print(f"edge check: {im.shape[1]}x{im.shape[0]} px, ink pixels in the outer {edge} px = {ink}")
+    assert ink == 0, "INK IN THE OUTER 8 PX -- something is clipped"
+except ImportError:
+    print("edge check skipped (no PIL)")
+
 print(A[["stage", "n", "frac_of_input", "frac_t5", "delta_frac_vs_previous"]].to_string(index=False))
+print(f"VERSION={VERSION} code={CODE} src={VERSIONS['src']}")
 print(f"VERDICT: trusted-novel {FRAC_TN:.3f} [{TN['wilson95_lo']:.3f}-{TN['wilson95_hi']:.3f}] at >=5 UMI vs target {TARGET:.2f}: "
       f"{'MET' if FRAC_TN >= TARGET else 'NOT MET'}")

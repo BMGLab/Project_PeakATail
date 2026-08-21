@@ -566,31 +566,32 @@ counts are detectability upper bounds, not precision; label-permutation null tes
 only; KS rejects for every arm (discrete Fisher) and is not gated. Full write-up:
 [14_switch_calibration_v2.md](14_switch_calibration_v2.md).
 
-## final_benchmark — Fig 2, final Stage-2 run vs the competitor panel (2026-08-21, numbers verified SOUND in 15)
+## final_benchmark — Fig 2, final Stage-2 run vs the competitor panel (2026-08-21, v2 numbers verified FIXED in 19)
 
 Four panels: (a) PBMC 10k v3 and (b) testis mice — atlas-agreement precision@100 vs detected-gene recall for
 every tool, PeakATail drawn as a path of operating points (shipped → both tiers → tier-1 ≥1 mol → +IP →
 precision default), F1 isolines, the pre-registered gate P ≥ 0.50 and the original gate (P ≥ 0.38, F1 > 0.261),
 3-seed genic-shuffle nulls; (c) call-set sizes (log); (d) PeakATail tier decomposition on the PBMC IP arm
 (tier-2 / tier-1 singletons / ≥2-molecule default with each slice's P@100). Headline: precision default P@100
-0.717 / 0.741 / 0.755 (gate PASS on all three), recall at or below polyApipe, F1 tied.
+0.706 / 0.745 / 0.757 (gate PASS on all three), recall at or below polyApipe, F1 tied.
 **Caveats that travel with it:** atlas-agreement precision is not ground-truth precision (Kinnex check in 16);
-recall denominator is the detected-gene atlas (full-atlas recall 0.087 / 0.096–0.098 in caption); single PBMC
+recall denominator is the detected-gene atlas (full-atlas recall 0.089 / 0.098–0.100 in caption); single PBMC
 donor; the non-IP ≥2-molecule file is not the default and is not shown; the IP-filter minus-strand bug (Stage 1d)
-will move the PBMC default to ~0.706 on re-run. Full caption: `figures/final_benchmark.caption.md`; write-up
-[15_final_gate.md](15_final_gate.md).
+is fixed and this is the corrected run (v1 0.717 → 0.706 on PBMC). Full caption: `figures/final_benchmark.caption.md`;
+write-up [19_final_gate_v2.md](19_final_gate_v2.md) (v1 record: [15_final_gate.md](15_final_gate.md)).
 
 ## trusted_novel_funnel — Fig 5b, pre-registered trusted-novel definition vs Kinnex (2026-08-21, verified FIXED)
 
-(a) the pre-registered funnel 44,394 → 34,192 (hexamer) → 6,628 trusted-novel → 4,037 strong, with per-stage
-long-read concordance (0.786 → 0.828 → 0.521 → 0.525) showing that atlas-novelty, not the hexamer, is where
+(a) the pre-registered funnel 46,524 → 35,712 (hexamer) → 7,259 trusted-novel → 4,329 strong, with per-stage
+long-read concordance (0.765 → 0.811 → 0.485 → 0.502) showing that atlas-novelty, not the hexamer, is where
 concordance is lost; (b) concordance vs Kinnex UMI stringency with Wilson CIs for six sets and the 0.70 target —
-**missed throughout (0.521 at ≥5 UMI)**; (c) feature class (68.6% intronic vs 17.8% for atlas-known) and
-proximity to Kinnex internal-priming decoys (24.5% vs 6.6%); (d) a boxed, explicitly post-hoc stratification
-(3′-UTR 0.78, ≥5 molecules 0.75 at ≥5 UMI). **Caveats that travel with it:** negative result — no "trusted
-novel" claim; truth from other donors (robustness GEM-X 0.554, pooled 0.623 at 25 bp); panel d is exploratory
-and not a definition; single PBMC donor; the caller's IP rule is looser than Kinnex's (Stage-1d item). Caption:
-`figures/trusted_novel_funnel.caption.md`; write-up [16_trusted_novel_kinnex.md](16_trusted_novel_kinnex.md).
+**missed throughout (0.485 at ≥5 UMI)**; (c) feature class (69.4% intronic vs 18.0% for atlas-known) and
+proximity to Kinnex internal-priming decoys (27.0% vs 7.6%); (d) a boxed, explicitly post-hoc stratification
+(3′-UTR 0.77, ≥5 molecules 0.71 at ≥5 UMI). **Caveats that travel with it:** negative result — no "trusted
+novel" claim; truth from other donors (robustness GEM-X 0.515, pooled 0.582 at 25 bp); panel d is exploratory
+and not a definition; single PBMC donor; the caller's IP rule is looser than Kinnex's (Stage-1d item, not
+superseded by the fix). Caption: `figures/trusted_novel_funnel.caption.md`; write-up
+[19_final_gate_v2.md](19_final_gate_v2.md) §4 (v1 record: [16_trusted_novel_kinnex.md](16_trusted_novel_kinnex.md)).
 
 ## spermatogenesis_final — Fig 5A–C(+negatives), testis 3′-UTR control on the final caller (2026-08-21, verified FIXED)
 

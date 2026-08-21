@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
 """
 final_benchmark.py -- manuscript Fig 2 ("final_benchmark"): the final Stage-2
-run (code 4efeb125, 2026-08-21) head-to-head against the competitor panel.
+run head-to-head against the competitor panel.
+
+VERSION SWITCH -- env var FINAL_BENCHMARK_VERSION picks which PeakATail run is
+plotted.  The competitor / catalog arms are the same TSVs in both versions.
+  v2  (default; THE PAPER NUMBERS)  code 9dfdefb = #93 + #96 (IP-filter
+      minus-strand fix) + #97 (performance), arms run 2026-08-21 16:14-16:50.
+      Sources of truth: manuscript/19_final_gate_v2.md and
+      results/benchmark_tools/final_v2_verify/VERIFIED_v2.md (verifier: FIXED).
+  v1  (FINAL_BENCHMARK_VERSION=v1; kept selectable for the record)
+      code 4efeb125, manuscript/15_final_gate.md (verified SOUND).
 
 SOURCE OF TRUTH -- every plotted value is READ from a score TSV written by the
 single scoring path scripts/benchmark_tools/score_tool.py (100 bp cutoff,
 strand-matched point mode, curated PolyASite 2.0 representative sites,
 per-dataset detected-gene recall denominator).  Nothing numeric is typed by
-hand except the three facts that exist only in manuscript/15_final_gate.md
-(pre-registration timestamps, code commit, compute) -- those are cited to 15
-on the figure.  The numbers must agree with manuscript/15_final_gate.md
-(verified SOUND); a consistency assert below checks the headline ones.
+hand except the facts that exist only in the gate write-up (pre-registration
+timestamps, code commit, compute, the IP-filter precision/recall trade) --
+those are cited to 19 (v2) / 15 (v1) on the figure.  A consistency assert
+below checks the headline ones against the verified gate table.
 
 PANELS
   a  PBMC 10k v3: atlas-agreement precision@100 (y) vs detected-gene recall@100
@@ -26,15 +35,14 @@ PANELS
   c  n sites per call set, log scale, same tools / outputs, both datasets.
   d  PeakATail tier decomposition on the PBMC IP arm: tier-2 / tier-1
      single-molecule / tier-1 >=2 molecules (= default), with each output's
-     P@100.  72.5 % of tier-1 sites are single-molecule (derived from the two
-     score-TSV n's: 1 - 44,394 / 161,595; matches 15 section 4).
+     P@100.  72.2 % of tier-1 sites are single-molecule on v2 (derived from the
+     two score-TSV n's: 1 - 46,524 / 167,565; 72.5 % on v1).
 
 NAMING RULES (manuscript/01 number policy)
   * "atlas-agreement precision (100 bp)", never bare "precision".
   * recall shown = detected-gene recall R_det; full-atlas recall in caption.
-  * results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final/
-    pas_tier1_ge2mol_noIP_POSTHOC.bed is NOT the pre-registered default and is
-    not plotted.
+  * .../peakatail_clipseeded_final_v2/pas_tier1_ge2mol_noIP_POSTHOC.bed is NOT
+    the pre-registered default and is not plotted.
 
 OUTPUTS
   manuscript/figures/final_benchmark.{png,pdf}   (PNG 300 dpi, PDF fonttype 42)
@@ -44,6 +52,7 @@ OUTPUTS
   results/figures/manuscript/final_benchmark_reference_lines.tsv (gates, isolines, nulls)
 
 Run:  export LC_ALL=C; python3 scripts/manuscript_figures/final_benchmark.py
+      export LC_ALL=C; FINAL_BENCHMARK_VERSION=v1 python3 .../final_benchmark.py
 """
 import os
 import textwrap
@@ -89,8 +98,54 @@ COLOR = {
     "scUTRquant": "#56B4E9",
 }
 HUMAN, MOUSE = "pbmc_10k_v3", "gse104556"
-CODE_COMMIT = "4efeb125"           # manuscript/15_final_gate.md header
-PREREG = "gate committed 01:19, arms started 02:59 (2026-08-21)"  # 15 header
+
+# ---------------------------------------------------------------------------
+# Which PeakATail run: v2 (default, the paper numbers) or v1 (kept for the record).
+# Only the PeakATail arm directories / score-file prefixes and the hand-cited
+# gate facts differ; competitor arms are identical.
+# ---------------------------------------------------------------------------
+VERSION = os.environ.get("FINAL_BENCHMARK_VERSION", "v2").lower()
+assert VERSION in ("v1", "v2"), f"FINAL_BENCHMARK_VERSION must be v1 or v2, got {VERSION!r}"
+VERSIONS = {
+    "v2": dict(
+        h_dir="peakatail_clipseeded_final_v2", h_pfx="pbmc_final_v2",
+        h_ip_dir="peakatail_clipseeded_final_v2_ipfilt", h_ip_pfx="pbmc_final_v2_ipfilt",
+        m_dir="peakatail_clipseeded_final_v2", m_pfx="testis_m{r}_final_v2",
+        commit="9dfdefb", commit_note="#96 + #97 merged",
+        gate_doc="19", gate_doc_path="manuscript/19_final_gate_v2.md",
+        verdict="verifier verdict FIXED",
+        verified_table="results/benchmark_tools/final_v2_verify/VERIFIED_v2.md",
+        verified_short="final_v2_verify/VERIFIED_v2.md (FIXED)",
+        prereg="gate 01:19, original arms 02:59, v2 re-run 16:14, all 2026-08-21",
+        compute="12.5 GB / ~28-35 min on PBMC (was 294 GB / 3:46 h)",
+        ip_trade="the IP filter buys +5.3 pp precision for \u22121.2 pp recall (mouse 1)",
+        prev=dict(label="v1 run (code 4efeb125, 15)", P=(0.7167, 0.7414, 0.7554)),
+        expect_h=(46524, 0.7062, 0.1754), expect_m1=(26255, 0.7450), expect_m2=(26526, 0.7572),
+        expect_frac_single=72.2,
+    ),
+    "v1": dict(
+        h_dir="peakatail_clipseeded_final", h_pfx="pbmc_final",
+        h_ip_dir="peakatail_clipseeded_final_ipfilt", h_ip_pfx="pbmc_final_ipfilt",
+        m_dir="peakatail_clipseeded_final", m_pfx="testis_m{r}_final",
+        commit="4efeb125", commit_note="pre-fix, Stage-1d not merged",
+        gate_doc="15", gate_doc_path="manuscript/15_final_gate.md",
+        verdict="verified SOUND",
+        verified_table="manuscript/15_final_gate.md",
+        verified_short="15_final_gate.md (SOUND)",
+        prereg="gate committed 01:19, arms started 02:59 (2026-08-21)",
+        compute="294 GB / 3:46 h on PBMC",
+        ip_trade="the IP filter buys +4.9 pp precision for \u22121.4 pp recall (mouse 1)",
+        prev=None,
+        expect_h=(44394, 0.7167, 0.1707), expect_m1=(25991, 0.7414), expect_m2=(26164, 0.7554),
+        expect_frac_single=72.5,
+    ),
+}[VERSION]
+H_DIR, H_PFX = VERSIONS["h_dir"], VERSIONS["h_pfx"]
+H_IP_DIR, H_IP_PFX = VERSIONS["h_ip_dir"], VERSIONS["h_ip_pfx"]
+M_DIR, M_PFX = VERSIONS["m_dir"], VERSIONS["m_pfx"]
+CODE_COMMIT = VERSIONS["commit"]          # gate write-up header
+PREREG = VERSIONS["prereg"]               # gate write-up header
+GATE_DOC = VERSIONS["gate_doc"]
 
 # ---------------------------------------------------------------------------
 # Arm registry: (dataset, tool, call_set label, short label, replicate, tsv, role)
@@ -109,21 +164,21 @@ ARMS = [
     (HUMAN, "PeakATail", "PeakATail shipped (pre-fix caller)", "shipped", "",
      H / "peakatail/score_peakatail.tsv", "path0"),
     (HUMAN, "PeakATail", "PeakATail both tiers, no IP filter", "both tiers\n(no IP)", "",
-     H / "peakatail_clipseeded_final/score_pbmc_final.tsv", "path1"),
+     H / H_DIR / f"score_{H_PFX}.tsv", "path1"),
     (HUMAN, "PeakATail", "PeakATail tier-1 >=1 molecule, no IP filter", "tier-1 >=1 mol\n(no IP)", "",
-     H / "peakatail_clipseeded_final/score_pbmc_final__tier1.tsv", "path2"),
+     H / H_DIR / f"score_{H_PFX}__tier1.tsv", "path2"),
     (HUMAN, "PeakATail", "PeakATail tier-1 >=1 molecule, IP filter", "tier-1 >=1 mol (IP)", "",
-     H / "peakatail_clipseeded_final_ipfilt/score_pbmc_final_ipfilt__tier1.tsv", "path3"),
+     H / H_IP_DIR / f"score_{H_IP_PFX}__tier1.tsv", "path3"),
     (HUMAN, "PeakATail", "PeakATail precision default (tier-1, IP, >=2 molecules; pre-registered)",
      "precision default\n(tier-1, IP, >=2 mol)", "",
-     H / "peakatail_clipseeded_final_ipfilt/score_pbmc_final_ipfilt__PRESPEC_precision_default.tsv", "path4"),
+     H / H_IP_DIR / f"score_{H_IP_PFX}__PRESPEC_precision_default.tsv", "path4"),
     # ---- PBMC extra PeakATail outputs (panel c/d only, not on the path) -----
     (HUMAN, "PeakATail", "PeakATail both tiers, IP filter", "both tiers (IP)", "",
-     H / "peakatail_clipseeded_final_ipfilt/score_pbmc_final_ipfilt.tsv", "extra"),
+     H / H_IP_DIR / f"score_{H_IP_PFX}.tsv", "extra"),
     (HUMAN, "PeakATail", "PeakATail tier-2 (coverage-only), IP filter", "tier-2 (IP)", "",
-     H / "peakatail_clipseeded_final_ipfilt/score_pbmc_final_ipfilt__tier2.tsv", "extra"),
+     H / H_IP_DIR / f"score_{H_IP_PFX}__tier2.tsv", "extra"),
     (HUMAN, "PeakATail", "PeakATail tier-2 (coverage-only), no IP filter", "tier-2 (no IP)", "",
-     H / "peakatail_clipseeded_final/score_pbmc_final__tier2.tsv", "extra"),
+     H / H_DIR / f"score_{H_PFX}__tier2.tsv", "extra"),
 ]
 for rep in ("mouse1", "mouse2"):
     r = rep[-1]
@@ -135,14 +190,14 @@ for rep in ("mouse1", "mouse2"):
         (MOUSE, "PeakATail", "PeakATail shipped (pre-fix caller)", "shipped", rep,
          M / f"peakatail/score_peakatail_{rep}.tsv", "path0"),
         (MOUSE, "PeakATail", "PeakATail both tiers, IP filter", "both tiers (IP)", rep,
-         M / f"peakatail_clipseeded_final/{rep}/score_testis_m{r}_final.tsv", "path1"),
+         M / M_DIR / rep / f"score_{M_PFX.format(r=r)}.tsv", "path1"),
         (MOUSE, "PeakATail", "PeakATail tier-1 >=1 molecule, IP filter", "tier-1 >=1 mol (IP)", rep,
-         M / f"peakatail_clipseeded_final/{rep}/score_testis_m{r}_final__tier1.tsv", "path3"),
+         M / M_DIR / rep / f"score_{M_PFX.format(r=r)}__tier1.tsv", "path3"),
         (MOUSE, "PeakATail", "PeakATail precision default (tier-1, IP, >=2 molecules; pre-registered)",
          "precision default\n(tier-1, IP, >=2 mol)", rep,
-         M / f"peakatail_clipseeded_final/{rep}/score_testis_m{r}_final__PRESPEC_precision_default.tsv", "path4"),
+         M / M_DIR / rep / f"score_{M_PFX.format(r=r)}__PRESPEC_precision_default.tsv", "path4"),
         (MOUSE, "PeakATail", "PeakATail tier-2 (coverage-only), IP filter", "tier-2 (IP)", rep,
-         M / f"peakatail_clipseeded_final/{rep}/score_testis_m{r}_final__tier2.tsv", "extra"),
+         M / M_DIR / rep / f"score_{M_PFX.format(r=r)}__tier2.tsv", "extra"),
     ]
 # SCAPTURE mouse: mouse1 only (mouse2 run truncated by disk exhaustion; 09).
 ARMS.append((MOUSE, "SCAPTURE", "SCAPTURE", "SCAPTURE", "mouse1",
@@ -190,15 +245,15 @@ for ds, tool, call_set, short, rep, tsv, role in ARMS:
     rows.append(d)
 pts = pd.DataFrame(rows)
 
-# ---- consistency with manuscript/15_final_gate.md (verified SOUND) ---------
+# ---- consistency with the verified gate table for this VERSION ------------
 def pick(ds, role, rep="single"):
     q = pts[(pts.dataset == ds) & (pts.role == role) & (pts.replicate == rep)]
     assert len(q) == 1
     return q.iloc[0]
 
-_d = pick(HUMAN, "path4");  assert (_d.n, round(_d.P, 4), round(_d.R_det, 4)) == (44394, 0.7167, 0.1707), _d
-_m1 = pick(MOUSE, "path4", "mouse1"); assert (_m1.n, round(_m1.P, 4)) == (25991, 0.7414), _m1
-_m2 = pick(MOUSE, "path4", "mouse2"); assert (_m2.n, round(_m2.P, 4)) == (26164, 0.7554), _m2
+_d = pick(HUMAN, "path4");  assert (_d.n, round(_d.P, 4), round(_d.R_det, 4)) == VERSIONS["expect_h"], _d
+_m1 = pick(MOUSE, "path4", "mouse1"); assert (_m1.n, round(_m1.P, 4)) == VERSIONS["expect_m1"], _m1
+_m2 = pick(MOUSE, "path4", "mouse2"); assert (_m2.n, round(_m2.P, 4)) == VERSIONS["expect_m2"], _m2
 assert _d.R_det_denominator == 285136 and _m1.R_det_denominator == 126686
 GATE_P = 0.50          # 13 section 1, pre-registered precision-first gate
 ORIG_P, ORIG_F1 = 0.38, 0.261   # 10 section 5 original two-sided gate (PBMC)
@@ -216,8 +271,8 @@ dflt = pick(HUMAN, "path4")         # tier-1 >=2 mol, IP
 both = pts[(pts.dataset == HUMAN) & (pts.short == "both tiers (IP)")].iloc[0]
 assert t2.n + t1.n == both.n, (t2.n, t1.n, both.n)
 n_single = int(t1.n - dflt.n)
-frac_single = n_single / t1.n        # = 0.7253 -> "72.5 %" in 15 section 4
-assert round(frac_single * 100, 1) == 72.5, frac_single
+frac_single = n_single / t1.n        # v2 0.7223 -> "72.2 %"; v1 0.7253 -> "72.5 %"
+assert round(frac_single * 100, 1) == VERSIONS["expect_frac_single"], frac_single
 m_single = {}
 for rep in ("mouse1", "mouse2"):
     a, b = pick(MOUSE, "path3", rep), pick(MOUSE, "path4", rep)
@@ -233,7 +288,7 @@ tiers = pd.DataFrame([
          output_scored="precision default", source=dflt.source),
 ])
 tiers["dataset"] = HUMAN
-tiers["arm"] = "peakatail_clipseeded_final_ipfilt"
+tiers["arm"] = H_IP_DIR
 tiers["frac_of_tier1_single_molecule"] = frac_single
 tiers["mouse1_frac_tier1_single_molecule"] = m_single["mouse1"][1]
 tiers["mouse2_frac_tier1_single_molecule"] = m_single["mouse2"][1]
@@ -536,29 +591,42 @@ dF1_h = dflt.F1_det - poly_h.F1_det
 dF1_m = subM[subM.role == "path4"].F1_det.mean() - poly_m.F1_det.mean()
 m_full = subM[subM.role == "path4"].sort_values("replicate").R_full.tolist()
 
+_prev = VERSIONS["prev"]
+prev_note = "" if not _prev else (
+    f"The {_prev['label']} gave {_prev['P'][0]:.3f} / {_prev['P'][1]:.3f} / {_prev['P'][2]:.3f}; the "
+    f"\u22121.1 pp PBMC move is the corrected minus-strand IP window (#96), reconstructed key-for-key. ")
+_ip = VERSIONS["ip_trade"]
+ip_note = _ip[0].upper() + _ip[1:]
+
 caption = (
     "Fig 2 | Trustworthy PAS detection: the final Stage-2 run (PeakATail code "
-    f"{CODE_COMMIT}) against the competitor panel. "
-    "Definitions: atlas-agreement precision = fraction of called sites with a strand-matched "
-    "PolyASite 2.0 representative site within 100 bp (point distance); it is agreement with a curated atlas, "
-    "not ground truth (atlas-novel true sites count as false positives). Recall is detected-gene recall R_det: "
-    f"denominator = atlas sites in genes detected in the dataset ({int(dflt.R_det_denominator):,} human / "
-    f"{int(_m1.R_det_denominator):,} mouse). Full-atlas recall of the precision default is {dflt.R_full:.3f} "
-    f"(PBMC; {int(dflt.R_full_denominator):,} sites) and {m_full[0]:.3f} / {m_full[1]:.3f} (mice; "
-    f"{int(_m1.R_full_denominator):,} sites). One scorer (score_tool.py), same denominators for every tool; "
-    "3-seed gene-body-shuffled nulls. scUTRquant is catalog-based (hollow; shown, not ranked). "
-    f"Pre-registration: the precision-first default and its gate (P@100 ≥ 0.50 on PBMC and both mice) were "
-    f"committed before the run ({PREREG}; 13 §1, 15); the ≥2-molecule threshold was chosen after a stale "
-    "Stage-2 sweep and pre-registered before this run (12 CORRECTION). "
-    f"Gate: PASS on all three call sets ({dflt.P:.3f} / {_m1.P:.3f} / {_m2.P:.3f}); no ≥1-molecule output "
-    "clears the original P ≥ 0.38 floor. "
-    f"Caveats: single PBMC donor / single CellRanger BAM; the two mice are one study and chemistry; the default's "
-    f"recall is at or below polyApipe's ({rel_h:+.0f}% PBMC, {rel_m:+.0f}% mouse) and the F1_det lead "
+    f"{CODE_COMMIT}, {VERSIONS['commit_note']}) against the competitor panel. "
+    "Definitions: atlas-agreement precision = fraction of calls within 100 bp (point, strand-matched) of a "
+    "PolyASite 2.0 representative site; it is agreement with a curated atlas, not ground truth (atlas-novel "
+    f"true sites count as false positives). R_det denominator = atlas sites in genes detected in the dataset "
+    f"({int(dflt.R_det_denominator):,} human / {int(_m1.R_det_denominator):,} mouse); full-atlas recall of the "
+    f"default {dflt.R_full:.3f} (PBMC; {int(dflt.R_full_denominator):,}) and {m_full[0]:.3f} / {m_full[1]:.3f} "
+    f"(mice; {int(_m1.R_full_denominator):,}). One scorer (score_tool.py), same denominators for every tool; "
+    "3-seed gene-body-shuffled nulls. scUTRquant is catalog-based (hollow, not ranked). "
+    f"Pre-registration: the precision-first default and its P@100 ≥ 0.50 gate were committed before the "
+    f"ORIGINAL run and are unchanged here ({PREREG}; 13 §1, {GATE_DOC}); the ≥2-molecule threshold was "
+    "pre-registered before that run (12 CORRECTION). "
+    f"Gate: PASS on all three ({dflt.P:.3f} / {_m1.P:.3f} / {_m2.P:.3f}); no ≥1-molecule output clears the "
+    "original P ≥ 0.38 floor. "
+    + prev_note +
+    f"{ip_note}; compute {VERSIONS['compute']}; {GATE_DOC} §1/§3. "
+    f"Caveats: single PBMC donor / BAM; the two mice are one study and chemistry; the default's recall is at "
+    f"or below polyApipe's ({rel_h:+.0f}% PBMC, {rel_m:+.0f}% mouse) and the F1_det lead "
     f"({dF1_h:+.3f} / {dF1_m:+.3f}) is not a meaningful margin — the claim is precision, not overall accuracy. "
-    "The non-IP PBMC ≥2-molecule file (pas_tier1_ge2mol_noIP_POSTHOC) is not the pre-registered default and is not "
-    "shown. Every plotted value: results/figures/manuscript/final_benchmark*.tsv."
+    "The non-IP PBMC ≥2-molecule file (pas_tier1_ge2mol_noIP_POSTHOC) is not the default and is not shown. "
+    f"Verified: {VERSIONS['verified_short']}. Every plotted value: "
+    "results/figures/manuscript/final_benchmark*.tsv."
 )
-fig.text(0.03, 0.012, textwrap.fill(caption, 165), fontsize=5.8, color=INK, va="bottom", ha="left",
+_cap_wrapped = textwrap.fill(caption, 165)
+_n_cap_lines = _cap_wrapped.count("\n") + 1
+# approved layout: the footer block must stay clear of the panel c/d x-axis labels
+assert _n_cap_lines <= 12, f"caption is {_n_cap_lines} wrapped lines; >12 collides with the panel x labels"
+fig.text(0.03, 0.012, _cap_wrapped, fontsize=5.8, color=INK, va="bottom", ha="left",
          linespacing=1.35)
 
 for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
@@ -608,8 +676,27 @@ molecules (= default), with the atlas-agreement precision @100 bp of each scored
 tier-1 ≥1 mol {t1.P:.3f}, default {dflt.P:.3f}); {frac_single*100:.1f}% of tier-1 sites are single-molecule
 ({n_single:,} / {int(t1.n):,}; mouse {m_single['mouse1'][1]*100:.1f}% / {m_single['mouse2'][1]*100:.1f}%).
 
-Sources: `manuscript/15_final_gate.md` (verified SOUND) and the score TSVs listed in the `source` column of
+Sources: `{VERSIONS["gate_doc_path"]}` + `{VERSIONS["verified_table"]}` ({VERSIONS["verdict"]}) and the score TSVs listed in the `source` column of
 `results/figures/manuscript/final_benchmark.tsv`. Reference lines: `final_benchmark_reference_lines.tsv`;
 panel d: `final_benchmark_tiers.tsv`.
 """
 p = FIGDIR / f"{NAME}.caption.md"; p.write_text(cap_md); print("wrote", p)
+
+# ---------------------------------------------------------------------------
+# edge check: nothing may be clipped; the outer 8 px of the PNG must be blank
+# ---------------------------------------------------------------------------
+try:
+    from PIL import Image
+    im = np.asarray(Image.open(FIGDIR / f"{NAME}.png").convert("L"))
+    edge = 8
+    border = np.concatenate([im[:edge, :].ravel(), im[-edge:, :].ravel(),
+                             im[:, :edge].ravel(), im[:, -edge:].ravel()])
+    ink = int((border < 250).sum())
+    print(f"edge check: {im.shape[1]}x{im.shape[0]} px, ink pixels in the outer {edge} px = {ink}")
+    assert ink == 0, "INK IN THE OUTER 8 PX -- something is clipped"
+except ImportError:
+    print("edge check skipped (no PIL)")
+
+print(f"VERSION={VERSION} code={CODE_COMMIT}: precision default P@100 "
+      f"{_d.P:.4f} / {_m1.P:.4f} / {_m2.P:.4f} (n {int(_d.n):,} / {int(_m1.n):,} / {int(_m2.n):,}); "
+      f"tier-1 single-molecule {frac_single*100:.1f}%")
