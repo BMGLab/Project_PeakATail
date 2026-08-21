@@ -14,6 +14,7 @@ hand; edit the script and re-run it.
 | `final_benchmark` | Fig 2: final-run PeakATail operating points vs competitors on PBMC and testis; precision default P@100 0.717/0.741/0.755 passes the pre-registered P ≥ 0.50 gate at polyApipe-level recall |
 | `fdr_calibration_v2` | Only Fisher cells-mode without marker pre-selection controls FDR (3.0% null p<0.05, 0/20 null runs with hits); shipped defaults anti-conservative |
 | `trusted_novel_funnel` | Pre-registered trusted-novel PAS definition reaches 52% Kinnex long-read concordance, target 70% not met; loss is at the atlas-novelty stage; 24.5% of sites sit at internal-priming decoys |
+| `spermatogenesis_final` | Testis control on the final caller: per-gene monotone shortening above shuffle nulls in both mice; per-cell residual falls at every stage; 6–11k replicated PAS/pair, 0 in null pairings; negatives boxed |
 | `null_control` | The 0.9986 precision is mostly reference density — shuffled peaks score 0.62–0.75; real PAS still win on point-mode, site-class, and high-confidence tests |
 
 Full findings, headline numbers, verification verdicts, and the caveats that must travel with

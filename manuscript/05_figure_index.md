@@ -591,3 +591,17 @@ proximity to Kinnex internal-priming decoys (24.5% vs 6.6%); (d) a boxed, explic
 novel" claim; truth from other donors (robustness GEM-X 0.554, pooled 0.623 at 25 bp); panel d is exploratory
 and not a definition; single PBMC donor; the caller's IP rule is looser than Kinnex's (Stage-1d item). Caption:
 `figures/trusted_novel_funnel.caption.md`; write-up [16_trusted_novel_kinnex.md](16_trusted_novel_kinnex.md).
+
+## spermatogenesis_final — Fig 5A–C(+negatives), testis 3′-UTR control on the final caller (2026-08-21, verified FIXED)
+
+(a) the claim carrier: per-gene monotone-shortening fraction vs its 20-shuffle null in both mice (0.315 vs
+0.175, z 10.5; 0.302 vs 0.210, z 5.8), with monotone lengthening shown alongside and the shortening excess
+(binomial p 9.9e-9 / 0.0125); (b) composition-controlled per-cell distal-usage residual falls at every stage
+step (Cliff's δ SPC vs ES 0.56 / 0.61, outside the whole shuffle-null range); (c) cross-mouse replication:
+6.0–11.3k same-direction replicated PAS per pair at 99.7–99.8% sign agreement, 0 in all 15 null pairings,
+per-gene effect ρ 0.655 (n 917) vs a 200-permutation null; (d) boxed negatives — the across-gene UMI-weighted
+index reverses at RS→ES (protamine ceiling-PDUI UMIs) and the 16-gene literature panel does not reproduce
+(4 shorten / 5 lengthen / 5 discordant / 2 uninformative). **Caveats that travel with it:** per-gene
+equal-weight claim only (medians not monotone); mouse-2 direction excess modest; SPG excluded; two mice of
+one study; PROVISIONAL — v2 re-run at 9dfdefb regenerates it. Caption: `figures/spermatogenesis_final.caption.md`;
+write-up [18_spermatogenesis_final.md](18_spermatogenesis_final.md).

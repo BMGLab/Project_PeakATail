@@ -12,14 +12,14 @@ the sense that the post-#96/#97 v2 re-run will redo it. Full detail:
 > in both mice: 31.5% and 30.2% of depth-guarded genes shorten monotonically across the three stages
 > against label-shuffle nulls of 17.5% and 21.0% (z = 10.5 and 5.8, 20 shuffles), exceeding monotone
 > lengthening (489 vs 325 and 361 vs 296 genes), and the composition-controlled per-cell distal-usage
-> residual falls at every step (Cliff's δ SPC vs ES = 0.56 and 0.61, permutation p < 0.005). The
+> residual falls at every step (Cliff's δ SPC vs ES = 0.56 and 0.61, outside the entire label-shuffle null range). The
 > gradient is a per-gene, equal-weight statement: the per-gene medians are not monotone (RS marginally
 > above SPC) and the across-gene UMI-weighted distal index reverses at RS→ES, where protamine
 > transcripts alone carry ~26% of the UMIs at ceiling PDUI.
 
 Cautions bound to the claim: monotone lengthening is also above its null (ordered structure), so the
 direction-specific evidence is the shortening-vs-lengthening excess — strong in mouse 1 (binomial
-p 9.9e-9), modest in mouse 2 (p 0.0125; 1/40 shuffles exceeded it). Wilcoxon p-values are quoted only
+p 9.9e-9), modest in mouse 2 (p 0.0125; 1 of 40 null draws reached the same excess in absolute value (0/40 one-sided)). Wilcoxon p-values are quoted only
 next to their shuffle-null column. SPG→SPC *lengthens* (kept out of the claim per [11](11_verifier_corrections.md)).
 
 ## Switch test + cross-mouse replication (the reliability payload)
@@ -48,3 +48,5 @@ next to their shuffle-null column. SPG→SPC *lengthens* (kept out of the claim 
    PDUI ≡ 0.5; verifier-reproduced), and the guard at `ema/switch_test/runner.py:397` classifies the
    equality as a strand inversion (`~(prox < dist)`), blaming the wrong cause. The per_gene path passes
    the same guard cleanly on both mice — the strand-correctness re-validation of 13 §2 **passes**.
+
+Figure: `figures/spermatogenesis_final.{png,pdf}` (+ `.caption.md`; script `scripts/manuscript_figures/spermatogenesis_final.py`; every plotted value in `results/figures/manuscript/spermatogenesis_final*.tsv`).
