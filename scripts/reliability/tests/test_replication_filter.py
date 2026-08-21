@@ -566,3 +566,116 @@ def test_null_universe_restriction(three_samples, tmp_path):
     ldf, _, _ = rf.load_diff_sample("s1", three_samples / "s1")
     assert len(rf.restrict_to_universe(ldf, {("N", "T", "1")})) == 1
     assert rf.restrict_to_universe(ldf, set()).empty
+
+
+# --------------------------------------------------------------- grouping
+def test_sample_groups_count_distinct_groups(three_samples):
+    """Unit of replication = group (patient).  s1 + s2 = one patient P1, s3 = P2.
+
+    PAS 1: called in all three samples       -> 3 samples but only 2 groups
+    PAS 6: called in s1, s2 only (same group) -> replication_count 1 -> FAILS at K=2
+    PAS 7: called in s1 and s3               -> 2 groups -> passes
+    PAS 2: + in s1, - in s2 (SAME group)     -> the group counts on both sides -> vetoed
+    """
+    frames = [rf.load_diff_sample(s, three_samples / s)[0] for s in ("s1", "s2", "s3")]
+    long_df = pd.concat(frames, ignore_index=True)
+    groups = {"s1": "P1", "s2": "P1", "s3": "P2"}
+    t = rf.replication_table(long_df, rf.Params(min_samples=2, sample_groups=groups),
+                             ["s1", "s2", "s3"]).set_index("feature_id")
+    assert t.loc["1", "n_samples_tested"] == 3 and t.loc["1", "n_groups_tested"] == 2
+    assert t.loc["1", "n_samples_called"] == 3 and t.loc["1", "n_groups_called"] == 2
+    assert t.loc["1", "replication_count"] == 2
+    assert bool(t.loc["1", "passes_replication"]) is True
+    assert t.loc["6", "n_samples_called"] == 2
+    assert t.loc["6", "replication_count"] == 1
+    assert bool(t.loc["6", "passes_replication"]) is False         # two GSMs of one patient count once
+    assert t.loc["7", "replication_count"] == 2
+    assert bool(t.loc["7", "passes_replication"]) is True
+    assert t.loc["2", "n_pos"] == 1 and t.loc["2", "n_neg"] == 1    # one group, both signs
+    assert t.loc["2", "n_groups_called"] == 1
+    assert bool(t.loc["2", "direction_consistent"]) is False
+    assert bool(t.loc["2", "passes_replication"]) is False
+    # floor counts are per group too: PAS 4 (+0.3 in s1, +0.05 in s2, same group)
+    assert t.loc["4", "replication_count"] == 1 and t.loc["4", "replication_count_floor"] == 1
+    # per-sample wide columns are unchanged by grouping
+    assert bool(t.loc["1", "called__s2"]) is True
+    # no map -> identical to the ungrouped table
+    t0 = rf.replication_table(long_df, rf.Params(min_samples=2), ["s1", "s2", "s3"]).set_index("feature_id")
+    assert (t0["n_groups_tested"] == t0["n_samples_tested"]).all()
+    assert t0.loc["1", "replication_count"] == 3 and t0.loc["6", "replication_count"] == 2
+    # K=3 with groups: nothing can pass (only 2 groups exist)
+    t3 = rf.replication_table(long_df, rf.Params(min_samples=3, sample_groups=groups),
+                              ["s1", "s2", "s3"])
+    assert not t3["passes_replication"].any()
+
+
+def test_parse_sample_groups_forms(tmp_path):
+    tsv = tmp_path / "groups.tsv"
+    tsv.write_text("sample\tgroup\textra\ns1\tP1\tx\ns2\tP1\ty\nghost\tP9\tz\n")
+    g = rf.parse_sample_groups([], str(tsv), ["s1", "s2", "s3"])
+    assert g == {"s1": "P1", "s2": "P1"}                       # unknown TSV sample ignored
+    g = rf.parse_sample_groups(["s3=P2"], str(tsv), ["s1", "s2", "s3"])
+    assert g == {"s1": "P1", "s2": "P1", "s3": "P2"}
+    g = rf.parse_sample_groups(["s1=Q"], str(tsv), ["s1", "s2", "s3"])   # explicit wins over TSV
+    assert g["s1"] == "Q"
+    with pytest.raises(SystemExit):
+        rf.parse_sample_groups(["nope=P1"], None, ["s1"])
+    with pytest.raises(SystemExit):
+        rf.parse_sample_groups(["s1"], None, ["s1"])
+    bad = tmp_path / "bad.tsv"
+    bad.write_text("a\tb\ns1\tP1\n")
+    with pytest.raises(SystemExit):
+        rf.parse_sample_groups([], str(bad), ["s1"])
+
+
+def test_cli_groups_and_per_pair_null(three_samples, tmp_path):
+    """End to end with --sample-group-tsv + a hot null: PAS 1 replicates in
+    every null perm of every sample, i.e. in both groups -> 1 per combo, and
+    null_control.tsv carries per-pair columns."""
+    nroot = tmp_path / "nulls"
+    _make_null_dirs(nroot, 3, hot=True)
+    tsv = tmp_path / "groups.tsv"
+    tsv.write_text("sample\tgroup\ns1\tP1\ns2\tP1\ns3\tP2\n")
+    out = tmp_path / "out"
+    rc = _run_cli(["--sample", three_samples / "s1", "--sample", three_samples / "s2",
+                   "--sample", three_samples / "s3", "--out", out,
+                   "--sample-group-tsv", tsv, "--null-dirs", f"{nroot}/{{sample}}/perm_*"])
+    assert rc == 0
+    summ = json.loads((out / "summary.json").read_text())
+    assert summ["params"]["unit_of_replication"] == "group"
+    assert summ["params"]["n_groups"] == 2
+    assert summ["params"]["sample_groups"] == {"s1": "P1", "s2": "P1", "s3": "P2"}
+    # ungrouped: 1, 4, 6, 7 replicate; grouped: 6 (s1+s2 = one patient) and 4 drop out
+    assert summ["real"]["n_replicated"] == 2
+    assert summ["real"]["per_pair"]["N_vs_T"]["n_groups_tested"] == 2
+    assert summ["real"]["per_pair"]["N_vs_T"]["n_samples_tested"] == 3
+    assert summ["null"]["n_combos"] == 3
+    assert summ["null"]["replicated"]["null_per_combo"] == [1, 1, 1]
+    assert summ["null"]["per_pair"]["N_vs_T"]["replicated"]["null_per_combo"] == [1, 1, 1]
+    assert summ["null"]["per_pair"]["N_vs_T"]["replicated"]["observed"] == 2
+    nulltsv = pd.read_csv(out / "null_control.tsv", sep="\t")
+    assert list(nulltsv["rep__N_vs_T"]) == [1, 1, 1]
+    assert list(nulltsv["repf__N_vs_T"]) == [1, 1, 1]
+    allf = pd.read_csv(out / "all_features.tsv", sep="\t", dtype={"feature_id": str}).set_index("feature_id")
+    assert allf.loc["1", "n_groups_tested"] == 2 and allf.loc["1", "replication_count"] == 2
+    # explicit --sample-group overrides: put s3 into P1 as well -> one group -> nothing replicates
+    out2 = tmp_path / "out2"
+    rc = _run_cli(["--sample", three_samples / "s1", "--sample", three_samples / "s2",
+                   "--sample", three_samples / "s3", "--out", out2,
+                   "--sample-group-tsv", tsv, "--sample-group", "s3=P1"])
+    assert rc == 0
+    s2 = json.loads((out2 / "summary.json").read_text())
+    assert s2["params"]["n_groups"] == 1 and s2["real"]["n_replicated"] == 0
+
+
+def test_gene_level_with_groups(three_samples):
+    """Gene collapse runs on the grouped PAS table: GENE_C (pas 6, one patient) no longer replicates."""
+    frames = [rf.load_diff_sample(s, three_samples / s)[0] for s in ("s1", "s2", "s3")]
+    groups = {"s1": "P1", "s2": "P1", "s3": "P2"}
+    pas_t = rf.replication_table(pd.concat(frames, ignore_index=True),
+                                 rf.Params(sample_groups=groups), ["s1", "s2", "s3"])
+    g = rf.collapse_to_gene(pas_t).set_index("gene_id")
+    assert bool(g.loc["GENE_A", "passes_replication"]) is True       # pas 1: 2 groups
+    assert bool(g.loc["GENE_C", "passes_replication"]) is False      # pas 6: 1 group
+    assert bool(g.loc["GENE_D", "passes_replication"]) is True       # pas 7: s1 + s3
+    assert g.loc["GENE_A", "n_groups_tested"] == 2

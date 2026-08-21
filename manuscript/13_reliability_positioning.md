@@ -75,3 +75,19 @@ Triggered by the Stage-3 dry-run verifier (PROBLEM verdict; scripts/stage3/, dry
    retained counts per type are reported before any switch statistic is viewed.
 6. "Epithelial_Tumor" in Normal GSMs is normal epithelium and is reported as "Epithelial".
 7. Nothing from the dry run (GSM3516665, tier filter none, unconfirmed labels) is a result.
+
+### Addendum 2026-08-21 06:45 — pre-declared data-quality exclusion and universe reading (before any switch table is viewed)
+
+8. **GSM3516664-MetBone is excluded from the primary replication analysis.** Its merged BAM has a
+   poly(A) soft-clip rate of 0.015% (30× below the caller's 0.3% warning threshold; cohort-typical
+   0.24–0.43%), i.e. essentially no clip evidence of its own — every PAS it would be tested on is
+   cohort-supported only. A sensitivity run including it is reported. Declared from the caller's
+   log before its switch table exists.
+9. **Universe reading** (scripts/stage3/UNIVERSE_POLICY.md): per unified PAS, in_universe =
+   IP-pass AND tier-1 in ≥1 member AND cohort clip-molecule sum ≥ 2; one universe for all GSMs.
+   The stricter own-GSM ≥2-molecule variant is recorded as a diagnostic only. Consequence stated
+   for Methods: restricting to the universe changes the within-gene Fisher denominator (cells
+   expressing any universe PAS of the gene) and drops genes with < 2 universe PAS.
+10. A patient whose two GSMs disagree in direction is vetoed (conservative). Null combos are
+    index-aligned (10 → empirical-p floor 1/11); the null-based expected false-replicated fraction
+    is an empirical-FDR heuristic, not a calibrated q.

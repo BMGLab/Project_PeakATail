@@ -73,6 +73,20 @@ flipped before comparison (`flipped` tracked internally; tested).
   with `--discordant-policy exclude` (default) it also requires
   `direction_consistent`, i.e. one opposite-direction call in any sample
   vetoes the switch. `allow` relaxes that.
+- **Unit of replication** (`--sample-group SAMPLE=GROUP`, repeatable, and/or
+  `--sample-group-tsv FILE` with header columns `sample`, `group`; added
+  2026-08-21 for manuscript/13 addendum item 2, *"unit of replication =
+  patient, not GSM ... for a patient with two GSMs, either GSM counts once"*):
+  when a map is given, `n_pos` / `n_neg` (and the floor counts) are the numbers
+  of **distinct groups** with >= 1 same-direction call, so
+  `replication_count` counts patients. A group whose own samples disagree in
+  sign counts on both sides and is therefore vetoed under `exclude`
+  (conservative). Unlisted samples are singleton groups; unknown samples in
+  the TSV are ignored, in an explicit spec they are an error. New columns:
+  `n_groups_tested`, `n_groups_called`; `summary.json["params"]` records
+  `unit_of_replication`, `sample_groups`, `n_groups`; per-pair
+  `n_samples_tested` / `n_groups_tested` in `real.per_pair`. Without a map the
+  table is identical to the per-sample one (tested).
 - Effect-size floor (`--effect-floor`, default 0.1): the same counts are
   recomputed over calls with `|effect| >= floor` →
   `replication_count_floor`, `direction_consistent_floor`,
@@ -117,6 +131,10 @@ Expected replication under independent per-sample label shuffles:
   `min(n_perms)` combos); `--null-combos N --seed S` draws N random
   independent indices per sample instead. Each combination runs the
   identical filter (K, fdr, floor, pairs, level).
+- `null_control.tsv` also carries per-pair columns `rep__<c1>_vs_<c2>` /
+  `repf__<c1>_vs_<c2>` (0 when a pair is absent from a combination), and
+  `summary.json["null"]["per_pair"]` holds the same mean/sd/empirical-p block
+  per pair.
 - Reported in `summary.json["null"]`: per-combo counts, mean/sd/median/max,
   `empirical_p_ge_observed = (1 + #{null >= observed}) / (1 + n_combos)` and
   `expected_false_replicated_fraction = mean(null replicated) / observed`

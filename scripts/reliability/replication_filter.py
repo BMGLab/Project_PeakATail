@@ -33,6 +33,16 @@ SIGN CONVENTIONS (confirmed in the PeakATail code, 2026-08-21)
   column and the (c1,c2) orientation canonicalisation: when a sample wrote
   the pair as <c2>_vs_<c1>, the effect sign is flipped before comparison.
 
+UNIT OF REPLICATION (--sample-group / --sample-group-tsv)
+    By default every --sample is one independent unit.  With a sample -> group
+    map (e.g. GSM -> patient; manuscript/13 addendum item 2: "unit of
+    replication = patient, not GSM ... for a patient with two GSMs, either GSM
+    counts once") the same-direction count is the number of DISTINCT GROUPS
+    with >= 1 same-direction call.  A group whose samples disagree in sign
+    counts on BOTH sides, so under --discordant-policy exclude it vetoes the
+    feature (conservative: fewer false positives beats more calls).  Samples
+    not listed in the map form their own singleton group.
+
 OUTPUTS (--out DIR)
     all_features.tsv      every (pair, feature) seen in >= 1 sample, with
                           per-sample q__<s>, effect__<s>, called__<s> columns,
@@ -64,7 +74,7 @@ import pandas as pd
 
 log = logging.getLogger("replication_filter")
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 KNOWN_STRATEGIES = ("nb_pairwise", "nb_multi", "fisher")
 # effect column -> (+1 if positive means "higher in cluster1", -1 if cluster2)
@@ -465,6 +475,7 @@ class Params:
     discordant_policy: str = "exclude"   # or "allow"
     level: str = "pas"                   # or "gene"
     effect_sign: int = +1                # +1: + means higher in c1
+    sample_groups: dict | None = None    # sample -> group (unit of replication); None = each sample
 
 
 def replication_table(long_df: pd.DataFrame, prm: Params, samples: list[str]) -> pd.DataFrame:
@@ -490,14 +501,31 @@ def replication_table(long_df: pd.DataFrame, prm: Params, samples: list[str]) ->
     df["q_called"] = df["qvalue"].where(df["called"])
 
     keys = ["c1", "c2", "feature_id"]
+    groups = prm.sample_groups or {}
+    df["group"] = df["sample"].map(lambda s: groups.get(s, s)).astype(str)
     agg = df.groupby(keys, sort=True).agg(
         n_samples_tested=("sample", "nunique"),
         n_samples_called=("called", "sum"),
-        n_pos=("pos", "sum"), n_neg=("neg", "sum"),
-        n_pos_floor=("pos_f", "sum"), n_neg_floor=("neg_f", "sum"),
+        n_groups_tested=("group", "nunique"),
         min_q_called=("q_called", "min"),
     ).reset_index()
-    for c in ("n_samples_called", "n_pos", "n_neg", "n_pos_floor", "n_neg_floor"):
+    # unit of replication = GROUP: a group counts once per direction when >= 1
+    # of its samples is called in that direction (both directions -> counts on
+    # both sides -> vetoed under 'exclude').  Without a map, group == sample
+    # and this reduces to the per-sample counts.
+    gagg = df.groupby(keys + ["group"], sort=True).agg(
+        pos=("pos", "any"), neg=("neg", "any"),
+        pos_f=("pos_f", "any"), neg_f=("neg_f", "any"),
+    ).reset_index()
+    gagg["called"] = gagg["pos"] | gagg["neg"]
+    gsum = gagg.groupby(keys, sort=True).agg(
+        n_pos=("pos", "sum"), n_neg=("neg", "sum"),
+        n_pos_floor=("pos_f", "sum"), n_neg_floor=("neg_f", "sum"),
+        n_groups_called=("called", "sum"),
+    ).reset_index()
+    agg = agg.merge(gsum, on=keys, how="left")
+    for c in ("n_samples_called", "n_groups_tested", "n_groups_called", "n_pos", "n_neg",
+              "n_pos_floor", "n_neg_floor"):
         agg[c] = agg[c].astype(int)
 
     # first non-empty metadata per feature (coordinates may be absent in some samples)
@@ -559,7 +587,8 @@ def replication_table(long_df: pd.DataFrame, prm: Params, samples: list[str]) ->
         else:
             agg[f"called__{s}"] = pd.array([pd.NA] * len(agg), dtype="boolean")
     front = ["c1", "c2", "feature_id", "pas_id", "gene_id", "chrom", "start", "end", "strand",
-             "n_samples_tested", "n_samples_called", "n_pos", "n_neg", "replication_count",
+             "n_samples_tested", "n_samples_called", "n_groups_tested", "n_groups_called",
+             "n_pos", "n_neg", "replication_count",
              "consensus_direction", "direction_consistent", "passes_replication",
              "n_pos_floor", "n_neg_floor", "replication_count_floor", "direction_consistent_floor",
              "effect_floor_pass", "passes_replication_floor", "min_q_called",
@@ -594,26 +623,33 @@ def collapse_to_gene(pas_table: pd.DataFrame) -> pd.DataFrame:
     best = best.merge(stats, on=keys, how="left")
     best["feature_id"] = best["gene_id"]
     # distal PAS per gene (3'-most by strand), over all pairs
-    coords = t[(t["strand"].isin(["+", "-"])) & np.isfinite(pd.to_numeric(t["start"], errors="coerce"))]
+    coords = t[(t["strand"].isin(["+", "-"])) & np.isfinite(pd.to_numeric(t["start"], errors="coerce"))].copy()
     distal_dir, distal_rep = {}, {}
     if not coords.empty:
-        for (a, b, g), grp in coords.groupby(keys):
-            strand = grp["strand"].iloc[0]
-            if strand == "+":
-                row = grp.loc[pd.to_numeric(grp["end"]).idxmax()]
-            else:
-                row = grp.loc[pd.to_numeric(grp["start"]).idxmin()]
-            distal_rep[(a, b, g)] = bool(row["passes_replication"])
-            cd = row["consensus_direction"]
-            if not row["passes_replication"] or cd not in ("+", "-"):
-                distal_dir[(a, b, g)] = ""
-            else:
-                # '+' on the distal PAS == higher distal usage in the cluster
-                # the effect convention calls 'higher' => that cluster is longer
-                distal_dir[(a, b, g)] = {"higher_in_c1": "c1_longer",
-                                         "higher_in_c2": "c2_longer"}[row["utr_direction"]]
+        # vectorised: per (pair, gene) the 3'-most PAS = largest end on '+',
+        # smallest start on '-' (a gene whose PAS disagree on strand keeps the
+        # first strand seen, as the former per-group loop did)
+        coords["_end"] = pd.to_numeric(coords["end"], errors="coerce")
+        coords["_start"] = pd.to_numeric(coords["start"], errors="coerce")
+        first_strand = coords.drop_duplicates(keys)[keys + ["strand"]].rename(columns={"strand": "_gs"})
+        coords = coords.merge(first_strand, on=keys, how="left")
+        coords = coords[coords["strand"] == coords["_gs"]]
+        plus = (coords[coords["_gs"] == "+"].sort_values(keys + ["_end"], ascending=[True, True, True, False])
+                .drop_duplicates(keys))
+        minus = (coords[coords["_gs"] == "-"].sort_values(keys + ["_start"], ascending=[True, True, True, True])
+                 .drop_duplicates(keys))
+        distal = pd.concat([plus, minus], ignore_index=True)
+        rep_ok = distal["passes_replication"].astype(bool)
+        cd_ok = distal["consensus_direction"].isin(["+", "-"])
+        # '+' on the distal PAS == higher distal usage in the cluster the effect
+        # convention calls 'higher' => that cluster is longer
+        ddir = distal["utr_direction"].map({"higher_in_c1": "c1_longer", "higher_in_c2": "c2_longer"}).fillna("")
+        ddir = ddir.where(rep_ok & cd_ok, "")
+        dkeys = list(zip(distal["c1"], distal["c2"], distal["gene_id"]))
+        distal_rep = dict(zip(dkeys, rep_ok.tolist()))
+        distal_dir = dict(zip(dkeys, ddir.tolist()))
     idx = list(zip(best["c1"], best["c2"], best["gene_id"]))
-    best["distal_pas_replicated"] = [distal_rep.get(k, False) for k in idx]
+    best["distal_pas_replicated"] = [bool(distal_rep.get(k, False)) for k in idx]
     best["distal_utr_direction"] = [distal_dir.get(k, "") for k in idx]
     best = best.drop(columns=["_rank"])
     front = ["c1", "c2", "feature_id", "gene_id", "representative_pas_id", "n_pas_tested",
@@ -629,6 +665,8 @@ def count_replicated(table: pd.DataFrame) -> dict:
     for (a, b), g in table.groupby(["c1", "c2"]):
         per_pair[f"{a}_vs_{b}"] = {
             "n_features": int(len(g)),
+            "n_samples_tested": int(g["n_samples_tested"].max()) if "n_samples_tested" in g else None,
+            "n_groups_tested": int(g["n_groups_tested"].max()) if "n_groups_tested" in g else None,
             "n_replicated": int(g["passes_replication"].sum()),
             "n_replicated_floor": int(g["passes_replication_floor"].sum()),
         }
@@ -719,6 +757,36 @@ def parse_pairs(spec: str | None) -> set[tuple[str, str]] | None:
     return out
 
 
+def parse_sample_groups(specs: list[str], tsv: str | None, samples: list[str]) -> dict[str, str]:
+    """--sample-group SAMPLE=GROUP (repeatable) and/or --sample-group-tsv -> {sample: group}.
+
+    Unknown samples in the TSV are ignored (a cohort table may list samples that
+    were not passed, e.g. NOPAIRS GSMs); an unknown sample in an explicit
+    SAMPLE=GROUP spec is an error.  Samples without a mapping stay their own
+    group (filled in by replication_table).
+    """
+    out: dict[str, str] = {}
+    if tsv:
+        t = pd.read_csv(tsv, sep="\t", dtype=str, comment="#")
+        need = {"sample", "group"}
+        if not need <= set(t.columns):
+            raise SystemExit(f"--sample-group-tsv {tsv}: needs header columns {sorted(need)}; "
+                             f"found {list(t.columns)}")
+        for s, g in zip(t["sample"], t["group"]):
+            if s in samples and isinstance(g, str) and g != "":
+                out[str(s)] = str(g)
+    for spec in specs:
+        if "=" not in spec or spec.startswith("="):
+            raise SystemExit(f"--sample-group {spec!r}: expected SAMPLE=GROUP")
+        s, g = spec.split("=", 1)
+        if s not in samples:
+            raise SystemExit(f"--sample-group {spec!r}: unknown sample {s!r}; samples are {samples}")
+        if not g:
+            raise SystemExit(f"--sample-group {spec!r}: empty group")
+        out[s] = g
+    return out
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
         prog="replication_filter.py",
@@ -746,6 +814,13 @@ def build_parser() -> argparse.ArgumentParser:
                     help="exclude: a feature called in the OPPOSITE direction in any sample "
                          "never passes [exclude]")
     ap.add_argument("--pairs", default=None, help="restrict to 'c1,c2;c3,c4' (orientation-free)")
+    ap.add_argument("--sample-group", action="append", default=[], metavar="SAMPLE=GROUP",
+                    help="unit of replication: map a sample to a group (e.g. GSM=patient); "
+                         "replication_count counts DISTINCT groups with a same-direction call. "
+                         "Repeatable; unlisted samples are their own group")
+    ap.add_argument("--sample-group-tsv", default=None, metavar="TSV",
+                    help="same as --sample-group, from a TSV with header columns 'sample' and "
+                         "'group' (extra columns ignored; rows for unknown samples ignored)")
     ap.add_argument("--min-cells", type=int, default=10,
                     help="PDUI mode: min cells with finite PDUI per cluster [10]")
     ap.add_argument("--null-dirs", action="append", default=[], metavar="[NAME=]GLOB",
@@ -802,6 +877,7 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(f"mixed input kinds {kinds}; pass --input-kind")
     kind = kinds.pop()
     pairs = parse_pairs(args.pairs)
+    groups = parse_sample_groups(args.sample_group, args.sample_group_tsv, names)
     rng = np.random.default_rng(args.seed)
     cache: dict = {}
 
@@ -814,7 +890,7 @@ def main(argv: list[str] | None = None) -> int:
                     "proportion/PDUI deltas -- set it explicitly for log2 fold changes")
     prm = Params(min_samples=args.min_samples, fdr=args.fdr, effect_floor=args.effect_floor,
                  discordant_policy=args.discordant_policy, level=args.level,
-                 effect_sign=EFFECT_SIGN.get(eff, +1))
+                 effect_sign=EFFECT_SIGN.get(eff, +1), sample_groups=groups)
     pas_table = replication_table(long_df, prm, names)
     table = collapse_to_gene(pas_table) if (args.level == "gene" and kind == "diff") else pas_table
 
@@ -824,9 +900,11 @@ def main(argv: list[str] | None = None) -> int:
     rep = table[table["passes_replication"]] if not table.empty else table
     rep.to_csv(out / "replicated.tsv", sep="\t", index=False)
     real = count_replicated(table)
-    log.info("%d samples, %d (pair, feature) rows, %d replicated (K>=%d, same direction), "
-             "%d also pass |effect|>=%g", len(names), real["n_features"], real["n_replicated"],
-             prm.min_samples, real["n_replicated_floor"], prm.effect_floor)
+    n_groups = len(set(groups.values())) if groups else len(names)
+    log.info("%d samples in %d groups (unit of replication), %d (pair, feature) rows, %d replicated "
+             "(K>=%d groups, same direction), %d also pass |effect|>=%g", len(names), n_groups,
+             real["n_features"], real["n_replicated"], prm.min_samples,
+             real["n_replicated_floor"], prm.effect_floor)
 
     # ---- null control -----------------------------------------------------
     null_report: dict = {"enabled": False}
@@ -867,10 +945,15 @@ def main(argv: list[str] | None = None) -> int:
             c = count_replicated(nt)
             null_rows.append({"combo": ci, **{f"perm__{s}": i for s, i in combo.items()},
                               "n_features": c["n_features"], "n_replicated": c["n_replicated"],
-                              "n_replicated_floor": c["n_replicated_floor"]})
+                              "n_replicated_floor": c["n_replicated_floor"],
+                              **{f"rep__{pp}": v["n_replicated"] for pp, v in c["per_pair"].items()},
+                              **{f"repf__{pp}": v["n_replicated_floor"] for pp, v in c["per_pair"].items()}})
             log.info("null combo %d/%d: %d replicated, %d with floor", ci + 1, len(combos),
                      c["n_replicated"], c["n_replicated_floor"])
         nulldf = pd.DataFrame(null_rows)
+        # a pair absent from a null combination replicated 0 features there
+        for col in [c for c in nulldf.columns if c.startswith(("rep__", "repf__"))]:
+            nulldf[col] = nulldf[col].fillna(0).astype(int)
         nulldf.to_csv(out / "null_control.tsv", sep="\t", index=False)
         null_report = summarise_null(nulldf, real, mode, n_per, missing)
         null_report["universe"] = args.null_universe
@@ -889,7 +972,10 @@ def main(argv: list[str] | None = None) -> int:
                                               if prm.effect_sign > 0 else
                                               "+ means higher in cluster2 (c2 vs c1)"),
                    "pairs": sorted(f"{a}_vs_{b}" for a, b in pairs) if pairs else "all",
-                   "min_cells": args.min_cells, "seed": args.seed},
+                   "min_cells": args.min_cells, "seed": args.seed,
+                   "unit_of_replication": "group" if groups else "sample",
+                   "sample_groups": {s: groups.get(s, s) for s in names} if groups else None,
+                   "n_groups": n_groups},
         "samples": [{"name": n, "path": str(Path(p).resolve()),
                      "mtime": time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(os.path.getmtime(p)))}
                     for n, p in samples],
@@ -937,11 +1023,19 @@ def summarise_null(nulldf: pd.DataFrame, real: dict, mode: str, n_per: dict, mis
             "empirical_p_ge_observed": (ge + 1) / (n + 1),
             "expected_false_replicated_fraction": (float(vals.mean()) / obs) if obs > 0 else None,
         }
+    per_pair = {}
+    for pp, v in real.get("per_pair", {}).items():
+        col, colf = f"rep__{pp}", f"repf__{pp}"
+        vals = nulldf[col].to_numpy() if col in nulldf.columns else np.zeros(n, dtype=int)
+        valsf = nulldf[colf].to_numpy() if colf in nulldf.columns else np.zeros(n, dtype=int)
+        per_pair[pp] = {"replicated": _block(vals, v["n_replicated"]),
+                        "replicated_floor": _block(valsf, v["n_replicated_floor"])}
     return {
         "enabled": True, "mode": mode, "n_combos": n, "n_null_per_sample": n_per,
         "samples_without_null": missing,
         "replicated": _block(rep, real["n_replicated"]),
         "replicated_floor": _block(repf, real["n_replicated_floor"]),
+        "per_pair": per_pair,
         "definition": ("each null combination pairs one independent label-shuffle output per "
                        "sample and runs the identical filter; expected_false_replicated_fraction "
                        "= mean null replicated / observed replicated (an empirical FDR estimate "
