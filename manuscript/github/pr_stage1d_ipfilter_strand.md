@@ -1,6 +1,6 @@
 # PR: fix(ip-filter) — test the downstream side of the cleavage site on the `-` strand
 
-**Branch:** `fix/ip-filter-strand` (3 commits: `3142270` fix + tests, `e79005b` docs + changelog)
+**Branch:** `fix/ip-filter-strand` (3 commits: `3142270` fix + tests, `e79005b` docs + changelog, `9f1a23a` docs table repair by the verifier)
 **Base:** `feat/polya-evidence` at `4efeb12` — **merge after that branch** (it is the code the final Stage-2 benchmark ran); then `develop`.
 **Fixes:** Stage-1d issue §1 (`manuscript/github/issue10_stage1d_ipfilter_memory.md`; found by the final-gate verifier, `manuscript/15_final_gate.md` §6).
 **Scope:** `ema/experimental/internal_priming.py` only (+ tests + docs). No CLI/YAML/default/stats-key change. `+`-strand output byte-identical.
