@@ -565,3 +565,17 @@ matrix), so marker-on vs marker-off are different tests, not subsets; single mou
 counts are detectability upper bounds, not precision; label-permutation null tests the global null
 only; KS rejects for every arm (discrete Fisher) and is not gated. Full write-up:
 [14_switch_calibration_v2.md](14_switch_calibration_v2.md).
+
+## final_benchmark — Fig 2, final Stage-2 run vs the competitor panel (2026-08-21, numbers verified SOUND in 15)
+
+Four panels: (a) PBMC 10k v3 and (b) testis mice — atlas-agreement precision@100 vs detected-gene recall for
+every tool, PeakATail drawn as a path of operating points (shipped → both tiers → tier-1 ≥1 mol → +IP →
+precision default), F1 isolines, the pre-registered gate P ≥ 0.50 and the original gate (P ≥ 0.38, F1 > 0.261),
+3-seed genic-shuffle nulls; (c) call-set sizes (log); (d) PeakATail tier decomposition on the PBMC IP arm
+(tier-2 / tier-1 singletons / ≥2-molecule default with each slice's P@100). Headline: precision default P@100
+0.717 / 0.741 / 0.755 (gate PASS on all three), recall at or below polyApipe, F1 tied.
+**Caveats that travel with it:** atlas-agreement precision is not ground-truth precision (Kinnex check in 16);
+recall denominator is the detected-gene atlas (full-atlas recall 0.087 / 0.096–0.098 in caption); single PBMC
+donor; the non-IP ≥2-molecule file is not the default and is not shown; the IP-filter minus-strand bug (Stage 1d)
+will move the PBMC default to ~0.706 on re-run. Full caption: `figures/final_benchmark.caption.md`; write-up
+[15_final_gate.md](15_final_gate.md).

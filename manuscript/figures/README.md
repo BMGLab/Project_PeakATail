@@ -11,6 +11,8 @@ hand; edit the script and re-run it.
 | `clustering_concordance` | Clustering on poly(A)-site profiles alone recovers GEX cell-type structure (median AMI 0.66, ARI 0.46) |
 | `parameter_sweep` | Robustness across 13 reannotate branches; leiden resolution dominates (+112% clusters, 0.5→2.0) |
 | `benchmark_strategies` | Five peak-calling strategies differ in PAS count, not atlas agreement (precision spread < 0.004) |
+| `final_benchmark` | Fig 2: final-run PeakATail operating points vs competitors on PBMC and testis; precision default P@100 0.717/0.741/0.755 passes the pre-registered P ≥ 0.50 gate at polyApipe-level recall |
+| `fdr_calibration_v2` | Only Fisher cells-mode without marker pre-selection controls FDR (3.0% null p<0.05, 0/20 null runs with hits); shipped defaults anti-conservative |
 | `null_control` | The 0.9986 precision is mostly reference density — shuffled peaks score 0.62–0.75; real PAS still win on point-mode, site-class, and high-confidence tests |
 
 Full findings, headline numbers, verification verdicts, and the caveats that must travel with
