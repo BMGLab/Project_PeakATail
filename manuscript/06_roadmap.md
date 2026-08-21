@@ -68,7 +68,13 @@ evidence, the axis that separates the winners).**
 - Stage-3 Laughney cohort run — DONE 14:24 (9h06m, 13.6 GB; frozen 4efeb125): 17 datasets, unified PAS space 505,197
   sites, every dataset's var pas_id maps into it, obs prefixes/counts verified (verify_cohort.json); cohort IP-flag
   rate 27.9%. Switch queue (17 GSM × 1 true + 10 null, 3 concurrent) started automatically; replication follows.
-- Pending: Stage-3 switch queue → patient-level replication → verifier → 18_stage3_replication.md (`stage2_final_launch.sh`,
+- **Spermatogenesis control on final caller — DONE, verified FIXED** ([18_spermatogenesis_final.md](18_spermatogenesis_final.md)):
+  SPC>RS>ES survives as a per-gene equal-weight claim (monotone-shortening 31.5%/30.2% vs null 17.5%/21.0%;
+  Cliff SPC vs ES 0.56/0.61); arm B0 calibration re-validates; cross-mouse replication 6.0-11.3k PAS/pair,
+  99.7% sign agreement, 0 in 15 null pairings. Negatives: UMI-weighted index reverses at RS→ES (protamine
+  ceiling); 16-gene literature panel does not reproduce (dropped); per_isoform degenerate-pair defect →
+  issue11 draft. Switch queue DONE 15:47 (17/17 GSMs); replication driver running.
+- Pending: Stage-3 patient-level replication → verifier → 19_stage3_replication.md (`stage2_final_launch.sh`,
   gate P ≥ 0.50 on the pre-registered default) → Stage-3 numbers (replication on 17 Laughney
   patients + 2 mice; trusted-novel on Kinnex).
 
