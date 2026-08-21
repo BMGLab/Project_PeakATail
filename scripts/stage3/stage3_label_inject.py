@@ -1,0 +1,178 @@
+#!/usr/bin/env python
+"""Stage 3 (Laughney) -- inject GEX-derived cell-type labels into ONE sample's
+clusters.h5ad and write the label-shuffle null inputs.
+
+Join rule (manuscript/14 orthogonality + discovery caveat on inject_labels.py):
+    obs_name  ==  parquet 'cell'   (exact string, '<dataset_id>_<16nt barcode>')
+No bare-barcode join, no regex.  Cells without a label are DROPPED (not a class).
+Cell types with < --min-cells cells in this sample are DROPPED and recorded.
+
+Null inputs: --n-perm permutations of obs['celltype'] with
+numpy.random.default_rng(seed=k), k = 1..N, permutation of the cell order applied
+to the TRUE label vector (identical rule to results/fdr_calibration_v2/build_input.py).
+
+Outputs (--out-dir):
+    <sample>.labelled.h5ad          TRUE labels  (obs: celltype, celltype_score, sample, patient, group, stage)
+    <sample>.labels.tsv             obs_name -> celltype (TRUE)
+    perms/perm_XX.h5ad              permuted labels, same cells / same matrix
+    perms/perm_XX_labels.tsv
+    label_report.json               counts for the run report (provisional until verified)
+"""
+import argparse
+import json
+import os
+import sys
+
+import numpy as np
+import pandas as pd
+import anndata as ad
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--h5ad", required=True, help="<run>/07_clustering/<sample>/clusters.h5ad")
+    ap.add_argument("--labels", required=True, help="cohort parquet with columns cell, <label-col>, score")
+    ap.add_argument("--label-col", default="laughney_celltype")
+    ap.add_argument("--sample", required=True, help="dataset id == obs_name prefix, e.g. GSM3516665-StageIVprimary")
+    ap.add_argument("--sample-table", required=True, help="scripts/stage3/laughney_samples.tsv")
+    ap.add_argument("--pasbed", default=None, help="<run>/pasbed.bed; checked for 100%% pas_id coverage")
+    ap.add_argument("--out-dir", required=True)
+    ap.add_argument("--min-cells", type=int, default=20)
+    ap.add_argument("--n-perm", type=int, default=5)
+    ap.add_argument("--tier-filter", choices=["none", "tier1", "tier1_ge2"], default="none",
+                    help="restrict the tested PAS to pasbed col5>0 (clip-supported tier-1) or col5>=2 "
+                         "(the pre-registered precision-first default, manuscript/13 s1). Default none = "
+                         "every PAS in clusters.h5ad (both tiers). Decide BEFORE looking at results.")
+    args = ap.parse_args()
+
+    S = args.sample
+    os.makedirs(os.path.join(args.out_dir, "perms"), exist_ok=True)
+    rep: dict = {"sample": S, "h5ad": args.h5ad, "labels": args.labels, "label_col": args.label_col,
+                 "min_cells": args.min_cells, "n_perm": args.n_perm,
+                 "status": "PROVISIONAL -- not verified"}
+
+    tab = pd.read_csv(args.sample_table, sep="\t", dtype=str)
+    row = tab.loc[tab["dataset_id"] == S]
+    if len(row) != 1:
+        sys.exit(f"sample {S!r} not found exactly once in {args.sample_table}")
+    row = row.iloc[0]
+
+    A = ad.read_h5ad(args.h5ad)
+    rep["n_cells_h5ad"] = int(A.n_obs)
+    rep["n_pas_h5ad"] = int(A.n_vars)
+    if "counts" not in A.layers:
+        sys.exit("clusters.h5ad has no layers['counts'] -- refuse to test normalised .X")
+    L = A.layers["counts"]
+    data = L.data if hasattr(L, "data") else np.asarray(L)
+    if not np.allclose(data, np.round(data)):
+        sys.exit("layers['counts'] is not integral")
+    rep["counts_layer_sum"] = int(data.sum())
+
+    # --- prefix check: obs_names must be '<S>_<bc>' or the join is meaningless ---
+    prefixes = pd.Series([n.split("_", 1)[0] for n in A.obs_names]).value_counts()
+    rep["obs_prefixes"] = {str(k): int(v) for k, v in prefixes.items()}
+    if list(prefixes.index) != [S]:
+        sys.exit(f"obs_name prefix(es) {dict(prefixes)} != dataset id {S!r}; "
+                 "the run YAML dataset id / @RG must equal the label prefix. Not rewriting ids.")
+
+    # --- exact join on the full cell id ---
+    lab = pd.read_parquet(args.labels)
+    lab_s = lab.loc[lab["cell"].str.startswith(S + "_")].copy()
+    if lab_s["cell"].duplicated().any():
+        sys.exit("duplicate cell ids in the label table for this sample")
+    lab_s = lab_s.set_index("cell")
+    rep["n_labelled_cells_in_parquet_for_sample"] = int(len(lab_s))
+    matched = A.obs_names.isin(lab_s.index)
+    rep["n_cells_matched"] = int(matched.sum())
+    rep["n_cells_unlabelled_dropped"] = int((~matched).sum())
+    rep["n_parquet_cells_absent_from_h5ad"] = int(len(lab_s) - matched.sum())
+    rep["frac_h5ad_cells_labelled"] = float(matched.mean()) if A.n_obs else 0.0
+    if matched.sum() == 0:
+        sys.exit("0 cells matched the label table")
+
+    B = A[matched].copy()
+    B.obs["celltype"] = lab_s.loc[B.obs_names, args.label_col].astype(str).values
+    if "score" in lab_s.columns:
+        B.obs["celltype_score"] = lab_s.loc[B.obs_names, "score"].astype(float).values
+    B.obs["sample"] = S
+    B.obs["patient"] = str(row["patient"])
+    B.obs["group"] = str(row["group"])
+    B.obs["stage"] = str(row["stage"])
+
+    vc = B.obs["celltype"].value_counts()
+    rep["celltype_counts_matched"] = {str(k): int(v) for k, v in vc.items()}
+    keep = sorted(vc.index[vc >= args.min_cells].tolist())
+    dropped = {str(k): int(v) for k, v in vc.items() if v < args.min_cells}
+    rep["celltypes_dropped_lt_min_cells"] = dropped
+    rep["celltypes_kept"] = keep
+    if len(keep) < 2:
+        sys.exit(f"fewer than 2 cell types with >= {args.min_cells} cells: {dict(vc)}")
+    B = B[B.obs["celltype"].isin(keep)].copy()
+    B.obs["celltype"] = pd.Categorical(B.obs["celltype"].astype(str), categories=keep)
+    rep["n_cells_final"] = int(B.n_obs)
+    rep["celltype_counts_final"] = {str(k): int(v) for k, v in B.obs["celltype"].value_counts().items()}
+    rep["n_pairs_expected"] = len(keep) * (len(keep) - 1) // 2
+
+    # --- pasbed coverage check (the rerun trap: bed must cover 100% of tested pas_ids) ---
+    rep["tier_filter"] = args.tier_filter
+    if args.tier_filter != "none" and not args.pasbed:
+        sys.exit("--tier-filter needs --pasbed (col5 = clip molecules)")
+    if args.pasbed:
+        bed = pd.read_csv(args.pasbed, sep="\t", header=None, dtype=str, usecols=[3, 4])
+        ids = set(bed[3])
+        if args.tier_filter != "none":
+            thr = 1 if args.tier_filter == "tier1" else 2
+            keep_ids = set(bed.loc[pd.to_numeric(bed[4], errors="coerce").fillna(0) >= thr, 3])
+            vid = B.var["pas_id"].astype(str) if "pas_id" in B.var.columns else pd.Series(B.var_names.astype(str), index=B.var_names)
+            mask = vid.isin(keep_ids).values
+            rep["n_pas_before_tier_filter"] = int(B.n_vars)
+            B = B[:, mask].copy()
+            rep["n_pas_after_tier_filter"] = int(B.n_vars)
+            if B.n_vars == 0:
+                sys.exit("tier filter left 0 PAS")
+        var_ids = set(B.var["pas_id"].astype(str)) if "pas_id" in B.var.columns else set(B.var_names.astype(str))
+        cov = len(var_ids & ids) / max(1, len(var_ids))
+        rep["pasbed_coverage_of_var_pas_id"] = cov
+        rep["pasbed_n_ids"] = len(ids)
+        if cov < 1.0:
+            sys.exit(f"pasbed covers {cov:.4f} of h5ad pas_ids -- wrong bed for this h5ad")
+
+    # --- string hygiene for anndata writeback ---
+    B.obs.index = B.obs.index.astype(object)
+    B.var.index = B.var.index.astype(object)
+    for df in (B.obs, B.var):
+        for c in df.columns:
+            if str(df[c].dtype).startswith("string"):
+                df[c] = df[c].astype(object)
+
+    true_path = os.path.join(args.out_dir, f"{S}.labelled.h5ad")
+    B.write_h5ad(true_path)
+    B.obs[["celltype", "sample", "patient", "group", "stage"]].to_csv(
+        os.path.join(args.out_dir, f"{S}.labels.tsv"), sep="\t")
+    rep["labelled_h5ad"] = true_path
+
+    orig = np.asarray(B.obs["celltype"].astype(str).values)
+    perms = []
+    for k in range(1, args.n_perm + 1):
+        rng = np.random.default_rng(seed=k)
+        perm = rng.permutation(len(orig))
+        B.obs["celltype"] = pd.Categorical(orig[perm], categories=keep)
+        assert B.obs["celltype"].value_counts().to_dict() == pd.Series(orig).value_counts().to_dict()
+        p = os.path.join(args.out_dir, "perms", f"perm_{k:02d}.h5ad")
+        B.write_h5ad(p)
+        B.obs[["celltype"]].to_csv(os.path.join(args.out_dir, "perms", f"perm_{k:02d}_labels.tsv"), sep="\t")
+        perms.append({"k": k, "seed": k, "h5ad": p,
+                      "frac_labels_unchanged": float((orig[perm] == orig).mean())})
+    rep["perms"] = perms
+    rep["perm_seed_rule"] = "numpy default_rng(seed=k), k=1..N_PERM, permutation of cell order applied to the TRUE celltype vector"
+
+    with open(os.path.join(args.out_dir, "label_report.json"), "w") as f:
+        json.dump(rep, f, indent=1)
+    print(json.dumps({k: rep[k] for k in ("sample", "n_cells_h5ad", "n_labelled_cells_in_parquet_for_sample",
+                                          "n_cells_matched", "n_cells_final", "n_pas_h5ad",
+                                          "celltypes_kept", "celltypes_dropped_lt_min_cells")}, indent=1))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

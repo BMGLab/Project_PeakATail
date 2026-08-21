@@ -43,3 +43,35 @@ reported against a shuffled-position null.
 - Benchmark figure reports the precision-first default as PeakATail's primary arm, the ≥1-molecule
   output as the sensitivity arm, both tiers, both gates.
 - Clustering moves to a supplementary utility section, with the ablation stated honestly.
+
+## Addendum 2026-08-21 05:30 — Stage-3 Laughney replication: pre-registered design (written BEFORE any cross-sample number exists)
+
+Triggered by the Stage-3 dry-run verifier (PROBLEM verdict; scripts/stage3/, dry run GSM3516665):
+
+1. **PAS-id space = design A.** One cohort-mode `ema run -c` over all 17 GSM datasets on the frozen
+   snapshot `tools/pa-polya-run-4efeb125` (clip_seeded + IP filter, mode filter), so every sample's
+   switch table shares the tool's own unified PAS ids (`unified/multi_sample_merged.bed`). No post-hoc
+   coordinate harmonisation. Per-sample independent runs (design B) are NOT used for replication.
+2. **Unit of replication = patient, not GSM.** 17 GSMs = 14 patients (LX675, LX682, LX684 each have a
+   tumour + normal GSM). A switch "replicates" iff called (q<0.05, same direction) in ≥ 2 *patients*;
+   for a patient with two GSMs, either GSM counts once. Discordant policy = exclude (any opposite-
+   direction call in another patient vetoes). Effect floor |Δproportion| ≥ 0.1 reported alongside.
+3. **Tested PAS universe = the pre-registered precision default** (tier-1 ∩ IP-pass ∩ ≥2 molecules;
+   `TIER_FILTER=tier1_ge2`). Coverage-only tier-2 PAS are never switch-tested in the paper.
+4. **Test = Fisher, `--count-mode cells`, `--marker-top-n 0`** (manuscript/14), nominal BH q per pair,
+   ≥ 10 label-shuffle nulls per GSM through the identical pipeline; the replication filter is run on the
+   nulls to give an empirical false-replication rate.
+5. **Label policy (pre-registered; the dry run showed the curated argmax "B_cell" class is mostly
+   DC/monocyte in most samples).** A cell enters the switch test only if its curated label is
+   *confirmed* by an independent labeller: (a) immune types (B_cell, T_cell, NK, Monocyte, Macrophage,
+   Dendritic, Mast, Plasma_IG, Treg) require agreement with the CellTypist call
+   (`B2_celltypist/percell_labels.csv`, conf ≥ 0.5; mapping table fixed in
+   `scripts/stage3/LABEL_POLICY.md` before use); (b) non-immune types (Epithelial_Tumor, Fibroblast,
+   Endothelial, Pericyte), which CellTypist's immune model cannot confirm, require a canonical-marker
+   gate on the cell's own GEX (own-type marker score highest among the four AND above the
+   cohort-wide 25th percentile of confirmed cells of that type; markers: EPCAM/KRT8/KRT18;
+   COL1A2/DCN/LUM; PECAM1/VWF/CLDN5; RGS5/ACTA2/PDGFRB). Unconfirmed cells are dropped, not
+   relabelled. Cell types with < 20 confirmed cells in a GSM are dropped for that GSM. Per-GSM
+   retained counts per type are reported before any switch statistic is viewed.
+6. "Epithelial_Tumor" in Normal GSMs is normal epithelium and is reported as "Epithelial".
+7. Nothing from the dry run (GSM3516665, tier filter none, unconfirmed labels) is a result.
