@@ -1,6 +1,6 @@
 #!/bin/bash
 # Publish the Stage 1d-A PR (IP-filter minus-strand fix). Review, then run:  bash manuscript/github/publish_stage1d_ipfilter.sh
-# Requires the Stage 1b+1c PR to exist first (publish_stage1bc.sh) — this branch is based on feat/polya-evidence.
+# Stage 1b+1c landed in develop as PR #93 (merged 2026-08-21); this branch is based on it and applies cleanly.
 set -euo pipefail
 cd "$(dirname "$0")"
 R="BMGLab/PeakATail"; T=/mnt/ssd1/Projects/PeakATail_wd/tools/PeakATail
@@ -11,4 +11,5 @@ PR=$(gh pr create -R $R -B develop -H fix/ip-filter-strand \
   -b "$(cat pr_stage1d_ipfilter_strand.md)$footer")
 gh pr edit -R $R fix/ip-filter-strand --add-reviewer TRextabat || true
 echo "- PR Stage 1d-A (IP-filter strand): $PR" >> PUBLISHED.md
+gh issue comment -R $R 95 -b "PR for §1 (minus-strand IP window): $PR — verified fix + 19 tests; measured impact in the PR body. §2 (memory/CPU) is being profiled and fixed on a separate branch (perf/clip-memory); §3 items will follow.$footer" || true
 echo "STAGE 1d-A PUBLISHED: $PR"

@@ -117,4 +117,4 @@ directory does it without re-calling peaks — rather than trust the run's flag.
  5 files changed, 439 insertions(+), 31 deletions(-)
 ```
 
-_Commits: `3142270` fix + tests; `e79005b` docs + changelog; `9f1a23a` docs table repair (verifier). Based on `feat/polya-evidence`; merge after the Stage 1b+1c PR._
+_Commits: `3142270` fix + tests; `e79005b` docs + changelog; `9f1a23a` docs table repair (verifier). Based on `feat/polya-evidence`, which landed in `develop` via #93 (merged 2026-08-21 08:14 UTC); this PR applies cleanly on `develop`. Refs #95 (§1 of that issue; the memory/CPU part is a separate PR)._

@@ -53,8 +53,8 @@ evidence, the axis that separates the winners).**
   "trusted novel" claim; stricter v2 needs pre-registration + held-out validation. Stage-1d: `--ip-rule kinnex`.
 - **Stage 1d (PI directive 2026-08-21 08:00):** fix IP-filter minus-strand window (branch fix/ip-filter-strand)
   and memory/CPU (perf/clip-memory); PR each to Amir; after merge pull the new version and RE-RUN the
-  benchmark + Stage 3 from a fresh frozen snapshot. Publishing from this session is blocked by the permission
-  classifier → publish scripts in manuscript/github/ (publish_stage1bc.sh staged).
+  benchmark + Stage 3 from a fresh frozen snapshot. PR #93 (Stage 1b+1c) MERGED into develop 2026-08-21 (Amir approved); issues #94 (switch marker pre-selection) and #95
+  (Stage 1d) open. Publishing from this session is blocked by the permission classifier → publish scripts in manuscript/github/.
 - **Stage 1d-A IP-filter strand fix — DONE, verified FIXED, ready for PR** (branch fix/ip-filter-strand, 3 commits;
   19 new tests; '+' byte-identical; measured: corrected rule ≈ re-run would give PBMC default P@100 0.717 → ~0.706
   with +2,100 sites / +0.5 pp recall; mice 0.741 → 0.746, 0.755 → 0.759; all gates still pass). Publish:
