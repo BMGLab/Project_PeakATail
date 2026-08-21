@@ -6,3 +6,4 @@
 - PR Stage 1d-A (IP-filter strand): https://github.com/BMGLab/PeakATail/pull/96
 - PR Stage 1d-B (memory/CPU): https://github.com/BMGLab/PeakATail/pull/97
 - Issue 11 (per_isoform degenerate pairs): https://github.com/BMGLab/PeakATail/issues/98
+- Issue 12 (gene assignment overlapping loci + clip-rate sampling): https://github.com/BMGLab/PeakATail/issues/99
