@@ -65,7 +65,10 @@ evidence, the axis that separates the winners).**
   read_check reordered; CB filter streamed. PBMC 10k: **293.7 GB → 12.5 GB, 3h46m → 27m43s** (mouse1 23 GB → 3.7 GB,
   61 → 9 min), all outputs byte-identical to the final run. Publish: `bash manuscript/github/publish_stage1d_perf.sh`.
   Not done (follow-ups): --tiles/--pipeline remain broken (separate issue), single-pass both strands, chunked mmread.
-- Pending: Stage-3 Laughney chain (`stage2_final_launch.sh`,
+- Stage-3 Laughney cohort run — DONE 14:24 (9h06m, 13.6 GB; frozen 4efeb125): 17 datasets, unified PAS space 505,197
+  sites, every dataset's var pas_id maps into it, obs prefixes/counts verified (verify_cohort.json); cohort IP-flag
+  rate 27.9%. Switch queue (17 GSM × 1 true + 10 null, 3 concurrent) started automatically; replication follows.
+- Pending: Stage-3 switch queue → patient-level replication → verifier → 18_stage3_replication.md (`stage2_final_launch.sh`,
   gate P ≥ 0.50 on the pre-registered default) → Stage-3 numbers (replication on 17 Laughney
   patients + 2 mice; trusted-novel on Kinnex).
 
