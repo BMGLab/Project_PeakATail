@@ -20,6 +20,7 @@ SCORE=$WD/scripts/benchmark_tools/score_tool.py
 HUM_GTF=/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf
 HUM_FA=/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.dna.primary_assembly.fa
 MOU_GTF=$WD/data/references/mouse/Mus_musculus.GRCm38.102.gtf
+MOU_FA=$WD/data/references/mouse/Mus_musculus.GRCm38.dna.primary_assembly.fa
 PBMC=$WD/data/benchmark/pbmc_10k_v3/pbmc_10k_v3_possorted_genome_bam.bam
 M1=$WD/data/benchmark/gse104556/starsolo/Mouse1_scRNAseq/Aligned.sortedByCoord.out.bam
 M2=$WD/data/benchmark/gse104556/starsolo/Mouse2_scRNAseq/Aligned.sortedByCoord.out.bam
@@ -64,7 +65,11 @@ B=$WD/results/benchmark_tools
 run_arm $B/pbmc_10k_v3/peakatail_clipseeded_final        pbmc_final        "$PBMC" "$HUM_GTF" 91 16 human &
 run_arm $B/pbmc_10k_v3/peakatail_clipseeded_final_ipfilt pbmc_final_ipfilt "$PBMC" "$HUM_GTF" 91 16 human \
         --ip-filter --genome-fasta "$HUM_FA" --ip-filter-mode filter &
-run_arm $B/gse104556/peakatail_clipseeded_final/mouse1   testis_m1_final   "$M1"   "$MOU_GTF" 98 12 mouse &
-run_arm $B/gse104556/peakatail_clipseeded_final/mouse2   testis_m2_final   "$M2"   "$MOU_GTF" 98 12 mouse &
+# mouse arms run WITH the IP filter: the pre-registered precision default (13 §1) is tier-1 ∩ IP-pass ∩ >=2 molecules
+# and is gated on BOTH mice; the no-IP mouse baseline already exists (peakatail_clipseeded_v3/mouse1, Stage-1c acceptance).
+run_arm $B/gse104556/peakatail_clipseeded_final/mouse1   testis_m1_final   "$M1"   "$MOU_GTF" 98 12 mouse \
+        --ip-filter --genome-fasta "$MOU_FA" --ip-filter-mode filter &
+run_arm $B/gse104556/peakatail_clipseeded_final/mouse2   testis_m2_final   "$M2"   "$MOU_GTF" 98 12 mouse \
+        --ip-filter --genome-fasta "$MOU_FA" --ip-filter-mode filter &
 wait
 echo "STAGE 2 FINAL: ALL ARMS FINISHED $(date) (code $COMMIT)"

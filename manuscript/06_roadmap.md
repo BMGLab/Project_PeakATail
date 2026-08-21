@@ -20,6 +20,30 @@ now argues for a different paper than originally planned. **Decision pending wit
 around clustering + reproducibility, or pause and improve the caller first (add poly(A) soft-clip
 evidence, the axis that separates the winners).**
 
+
+### Stage 3 status (2026-08-21)
+- **Switch recalibration v2 — DONE, verified SOUND** ([14_switch_calibration_v2.md](14_switch_calibration_v2.md)):
+  only Fisher `--count-mode cells` with marker pre-selection OFF controls FDR (conservative: 3.0% null
+  p<0.05, 0/20 null runs with a q<0.05 hit). Every shipped-default arm (top-200 marker pre-selection)
+  is anti-conservative; nb_pairwise is tail-inflated by its dispersion floor. Decision: ship
+  cells-mode Fisher, `--marker-top-n 0`, + replication filter + effect floor; permutation-calibrated
+  q mandatory whenever pre-selection or nb is used. Tool issue drafted for Amir
+  (github/issue9_switch_marker_preselection.md).
+- **Reliability tooling — DONE** (`scripts/reliability/`, 39 unit tests): `replication_filter.py`
+  (≥2 samples same direction, discordance veto, effect floor, null-based false-replication rate) and
+  `trusted_novel_pas.py` (5-stage pre-registered funnel + Kinnex `validate` vs shuffled null,
+  `meets_target_0.70`). Numbers deferred to the final run.
+- **Outline v0.2** repositioned to reliability-first; clustering demoted to supplementary utility.
+- **Stage 1c — DONE, verified FIXED** (feat/polya-evidence 0eebfe7 + verifier patch): BED col5 = distinct
+  (CB,UMI) molecules; `--polya-min-reads` → `--polya-min-umis`; `pas_support.tsv` sidecar (reads /
+  molecules / −F 3844 subsets / window reads per PAS); fallback double-count fixed (−0.0005%);
+  coordinates + tier membership byte-identical at defaults. `--polya-clip-filter f3844` implemented,
+  DEFAULT OFF (call-set change; −12.6% mouse tier-1 rows, to be scored post hoc from the sidecar).
+  Mouse1 post-hoc ≥2-molecule tier-1: P 0.692 / R 0.216 (post hoc; the pre-registered test is the final run).
+- Pending: final Stage-2 run (`stage2_final_launch.sh`,
+  gate P ≥ 0.50 on the pre-registered default) → Stage-3 numbers (replication on 17 Laughney
+  patients + 2 mice; trusted-novel on Kinnex).
+
 ## Owners
 
 | Who | Role |

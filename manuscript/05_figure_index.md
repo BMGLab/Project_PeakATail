@@ -551,3 +551,17 @@ hardcoded "READ WITH CARE" footnote, in `manuscript/09_headtohead_results.md` cl
 `spermatogenesis_control.*` and `kinnex_truth_validation.*`: adversarial verdicts PROBLEM — science
 reproduces, prose overstates. Binding corrections in `11_verifier_corrections.md`; do not quote either
 figure until regenerated (scheduled with the Stage 3 re-tests).
+
+## fdr_calibration_v2 — switch-test calibration on a correctly keyed matrix (2026-08-21, verified SOUND)
+
+Supersedes `fdr_calibration` (v1, mis-keyed matrix). 2×2: (a) null p histograms, (b) QQ, (c) q<0.05
+hits per null run vs TRUE, (d) TRUE hits surviving permutation-calibrated q. Six arms: fisher reads /
+fisher cells / nb_pairwise, each with default top-200 marker pre-selection (solid) and with
+`--marker-top-n 0` (dashed/hollow). Headline: only fisher-cells without pre-selection gives valid
+FDR control (conservative, 3.0% null p<0.05, 0/20 null runs with hits); defaults are
+anti-conservative (20.3% / 13.0% / 24.7%).
+**Caveats that travel with it:** marker mode also changes the Fisher gene denominator (restricted
+matrix), so marker-on vs marker-off are different tests, not subsets; single mouse/tissue; TRUE hit
+counts are detectability upper bounds, not precision; label-permutation null tests the global null
+only; KS rejects for every arm (discrete Fisher) and is not gated. Full write-up:
+[14_switch_calibration_v2.md](14_switch_calibration_v2.md).
