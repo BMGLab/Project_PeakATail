@@ -62,3 +62,32 @@ the atlas-known complement scores 0.90–0.94 under the same truths.
 
 Files: `results/reliability/trusted_novel_final_pbmc/` (REPORT_PROVISIONAL.md §1–9 incl. verifier
 robustness table; call_primary/, call_sens_min1/, validate_*/). Tool: `scripts/reliability/trusted_novel_pas.py`.
+
+## v2 section (2026-08-21, code `9dfdefb` — after the Stage-1d fixes; verified FIXED)
+
+Re-running the pre-registered trusted-novel pipeline unchanged on the v2 PBMC precision default
+(46,544 sites, code `9dfdefb3`) yields **7,259 trusted-novel PAS** (15.6%; 4,329 strong) whose Kinnex
+x3p concordance at the pre-registered ≤25 bp / ≥5 UMI metric is **0.4853 [0.474–0.497]** — *below* the
+v1 value of 0.5211 — with `meets_target_0.70 = 0` at every truth threshold and every robustness variant
+(GEM-X 0.5154, pooled 0.5816 @25 bp) moving down, not up. An independent adversarial verifier re-derived
+the input identity, the whole funnel, the concordances, the shuffled null and the decoy fractions from
+the primary inputs and reproduced every number exactly, and confirmed that no threshold, window, seed,
+atlas, truth set or `--incl` space differs from v1 — **so the negative result is not an artefact of the
+Stage-1d IP bugs.**
+
+| | v1 (4efeb125) | v2 (9dfdefb) |
+|---|---:|---:|
+| input (on contigs) | 44,394 | 46,524 |
+| trusted-novel / strong | 6,628 / 4,037 | 7,259 / 4,329 |
+| concordance ≥5 UMI | 0.5211 | 0.4853 |
+| IP-decoy proximity | 24.5% | **27.0%** |
+| atlas-known hexpass concordance | 0.9023 | 0.8941 |
+
+Mechanism: the corrected strand-aware filter flags *fewer* raw peaks (110,000 vs 119,518), so more
+A-rich-downstream sites survive — the residual failure is the IP **rule's** leniency (issue #95
+addendum: `--ip-rule kinnex`), not the strand bug. The definitional conclusion in §"What the paper
+says" is unchanged and now robust to the fix. Structural note for Methods: on the precision-default
+input the clip/≥2-molecule/not-IP criteria remove 0 sites by construction — the trusted-novel metric
+is carried entirely by hexamer ∧ atlas-novelty. Files:
+`results/reliability/trusted_novel_final_v2_pbmc/` (REPORT_PROVISIONAL.md status VERIFIED;
+`verifier_crosscheck/ADVERSARIAL_VERIFY_v2.txt`).
