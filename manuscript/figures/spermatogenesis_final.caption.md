@@ -125,8 +125,10 @@ Palette: Okabe-Ito (#0072B2 #009E73 #D55E00 #CC79A7 #E69F00 #56B4E9 #999999); ev
 marker or fill style, so nothing depends on hue alone. PNG 300 dpi, PDF vector with subsetted TrueType
 (fonttype 42, no Type 3).
 
-**Note for whoever quotes the residual test.** `manuscript/18` says the per-cell residual Cliff's δ has
-"permutation p < 0.005". The on-disk null for that statistic is the **20-shuffle** column
+**Note for whoever quotes the residual test.** An earlier draft of `manuscript/18` gave the per-cell
+residual Cliff's δ a "permutation p < 0.005"; that wording was corrected in the same commit as this
+figure and `manuscript/18` now states the null-range form used here. The on-disk null for that
+statistic is the **20-shuffle** column
 `cell_cliffs_resid_SPC_ES`, whose empirical p floor is 1/21 ≈ 0.048; the observed δ (0.562 / 0.608) lies
 outside the entire null range ([−0.114, +0.097] and [−0.066, +0.071]), which is what the figure states.
 The Mann–Whitney p for the same comparison is 3.0e-39 / 2.6e-34, but it treats cells as independent.

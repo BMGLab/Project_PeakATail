@@ -62,3 +62,14 @@ disclosed. Two-GSM patients verified to count once; within-patient discordance v
 
 Files: `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v2/replication/{primary_noMetBone,verify}/`
 (symlink `results/stage3_laughney_v2`), REPORT.md, PRIMARY_vs_SENSITIVITY.txt.
+
+## Naming convention (use these exact phrases in the paper)
+
+- **The Laughney cohort** = **17 libraries from 14 patients** (three patients contributed a tumour and a
+  normal library). This is the cohort that was peak-called in one run and is what "17 samples/datasets"
+  in [13](13_reliability_positioning.md) §2 and [19](19_final_gate_v2.md) §5 refers to.
+- **The replication primary** = **15 libraries from 12 patients** — the cohort minus the pre-registered
+  MetBone exclusion (one patient, one library) and minus GSM3516671, which retains only one confirmed
+  cell type and therefore yields no testable pair.
+- Null-test totals are scope-dependent: **54.6 M** across all 16 label-confirmed libraries, **54.4 M**
+  across the 15 libraries of the primary. Quote the primary figure with the primary result.

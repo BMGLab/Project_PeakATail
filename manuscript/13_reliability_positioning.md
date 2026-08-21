@@ -91,3 +91,11 @@ Triggered by the Stage-3 dry-run verifier (PROBLEM verdict; scripts/stage3/, dry
 10. A patient whose two GSMs disagree in direction is vetoed (conservative). Null combos are
     index-aligned (10 → empirical-p floor 1/11); the null-based expected false-replicated fraction
     is an empirical-FDR heuristic, not a calibrated q.
+
+## Correction note (2026-08-21, appended — the pre-registered text above is left verbatim on purpose)
+
+§3 of this pre-registration describes the Kinnex truth as "104 M poly(A)-verified molecules". **That
+figure was never verified and must not be quoted anywhere.** The verified truth sets are the x3p and
+GEM-X long-read 3'-end point BEDs at >= 5 / 20 / 100 / 500 UMI thresholds (contig-restricted counts in
+`results/reliability/trusted_novel_final_v2_pbmc/`), and every result in [16](16_trusted_novel_kinnex.md)
+is stated against those. The pre-registered *definition and target* in §3 are unaffected.

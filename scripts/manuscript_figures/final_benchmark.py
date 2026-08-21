@@ -36,7 +36,10 @@ PANELS
   d  PeakATail tier decomposition on the PBMC IP arm: tier-2 / tier-1
      single-molecule / tier-1 >=2 molecules (= default), with each output's
      P@100.  72.2 % of tier-1 sites are single-molecule on v2 (derived from the
-     two score-TSV n's: 1 - 46,524 / 167,565; 72.5 % on v1).
+     two score-TSV n's: 1 - 46,524 / 167,565; 72.5 % on the v1 IP arm).
+     DEFINITION NIT (19 section 4): the same ratio on the *no-IP* arm is
+     72.1 % (1 - 62,110 / 222,955) -- that is the verifier's recount and the
+     value manuscript/01 quotes.  Always name the arm with the number.
 
 NAMING RULES (manuscript/01 number policy)
   * "atlas-agreement precision (100 bp)", never bare "precision".
@@ -118,10 +121,15 @@ VERSIONS = {
         verified_short="final_v2_verify/VERIFIED_v2.md (FIXED)",
         prereg="gate 01:19, original arms 02:59, v2 re-run 16:14, all 2026-08-21",
         compute="12.5 GB / ~28-35 min on PBMC (was 294 GB / 3:46 h)",
-        ip_trade="the IP filter buys +5.3 pp precision for \u22121.2 pp recall (mouse 1)",
+        ip_trade="the IP filter buys +5.3 pp atlas-agreement precision for \u22121.2 pp R_det (mouse 1)",
         prev=dict(label="v1 run (code 4efeb125, 15)", P=(0.7167, 0.7414, 0.7554)),
         expect_h=(46524, 0.7062, 0.1754), expect_m1=(26255, 0.7450), expect_m2=(26526, 0.7572),
         expect_frac_single=72.2,
+        # definition nit, 19 section 4: the same ratio computed on the no-IP arm is 72.1 %
+        # (1 - 62,110 / 222,955), which is the verifier recount the manuscript text quotes.
+        single_mol_note=("this ratio is 1 \u2212 n(default) / n(tier-1) **on the IP arm shown here**; the same ratio on the "
+                         "no-IP arm is 72.1% (1 \u2212 62,110 / 222,955) \u2014 the verifier's recount and the value the "
+                         "manuscript text quotes (19 \u00a74), superseding 15 \u00a74's 72.5% (the v1 IP arm)"),
     ),
     "v1": dict(
         h_dir="peakatail_clipseeded_final", h_pfx="pbmc_final",
@@ -134,10 +142,12 @@ VERSIONS = {
         verified_short="15_final_gate.md (SOUND)",
         prereg="gate committed 01:19, arms started 02:59 (2026-08-21)",
         compute="294 GB / 3:46 h on PBMC",
-        ip_trade="the IP filter buys +4.9 pp precision for \u22121.4 pp recall (mouse 1)",
+        ip_trade="the IP filter buys +4.9 pp atlas-agreement precision for \u22121.4 pp R_det (mouse 1)",
         prev=None,
         expect_h=(44394, 0.7167, 0.1707), expect_m1=(25991, 0.7414), expect_m2=(26164, 0.7554),
         expect_frac_single=72.5,
+        single_mol_note=("this ratio is 1 \u2212 n(default) / n(tier-1) **on the v1 IP arm shown here** (15 \u00a74); the "
+                         "same ratio on the no-IP arm is 72.1% (1 \u2212 62,110 / 222,955), the verifier's recount (19 \u00a74)"),
     ),
 }[VERSION]
 H_DIR, H_PFX = VERSIONS["h_dir"], VERSIONS["h_pfx"]
@@ -441,7 +451,10 @@ axA.set_xlim(0, XMAX_H); axA.set_ylim(0, 0.9)
 axA.set_xlabel("detected-gene recall R_det @100 bp (n = 285,136 atlas sites)")
 axA.set_ylabel("atlas-agreement precision @100 bp")
 axA.set_title("a   PBMC 10k v3 (human, single donor)", loc="left", fontweight="bold")
-axA.text(0.985, 0.02, "scTail: not runnable on this BAM (R1 = 28 bp)\n"
+# right-anchored at 0.90 (not 0.985) and lifted to y=0.040 so the two-line block clears BOTH
+# the right-edge "F1 0.1" isoline label and the PBMC null ticks (drawn at P ~ 0.022, which the
+# previous y=0.02 placement ran straight through -- the ticks crossed the glyphs).
+axA.text(0.900, 0.040, "scTail: not runnable on this BAM (R1 = 28 bp)\n"
          "| = 3-seed genic-shuffle null (mean) per call set",
          transform=axA.transAxes, ha="right", va="bottom", fontsize=5.8, color=MUTED)
 hH.append((Line2D([], [], marker="o", ms=5.5, color=COLOR["PeakATail"], mec=COLOR["PeakATail"], lw=1.1),
@@ -468,7 +481,8 @@ axB.set_xlim(0, XMAX_M); axB.set_ylim(0, 0.9)
 axB.set_xlabel("detected-gene recall R_det @100 bp (n = 126,686)")
 axB.set_ylabel("atlas-agreement precision @100 bp")
 axB.set_title("b   GSE104556 testis (2 mice, mean ± range)", loc="left", fontweight="bold")
-axB.text(0.985, 0.02, "all mouse arms ran with the IP filter (no ‘no IP’ step)\n"
+# right-anchored at 0.90 (not 0.985) so the 3-line block clears the right-edge "F1 0.1" isoline label
+axB.text(0.900, 0.02, "all mouse arms ran with the IP filter (no ‘no IP’ step)\n"
          "SCAPTURE: mouse 1 only (mouse-2 run invalid)\n"
          "| = 3-seed genic-shuffle null (mean) per call set",
          transform=axB.transAxes, ha="right", va="bottom", fontsize=5.8, color=MUTED)
@@ -675,6 +689,7 @@ scale. **Panel d** — PeakATail tier decomposition on the PBMC IP arm: tier-2 /
 molecules (= default), with the atlas-agreement precision @100 bp of each scored output (tier-2 {t2.P:.3f},
 tier-1 ≥1 mol {t1.P:.3f}, default {dflt.P:.3f}); {frac_single*100:.1f}% of tier-1 sites are single-molecule
 ({n_single:,} / {int(t1.n):,}; mouse {m_single['mouse1'][1]*100:.1f}% / {m_single['mouse2'][1]*100:.1f}%).
+Definition matters here: {VERSIONS['single_mol_note']}.
 
 Sources: `{VERSIONS["gate_doc_path"]}` + `{VERSIONS["verified_table"]}` ({VERSIONS["verdict"]}) and the score TSVs listed in the `source` column of
 `results/figures/manuscript/final_benchmark.tsv`. Reference lines: `final_benchmark_reference_lines.tsv`;

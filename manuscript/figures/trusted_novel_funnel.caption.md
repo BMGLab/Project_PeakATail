@@ -67,7 +67,8 @@ n = 1,723; ≥5: 0.71 / 0.56, n = 1,301 = the file's 5–9 and 10+ bins pooled).
   recorded in `trusted_novel_funnel_reference_lines.tsv`.
 
 Sources: `manuscript/19_final_gate_v2.md` §4 (v2 gate, verifier verdict FIXED) and
-`manuscript/16_trusted_novel_kinnex.md` (v1 record, verified FIXED);
+`manuscript/16_trusted_novel_kinnex.md` **§v2** (the v2 record for every number on this figure,
+verified FIXED; the pre-§v2 body of 16 is the v1 record);
 `results/reliability/trusted_novel_final_v2_pbmc/` (`REPORT_PROVISIONAL.md` STATUS: VERIFIED, adversarial
 verifier 2026-08-21) — `call_primary/funnel.tsv`,
 `validate_incl_genebodies/validation.tsv` + `validation_null_seeds.tsv`, `feature_breakdown.tsv`,
