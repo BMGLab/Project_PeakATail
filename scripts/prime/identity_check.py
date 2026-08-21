@@ -12,6 +12,8 @@ every path, one of:
   DIFF            md5 differs                                <- FAILS the check
   ONLY_IN_REF     present in REF_DIR only                    <- FAILS the check
   ONLY_IN_NEW     present in NEW_DIR only                    <- FAILS the check
+  NAME_COLLISION  two files in one tree share a timestamp-normalised name, so
+                  one of them would go uncompared               <- FAILS the check
   SAME_NORM       byte-different but identical after normalising the run path and
                   ISO timestamps out of the text -- only ever applied to the
                   CONFIG set below, and reported, never silently accepted
@@ -151,19 +153,33 @@ def main() -> int:
             sys.exit(f"not a directory: {d}")
     roots = [str(ref).encode(), str(new).encode()]
 
-    def rels(root: Path) -> dict[str, Path]:
+    def rels(root: Path) -> tuple[dict[str, Path], dict[str, list[str]]]:
         # key = relative path with any embedded run timestamp normalised away, so
         # peakatail_<ts>.log from two runs is compared rather than reported twice.
+        # Two files in the SAME tree can in principle collide on that key (two
+        # timestamped logs in one run).  A dict would silently drop one of them and
+        # the check would pass while a file went uncompared, so collisions are
+        # collected and reported as a fatal finding instead.
         out: dict[str, Path] = {}
+        collisions: dict[str, list[str]] = {}
         for p in root.rglob("*"):
             if p.is_file() and "__pycache__" not in p.parts:
                 rel = p.relative_to(root)
-                out[TS_NAME.sub("_<TS>", str(rel))] = rel
-        return out
+                key = TS_NAME.sub("_<TS>", str(rel))
+                if key in out:
+                    collisions.setdefault(key, [str(out[key])]).append(str(rel))
+                out[key] = rel
+        return out, collisions
 
-    ma, mb = rels(ref), rels(new)
+    ma, ca = rels(ref)
+    mb, cb_ = rels(new)
     ra, rb = set(ma), set(mb)
     rows: list[tuple[str, str, str]] = []
+    for side, coll in (("REF", ca), ("NEW", cb_)):
+        for key, paths in sorted(coll.items()):
+            rows.append(("NAME_COLLISION", key,
+                         "%s: %d files normalise to this name (%s) -- not compared"
+                         % (side, len(paths), ", ".join(sorted(paths)))))
     for key in sorted(ra - rb):
         rows.append(("ONLY_IN_REF", str(ma[key]), ""))
     for key in sorted(rb - ra):
@@ -201,7 +217,7 @@ def main() -> int:
         rows.append(("DIFF", str(rel), "%s != %s (%d vs %d bytes)"
                      % (ha[:8], hb[:8], pa.stat().st_size, pb.stat().st_size)))
 
-    order = ["DIFF", "DIFF_NORM", "DIFF_H5", "ONLY_IN_REF", "ONLY_IN_NEW",
+    order = ["DIFF", "DIFF_NORM", "DIFF_H5", "ONLY_IN_REF", "ONLY_IN_NEW", "NAME_COLLISION",
              "LOG_DIFF", "SAME_NORM", "SAME_H5", "SAME_LOG", "SAME"]
     counts = {k: 0 for k in order}
     for st, _, _ in rows:
@@ -212,7 +228,7 @@ def main() -> int:
         if counts.get(st):
             print(f"  {st:<12} {counts[st]}")
     bad = [r for r in rows if r[0] in ("DIFF", "DIFF_NORM", "DIFF_H5",
-                                       "ONLY_IN_REF", "ONLY_IN_NEW")]
+                                       "ONLY_IN_REF", "ONLY_IN_NEW", "NAME_COLLISION")]
     if bad:
         print("\nfiles that are NOT identical:")
         for st, rel, why in bad:

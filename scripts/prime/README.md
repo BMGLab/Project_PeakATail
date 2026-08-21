@@ -59,6 +59,11 @@ Three tiers, because "byte-identical" is only meaningful once you say which byte
 `h5py` (HDF5 containers are not guaranteed byte-stable). Exit status is 0 only when every file is
 SAME / SAME_NORM / SAME_H5 / SAME_LOG / LOG_DIFF and neither side has an unmatched file.
 
+Files whose names embed a run timestamp are paired by their normalised name. If two files in the
+*same* tree normalise to one name a dict would silently drop one of them and the check would pass
+with a file uncompared, so that case is reported as **NAME_COLLISION** and is fatal (added in the
+second validation pass; no real run has yet produced one).
+
 `--strict-volatile` disables all three normalisations and demands raw byte equality everywhere.
 
 ## Validation of the harness (2026-08-21, before any prime behaviour change)
@@ -86,6 +91,33 @@ VERDICT: NOT IDENTICAL, exit 1
 Transcripts: `results/prime/identity_slice_v2_vs_prime.txt`,
 `results/prime/identity_negative_control.txt`, per-file report
 `results/prime/identity_slice_v2_vs_prime.tsv`.
+
+## Second validation pass (2026-08-21, independent re-run)
+
+Everything above was re-run from scratch rather than taken on trust, and three checks were added.
+Full table: `results/prime/harness_validation_pass2.tsv`; branch state:
+`results/prime/branch_baseline.tsv`.
+
+* the full test suite was re-run on the branch: **1,277 passed**, 9 skipped, 4 xfailed, 1 xpassed,
+  the 2 known `tests/test_pyproject_install.py` environment failures;
+* the frozen v2 snapshot `tools/pa-polya-run-9dfdefb3` was confirmed clean at `9dfdefb`, and its
+  `ema/` tree confirmed **identical** to `tools/pa-prime/ema/` (`diff -r`), so the positive control
+  really is "same source, two trees, two output directories";
+* the positive control was re-run (54 files, IDENTICAL, exit 0) and the four derived scorer-ready
+  BEDs re-hashed (equal);
+* a **second, independent negative control** (different corruptions from the first): one character
+  changed inside `pas_support.tsv` *at unchanged file length* -> `DIFF`; an extra output file ->
+  `ONLY_IN_NEW`; `polya_min_clip` 6->5 and `seqlen` 91->92 inside `run_config.json` -> `DIFF_NORM`
+  (a settings drift must survive normalisation); exit 1
+  (`results/prime/identity_negative_control_pass2.txt`);
+* the `NAME_COLLISION` guard was added and exercised synthetically;
+* `score_pas.sh` was re-run on the v2 IP arm and reproduced pass 1 exactly (P@10 0.5727,
+  P@100 0.7392, R_det@100 0.2080, F1 0.3246, Kinnex t20 0.6011, decoy 0.0933);
+* the branch gained a fixture-level compat test,
+  `tools/pa-prime/tests/test_prime_v2_compat_golden.py`, which hashes every byte the caller writes
+  for two arms over `tests/fixtures/cellranger_pbmc_tiny.bam` against goldens generated from the
+  frozen v2 worktree. It was shown to bite: deleting the `span > seq_len` rule in `read.py`
+  (Change 1 landing without a flag) fails both arms.
 
 *Caveat on the negative control:* it compares a **copied** tree, so the run root recorded inside the
 log no longer equals the directory being compared and the journal reports a path difference. On real

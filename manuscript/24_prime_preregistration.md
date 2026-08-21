@@ -215,3 +215,31 @@ criterion; §3.1 is strictly harder than them, and passing 13 §1 while failing 
 Operational constraints in force: ≤ 8 threads for this work; the Stage-3 replication chain under
 `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/` is never touched; nothing is written to
 `/mnt/ssd2`, to another worktree under `tools/`, or to `results/benchmark_tools/*final*`.
+
+---
+
+## 6. Amendments
+
+Amendments are appended, never edited in place, so the pre-registration's history is visible.
+**No amendment below changes a success criterion, a denominator or a threshold rule.**
+
+### A1 — 2026-08-21, second foundation pass (clarifications only)
+
+1. **`n` means two things, and §2 quotes the second one.** `score_tool.py` reports `n_query` (lines
+   in the query BED) and `n_matched` (calls on a contig the reference set covers). The table in §2
+   quotes **`n_matched`**, consistent with [19](19_final_gate_v2.md). On testis mouse 1 the v2
+   default arm is **26,263** BED lines and **26,255** scored calls; `results/algo_headroom/A5_cross_sample/`
+   quotes the former. Both are correct; they are different quantities.
+   `scripts/prime/score_pas.sh` prints them as `n (scored / raw)`.
+2. **The test-suite baseline in §3.2.5 is the count at the branch cut.** Tests *added* by this branch
+   raise the pass count; that is not a regression. At the cut: `1,277 passed, 9 skipped, 4 xfailed,
+   1 xpassed` + the 2 known `tests/test_pyproject_install.py` environment failures (re-run and
+   confirmed independently on the branch). The compat golden test
+   (`tests/test_prime_v2_compat_golden.py`, 4 tests) brings the branch baseline to **1,281 passed**
+   with the same 2 known failures. The stop signal is unchanged: **any new failure**.
+3. **§1's byte-identity rule now has its fixture test.** `tests/test_prime_v2_compat_golden.py` runs
+   the real caller over `tests/fixtures/cellranger_pbmc_tiny.bam` on two arms (`clip_seeded` at
+   `--seq-len 91`; `original` at `--seq-len 150`) and asserts the SHA-256 of every output byte
+   against goldens generated from the frozen v2 worktree `tools/pa-polya-run-9dfdefb3`. It is
+   demonstrated to fail when a behavioural change lands without a flag. The slice-level check
+   (`scripts/prime/identity_check.py`) is unchanged and remains the one that is quoted.
