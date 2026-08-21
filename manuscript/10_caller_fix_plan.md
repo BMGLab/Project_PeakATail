@@ -272,3 +272,4 @@ one tool among six, reported as measured — plus the peak-based clustering nove
 | HOLD #67 until 0b/0c land + the counts backfill? (recommendation: **yes**) | **Ebru + Amir** |
 | Stage 0d/0e/0f — branch repair, BAM fixture, CI — start immediately? | **Amir** |
 | Stage 3 claim-2 FDR re-run — start now in parallel (it blocks nothing)? | **Ebru** |
+ **[CORRECTED 2026-08-21: the genome-wide clip rate is 0.573%, not 1.15%. The 1.15% figure came from the caller's head-sampling QC estimator, which reads only the first 200,000 CB reads of a coordinate-sorted BAM (the head of chr1) and reports 2.26% where the truth is 0.536%; see results/algo_headroom/VERIFY/ and manuscript/23_algorithm_roadmap.md §3 Step 0. The conclusion the figure supported — that clip evidence is a small, highly specific channel — is unchanged and in fact strengthened.]**

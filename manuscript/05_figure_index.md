@@ -606,3 +606,4 @@ index reverses at RS→ES (protamine ceiling-PDUI UMIs) and the 16-gene literatu
 equal-weight claim only (medians not monotone); mouse-2 direction excess modest; SPG excluded; two mice of
 one study; PROVISIONAL — v2 re-run at 9dfdefb regenerates it. Caption: `figures/spermatogenesis_final.caption.md`;
 write-up [18_spermatogenesis_final.md](18_spermatogenesis_final.md).
+ **[CORRECTED 2026-08-21: the genome-wide clip rate is 0.573%, not 1.15%. The 1.15% figure came from the caller's head-sampling QC estimator, which reads only the first 200,000 CB reads of a coordinate-sorted BAM (the head of chr1) and reports 2.26% where the truth is 0.536%; see results/algo_headroom/VERIFY/ and manuscript/23_algorithm_roadmap.md §3 Step 0. The conclusion the figure supported — that clip evidence is a small, highly specific channel — is unchanged and in fact strengthened.]**
