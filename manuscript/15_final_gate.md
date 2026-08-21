@@ -79,7 +79,7 @@ recall (mouse 1, ≥2-mol, no-IP 0.692 → IP 0.741).
 the ≥2-molecule PBMC sites, 90.2% keep ≥2 molecules under a `-F 3844` alignment filter (mouse
 94.8 / 95.6%), so the stricter variant would shrink the default by ~10% on PBMC.
 
-## 5. Compute (limitation — must be stated)
+## 5. Compute (limitation — must be stated; FIXED on perf/clip-memory, see addendum below)
 
 | arm | wall | peak RSS | CPU |
 |---|---|---|---|
@@ -92,6 +92,15 @@ the ≥2-molecule PBMC sites, 90.2% keep ≥2 molecules under a `-F 3844` alignm
 scUTRquant 0:30 h, none near 100 GB). A 10k-cell PBMC BAM needs a ≥300 GB node. The
 [10](10_caller_fix_plan.md) stop signal (RSS > 150 GB → profile first) was exceeded; profiling is
 a Stage-1d item for Amir.
+
+**Addendum 2026-08-21 12:30 — compute fixed, outputs unchanged.** Profiling (results/perf/) showed the peak RSS is
+not in peak calling but in `_tfidf_signac_method1` (clustering): four dense float64 copies of the cells × PAS matrix
+(4 × 23,303 × 390,493 × 8 B = 291 GB; measured 287.8 GB in isolation). The 1b/1c "doubling" was indirect (2.07×
+larger matrix area). Branch `perf/clip-memory` (verified FIXED, byte-identical on the full PBMC, mouse1 and slice
+runs — 18/18 files incl. pasbed.bed, pas_support.tsv, matrices, clusters): sparse TF-IDF, per-(contig, strand)
+parallel peak calling with deterministic merge, read_check reorder, streamed CB filter → PBMC **12.45 GB / 27m43s**
+(process tree 19.3 GB), mouse1 3.68 GB / 9m03s. The paper reports the fixed footprint once the PR is merged and the
+v2 re-run confirms it; the numbers in §1–3 are unaffected by construction.
 
 ## 6. Tool defects surfaced (Stage 1d; issue draft [github/issue10_stage1d_ipfilter_memory.md](github/issue10_stage1d_ipfilter_memory.md))
 

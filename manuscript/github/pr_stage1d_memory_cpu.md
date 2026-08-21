@@ -1,6 +1,6 @@
 # perf: 294 GB → 12 GB and 3h46 → 28 min on the PBMC 10k run, byte-identical output
 
-**Base: `feat/polya-evidence` (merge after it).** Branch: `perf/clip-memory`, 5 commits on top of `4efeb12`.
+**Base: `feat/polya-evidence` (merge after it).** Branch: `perf/clip-memory`, 8 commits on top of `4efeb12` (5 changes + tests/docs + one verifier repair).
 
 This PR changes **no output**. Every file the pipeline writes is byte-identical
 at the default settings, on three real datasets, verified by `cmp` against the
@@ -63,7 +63,8 @@ downstream pool), and the 143 % CPU was that thread plus htslib BGZF threads.
 | 2 | `a6261b5` | **Per-(contig, strand) parallel peak calling** with a deterministic merge (`ema/countmatrix/chrom_parallel.py`, `--peak-workers`). |
 | 3 | `4c86442` | **`read_check` reorder** (strand test before the CB tag lookup and the CIGAR walk) + interned `"<RG>_<CB>"` composite. |
 | 4 | `5420398` | **CB filter streams integers** (12 B/non-zero) instead of a pandas frame with a per-row `cb_str` object column (~95 B/non-zero). |
-| 5 | `5c0e891` | Docs (performance section, `--threads` / `--peak-workers` semantics) + CHANGELOG. |
+| 5 | `5c0e891`, `0a3bed0`, `bf9310d` | Docs (performance section, `--threads` / `--peak-workers` semantics), CHANGELOG, strategy-kwargs test. |
+| 6 | `4dff7c3` | **Verifier repair:** the parallel merge now seeds `pas_id` from `Peak.pasnumber` and writes it back, so the second BAM of a multi-dataset run continues the first one's numbering exactly as the legacy loop does (it restarted at 1; harmless downstream, which keys on `(dataset_id, strand, pasnumber)`, but not byte-identical). Regression test runs a second "dataset" both ways. Single-BAM output unchanged (re-verified on the slice and mouse1 after the change). |
 
 ### Why each is bit-exact, not approximately equal
 
@@ -119,6 +120,12 @@ reproduced; peak RSS is the largest single process.
 | GSE104556 mouse1 testis, `--threads 12 --ip-filter` | 1 h 01 min 09 s | **9 min 03 s** | 140 % | 594 % | 23.12 GB | **3.68 GB** |
 | PBMC 10k v3 full BAM, `--threads 16` | 3 h 45 min 53 s | **27 min 43 s** | 143 % | 689 % | 293.74 GB | **12.45 GB** |
 
+The gains are not only parallelism. Re-running the slice with
+`--peak-workers 1` — the legacy single-process caller, same code — gives
+11 min 27 s / 1.71 GB against 14 min 41 s / 5.56 GB: peak calling 733 s → 613 s
+(`+` 439 → 391 s, `-` 294 → 222 s, from the `read_check` reorder) and the CB
+filter 64 s → 25 s.
+
 Stage breakdown of the full PBMC run, before → after:
 
 | stage | before | after |
@@ -155,7 +162,11 @@ Byte comparison (`cmp`) of the new run against the run each reproduces:
   `annotated_cells.tsv`, `annotated_pas_ids.tsv`), plus `clusters.h5ad`
   including the `counts` layer.
 
-Unit tests (`pytest tests`: **1256 passed**, 2 pre-existing environment failures
+The same slice run with `--peak-workers 1` (legacy caller through `main.py`)
+also reproduces the reference bytes on the 12 files checked — the fallback
+path is not a second implementation of the outputs.
+
+Unit tests (`pytest tests`: **1257 passed**, 2 pre-existing environment failures
 in `tests/test_pyproject_install.py`, unchanged from the baseline's 1215):
 
 * `tests/test_chrom_parallel_identity.py` — a synthetic 4-contig BAM (both
@@ -197,3 +208,7 @@ in `tests/test_pyproject_install.py`, unchanged from the baseline's 1215):
   why.
 * Per-worker memory scales with the deepest contig, not with `--threads`:
   budget ~2.5 GB per worker (measured max 3.0 GB on PBMC chr11 (+)).
+
+Refs #95 (§2 memory / CPU). Base `feat/polya-evidence` landed in `develop` as #93; this branch applies cleanly on `develop` and is independent of #96 (IP-filter strand fix).
+
+_Whole-process-tree memory (verifier, PSS/RSS sampler): PBMC 19.3 GB RSS-sum / 18.1 GB PSS-sum with the parent at 12.2 GB; mouse1 7.3 GB; slice 3.1 GB — the per-process `ru_maxrss` numbers above are the parent only._

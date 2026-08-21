@@ -59,7 +59,13 @@ evidence, the axis that separates the winners).**
   19 new tests; '+' byte-identical; measured: corrected rule ≈ re-run would give PBMC default P@100 0.717 → ~0.706
   with +2,100 sites / +0.5 pp recall; mice 0.741 → 0.746, 0.755 → 0.759; all gates still pass). Publish:
   `bash manuscript/github/publish_stage1d_ipfilter.sh` (after publish_stage1bc.sh).
-- Pending: Stage 1d-B memory/CPU (perf/clip-memory, running); Stage-3 Laughney chain (`stage2_final_launch.sh`,
+- **Stage 1d-B memory/CPU — DONE, verified FIXED, ready for PR** (branch perf/clip-memory, 8 commits, +42 tests):
+  root cause of the 280 GiB was the DENSE TF-IDF in clustering (4 float64 copies of cells × PAS), not the caller;
+  sparse TF-IDF is bit-identical; peak calling now per (contig, strand) in parallel with a deterministic merge;
+  read_check reordered; CB filter streamed. PBMC 10k: **293.7 GB → 12.5 GB, 3h46m → 27m43s** (mouse1 23 GB → 3.7 GB,
+  61 → 9 min), all outputs byte-identical to the final run. Publish: `bash manuscript/github/publish_stage1d_perf.sh`.
+  Not done (follow-ups): --tiles/--pipeline remain broken (separate issue), single-pass both strands, chunked mmread.
+- Pending: Stage-3 Laughney chain (`stage2_final_launch.sh`,
   gate P ≥ 0.50 on the pre-registered default) → Stage-3 numbers (replication on 17 Laughney
   patients + 2 mice; trusted-novel on Kinnex).
 
