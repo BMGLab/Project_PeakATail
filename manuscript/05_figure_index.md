@@ -579,3 +579,15 @@ recall denominator is the detected-gene atlas (full-atlas recall 0.087 / 0.096�
 donor; the non-IP ≥2-molecule file is not the default and is not shown; the IP-filter minus-strand bug (Stage 1d)
 will move the PBMC default to ~0.706 on re-run. Full caption: `figures/final_benchmark.caption.md`; write-up
 [15_final_gate.md](15_final_gate.md).
+
+## trusted_novel_funnel — Fig 5b, pre-registered trusted-novel definition vs Kinnex (2026-08-21, verified FIXED)
+
+(a) the pre-registered funnel 44,394 → 34,192 (hexamer) → 6,628 trusted-novel → 4,037 strong, with per-stage
+long-read concordance (0.786 → 0.828 → 0.521 → 0.525) showing that atlas-novelty, not the hexamer, is where
+concordance is lost; (b) concordance vs Kinnex UMI stringency with Wilson CIs for six sets and the 0.70 target —
+**missed throughout (0.521 at ≥5 UMI)**; (c) feature class (68.6% intronic vs 17.8% for atlas-known) and
+proximity to Kinnex internal-priming decoys (24.5% vs 6.6%); (d) a boxed, explicitly post-hoc stratification
+(3′-UTR 0.78, ≥5 molecules 0.75 at ≥5 UMI). **Caveats that travel with it:** negative result — no "trusted
+novel" claim; truth from other donors (robustness GEM-X 0.554, pooled 0.623 at 25 bp); panel d is exploratory
+and not a definition; single PBMC donor; the caller's IP rule is looser than Kinnex's (Stage-1d item). Caption:
+`figures/trusted_novel_funnel.caption.md`; write-up [16_trusted_novel_kinnex.md](16_trusted_novel_kinnex.md).
