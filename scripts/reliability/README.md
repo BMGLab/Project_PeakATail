@@ -204,7 +204,7 @@ Spec: `manuscript/13_reliability_positioning.md` §3. Two sub-commands, stdlib +
 |---|---|---|---|
 | 1 | clip-supported | site name (col 4) present in the clip-supported tier BED | `--clip-bed` (omit only if `--pas-bed` is already clip-only; warns) |
 | 2 | ≥ 2 distinct molecules | BED col 5 ≥ `--min-support` | `--support-unit molecules\|reads` is **required**; `reads` (pre-Stage-1c outputs) is accepted with a loud warning and `stale_input_dry_run: true` in the manifest |
-| 3 | not internal-priming | `--ip-from-annot ANNOT_BED:COL` (tool's `annotatedpas.bed` flag, col 10 in the current PeakATail layout) or recomputed: ≥ 6 consecutive A **or** ≥ 70 % A in the transcript-strand window **+10..+30** downstream of the cleavage site (same window as `motif_validation.py` panel c; the in-tool filter uses −10..+30, reproducible with `--ip-lo -10 --ip-hi 29`) | `--ip-lo/--ip-hi/--ip-a-stretch/--ip-a-frac` |
+| 3 | not internal-priming | `--ip-from-annot ANNOT_BED:COL` (tool's internal-priming flag = col 10 of the 11-column per-dataset `run/03_gtf_annotation/<dataset>/annotatedpas.bed`; NOTE the top-level `run/annotatedpas.bed` of the 4efeb125 final run has only 9 columns and NO IP column — the tool raises on a too-short line rather than guessing) or recomputed: ≥ 6 consecutive A **or** ≥ 70 % A in the transcript-strand window **+10..+30** downstream of the cleavage site (same window as `motif_validation.py` panel c; the in-tool filter uses −10..+30, reproducible with `--ip-lo -10 --ip-hi 29`) | `--ip-lo/--ip-hi/--ip-a-stretch/--ip-a-frac` |
 | 4 | canonical hexamer | AATAAA/ATTAAA = **strong** tier; any of the 12 canonical variants = **weak** tier (superset); hexamer must lie fully inside **−40..−5** of the cleavage site on the transcript strand | `--hex-lo/--hex-hi` |
 | 5 | atlas-novel | `bedtools closest -s -d` distance to the union of `--atlas` files ≥ 100 bp (strand-matched; `--atlas-ignore-strand` for strand-agnostic). Any atlas path containing `hg19` is refused (PolyA_DB 3.2 is hg19-only; see `data/references/atlases/README.md`) | `--atlas` (repeatable), `--atlas-min-dist` |
 
@@ -253,7 +253,7 @@ against PolyASite 2.0 GRCh38 and the x3p Kinnex truth at 5/20/100/500 UMI. Defau
 `results/reliability/_dryrun_stale_stage2_pbmc/`, which carries a
 `DRYRUN_STALE_INPUTS_NOT_RESULTS.txt` marker. For the real Stage-3 run: point `--pas-bed`
 at the final caller's clip-supported default output, `--support-unit molecules`, and
-`--ip-from-annot <run>/annotatedpas.bed:10` (or let it recompute).
+`--ip-from-annot <run>/03_gtf_annotation/<dataset>/annotatedpas.bed:10` (NOT the 9-column top-level `<run>/annotatedpas.bed`; or let it recompute). Executed 2026-08-21 on the final IP-filter arm: `results/reliability/trusted_novel_final_pbmc/` (verifier-checked; see its `REPORT_PROVISIONAL.md` §9).
 
 ### Tests
 

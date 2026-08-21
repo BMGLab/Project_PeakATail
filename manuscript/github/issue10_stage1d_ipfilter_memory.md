@@ -39,3 +39,12 @@ downstream.
 
 ## Evidence
 `manuscript/15_final_gate.md` §5–6; verifier outputs `results/benchmark_tools/final_verify/`.
+
+## 4. Addendum (2026-08-21, Kinnex validation) — the IP rule is too loose
+Applying the pre-registered "trusted novel PAS" funnel to the final PBMC default output and validating
+against Kinnex long reads: 24.5% of atlas-novel, hexamer-bearing, IP-filter-passing sites lie within
+25 bp of a Kinnex *internal-priming decoy* terminus (6.6% for atlas-known sites). The current rule
+(window −10..+30, ≥6 consecutive A or ≥70% A) misses a large internal-priming class that the Kinnex
+rule (+1..+18 downstream, ≥12 of 18 A) catches. Proposal: add `--ip-rule {legacy,kinnex}` (default
+unchanged for now; to be pre-registered and re-benchmarked before becoming default), implemented on
+the strand-corrected window from §1. Details: `manuscript/16_trusted_novel_kinnex.md`.

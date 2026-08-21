@@ -46,7 +46,16 @@ evidence, the axis that separates the winners).**
   ≥1-molecule output (reported as sensitivity arm). Compute limitation: 280 GiB / 3:46 h on PBMC.
   Stage-1d defects for Amir: IP-filter minus-strand window, memory, output bookkeeping
   (github/issue10_stage1d_ipfilter_memory.md).
-- Pending: Kinnex trusted-novel validation on the PBMC default (running); Stage-3 Laughney chain (`stage2_final_launch.sh`,
+- **Kinnex trusted-novel validation — DONE, verified FIXED** ([16_trusted_novel_kinnex.md](16_trusted_novel_kinnex.md)):
+  pre-registered definition yields 6,628 trusted-novel sites but only **52% (not 70%)** within 25 bp of a
+  long-read 3′ end; enrichment 70–250× over null; residual error = intronic sites + internal priming the
+  current IP rule misses (24.5% coincide with Kinnex IP decoys). Reported as a negative result; no
+  "trusted novel" claim; stricter v2 needs pre-registration + held-out validation. Stage-1d: `--ip-rule kinnex`.
+- **Stage 1d (PI directive 2026-08-21 08:00):** fix IP-filter minus-strand window (branch fix/ip-filter-strand)
+  and memory/CPU (perf/clip-memory); PR each to Amir; after merge pull the new version and RE-RUN the
+  benchmark + Stage 3 from a fresh frozen snapshot. Publishing from this session is blocked by the permission
+  classifier → publish scripts in manuscript/github/ (publish_stage1bc.sh staged).
+- Pending: Stage-3 Laughney chain (`stage2_final_launch.sh`,
   gate P ≥ 0.50 on the pre-registered default) → Stage-3 numbers (replication on 17 Laughney
   patients + 2 mice; trusted-novel on Kinnex).
 
