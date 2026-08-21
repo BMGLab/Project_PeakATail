@@ -9,9 +9,10 @@
 set -uo pipefail
 export LC_ALL=C PEAKATAIL_NO_TIMESTAMP=1
 WD=/mnt/ssd1/Projects/PeakATail_wd
-SRC=$WD/tools/pa-polya
-COMMIT=$(git -C "$SRC" rev-parse HEAD)
+SRC=${SRC:-$WD/tools/pa-polya}                      # any checkout/worktree of the tool repo
+COMMIT=${SRC_COMMIT:-$(git -C "$SRC" rev-parse HEAD)}  # override with SRC_COMMIT=<sha> (e.g. origin/develop after the Stage-1d merges)
 SNAP=$WD/tools/pa-polya-run-${COMMIT:0:8}
+OUT_TAG=${OUT_TAG:-final}                            # output dirs: peakatail_clipseeded_${OUT_TAG}[_ipfilt]; use OUT_TAG=final_v2 for the post-merge re-run
 [ -d "$SNAP" ] || git -C "$WD/tools/PeakATail" worktree add --detach "$SNAP" "$COMMIT" >/dev/null
 export PYTHONPATH=$SNAP
 VENV_PY=$WD/tools/PeakATail/.venv/bin/python
@@ -65,14 +66,14 @@ run_arm() {
   } > "$out/run.log" 2>&1
 }
 B=$WD/results/benchmark_tools
-run_arm $B/pbmc_10k_v3/peakatail_clipseeded_final        pbmc_final        "$PBMC" "$HUM_GTF" 91 16 human &
-run_arm $B/pbmc_10k_v3/peakatail_clipseeded_final_ipfilt pbmc_final_ipfilt "$PBMC" "$HUM_GTF" 91 16 human \
+run_arm $B/pbmc_10k_v3/peakatail_clipseeded_${OUT_TAG}        pbmc_${OUT_TAG}        "$PBMC" "$HUM_GTF" 91 16 human &
+run_arm $B/pbmc_10k_v3/peakatail_clipseeded_${OUT_TAG}_ipfilt pbmc_${OUT_TAG}_ipfilt "$PBMC" "$HUM_GTF" 91 16 human \
         --ip-filter --genome-fasta "$HUM_FA" --ip-filter-mode filter &
 # mouse arms run WITH the IP filter: the pre-registered precision default (13 §1) is tier-1 ∩ IP-pass ∩ >=2 molecules
 # and is gated on BOTH mice; the no-IP mouse baseline already exists (peakatail_clipseeded_v3/mouse1, Stage-1c acceptance).
-run_arm $B/gse104556/peakatail_clipseeded_final/mouse1   testis_m1_final   "$M1"   "$MOU_GTF" 98 12 mouse \
+run_arm $B/gse104556/peakatail_clipseeded_${OUT_TAG}/mouse1   testis_m1_${OUT_TAG}   "$M1"   "$MOU_GTF" 98 12 mouse \
         --ip-filter --genome-fasta "$MOU_FA" --ip-filter-mode filter &
-run_arm $B/gse104556/peakatail_clipseeded_final/mouse2   testis_m2_final   "$M2"   "$MOU_GTF" 98 12 mouse \
+run_arm $B/gse104556/peakatail_clipseeded_${OUT_TAG}/mouse2   testis_m2_${OUT_TAG}   "$M2"   "$MOU_GTF" 98 12 mouse \
         --ip-filter --genome-fasta "$MOU_FA" --ip-filter-mode filter &
 wait
 echo "STAGE 2 FINAL: ALL ARMS FINISHED $(date) (code $COMMIT)"
