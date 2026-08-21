@@ -128,6 +128,31 @@ Full table: `results/prime/harness_validation_pass2.tsv`; branch state:
   frozen v2 worktree. It was shown to bite: deleting the `span > seq_len` rule in `read.py`
   (Change 1 landing without a flag) fails both arms.
 
+### The pair of slice runs quoted above was re-made from scratch in the second pass
+
+Both arms were run again in one session — nothing was inherited — so the byte-identity claim rests on
+runs whose code provenance was stamped and checked at launch:
+
+```
+pass2_v2ref       code tools/pa-polya-run-9dfdefb3 @ 9dfdefb (frozen v2)   6:48.78 wall, 1,162,864 kB
+pass2_primehead   code tools/pa-prime @ 6edac79 (branch tip, 3 commits)    6:42.84 wall, 1,165,352 kB
+both              pas 18,865 | tier1 10,886 | tier2 7,979 | tier1>=2mol 3,643
+identity_check.py --> VERDICT: IDENTICAL (54 files; 50 SAME, 3 SAME_NORM, 1 SAME_LOG), exit 0
+```
+
+Transcript: `results/prime/identity_pass2_v2_vs_primehead.txt`, per-file report `...tsv`.
+
+**Determinism, checked rather than assumed.** The two v2-code slice runs made an hour apart in
+different sessions (`slice_v2_ref` and `pass2_v2ref`) are themselves byte-identical (54 files,
+exit 0), and their derived `pas.bed` carries the same md5 `227720c57cfab4baf3e021fa2313fc68`. That is
+what licenses `manuscript/24` §3.1's statement that prime-vs-v2 deltas are not noisy estimates and
+need no run-to-run tolerance.
+
+**Harness guards, exercised on their failure paths.** `run_slice.sh --threads 9` refuses (exit 2);
+`assert_code` on a tree without `ema/` fails with `WRONG TREE`; `make_slice.sh` re-verified the
+perf team's slice by `samtools idxstats` (19: 41,608,052 reads, 21: 9,290,404, nothing else) and
+re-confirmed its md5.
+
 *Caveat on the negative control:* it compares a **copied** tree, so the run root recorded inside the
 log no longer equals the directory being compared and the journal reports a path difference. On real
 runs (the only way the checker is used) the recorded root and the compared root are the same.
