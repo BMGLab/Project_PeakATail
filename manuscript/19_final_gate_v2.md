@@ -43,3 +43,18 @@ All four arms **concurrently**: PBMC 34:37 / 12.53 GB and 32:59 / 11.12 GB; mice
   `--ip-rule kinnex` (issue #95 addendum) remains the path to any future trusted-novel v2 definition.
 
 **Paper numbers now come from this run.** 15 remains the v1 record; every figure/text number moves to v2.
+
+## 5. Second production confirmation of #97 — the 17-sample Laughney cohort
+
+The Stage-3 cohort run (17 datasets, ~224 GB of BAM, identical YAML and flags, one unified PAS space)
+was executed on both codes on the same box:
+
+| | v1 (`4efeb125`) | v2 (`9dfdefb`, `--peak-workers 16`) |
+|---|---|---|
+| wall | 9 h 06 m 26 s | **1 h 06 m 26 s** (8.2×) |
+| peak RSS | 13.63 GB | 13.53 GB |
+| unified PAS | 505,197 | 505,197 |
+
+Same output scale at 1/8 the wall time. The smoke test isolates the other fix cleanly: on a chr21
+2-dataset slice the plus strand is byte-identical to v1 while minus-strand internal-priming removal
+falls 21.9% → 18.4% — i.e. exactly the #96 strand correction and nothing else.
