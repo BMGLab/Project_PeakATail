@@ -50,10 +50,13 @@ run_arm() {
     awk -F'\t' '$5>=2' "$out/pas.bed" > "$out/pas_tier1_ge2umi_POSTHOC.bed"
     # PRE-REGISTERED precision-first default (PI decision 2026-08-21, manuscript/13_reliability_positioning.md):
     # tier-1 only, >=2 distinct molecules; meaningful on the --ip-filter arm (IP-flagged sites already dropped there)
-    awk -F'\t' '$5>=2' "$out/pas.bed" > "$out/pas_PRESPEC_precision_default.bed"
+    # Only an --ip-filter arm can produce the pre-registered default; non-IP arms get a POSTHOC-labelled file instead.
+    if [[ " $* " == *" --ip-filter "* ]]; then awk -F'\t' '$5>=2' "$out/pas.bed" > "$out/pas_PRESPEC_precision_default.bed"
+    else awk -F'\t' '$5>=2' "$out/pas.bed" > "$out/pas_tier1_ge2mol_noIP_POSTHOC.bed"; fi
     [[ -s $run/annotated_matrix.mtx ]] && cp "$run/annotated_matrix.mtx" "$out/counts.mtx"
     echo "pas.bed $(wc -l < $out/pas.bed) | tier1 $(wc -l < $out/pas_tier1.bed) | tier2 $(wc -l < $out/pas_tier2.bed) | tier1>=2umi $(wc -l < $out/pas_tier1_ge2umi_POSTHOC.bed)"
-    for v in pas pas_tier1 pas_tier2 pas_tier1_ge2umi_POSTHOC pas_PRESPEC_precision_default; do
+    for v in pas pas_tier1 pas_tier2 pas_tier1_ge2umi_POSTHOC pas_PRESPEC_precision_default pas_tier1_ge2mol_noIP_POSTHOC; do
+      [[ -s $out/$v.bed ]] || continue
       local lab=${label}_${v#pas}; lab=${lab%_}
       if [[ $species == human ]]; then "$VENV_PY" "$SCORE" "$out/$v.bed" "$lab" --outdir "$out" "${HUMAN_DET[@]}"
       else "$VENV_PY" "$SCORE" "$out/$v.bed" "$lab" --outdir "$out" "${MOUSE_REFS[@]}"; fi

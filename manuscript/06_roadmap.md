@@ -40,7 +40,13 @@ evidence, the axis that separates the winners).**
   coordinates + tier membership byte-identical at defaults. `--polya-clip-filter f3844` implemented,
   DEFAULT OFF (call-set change; −12.6% mouse tier-1 rows, to be scored post hoc from the sidecar).
   Mouse1 post-hoc ≥2-molecule tier-1: P 0.692 / R 0.216 (post hoc; the pre-registered test is the final run).
-- Pending: final Stage-2 run (`stage2_final_launch.sh`,
+- **FINAL Stage-2 run — DONE, verified SOUND** ([15_final_gate.md](15_final_gate.md)): pre-registered precision
+  default P@100 0.717 (PBMC) / 0.741 / 0.755 (mice) → gate P≥0.50 PASS on all three; R_det 0.17–0.20
+  (≈ polyApipe or below), F1 tied with polyApipe. Original two-sided gate still FAILS on P for every
+  ≥1-molecule output (reported as sensitivity arm). Compute limitation: 280 GiB / 3:46 h on PBMC.
+  Stage-1d defects for Amir: IP-filter minus-strand window, memory, output bookkeeping
+  (github/issue10_stage1d_ipfilter_memory.md).
+- Pending: Kinnex trusted-novel validation on the PBMC default (running); Stage-3 Laughney chain (`stage2_final_launch.sh`,
   gate P ≥ 0.50 on the pre-registered default) → Stage-3 numbers (replication on 17 Laughney
   patients + 2 mice; trusted-novel on Kinnex).
 
