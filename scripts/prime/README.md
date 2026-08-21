@@ -99,3 +99,27 @@ restricted references come out at 25,675 atlas rep sites and 14,664 detected-gen
 matches `results/algo_headroom/A1_end_pileup/` exactly. **The slice flatters the caller** (A1 §1:
 +4% precision, +19% relative recall vs genome-wide) and no headline claim may rest on it. Every
 manuscript number comes from a full-BAM run on PBMC 10k v3 and both testis mice.
+
+## Cross-check of the scorer against an independent implementation
+
+`results/algo_headroom/A1_end_pileup/` scored the v2 default arm on this slice with its own bedtools
+pipeline, independently of `score_tool.py`. Running the same arm through this harness
+(`run_slice.sh --label slice_v2_ref_ipfilt ... -- --ip-filter --genome-fasta <hg38> --ip-filter-mode
+filter`, then `score_pas.sh ... --slice-contigs 19,21`) reproduces it:
+
+| | A1 (independent) | this harness | Δ |
+|---|---:|---:|---:|
+| P@10 | 0.5727 | **0.5727** | 0.0000 |
+| P@100 | 0.7385 | 0.7392 | +0.0007 |
+| R_det@100 | 0.2085 | 0.2080 | −0.0005 |
+| F1_det@100 | 0.3252 | 0.3246 | −0.0006 |
+| Kinnex t20 P@25 | 0.5990 | 0.6011 | +0.0021 |
+| Kinnex decoy@25 | 0.0929 | 0.0933 | +0.0004 |
+| n | 2,895 | 2,883 | −12 |
+
+The 12-call difference is expected and is **not** a harness error: A1 restricted a **genome-wide**
+v2 run to contigs 19+21, whereas `run_slice.sh` runs the caller on a **2-contig BAM**, so the
+caller's global per-cell filters (`min_read 1500`, `min_pas_per_cell`, gene detection) see 7 % of the
+library and retain a slightly different cell set. **A slice run is not a genome-wide run restricted
+to the slice** — compare slice runs with slice runs, and never quote a slice number as a
+genome-wide one. Full table: `results/prime/harness_validation.tsv`.
