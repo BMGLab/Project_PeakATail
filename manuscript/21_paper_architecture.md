@@ -1,3 +1,9 @@
+<!-- SUPERSEDED FRAMING NOTE (2026-08-22): this document was written before the matched-call-count
+analysis in 25_competitive_position.md and before the second-donor validation in 26. Where it states the
+head-to-head position as a single operating point, 25 supersedes it; where it treats one human donor as
+the deepest gap, 26 (pbmc4k, gate PASS at P@100 0.8279, cross-donor concordance 84.2% within 100 bp)
+partially closes it. The claim ladder and figure scheme below stand. -->
+
 # 21 — Paper architecture: the story, the figures, the claim ladder
 
 **Status: PROVISIONAL (architecture decisions, not new measurements) — 2026-08-21, written for the PI to steer the write-up from.**
@@ -39,7 +45,10 @@ Nothing else. Four things were re-derived directly from primary files while writ
 > the de novo callers benchmarked, on two datasets, corroborated by donor-independent long reads; and pairing
 > it with the only one of six differential-test configurations that controls the false-discovery rate and with a
 > patient-level replication filter yields cell-type APA switches that survive label-shuffle nulls — at a recall
-> at or below polyApipe's, and with one of the four pre-registered claims reported as a failure.**
+> at a deliberately conservative point on a precision/recall curve that, at matched call count, lies above every de novo
+> competitor's on both axes (see [25_competitive_position.md](25_competitive_position.md); the recall half of that claim
+> is robust at every matched N tested, the precision half is not established for 20,320 <= N <= 35,759), and with one of
+> the four pre-registered claims reported as a failure.**
 
 This is a paper about **calibrated reliability**, and it must say so in its own abstract. It is *not* a paper
 that claims best-in-class sensitivity (we are below polyApipe's recall on both datasets and far below
@@ -181,7 +190,7 @@ caveat in `05_figure_index.md` can be traced to its new home.
 
 **Fig 2 — `fig02_accuracy` (was `final_benchmark`) — The default output is a low-false-positive PAS set.**
 - **Proves:** L1. Precision default P@100 0.7062 / 0.7450 / 0.7572, gate PASS on all three; the highest de novo
-  precision in the panel on both datasets; recall at or below polyApipe's; the tier decomposition that explains
+  precision in the panel on both datasets; recall lower than polyApipe's AT OUR OWN CALL COUNT but higher at polyApipe's own N (25 §2); the tier decomposition that explains
   where the precision comes from (IP arm: tier 2 0.0558, tier 1 ≥1 mol 0.3520, default 0.7062).
 - **Supports:** C1, C2, C5, C6.
 - **Script:** `scripts/manuscript_figures/final_benchmark.py` → rename to `fig02_accuracy.py`.
