@@ -40,11 +40,40 @@ downstream.
 ## Evidence
 `manuscript/15_final_gate.md` §5–6; verifier outputs `results/benchmark_tools/final_verify/`.
 
-## 4. Addendum (2026-08-21, Kinnex validation) — the IP rule is too loose
-Applying the pre-registered "trusted novel PAS" funnel to the final PBMC default output and validating
-against Kinnex long reads: 24.5% of atlas-novel, hexamer-bearing, IP-filter-passing sites lie within
-25 bp of a Kinnex *internal-priming decoy* terminus (6.6% for atlas-known sites). The current rule
-(window −10..+30, ≥6 consecutive A or ≥70% A) misses a large internal-priming class that the Kinnex
-rule (+1..+18 downstream, ≥12 of 18 A) catches. Proposal: add `--ip-rule {legacy,kinnex}` (default
-unchanged for now; to be pre-registered and re-benchmarked before becoming default), implemented on
-the strand-corrected window from §1. Details: `manuscript/16_trusted_novel_kinnex.md`.
+## 4. Addendum (2026-08-21, Kinnex validation) — ~~the IP rule is too loose~~ **WITHDRAWN 2026-08-21 (same day): the premise is inverted and `--ip-rule kinnex` is measured dead**
+
+> **WITHDRAWN — DO NOT IMPLEMENT.** The record is kept below because the *observation* in it is real; the
+> *diagnosis* and the *proposal* are not. Measured in `results/perf_gap/D2_rule_sweep/` §2(5) and
+> `D2_arm_sweep.tsv` group 4, adversarially verified (`results/perf_gap/VERIFY/README.md` correction 1,
+> which reproduced the caller's own per-peak IP flag on **402,860 / 402,860** called peaks, zero
+> discrepancies):
+>
+> | | shipped rule (−9..+30, 40 nt; ≥6 consecutive A or ≥70 % A) | Kinnex rule (+1..+18; ≥12 A of 18 or ≥6 A-run) |
+> |---|---|---|
+> | peaks flagged genome-wide | **68,855 / 402,860 (17.09 %)** | **12,186 (3.02 %)** |
+> | on the no-IP ≥2-molecule arm (62,110 calls, P@100 0.5907) | removes 15,586 → **46,524 calls, P 0.7062** (this *is* the shipped default) | removes 900 → 61,210 calls, **P 0.5944** |
+> | Kinnex decoy proximity of survivors | 0.3122 → **0.1300** | 0.3122 → 0.3040 |
+> | as an addition on top of the shipped rule | — | 31 of 46,524 sites; P 0.7062 → 0.7065 — **no-op** |
+>
+> **The shipped rule is 5.65× stricter, not looser.** `--ip-rule kinnex` is therefore a no-op as an
+> addition and a large regression as a replacement (P 0.7062 → 0.5944; decoy proximity 0.130 → 0.304).
+> Two bookkeeping fixes travel with this: the window in the original text below is quoted as −10..+30,
+> which is a 41-nt off-by-one — the caller's window is **−9..+30 (40 nt)**; and the "~17×" ratio in
+> `results/perf_gap/VERIFY/README.md` is a slip in that document's prose (68,855 / 12,186 = **5.65**).
+> Corrected in place: `manuscript/16_trusted_novel_kinnex.md` ("IP-rule note"),
+> `manuscript/19_final_gate_v2.md` §4. Recorded as a do-not-reopen dead end in
+> `manuscript/22_performance_roadmap.md` §4.5/§6 and `manuscript/25_competitive_position.md` §7.
+>
+> **What survives:** §1 (the minus-strand window bug — fixed in #96), §2, §3, and the 24.5 % / 27.0 %
+> decoy-proximity *measurement*. What does not: the claim that the shipped rule is the more permissive
+> of the two, and the `--ip-rule {legacy,kinnex}` proposal.
+
+*Original text, preserved for the record:*
+
+> Applying the pre-registered "trusted novel PAS" funnel to the final PBMC default output and validating
+> against Kinnex long reads: 24.5% of atlas-novel, hexamer-bearing, IP-filter-passing sites lie within
+> 25 bp of a Kinnex *internal-priming decoy* terminus (6.6% for atlas-known sites). The current rule
+> (window −10..+30, ≥6 consecutive A or ≥70% A) misses a large internal-priming class that the Kinnex
+> rule (+1..+18 downstream, ≥12 of 18 A) catches. Proposal: add `--ip-rule {legacy,kinnex}` (default
+> unchanged for now; to be pre-registered and re-benchmarked before becoming default), implemented on
+> the strand-corrected window from §1. Details: `manuscript/16_trusted_novel_kinnex.md`.

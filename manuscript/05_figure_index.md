@@ -573,7 +573,12 @@ every tool, PeakATail drawn as a path of operating points (shipped → both tier
 precision default), F1 isolines, the pre-registered gate P ≥ 0.50 and the original gate (P ≥ 0.38, F1 > 0.261),
 3-seed genic-shuffle nulls; (c) call-set sizes (log); (d) PeakATail tier decomposition on the PBMC IP arm
 (tier-2 / tier-1 singletons / ≥2-molecule default with each slice's P@100). Headline: precision default P@100
-0.706 / 0.745 / 0.757 (gate PASS on all three), recall at or below polyApipe, F1 tied.
+0.706 / 0.745 / 0.757 (gate PASS on all three); single-point recall below polyApipe's and F1 near-tied, but
+**at matched call count PeakATail leads polyApipe on recall at every N and on precision at every N above
+20,320, on both datasets** (N = 120,916: 0.4036 / 0.2336 vs 0.3800 / 0.1988) and on both mice the
+≥1-molecule arm beats it on all three metrics — the single-point row compares 46,524 of our calls with
+120,916 of polyApipe's. Below N ≈ 15,000 polyApipe's precision is the higher of the two
+(corrected 2026-08-21; [25_competitive_position.md](25_competitive_position.md) §2, §8).
 **Caveats that travel with it:** atlas-agreement precision is not ground-truth precision (Kinnex check in 16);
 recall denominator is the detected-gene atlas (full-atlas recall 0.089 / 0.098–0.100 in caption); single PBMC
 donor; the non-IP ≥2-molecule file is not the default and is not shown; the IP-filter minus-strand bug (Stage 1d)

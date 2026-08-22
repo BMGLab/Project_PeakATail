@@ -67,11 +67,35 @@ Mouse testis m1 / m2 — P@100 / R_det / F1_det: scUTRquant* 0.782/0.784 · 0.25
 polyApipe 0.401/0.412 · 0.250/0.251 · 0.308/0.312; shipped 0.369/0.368 · 0.198/0.201 · 0.258/0.260;
 scAPAtrap 0.250/0.239 · 0.245/0.259 · 0.248/0.248; Sierra 0.509/0.581 · 0.107/0.117 · 0.177/0.195.
 
-**Honest one-liner (verifier's wording):** the precision default is the most atlas-concordant de novo
-call set in the panel on both datasets, at polyApipe-or-lower recall (PBMC −14%, mouse −19% vs
-polyApipe) and essentially tied F1 (+0.015 / +0.010). The F1 lead is not a meaningful margin; the
-claim is precision, not overall accuracy. The IP filter alone buys +4.9 pp precision for −1.4 pp
-recall (mouse 1, ≥2-mol, no-IP 0.692 → IP 0.741).
+**Honest one-liner — CORRECTED 2026-08-21, see [25](25_competitive_position.md).** The v1 wording
+— *"the most atlas-concordant de novo call set in the panel on both datasets, at polyApipe-or-lower
+recall (PBMC −14%, mouse −19%) and essentially tied F1 (+0.015 / +0.010); the F1 lead is not a
+meaningful margin"* — is **withdrawn as a statement about the tool**. It is true of the ≥2-molecule
+operating point and false of the tool, because it sets 44,394 (v1) / 46,524 (v2) of our calls against
+120,916 of polyApipe's. Verified replacement (matched call count, one scorer, same denominators;
+`results/perf_gap/D3_head_to_head/`, verifier verdict FIXED):
+
+> The precision default is the most atlas-concordant de novo call set in the panel on both datasets.
+> Its recall at that point is below polyApipe's, but the comparison is at unequal call budgets: at
+> **matched call count** PeakATail leads polyApipe on **recall at every N tested** and on **precision at
+> every N from 20,320 upward**, on both datasets (at polyApipe's own N = 120,916: **0.4036 / 0.2336** vs
+> **0.3800 / 0.1988**), and on **both** mice
+> the already-published ≥1-molecule arm beats polyApipe on precision, recall **and** F1 simultaneously
+> (0.5686 / 0.2806 / 0.3758 and 0.5880 / 0.2826 / 0.3818 vs 0.4005 / 0.2499 / 0.3078 and
+> 0.4119 / 0.2508 / 0.3118). The default is a deliberately conservative point on a curve that dominates
+> polyApipe's operating point, and it is **not** the F1 optimum — that is a reliability choice, stated
+> as such.
+
+The matched-N grid was computed on the **v2** call sets (46,524; competitor sets are unchanged between
+v1 and v2), so quote it from [19](19_final_gate_v2.md) / [25](25_competitive_position.md), not from this
+v1 record. Qualifiers that must travel with it: the claim is among **de novo** tools only (catalog-based
+scUTRquant is above PeakATail on both axes at several matched N); the recall half holds at every matched
+N, but the precision half is not established for 20,320 ≤ N ≤ 35,759 because of competitor-side ties and
+is **false** below N ≈ 15,000, where polyApipe's precision is higher (0.9671 vs 0.9527 at N = 9,456) —
+write "at every N from 20,320 upward" ([25](25_competitive_position.md) §2.3).
+
+The IP filter alone buys +4.9 pp precision for −1.4 pp recall (mouse 1, ≥2-mol, no-IP 0.692 → IP 0.741)
+in this v1 run (v2 measurement: +5.3 pp / −1.2 pp, [19](19_final_gate_v2.md) §1).
 
 ## 4. Molecule unit (from `pas_support.tsv`)
 
