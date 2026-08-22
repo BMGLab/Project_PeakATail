@@ -6,26 +6,26 @@ Stage-3 patient-level replication.
 
 VERSION SWITCH -- env var LAUGHNEY_SWITCHES_VERSION picks which Stage-3 chain
 is plotted.  Same registry pattern as scripts/manuscript_figures/final_benchmark.py.
-  v1_code  (default; THE CURRENT RECORD)  PeakATail code 4efeb125 (pre-Stage-1d),
-      tree /mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v2/.
-      Source of truth: manuscript/20_stage3_replication.md (verifier verdict FIXED).
-  v2_code  (LAUGHNEY_SWITCHES_VERSION=v2_code)  PeakATail code 9dfdefb
-      (#93 + #96 IP-filter minus-strand fix + #97), tree
+  v2_code  (DEFAULT; THE CURRENT RECORD)  PeakATail code 9dfdefb (#93 + #96
+      IP-filter minus-strand fix + #97), tree
       /mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/.
-      *** PENDING: that chain is still running as this script is written.  The
-      paths are wired but nothing under stage3_laughney_v3 has been read.  When
-      the chain lands and a verified write-up exists, re-run with the env var
-      set -- no code edit -- and then fill in EXPECT/doc strings for v2_code. ***
+      Source of truth: manuscript/20_stage3_replication.md (verifier verdict
+      SOUND, 2026-08-22).
+  v1_code  (LAUGHNEY_SWITCHES_VERSION=v1_code)  PeakATail code 4efeb125
+      (pre-Stage-1d), tree /mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v2/.
+      SUPERSEDED by v2_code, kept reproducible because 20 carries it as the
+      labelled v1-code comparison row (74,954-PAS universe, 14,480 replicated).
 
 SOURCE OF TRUTH -- every plotted value is READ or RECOMPUTED from the primary
 replication tree (.../replication/primary_noMetBone/), the per-GSM switch
 summaries (.../switch/<GSM>/summary.json), the verifier's null recount
-(.../replication/verify/), and, for the genomic-context panel, the same Ensembl
-GTF the cohort run used.  Nothing numeric is typed by hand except facts that
-exist only in the verified write-up (code commit, the pre-registration, the
-cohort label counts, the 33%-of-top-30 gene-name audit) -- those are cited to 20
-on the figure.  Consistency asserts below check the headline counts against the
-verified table in 20.
+(v1: .../replication/verify/; v2: .../verify_v2chain/null_hits.tsv plus the
+chain's own per-permutation null blocks), and, for the genomic-context panel,
+the same Ensembl GTF the cohort run used.  Nothing numeric is typed by hand
+except facts that exist only in the verified write-up (code commit, the
+pre-registration, the cohort label counts, the top-30 gene-name audit) -- those
+are cited to 20 on the figure.  Consistency asserts below check the headline
+counts against the verified table in 20.
 
 PANELS
   a  Replication funnel, real vs 10 patient-wise label-shuffle nulls on ONE log
@@ -36,17 +36,17 @@ PANELS
   b  Per cell-type pair (top 16 of the 47 pairs tested in >=2 patients):
      replicated (pair, PAS) at K=2 with the K=3 subset overlaid; patients tested
      annotated on each row.
-  c  Distribution of the consensus |delta proportion| of the 14,480 replicated
-     switches, with the pre-registered 0.1 effect floor marked.
+  c  Distribution of the consensus |delta proportion| of the replicated
+     switches (v2: 15,942), with the pre-registered 0.1 effect floor marked.
   d  Patient support: how many patients back each replicated switch.  The K=3
-     sensitivity set is exactly the replication_count >= 3 tail (4,937).
-  e  Honesty panel: genomic context of the 5,395 distinct replicated PAS
-     (recomputed here from the GTF, exclusive partition) + the gene-name caveat.
+     sensitivity set is exactly the replication_count >= 3 tail (v2: 5,438).
+  e  Honesty panel: genomic context of the distinct replicated PAS (v2: 5,951;
+     recomputed here from the GTF, exclusive partition) + the gene-name caveat.
 
-CRITICAL (20 disclosure 1) -- NO ranked list of named top genes is drawn.  33%
-of the top-30 gene-level rows name a spanning/readthrough model rather than the
-gene whose 3' UTR holds the PAS (tool issue #99); the named list must not be
-published until re-assignment.  The re-assignment-safe subset (PAS verified
+CRITICAL (20 disclosure 1) -- NO ranked list of named top genes is drawn.  On
+the v2 chain 12 of the top-30 gene-level rows (40%) name a gene whose 3' UTR
+does not contain the representative PAS, 8 of them a DIFFERENT gene's 3' UTR
+(tool issue #99); the named list must not be published until re-assignment.  The re-assignment-safe subset (PAS verified
 here to lie in their OWN assigned gene's annotated 3' UTR) is written to an
 audit TSV only, and is not plotted.
 
@@ -63,7 +63,7 @@ OUTPUTS
   results/figures/manuscript/laughney_switches_own3utr_genes.tsv   (AUDIT ONLY, not plotted)
 
 Run:  export LC_ALL=C; python3 scripts/manuscript_figures/laughney_switches.py
-      export LC_ALL=C; LAUGHNEY_SWITCHES_VERSION=v2_code python3 .../laughney_switches.py
+      export LC_ALL=C; LAUGHNEY_SWITCHES_VERSION=v1_code python3 .../laughney_switches.py
 """
 import collections
 import json
@@ -112,16 +112,18 @@ N_NULL_COMBOS = 10
 # Which Stage-3 chain: v1_code (default, the current record) or v2_code (wired,
 # pending).  Only the tree root and the hand-cited write-up facts differ.
 # ---------------------------------------------------------------------------
-VERSION = os.environ.get("LAUGHNEY_SWITCHES_VERSION", "v1_code").lower()
+VERSION = os.environ.get("LAUGHNEY_SWITCHES_VERSION", "v2_code").lower()
 VERSIONS = {
     "v1_code": dict(
         tree=Path("/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v2"),
         commit="4efeb125", commit_note="pre-Stage-1d",
         doc="20", doc_path="manuscript/20_stage3_replication.md",
         verdict="verifier verdict FIXED",
-        record_note=("v1-code record; the Stage-3 v2 chain on code 9dfdefb "
-                     "(stage3_laughney_v3) is running and will supersede these numbers "
-                     "(re-run with LAUGHNEY_SWITCHES_VERSION=v2_code)"),
+        record_note=("v1-code record, SUPERSEDED by the Stage-3 v2 chain on code 9dfdefb "
+                     "(stage3_laughney_v3, the default here); kept reproducible because 20 "
+                     "carries it as the labelled v1-code comparison row"),
+        verify_subdir="replication/verify",     # verifier's null recount, v1 layout
+        null_recount="v1_files",
         # headline counts from the verified table in 20 -- asserted below
         expect=dict(n_patients=12, n_gsm=15, n_pairs=59, n_features=1977134,
                     n_replicated=14480, n_replicated_floor=13826,
@@ -133,18 +135,48 @@ VERSIONS = {
         # facts that exist only in the write-up (20) -- cited, never recomputed here
         cohort=dict(curated_cells=29063, confirmed_cells=18651, confirmed_frac=0.642,
                     n_gsm_cohort=17, n_patients_cohort=14, pas_space=505197,
-                    top30_bad_gene_frac=0.33),
+                    top30_bad_gene_frac=0.33,
+                    top30_bad_gene_def=("rows landing in a DIFFERENT gene's 3' UTR; the v1 note said "
+                                        "10 of 30, but re-running verify_v2chain/topgene_check.py "
+                                        "against the v1 tree gives 9 of 30 (30%) on that reading and "
+                                        "12 of 30 (40%) on the strict 'not in the named gene's "
+                                        "3' UTR' reading -- identical to v2")),
+        # genomic-context regression targets (fractions of the distinct replicated PAS).
+        # any3utr/genebody are quoted in 20; the rest are this script's own first-run values.
+        context_expect=dict(any3utr=0.625, genebody=0.968, own3utr=0.586,
+                            exonic=0.764, intronic=0.20, outside=0.032),
     ),
     "v2_code": dict(
-        # PENDING -- paths wired, nothing under this tree has been read.
         tree=Path("/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3"),
-        commit="9dfdefb", commit_note="#93 + #96 + #97",
-        doc="(pending)", doc_path="(pending -- no verified Stage-3 v2 write-up yet)",
-        verdict="NOT YET VERIFIED",
-        record_note=("v2-code chain (9dfdefb); PROVISIONAL until a verified Stage-3 v2 "
-                     "write-up exists -- do not quote"),
-        expect=None,          # no verified table to check against yet
-        cohort=None,          # fill in from the v2 write-up when it lands
+        commit="9dfdefb", commit_note="#96 minus-strand IP fix",
+        doc="20", doc_path="manuscript/20_stage3_replication.md",
+        verdict="verifier verdict SOUND",
+        record_note=("v2-code record, verified 2026-08-22; supersedes v1-code 4efeb125, "
+                     "kept in 20 as the labelled comparison row"),
+        verify_subdir="verify_v2chain",         # verifier's exhaustive null scan, v2 layout
+        null_recount="v2_files",
+        # headline counts from the verified table in 20 -- asserted below
+        expect=dict(n_patients=12, n_gsm=15, n_pairs=59, n_features=2128711,
+                    n_replicated=15942, n_replicated_floor=15212,
+                    n_replicated_K3=5438, n_replicated_K3_floor=5242,
+                    n_gene_K2=10415, n_gene_K2_floor=10104,
+                    n_distinct_pas=5951, n_distinct_genes=2883, n_pairs_with_hits=47,
+                    universe=80464, sens_replicated=16010, sens_floor=15282,
+                    sens_patients=13),
+        # facts that exist only in the write-up (20) -- cited, never recomputed here
+        cohort=dict(curated_cells=29063, confirmed_cells=18651, confirmed_frac=0.642,
+                    n_gsm_cohort=17, n_patients_cohort=14, pas_space=505197,
+                    top30_bad_gene_frac=0.40,
+                    top30_bad_gene_def=("rows whose representative PAS is not in the named "
+                                        "gene's 3' UTR (12 of 30, 40%); 8 of 30 (27%) on the "
+                                        "narrower 'different gene's 3' UTR' reading. Both "
+                                        "recounted 2026-08-22 from verify_v2chain/topgene_check.py; "
+                                        "the same script on the v1 tree gives 12/30 and 9/30, so the "
+                                        "defect is unchanged between the two chains")),
+        # genomic-context regression targets; any3utr/own3utr/genebody are quoted in 20,
+        # the exonic/intronic/outside splits are recomputed here and appear in no write-up.
+        context_expect=dict(any3utr=0.615, genebody=0.968, own3utr=0.578,
+                            exonic=0.752, intronic=0.216, outside=0.032),
     ),
 }
 assert VERSION in VERSIONS, f"LAUGHNEY_SWITCHES_VERSION must be one of {sorted(VERSIONS)}, got {VERSION!r}"
@@ -153,7 +185,7 @@ TREE = V["tree"]
 REPL = TREE / "replication" / "primary_noMetBone"      # pre-registered primary (MetBone excluded)
 SENS = TREE / "replication"                            # sensitivity tree, one level up
 SWITCH = TREE / "switch"                               # per-GSM switch summaries
-VERIFY = TREE / "replication" / "verify"               # verifier's independent recount
+VERIFY = TREE / V["verify_subdir"]                     # verifier's independent recount
 GTF = Path("/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf")
 
 # Refuse to read a half-finished chain: replication_filter.py drops DONE.ok into a
@@ -170,8 +202,8 @@ if _missing:
         "  Refusing to plot a still-running chain.  Wait for the chain to finish.")
 EXPECT = V["expect"]
 
-def cite(v1_text, v2_text="(pending)"):
-    """Facts that live only in a write-up: available for v1_code, pending for v2_code."""
+def cite(v1_text, v2_text):
+    """Prose that quotes a write-up figure and therefore differs between the two chains."""
     return v1_text if VERSION == "v1_code" else v2_text
 
 
@@ -280,11 +312,36 @@ NULL_TESTED_MEAN = float(null_ctrl.n_features.mean())
 # run (one row per GSM x permutation x pair x PAS) -- restricted to the 15 GSMs
 # of the pre-registered primary.
 DISCLOSED_GSM = "GSM3516672-StageIB"        # 20: trips the per-GSM null rule via BH discreteness
-qhits = pd.read_csv(VERIFY / "null_qhits_raw.tsv", sep="\t", header=None,
-                    names=["gsm", "perm", "pair", "pas_id", "q", "effect"])
+if V["null_recount"] == "v1_files":
+    NULL_QHITS_SRC = str(VERIFY / "null_qhits_raw.tsv")
+    NULL_COUNTS_SRC = str(VERIFY / "null_counts_per_gsm_perm.tsv")
+    qhits = pd.read_csv(VERIFY / "null_qhits_raw.tsv", sep="\t", header=None,
+                        names=["gsm", "perm", "pair", "pas_id", "q", "effect"])
+    ncounts = pd.read_csv(VERIFY / "null_counts_per_gsm_perm.tsv", sep="\t", header=None,
+                          names=["gsm", "perm", "n_tests", "n_qhits"])
+else:
+    # v2: the verifier scanned all 16 GSMs x 10 perms x 210 pair-tests (2,100 null
+    # differential files) and wrote every q<FDR row to null_hits.tsv; the per-GSM,
+    # per-permutation test totals come from the chain's own switch summaries, which
+    # the verifier re-counted against those same raw files (59,090,630 rows).
+    NULL_QHITS_SRC = str(VERIFY / "null_hits.tsv")
+    NULL_COUNTS_SRC = f"{SWITCH}/<GSM>/summary.json (null.perm_NN.n_tests / n_q_lt_fdr)"
+    _raw = pd.read_csv(VERIFY / "null_hits.tsv", sep="\t", header=None,
+                       names=["gsm", "perm", "file", "c1", "c2", "pas_id", "q", "effect"])
+    _raw["perm"] = "perm_" + _raw.perm.astype(str).str.zfill(2)
+    _raw["pair"] = _raw.c1 + "_vs_" + _raw.c2
+    qhits = _raw[["gsm", "perm", "pair", "pas_id", "q", "effect"]].copy()
+    _rows = []
+    for g in GSMS:
+        with open(SWITCH / g / "summary.json") as fh:
+            _d = json.load(fh)
+        for _perm in sorted(_d["null"]):
+            _rows.append((g, _perm, int(_d["null"][_perm]["n_tests"]),
+                          int(_d["null"][_perm]["n_q_lt_fdr"])))
+        assert sum(_d["null"][k]["n_tests"] for k in _d["null"]) == \
+            _d["null_summary"]["n_null_tests_total"], g
+    ncounts = pd.DataFrame(_rows, columns=["gsm", "perm", "n_tests", "n_qhits"])
 qhits = qhits[qhits.gsm.isin(GSMS)]
-ncounts = pd.read_csv(VERIFY / "null_counts_per_gsm_perm.tsv", sep="\t", header=None,
-                      names=["gsm", "perm", "n_tests", "n_qhits"])
 ncounts = ncounts[ncounts.gsm.isin(GSMS)]
 NULL_TESTS_TOTAL = int(ncounts.n_tests.sum())
 NULL_QHITS_TOTAL = int(ncounts.n_qhits.sum())
@@ -495,20 +552,27 @@ FRAC_MULTI_GENE = N_MULTI_GENE / N_DISTINCT_PAS
 N_3UTR_MISASSIGNED = N_OTH3
 FRAC_3UTR_MISASSIGNED = N_3UTR_MISASSIGNED / N_ANY3
 
-# Regression check (v1_code only; the recomputed values are the ones drawn).
-# NOTE ON PROVENANCE: 20 disclosure 1 quotes only two of these -- 62.5% ("own-gene
-# 3' UTRs") and 96.8% (same-strand gene bodies).  The exonic / intronic / outside
-# splits appear in NO write-up: they are recomputed here from the GTF, and the
-# figure and caption say so.  The three unsourced targets below are this script's
-# own first-run values, kept only so a silent drift would fail loudly.
-if VERSION == "v1_code":
+# CONTEXT REGRESSION (the recomputed values are the ones drawn; these only catch drift).
+# PROVENANCE: 20 disclosure 1 quotes three of these -- any same-strand 3' UTR, the
+# ASSIGNED gene's own 3' UTR, and same-strand gene bodies.  (The v1 write-up quoted a
+# single "62.5% in own-gene 3' UTRs"; the verifier showed that number is the ANY-3'UTR
+# figure and that own-gene is 58.6% on v1 / 57.8% on v2, so 20 now quotes both, labelled.)
+# The exonic / intronic / outside splits appear in NO write-up: they are recomputed here
+# from the GTF, and the figure and caption say so.
+CTX_EXPECT = V["context_expect"]
+if CTX_EXPECT:
     for got, doc, what, src in (
-            (FRAC_ANY_3UTR, 0.625, "3' UTR", "20 disclosure 1"),
-            (FRAC_GENEBODY, 0.968, "gene body", "20 disclosure 1"),
-            (FRAC_EXONIC, 0.764, "exonic", "recomputed here, not in any write-up"),
-            (FRAC_INTRONIC, 0.20, "intronic", "recomputed here, not in any write-up"),
-            (FRAC_OUTSIDE, 0.032, "outside", "recomputed here, not in any write-up")):
+            (FRAC_ANY_3UTR, CTX_EXPECT["any3utr"], "any same-strand 3' UTR", "20 disclosure 1"),
+            (FRAC_OWN_3UTR, CTX_EXPECT["own3utr"], "own assigned gene 3' UTR", "20 disclosure 1"),
+            (FRAC_GENEBODY, CTX_EXPECT["genebody"], "gene body", "20 disclosure 1"),
+            (FRAC_EXONIC, CTX_EXPECT["exonic"], "exonic", "recomputed here, not in any write-up"),
+            (FRAC_INTRONIC, CTX_EXPECT["intronic"], "intronic", "recomputed here, not in any write-up"),
+            (FRAC_OUTSIDE, CTX_EXPECT["outside"], "outside", "recomputed here, not in any write-up")):
         assert abs(got - doc) < 0.01, f"{what}: recomputed {got:.3f} vs {doc:.3f} ({src})"
+else:
+    print(f"WARNING {VERSION}: no context regression targets -- recomputed "
+          f"any3utr={FRAC_ANY_3UTR:.4f} own3utr={FRAC_OWN_3UTR:.4f} genebody={FRAC_GENEBODY:.4f} "
+          f"exonic={FRAC_EXONIC:.4f} intronic={FRAC_INTRONIC:.4f} outside={FRAC_OUTSIDE:.4f}")
 
 # AUDIT ONLY -- the re-assignment-safe subset (verified own-gene 3' UTR).
 # NOT plotted and NOT a ranked list: 20 disclosure 1 forbids publishing named
@@ -688,14 +752,17 @@ honesty = (
     f"{FRAC_INTRONIC*100:.1f}% are intronic and {FRAC_OUTSIDE*100:.1f}% fall outside any same-strand gene "
     + cite("(of these, only 62.5% and 96.8% appear in 20 disclosure 1, both reproduced here to "
            "within 0.1 pp; the rest are recomputed for this figure). ",
-           "(no verified v2 write-up to compare against yet). ")
+           "(20 disclosure 1 quotes 61.5%, 57.8% and 96.8%, all reproduced here; the rest are "
+           "recomputed for this figure). ")
     + f"BUT only {FRAC_OWN_3UTR*100:.1f}% lie in the 3' UTR of the gene the caller ASSIGNED them to: "
     f"{N_3UTR_MISASSIGNED:,} of the {N_ANY3:,} 3'-UTR PAS ({FRAC_3UTR_MISASSIGNED*100:.1f}%) lie in a "
     f"DIFFERENT gene's 3' UTR, and {N_MULTI_GENE:,} ({FRAC_MULTI_GENE*100:.1f}%) lie inside ≥2 overlapping "
     "same-strand gene models. NO ranked list of named top-switch genes is shown here: "
-    + cite("33% of the top-30 gene-level rows in 20 name a spanning/readthrough model rather than the gene "
-           "whose 3' UTR holds the PAS, and seven of them have zero assigned PAS cohort-wide (tool issue "
-           "#99). ", "the gene-name audit must be repeated on the v2 chain. ")
+    + cite("12 of the top-30 gene-level rows in 20 (40%, recounted 2026-08-22) name a gene whose 3' UTR does "
+           "not hold the PAS, 9 of them a different gene's 3' UTR, and seven have zero assigned PAS "
+           "cohort-wide (tool issue #99). ",
+           "12 of the top-30 gene-level rows in 20 (40%) name a gene whose 3' UTR does not hold the PAS, 8 of "
+           "them a different gene's 3' UTR, and seven have zero assigned PAS cohort-wide (tool issue #99). ")
     + "Replication statistics are unaffected — they are computed on PAS identifiers, never on gene names."
 )
 _honesty_wrapped = textwrap.fill(honesty, 160)
@@ -720,9 +787,9 @@ footer = (
     f"Design: one cohort run so all {N_GSM} libraries share a single PAS identifier space; "
     f"pre-registered precision-first universe (IP-filtered ∧ tier-1 ∧ cohort clip-molecule sum ≥2) "
     f"= {UNIVERSE:,} PAS; "
-    + cite(f"{V['cohort']['curated_cells']:,} curated cells → {V['cohort']['confirmed_cells']:,} "
-           f"confirmed ({V['cohort']['confirmed_frac']*100:.1f}%) by the pre-registered label policy (20), "
-           if V["cohort"] else "", "")
+    + (f"{V['cohort']['curated_cells']:,} curated cells → {V['cohort']['confirmed_cells']:,} "
+       f"confirmed ({V['cohort']['confirmed_frac']*100:.1f}%) by the pre-registered label policy (20), "
+       if V["cohort"] else "")
     + f"of which {CELLS_TESTED:,} entered the tests in the {N_PATIENTS} primary patients; "
     f"{N_PAIRS} cell-type pairs; test = Fisher on cells with no marker pre-selection (14); unit of "
     f"replication = patient, so the {N_MULTILIB_PATIENTS} patients with "
@@ -739,10 +806,10 @@ footer = (
     f"premise was WRONG — the 0.015% clip rate came from the caller sampling only the first 200,000 CB "
     f"reads of a coordinate-sorted BAM (head of chr1); MetBone in fact has 306k clip molecules "
     f"(tool issue #99). Never repeat the 'no clip evidence' justification. "
-    + cite(f"The {EXPECT['sens_patients']}-patient sensitivity run that includes it gives "
-           f"{EXPECT['sens_replicated']:,} / {EXPECT['sens_floor']:,}, a "
-           f"{abs(EXPECT['sens_replicated']-N_REPL)/EXPECT['sens_replicated']*100:.1f}% difference confined "
-           f"to one pair. " if EXPECT else "", "")
+    + (f"The {EXPECT['sens_patients']}-patient sensitivity run that includes it gives "
+       f"{EXPECT['sens_replicated']:,} / {EXPECT['sens_floor']:,}, a "
+       f"{abs(EXPECT['sens_replicated']-N_REPL)/EXPECT['sens_replicated']*100:.1f}% difference confined "
+       f"to one pair. " if EXPECT else "")
     + f"GENE NAMES: no named top-gene list may be published until PAS→gene re-assignment (panel e; "
     f"20 disclosure 1, tool issue #99) — the replication statistics themselves are computed on PAS ids. "
     f"CAVEATS: one cohort, one chemistry, one caller — no orthogonal 3'-end assay confirms these sites; "
@@ -781,12 +848,12 @@ for stage, (lab, real, null, note) in enumerate(FUNNEL_STAGES, start=1):
     funnel_rows.append(dict(panel="a", stage=stage, stage_label=lab.replace("\n", " "),
                             series=f"null_mean_of_{N_NULL_COMBOS}", n=null, note=note,
                             source=(f"{SRC_REPL}/pas_K2/null_control.tsv"
-                                    if stage in (1, 4, 5) else f"{VERIFY}/null_qhits_raw.tsv")))
+                                    if stage in (1, 4, 5) else NULL_QHITS_SRC)))
 fun_df = pd.DataFrame(funnel_rows)
 fun_df.loc[len(fun_df)] = dict(panel="a", stage=2, stage_label="null per-combination detail",
                                series="null_called_ge1_per_combo",
                                n=float("nan"), note=";".join(map(str, NULL_CALLED_GE1)),
-                               source=f"{VERIFY}/null_qhits_raw.tsv")
+                               source=NULL_QHITS_SRC)
 fun_df.loc[len(fun_df)] = dict(
     panel="a", stage=4, stage_label="dropped: called in >=2 patients but no single direction reached K",
     series="real", n=N_SPLIT_DIRECTION,
@@ -866,7 +933,8 @@ cohort_rows = [
     ("cells_confirmed_label_matched", CELLS_CONFIRMED_MATCHED, "sum of n_cells_matched"),
     ("real_tests_total", REAL_TESTS_TOTAL, "sum of true.n_tests over the 15 libraries"),
     ("real_calls_total_q<0.05", REAL_CALLS_TOTAL, "sum of per_sample_called"),
-    ("null_tests_total", NULL_TESTS_TOTAL, f"15 libraries x {N_NULL_COMBOS} permutations"),
+    ("null_tests_total", NULL_TESTS_TOTAL,
+     f"{N_GSM} primary libraries x {N_NULL_COMBOS} permutations; source {NULL_COUNTS_SRC}"),
     ("null_nominal_q_hits_total", NULL_QHITS_TOTAL, "none co-occurring in two patients"),
     ("n_tested_pair_pas", N_FEATURES, ""),
     ("n_replicated_K2", N_REPL, ""), ("n_replicated_K2_floor", N_REPL_FLOOR, ""),
@@ -886,7 +954,7 @@ cohort_rows = [
     ("n_removed_by_effect_floor", N_REMOVED_BY_FLOOR,
      "floor applied per patient then patients re-counted; footer"),
     ("null_tested_mean_per_combo", round(NULL_TESTED_MEAN, 1), "panel a grey bar; null_control.tsv"),
-    ("null_called_ge1_mean_per_combo", NULL_CALLED_GE1_MEAN, "panel a grey bar; null_qhits_raw.tsv"),
+    ("null_called_ge1_mean_per_combo", NULL_CALLED_GE1_MEAN, f"panel a grey bar; {NULL_QHITS_SRC}"),
     (f"null_tests_{DISCLOSED_GSM}", DISCLOSED_NULL_TESTS, "footer BH-discreteness disclosure"),
     (f"null_qhits_{DISCLOSED_GSM}", DISCLOSED_NULL_QHITS, "footer BH-discreteness disclosure"),
 ] + ([
@@ -895,7 +963,8 @@ cohort_rows = [
     ("confirmed_cells", V["cohort"]["confirmed_cells"], "CITED 20 (verified vs labels/manifest.json)"),
     ("confirmed_fraction", V["cohort"]["confirmed_frac"], "CITED 20"),
     ("top30_gene_rows_misnamed_frac", V["cohort"]["top30_bad_gene_frac"],
-     "CITED 20 disclosure 1; NOT recomputed here (would require the forbidden ranked list)"),
+     "CITED 20 disclosure 1, definition = " + V["cohort"]["top30_bad_gene_def"] +
+     "; NOT recomputed here (would require the forbidden ranked list)"),
     ("sens_replicated_13_patients", EXPECT["sens_replicated"], "CITED 20 / PRIMARY_vs_SENSITIVITY.txt"),
     ("sens_replicated_floor_13_patients", EXPECT["sens_floor"], "CITED 20 / PRIMARY_vs_SENSITIVITY.txt"),
     ("metbone_clip_rate_quoted", "0.015%",
@@ -914,6 +983,50 @@ print("wrote", p, f"({len(safe):,} re-assignment-safe PAS; AUDIT ONLY, not plott
 # sidecar caption (+ the index paragraph for 05_figure_index.md, which is
 # owned by another process and is NOT edited here)
 # ---------------------------------------------------------------------------
+CAP_ROLLUP_NOTE = cite(
+    "**Only two of these five roll-ups exist in 20**: disclosure 1 quotes 62.5% and 96.8%, and both are reproduced "
+    "here to within 0.1 pp; the exonic, intronic and outside-any-gene figures appear in no write-up and are "
+    "recomputed for this figure from the GTF. The 62.5% additionally needs **a wording correction that matters**: "
+    "20 describes it as PAS \"in own-gene 3\u2032 UTRs\", whereas the recomputation shows that "
+    f"{FRAC_ANY_3UTR*100:.1f}% lie in *some* gene's 3\u2032 UTR and only {FRAC_OWN_3UTR*100:.1f}% in the 3\u2032 UTR of "
+    f"the gene the caller actually assigned them to. Use the own-gene figure ({FRAC_OWN_3UTR*100:.1f}%) whenever the "
+    "claim is about gene-level interpretation.",
+    "**Three of these five roll-ups exist in 20**: disclosure 1 quotes 61.5% (any same-strand 3\u2032 UTR), 57.8% "
+    "(the assigned gene's own 3\u2032 UTR) and 96.8% (same-strand gene body), and all three are reproduced here to "
+    "within 0.1 pp; the exonic, intronic and outside-any-gene figures appear in no write-up and are recomputed for "
+    "this figure from the GTF. The two 3\u2032-UTR figures must not be conflated \u2014 the v1 write-up quoted a single "
+    "\"62.5% in own-gene 3\u2032 UTRs\", which the verifier showed was the ANY-gene figure (own-gene was 58.6% on v1). "
+    f"Here {FRAC_ANY_3UTR*100:.1f}% lie in *some* gene's 3\u2032 UTR and only {FRAC_OWN_3UTR*100:.1f}% in the 3\u2032 UTR "
+    f"of the gene the caller assigned them to. Use the own-gene figure ({FRAC_OWN_3UTR*100:.1f}%) whenever the claim "
+    "is about gene-level interpretation.")
+
+CAP_GENENAME_NOTE = cite(
+    "12 of the top-30 gene-level rows in 20 (40%) name a gene whose 3\u2032 UTR does not hold the\nrepresentative PAS, and 9 of 30 (30%) sit in a *different* gene's 3\u2032 UTR "
+    "(CD68 labelled SENP3-EIF4A1, PTPRCAP under CORO1B, FKBP11 under AC073610.2; seven of "
+    "the named genes have zero\nassigned PAS cohort-wide). Both counts recounted 2026-08-22 from "
+    "verify_v2chain/topgene_check.py run against the v1 tree; they supersede the \"33%\" of the v1 note",
+    "The v1 problem persists\nunchanged on the v2 chain: 12 of the top-30 gene-level rows (40%) name a gene whose "
+    "3\u2032 UTR does not contain the\nrepresentative PAS and 8 of 30 (27%) sit in a *different* gene's 3\u2032 UTR "
+    "(SENP3-EIF4A1 for CD68 twice, AC073610.2 for\nFKBP11, DGKZ for MDK, RHOA for GPX1 twice, AC004922.1 for ARPC1A, "
+    "CD163L1 for CD163), and CD68, PTPRCAP, FKBP11,\nGPX1, MDK, STARD10 and ARPC1A still have zero assigned PAS "
+    "cohort-wide")
+
+CAP_AMBIENT_IG = cite(
+    "An ambient-immunoglobulin signature (IGLL5 in non-plasma pairs) is present.",
+    "The ambient-immunoglobulin signature (IGLL5 in non-plasma pairs) was an observation on the v1 chain "
+    "and was NOT re-checked on v2 (20 disclosure 1); it is not claimed here.")
+
+CAP_INDEX_GENENAME = cite(
+    "12 of the top-30 gene rows (40%) name a gene whose 3\u2032 UTR does not hold the PAS (recounted 2026-08-22)",
+    "12 of the top-30 gene rows (40%) name a gene whose 3\u2032 UTR does not hold the PAS")
+
+CAP_INDEX_CAVEAT = cite(
+    "(ii) these are v1-code numbers and the Stage-3 v2 chain on `9dfdefb` superseded them\n"
+    "(`LAUGHNEY_SWITCHES_VERSION=v2_code`, now the default);",
+    "(ii) these are the v2-code numbers (`9dfdefb`, #96 minus-strand internal-priming fix); the\n"
+    "v1-code chain `4efeb125` recorded 14,480 replicated over a 74,954-PAS universe and stays reproducible with\n"
+    "`LAUGHNEY_SWITCHES_VERSION=v1_code`;")
+
 cap_md = f"""# Fig 6 — `laughney_switches` caption (generated by `scripts/manuscript_figures/laughney_switches.py`)
 
 **Fig 6 | Reliable cell-type APA switches in a tumour cohort.** Across {N_PATIENTS} patients
@@ -949,18 +1062,9 @@ figure from `{GTF}` as an exclusive, strand-matched partition:
 {FRAC_OWN_3UTR*100:.1f}% own-gene 3′ UTR, {N_OTH3/N_DISTINCT_PAS*100:.1f}% another gene's 3′ UTR,
 {N_EXNOT3/N_DISTINCT_PAS*100:.1f}% exonic but not 3′ UTR, {FRAC_INTRONIC*100:.1f}% intronic,
 {FRAC_OUTSIDE*100:.1f}% outside any same-strand gene — i.e. {FRAC_GENEBODY*100:.1f}% inside a same-strand gene body,
-{FRAC_EXONIC*100:.1f}% exonic, {FRAC_ANY_3UTR*100:.1f}% in some gene's 3′ UTR. **Only two of these five roll-ups exist in
-20**: disclosure 1 quotes 62.5% and 96.8%, and both are reproduced here to within 0.1 pp; the exonic, intronic and
-outside-any-gene figures appear in no write-up and are recomputed for this figure from the GTF. The 62.5% additionally
-needs **a wording correction that matters**: 20 describes it as PAS "in own-gene 3′ UTRs", whereas the recomputation shows that
-{FRAC_ANY_3UTR*100:.1f}% lie in *some* gene's 3′ UTR and only {FRAC_OWN_3UTR*100:.1f}% in the 3′ UTR of the gene the
-caller actually assigned them to. Use the own-gene figure ({FRAC_OWN_3UTR*100:.1f}%) whenever the claim is about
-gene-level interpretation.
+{FRAC_EXONIC*100:.1f}% exonic, {FRAC_ANY_3UTR*100:.1f}% in some gene's 3′ UTR. {CAP_ROLLUP_NOTE}
 
-**Gene names (20 disclosure 1, tool issue #99).** No ranked list of named top-switch genes is shown. 33% of the
-top-30 gene-level rows in 20 name a spanning or readthrough model rather than the gene whose 3′ UTR holds the PAS
-(CD68 labelled SENP3-EIF4A1, PTPRCAP under CORO1B, FKBP11 under AC073610.2; seven of the named genes have zero
-assigned PAS cohort-wide), and an ambient-immunoglobulin signature (IGLL5 in non-plasma pairs) is present.
+**Gene names (20 disclosure 1, tool issue #99).** No ranked list of named top-switch genes is shown. {CAP_GENENAME_NOTE}. {CAP_AMBIENT_IG}
 Recomputed here: {N_3UTR_MISASSIGNED:,} of the {N_ANY3:,}
 3′-UTR PAS ({FRAC_3UTR_MISASSIGNED*100:.1f}%) lie in a *different* gene's 3′ UTR from the one the caller assigned,
 and {N_MULTI_GENE:,} ({FRAC_MULTI_GENE*100:.1f}%) lie inside ≥2 overlapping same-strand gene models. Replication
@@ -992,19 +1096,17 @@ Every plotted value: `results/figures/manuscript/{NAME}_{{funnel,per_pair,effect
 **Fig 6 — `laughney_switches` — reliable cell-type APA switches in a tumour cohort.** Stage-3 patient-level
 replication on the Laughney lung-adenocarcinoma cohort, PeakATail code `{V['commit']}`, source of truth
 `{V['doc_path']}` ({V['verdict']}). Headline: across {N_PATIENTS} patients / {N_GSM} libraries and {N_PAIRS}
-cell-type pairs over a {UNIVERSE:,}-PAS precision-first universe, **{N_REPL:,} of {N_FEATURES:,} tested (pair, PAS)
+cell-type pairs over a precision-first universe of {UNIVERSE:,} PAS, **{N_REPL:,} of {N_FEATURES:,} tested (pair, PAS)
 hypotheses replicate in ≥{K_PRIMARY} patients in the same direction ({N_REPL/N_FEATURES*100:.2f}%),
 {N_REPL_FLOOR:,} of them over the |Δproportion| ≥ {FLOOR:g} floor, covering {N_DISTINCT_PAS:,} PAS in
 {N_DISTINCT_GENES:,} genes across {N_PAIRS_WITH_HITS} pairs; requiring three patients retains {N_REPL_K3:,};
 and nothing replicates in any of {N_NULL_COMBOS} patient-wise label-shuffle nulls** ({NULL_TESTS_TOTAL/1e6:.1f}M
 null tests → {NULL_QHITS_TOTAL} nominal q<{FDR:g} calls, none in two patients). Caveats that must travel with the
 figure: (i) the null resolves only to empirical p ≤ {EMP_P:.3f}, so say "none in {N_NULL_COMBOS} nulls" and never
-quote an FDR; (ii) these are v1-code numbers and the Stage-3 v2 chain on `9dfdefb` will supersede them
-(`LAUGHNEY_SWITCHES_VERSION=v2_code`); (iii) the MetBone exclusion is pre-registered but its stated premise was a
+quote an FDR; {CAP_INDEX_CAVEAT} (iii) the MetBone exclusion is pre-registered but its stated premise was a
 clip-rate sampling artefact (issue #99), and the 13-patient sensitivity run differs by 0.4%; (iv) **no named
-top-gene list may be published** until PAS→gene re-assignment — 33% of the top-30 gene rows name a
-spanning/readthrough model (issue #99), and {FRAC_3UTR_MISASSIGNED*100:.1f}% of 3′-UTR PAS are assigned to a
-different gene than the one whose 3′ UTR they occupy; (v) pairs tested in more patients replicate more, so panel b
+top-gene list may be published** until PAS→gene re-assignment — {CAP_INDEX_GENENAME} (issue #99), and
+{FRAC_3UTR_MISASSIGNED*100:.1f}% of 3′-UTR PAS are assigned to a different gene than the one whose 3′ UTR they occupy; (v) pairs tested in more patients replicate more, so panel b
 tracks cohort composition as much as biology.
 """
 p = FIGDIR / f"{NAME}.caption.md"

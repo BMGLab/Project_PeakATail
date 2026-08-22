@@ -4,69 +4,64 @@
 (15 scRNA-seq libraries) of the Laughney lung-adenocarcinoma cohort, processed in a single cohort run so that
 all libraries share one PAS identifier space, PeakATail called cell-type APA switches in 59 cell-type pairs
 over a pre-registered precision-first PAS universe (clip-supported, internal-priming-filtered, ≥2 clip molecules;
-74,954 sites). Requiring a switch to be called (Fisher on cells, BH q<0.05) in the same direction in at least
-2 independent patients, with any opposite-direction patient vetoing the call, **14,480 of
-1,977,134 tested (pair, PAS) hypotheses replicate (0.73%)**, of which 13,826
-also exceed an effect floor of |Δproportion| ≥ 0.1; these are 5,395 distinct PAS in
-2,687 genes across 47 pairs. **Under ten patient-wise label-shuffle nulls run
+80,464 sites). Requiring a switch to be called (Fisher on cells, BH q<0.05) in the same direction in at least
+2 independent patients, with any opposite-direction patient vetoing the call, **15,942 of
+2,128,711 tested (pair, PAS) hypotheses replicate (0.75%)**, of which 15,212
+also exceed an effect floor of |Δproportion| ≥ 0.1; these are 5,951 distinct PAS in
+2,883 genes across 47 pairs. **Under ten patient-wise label-shuffle nulls run
 through the identical pipeline, nothing replicated in any combination.** Requiring three patients retains
-4,937.
+5,438.
 
 **Panel a** — the funnel on one log axis, real (blue) against the mean of the 10 label-shuffle nulls
-(grey): 1,977,134 tested (pair, PAS) hypotheses → 62,243 called at BH q<0.05 in ≥1 patient
-→ 14,643 called in ≥2 patients in any direction → 14,480 replicated in the
-same direction with no opposite-direction patient (the 163 lost here split as
-129 in which no single direction reached 2 patients and 34 vetoed because a
+(grey): 2,128,711 tested (pair, PAS) hypotheses → 68,546 called at BH q<0.05 in ≥1 patient
+→ 16,129 called in ≥2 patients in any direction → 15,942 replicated in the
+same direction with no opposite-direction patient (the 187 lost here split as
+148 in which no single direction reached 2 patients and 39 vetoed because a
 patient went the other way) →
-13,826 also over the |Δproportion| ≥ 0.1 floor. The null tests a comparable
-1,888,790 hypotheses per combination and reaches a mean of 1.0 single-patient
-calls (range 0–3) and **zero** at every later stage.
+15,212 also over the |Δproportion| ≥ 0.1 floor. The null tests a comparable
+2,033,818 hypotheses per combination and reaches a mean of 1.1 single-patient
+calls (range 0–4) and **zero** at every later stage.
 **Panel b** — the top 16 of the 47 cell-type pairs tested in ≥2 patients, K=2
 (light) with the K=3 subset overlaid (dark); "n pt" is the number of patients in which the pair was testable.
-The other 31 multi-patient pairs hold 1,954 more switches (1–208 each);
+The other 31 multi-patient pairs hold 2,148 more switches (1–243 each);
 12 pairs were tested in a single patient and can never replicate.
-**Panel c** — consensus |Δproportion| of the 14,480 replicated switches (median 0.34, mean
+**Panel c** — consensus |Δproportion| of the 15,942 replicated switches (median 0.34, mean
 0.36); the dashed line is the pre-registered floor. **Panel d** — patient support; the K=3
-sensitivity set is exactly the ≥3-patient tail (4,937).
-**Panel e (honesty panel)** — genomic context of the 5,395 distinct replicated PAS, recomputed for this
+sensitivity set is exactly the ≥3-patient tail (5,438).
+**Panel e (honesty panel)** — genomic context of the 5,951 distinct replicated PAS, recomputed for this
 figure from `/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf` as an exclusive, strand-matched partition:
-58.6% own-gene 3′ UTR, 4.0% another gene's 3′ UTR,
-13.8% exonic but not 3′ UTR, 20.4% intronic,
+57.8% own-gene 3′ UTR, 3.7% another gene's 3′ UTR,
+13.7% exonic but not 3′ UTR, 21.6% intronic,
 3.2% outside any same-strand gene — i.e. 96.8% inside a same-strand gene body,
-76.3% exonic, 62.6% in some gene's 3′ UTR. **Only two of these five roll-ups exist in
-20**: disclosure 1 quotes 62.5% and 96.8%, and both are reproduced here to within 0.1 pp; the exonic, intronic and
-outside-any-gene figures appear in no write-up and are recomputed for this figure from the GTF. The 62.5% additionally
-needs **a wording correction that matters**: 20 describes it as PAS "in own-gene 3′ UTRs", whereas the recomputation shows that
-62.6% lie in *some* gene's 3′ UTR and only 58.6% in the 3′ UTR of the gene the
-caller actually assigned them to. Use the own-gene figure (58.6%) whenever the claim is about
-gene-level interpretation.
+75.2% exonic, 61.5% in some gene's 3′ UTR. **Three of these five roll-ups exist in 20**: disclosure 1 quotes 61.5% (any same-strand 3′ UTR), 57.8% (the assigned gene's own 3′ UTR) and 96.8% (same-strand gene body), and all three are reproduced here to within 0.1 pp; the exonic, intronic and outside-any-gene figures appear in no write-up and are recomputed for this figure from the GTF. The two 3′-UTR figures must not be conflated — the v1 write-up quoted a single "62.5% in own-gene 3′ UTRs", which the verifier showed was the ANY-gene figure (own-gene was 58.6% on v1). Here 61.5% lie in *some* gene's 3′ UTR and only 57.8% in the 3′ UTR of the gene the caller assigned them to. Use the own-gene figure (57.8%) whenever the claim is about gene-level interpretation.
 
-**Gene names (20 disclosure 1, tool issue #99).** No ranked list of named top-switch genes is shown. 33% of the
-top-30 gene-level rows in 20 name a spanning or readthrough model rather than the gene whose 3′ UTR holds the PAS
-(CD68 labelled SENP3-EIF4A1, PTPRCAP under CORO1B, FKBP11 under AC073610.2; seven of the named genes have zero
-assigned PAS cohort-wide), and an ambient-immunoglobulin signature (IGLL5 in non-plasma pairs) is present.
-Recomputed here: 216 of the 3,375
-3′-UTR PAS (6.4%) lie in a *different* gene's 3′ UTR from the one the caller assigned,
-and 497 (9.2%) lie inside ≥2 overlapping same-strand gene models. Replication
+**Gene names (20 disclosure 1, tool issue #99).** No ranked list of named top-switch genes is shown. The v1 problem persists
+unchanged on the v2 chain: 12 of the top-30 gene-level rows (40%) name a gene whose 3′ UTR does not contain the
+representative PAS and 8 of 30 (27%) sit in a *different* gene's 3′ UTR (SENP3-EIF4A1 for CD68 twice, AC073610.2 for
+FKBP11, DGKZ for MDK, RHOA for GPX1 twice, AC004922.1 for ARPC1A, CD163L1 for CD163), and CD68, PTPRCAP, FKBP11,
+GPX1, MDK, STARD10 and ARPC1A still have zero assigned PAS cohort-wide. The ambient-immunoglobulin signature (IGLL5 in non-plasma pairs) was an observation on the v1 chain and was NOT re-checked on v2 (20 disclosure 1); it is not claimed here.
+Recomputed here: 223 of the 3,662
+3′-UTR PAS (6.1%) lie in a *different* gene's 3′ UTR from the one the caller assigned,
+and 544 (9.1%) lie inside ≥2 overlapping same-strand gene models. Replication
 statistics are computed on PAS ids and are unaffected. The re-assignment-safe subset — PAS verified against the GTF
 to lie in their own assigned gene's 3′ UTR — is written to
 `results/figures/manuscript/laughney_switches_own3utr_genes.tsv` in genomic order for audit only; it is not a ranked list and
 must not be published as one until the assignment is fixed.
 
-**Record and controls.** PeakATail code `4efeb125` (pre-Stage-1d); v1-code record; the Stage-3 v2 chain on code 9dfdefb (stage3_laughney_v3) is running and will supersede these numbers (re-run with LAUGHNEY_SWITCHES_VERSION=v2_code). Source of truth
-`manuscript/20_stage3_replication.md` (verifier verdict FIXED). The null resolves only to an empirical p ≤ 0.091 (the
+**Record and controls.** PeakATail code `9dfdefb` (#96 minus-strand IP fix); v2-code record, verified 2026-08-22; supersedes v1-code 4efeb125, kept in 20 as the labelled comparison row. Source of truth
+`manuscript/20_stage3_replication.md` (verifier verdict SOUND). The null resolves only to an empirical p ≤ 0.091 (the
 10-permutation floor): report it as "none in 10 nulls", **never** as an FDR estimate.
-54.4M null tests across the 15 libraries produced 10 nominal q<0.05
+58.9M null tests across the 15 libraries produced 11 nominal q<0.05
 calls, none co-occurring in two patients. GSM3516664-MetBone is excluded by pre-registration (13 addendum item 8),
 but **its stated premise was wrong**: the 0.015% clip rate came from the caller sampling only the first 200,000 CB
 reads of a coordinate-sorted BAM (head of chr1) — MetBone in fact has 306k clip molecules (tool issue #99). The
 "no clip evidence" justification must never be repeated; the 13-patient
-sensitivity run that includes it gives 14,541 /
-13,888, a 0.4% difference confined to one pair.
+sensitivity run that includes it gives 16,010 /
+15,282, a 0.4% difference confined to one pair.
 
-Sources: `manuscript/20_stage3_replication.md` (verifier verdict FIXED) and, read directly, `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v2/replication/primary_noMetBone/` (`pas_K2`, `pas_K3`, `gene_K2`:
+Sources: `manuscript/20_stage3_replication.md` (verifier verdict SOUND) and, read directly, `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/` (`pas_K2`, `pas_K3`, `gene_K2`:
 `all_features.tsv`, `replicated.tsv`, `null_control.tsv`, `summary.json`; `per_pair_pas_K{2,3}.tsv`), the per-GSM
-switch summaries `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v2/switch/<GSM>/summary.json`, the verifier's null recount `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v2/replication/verify/`, and `/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf` for panel e.
+switch summaries `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/switch/<GSM>/summary.json`, the verifier's null recount `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/verify_v2chain/`, and `/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf` for panel e.
 Every plotted value: `results/figures/manuscript/laughney_switches_{funnel,per_pair,effects,support,context,context_summary,cohort}.tsv`.
 
 ---
@@ -74,19 +69,19 @@ Every plotted value: `results/figures/manuscript/laughney_switches_{funnel,per_p
 ## Index paragraph (for `manuscript/05_figure_index.md` — paste there; this script does not edit that file)
 
 **Fig 6 — `laughney_switches` — reliable cell-type APA switches in a tumour cohort.** Stage-3 patient-level
-replication on the Laughney lung-adenocarcinoma cohort, PeakATail code `4efeb125`, source of truth
-`manuscript/20_stage3_replication.md` (verifier verdict FIXED). Headline: across 12 patients / 15 libraries and 59
-cell-type pairs over a 74,954-PAS precision-first universe, **14,480 of 1,977,134 tested (pair, PAS)
-hypotheses replicate in ≥2 patients in the same direction (0.73%),
-13,826 of them over the |Δproportion| ≥ 0.1 floor, covering 5,395 PAS in
-2,687 genes across 47 pairs; requiring three patients retains 4,937;
-and nothing replicates in any of 10 patient-wise label-shuffle nulls** (54.4M
-null tests → 10 nominal q<0.05 calls, none in two patients). Caveats that must travel with the
+replication on the Laughney lung-adenocarcinoma cohort, PeakATail code `9dfdefb`, source of truth
+`manuscript/20_stage3_replication.md` (verifier verdict SOUND). Headline: across 12 patients / 15 libraries and 59
+cell-type pairs over a precision-first universe of 80,464 PAS, **15,942 of 2,128,711 tested (pair, PAS)
+hypotheses replicate in ≥2 patients in the same direction (0.75%),
+15,212 of them over the |Δproportion| ≥ 0.1 floor, covering 5,951 PAS in
+2,883 genes across 47 pairs; requiring three patients retains 5,438;
+and nothing replicates in any of 10 patient-wise label-shuffle nulls** (58.9M
+null tests → 11 nominal q<0.05 calls, none in two patients). Caveats that must travel with the
 figure: (i) the null resolves only to empirical p ≤ 0.091, so say "none in 10 nulls" and never
-quote an FDR; (ii) these are v1-code numbers and the Stage-3 v2 chain on `9dfdefb` will supersede them
-(`LAUGHNEY_SWITCHES_VERSION=v2_code`); (iii) the MetBone exclusion is pre-registered but its stated premise was a
+quote an FDR; (ii) these are the v2-code numbers (`9dfdefb`, #96 minus-strand internal-priming fix); the
+v1-code chain `4efeb125` recorded 14,480 replicated over a 74,954-PAS universe and stays reproducible with
+`LAUGHNEY_SWITCHES_VERSION=v1_code`; (iii) the MetBone exclusion is pre-registered but its stated premise was a
 clip-rate sampling artefact (issue #99), and the 13-patient sensitivity run differs by 0.4%; (iv) **no named
-top-gene list may be published** until PAS→gene re-assignment — 33% of the top-30 gene rows name a
-spanning/readthrough model (issue #99), and 6.4% of 3′-UTR PAS are assigned to a
-different gene than the one whose 3′ UTR they occupy; (v) pairs tested in more patients replicate more, so panel b
+top-gene list may be published** until PAS→gene re-assignment — 12 of the top-30 gene rows (40%) name a gene whose 3′ UTR does not hold the PAS (issue #99), and
+6.1% of 3′-UTR PAS are assigned to a different gene than the one whose 3′ UTR they occupy; (v) pairs tested in more patients replicate more, so panel b
 tracks cohort composition as much as biology.
