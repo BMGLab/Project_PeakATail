@@ -60,7 +60,7 @@ from taskD_eval import Evaluator, interp_at            # noqa: E402
 # ---------------------------------------------------------------- features --
 F_CLIP = ["clip_reads", "clip_umis", "clip_reads_f3844", "clip_umis_f3844",
           "tier1", "clip_positions", "clip_span"]
-F_COV = ["window_reads", "width"]
+F_COV = ["window_reads"]
 F_HEX = ["hex_strong", "hex_any12", "hex_n_types", "hex_best_off",
          "hex_strong_off", "seq_ok"]
 F_CTX = ["d_prev_cand", "d_next_cand", "n_cand_100", "n_cand_500",
@@ -70,8 +70,25 @@ F_CTX = ["d_prev_cand", "d_next_cand", "n_cand_100", "n_cand_500",
 F_ADOWN = ["ip_tool_flag", "ip_tool_afrac", "ip_tool_arun", "a_count_d18",
            "a_frac_d18", "a_run_d18", "a_frac_d30", "a_run_d30", "kin_ip_flag"]
 
+#: NOA is the SHIPPABLE set: every column of it comes out of the caller's own
+#: ``pas_support.tsv``, so inference needs no second source and no BED re-read.
+#: NOAW adds ``width`` (BED end - start) purely to check that leaving it out
+#: costs nothing; ALL adds the downstream-A covariates the verifier dropped.
 FEATURESETS = {"NOA": F_CLIP + F_COV + F_HEX + F_CTX,
+               "NOAR": F_CLIP + F_COV + F_HEX + F_CTX,
+               "NOAW": F_CLIP + F_COV + ["width"] + F_HEX + F_CTX,
                "ALL": F_CLIP + F_COV + F_HEX + F_CTX + F_ADOWN}
+
+#: The six covariates whose absolute scale is set by how deeply the library was
+#: sequenced.  A model fitted on one library learns thresholds in those units,
+#: which is the obvious way for a score to fail to transfer; NOAR replaces them
+#: by their WITHIN-RUN percentile, which the caller can compute at the same seam
+#: (the feature collector already holds every candidate of the run).  Declared as
+#: a variant of the SAME experiment, before the transfer was evaluated, rather
+#: than as a second attempt after seeing a failure.
+DEPTH_COLS = ["clip_reads", "clip_umis", "clip_reads_f3844", "clip_umis_f3844",
+              "window_reads", "mol_500_sum"]
+TRANSFORM_OVERRIDE = {"NOAR": {c: "rankpct" for c in DEPTH_COLS}}
 
 LOGCOUNT = {"clip_reads", "clip_umis", "clip_reads_f3844", "clip_umis_f3844",
             "window_reads", "width", "clip_positions", "clip_span",
@@ -87,18 +104,52 @@ def prep(c: pd.DataFrame) -> pd.DataFrame:
     return c
 
 
-def build_matrix(c: pd.DataFrame, cols) -> np.ndarray:
+def rank_pct(v: np.ndarray) -> np.ndarray:
+    """Mid-rank percentile of *v* within its own run, in [0, 1].
+
+    Written as searchsorted rather than pandas so the identical three lines can
+    live in the tool (``ema.countmatrix.pas_score``) with no pandas dependency,
+    and a test can assert the two agree bit-for-bit.
+    """
+    n = len(v)
+    if n == 0:
+        return v
+    s = np.sort(v)
+    lo = np.searchsorted(s, v, side="left")
+    hi = np.searchsorted(s, v, side="right")
+    return (lo + hi) / (2.0 * n)
+
+
+def transform_value(v: np.ndarray, kind: str) -> np.ndarray:
+    if kind == "log1p":
+        return np.log1p(np.maximum(v, 0))
+    if kind == "signlog1p":
+        return np.sign(v) * np.log1p(np.abs(v))
+    if kind == "poslog1p":
+        return np.log1p(np.minimum(np.maximum(v, 0), 1e6))
+    if kind == "rankpct":
+        return rank_pct(v)
+    return v
+
+
+def kind_of(k: str, overrides=None) -> str:
+    if overrides and k in overrides:
+        return overrides[k]
+    if k in LOGCOUNT:
+        return "log1p"
+    if k in SIGNDIST:
+        return "signlog1p"
+    if k in POSDIST:
+        return "poslog1p"
+    return "raw"
+
+
+def build_matrix(c: pd.DataFrame, cols, overrides=None) -> np.ndarray:
     X = np.empty((len(c), len(cols)), dtype=np.float64)
     for j, k in enumerate(cols):
         v = pd.to_numeric(c[k], errors="coerce").values.astype(np.float64)
         v = np.nan_to_num(v, nan=0.0)
-        if k in LOGCOUNT:
-            v = np.log1p(np.maximum(v, 0))
-        elif k in SIGNDIST:
-            v = np.sign(v) * np.log1p(np.abs(v))
-        elif k in POSDIST:
-            v = np.log1p(np.minimum(np.maximum(v, 0), 1e6))
-        X[:, j] = v
+        X[:, j] = transform_value(v, kind_of(k, overrides))
     return X
 
 
@@ -151,6 +202,14 @@ def main() -> int:
     ap.add_argument("--train", default="mouse1")
     ap.add_argument("--eval", nargs="+", default=["pbmc", "mouse2"])
     ap.add_argument("--out", required=True)
+    ap.add_argument("--label", default="atlas25",
+                    choices=("atlas25", "kin_t5_25"),
+                    help="training label on the TRAINING dataset (mouse has no "
+                         "long-read truth, so mouse training is always atlas25)")
+    ap.add_argument("--oof", action="store_true",
+                    help="also fit a chromosome-disjoint 2-fold model WITHIN each "
+                         "dataset (the 'trained here' ceiling the transfer is "
+                         "measured against)")
     a = ap.parse_args()
 
     T = Path(a.tables)
@@ -167,10 +226,23 @@ def main() -> int:
         print(f"[{nm}] candidates {len(cand[nm]):,}  pool(tier1&IPpass) {pools[nm].sum():,}  "
               f"atlas+@25 {y.mean():.4f}")
 
+    def label_of(c, which):
+        col = "d_atlas" if which == "atlas25" else "d_kin_t5"
+        if col not in c:
+            raise SystemExit(f"label {which} needs column {col}")
+        return ((c[col] >= 0) & (c[col] <= 25)).values.astype(int)
+
+    def foldof(ch):
+        try:
+            return 0 if int(ch) % 2 == 1 else 1
+        except ValueError:
+            return 1                      # X, Y, scaffolds -> even fold
+
     rows, models = [], {}
-    ytr = ((cand[a.train].d_atlas >= 0) & (cand[a.train].d_atlas <= 25)).values.astype(int)
+    ytr = label_of(cand[a.train], a.label)
     for fs, cols in FEATURESETS.items():
-        Xtr = build_matrix(cand[a.train], cols)
+        ov = TRANSFORM_OVERRIDE.get(fs)
+        Xtr = build_matrix(cand[a.train], cols, ov)
         for mk, mfn in MODELS.items():
             key = f"{mk}_{fs}"
             m = mfn()
@@ -178,12 +250,35 @@ def main() -> int:
             models[key] = (m, cols)
             print(f"[fit] {key}: {len(cols)} features on {a.train}, {ytr.sum():,} positives")
             for nm in names:
-                s = m.predict_proba(build_matrix(cand[nm], cols))[:, 1]
+                s = m.predict_proba(build_matrix(cand[nm], cols, ov))[:, 1]
                 np.save(out / f"score_{key}_{nm}.npy", s)
                 for r in sweep(ev[nm], cand[nm], pools[nm], s, f"MODEL_{key}"):
                     r["dataset"] = nm
                     r["is_train"] = nm == a.train
                     rows.append(r)
+
+    # ---- within-dataset chromosome-disjoint OOF: the "trained here" ceiling --
+    if a.oof:
+        for nm in names:
+            c = cand[nm]
+            fold = c.chrom.map(foldof).values
+            for fs in ("NOA",):
+                cols = FEATURESETS[fs]
+                X = build_matrix(c, cols)
+                for lab in (["atlas25"] + (["kin_t5_25"] if "d_kin_t5" in c else [])):
+                    yy = label_of(c, lab)
+                    s_oof = np.zeros(len(c))
+                    for f in (0, 1):
+                        tr = fold != f
+                        mm = gb()
+                        mm.fit(X[tr], yy[tr])
+                        s_oof[~tr] = mm.predict_proba(X[~tr])[:, 1]
+                    np.save(out / f"score_OOF_{fs}_{lab}_{nm}.npy", s_oof)
+                    for r in sweep(ev[nm], c, pools[nm], s_oof, f"OOF_{fs}_{lab}"):
+                        r["dataset"] = nm
+                        r["is_train"] = False
+                        rows.append(r)
+                    print(f"[oof] {nm} {fs} {lab}: done")
 
     # ---- incumbent arms on every dataset -----------------------------------
     for nm in names:
@@ -211,7 +306,7 @@ def main() -> int:
     for nm in names:
         g = d[d.dataset == nm]
         base = g[(g.kind == "rule") & (g.k == 2)].iloc[0]
-        for model in [f"MODEL_{k}" for k in models] + ["CTRL_molecules"]:
+        for model in sorted(set(g.model.dropna()) - {"RULE"}):
             cu = g[g.model == model].sort_values("n")
             if cu.empty:
                 continue

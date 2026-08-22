@@ -54,8 +54,8 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).parent))
 from taskD_eval import Evaluator                        # noqa: E402
-from taskD_transfer import (FEATURESETS, LOGCOUNT, POSDIST, SIGNDIST,  # noqa: E402
-                            build_matrix, gb, lr, pool_of, prep)
+from taskD_transfer import (FEATURESETS, TRANSFORM_OVERRIDE,  # noqa: E402
+                            build_matrix, gb, kind_of, lr, pool_of, prep)
 
 T1_P = 0.50
 T2_DECOY_PCT = 95.0
@@ -63,34 +63,24 @@ T1_COUNT_BAND = (0.5, 2.0)
 
 
 # ------------------------------------------------------------------ export --
-def transform_spec(cols):
+def transform_spec(cols, overrides=None):
     """The per-feature transform, as data rather than as code, so the tool and
     this script cannot drift apart."""
-    kind = []
-    for k in cols:
-        if k in LOGCOUNT:
-            kind.append("log1p")
-        elif k in SIGNDIST:
-            kind.append("signlog1p")
-        elif k in POSDIST:
-            kind.append("poslog1p")
-        else:
-            kind.append("raw")
-    return kind
+    return [kind_of(k, overrides) for k in cols]
 
 
-def export_linear(pipe, cols) -> dict:
+def export_linear(pipe, cols, ov=None) -> dict:
     sc, clf = pipe.named_steps["sc"], pipe.named_steps["lr"]
     # standardise-then-linear collapses to one linear form:
     #   z = b + sum_j w_j (x_j - mu_j) / s_j
     w = clf.coef_[0] / sc.scale_
     b = float(clf.intercept_[0] - np.dot(clf.coef_[0], sc.mean_ / sc.scale_))
     return {"family": "linear", "features": list(cols),
-            "transform": transform_spec(cols),
+            "transform": transform_spec(cols, ov),
             "coef": [float(x) for x in w], "intercept": b}
 
 
-def export_hgb(model, cols) -> dict:
+def export_hgb(model, cols, ov=None) -> dict:
     """Flatten a HistGradientBoostingClassifier into plain arrays.
 
     Only the raw-threshold (non-binned, non-categorical) predictor form is
@@ -111,7 +101,7 @@ def export_hgb(model, cols) -> dict:
             value.append(float(n["value"]))
         offs.append(len(feat))
     return {"family": "hgb", "features": list(cols),
-            "transform": transform_spec(cols),
+            "transform": transform_spec(cols, ov),
             "baseline": float(np.ravel(model._baseline_prediction)[0]),
             "node_feature": feat, "node_threshold": thr, "node_left": left,
             "node_right": right, "node_is_leaf": isleaf, "node_value": value,
@@ -131,17 +121,18 @@ def main() -> int:
     T, out = Path(a.tables), Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     cols = FEATURESETS[a.featureset]
+    ov = TRANSFORM_OVERRIDE.get(a.featureset)
 
     ev = Evaluator(T / a.train)
     c = prep(ev.c)
     y = ((c.d_atlas >= 0) & (c.d_atlas <= 25)).values.astype(int)
-    X = build_matrix(c, cols)
+    X = build_matrix(c, cols, ov)
     model = (lr() if a.family == "lr" else gb())
     model.fit(X, y)
     p_sk = model.predict_proba(X)[:, 1]
 
-    spec = (export_linear(model, cols) if a.family == "lr"
-            else export_hgb(model, cols))
+    spec = (export_linear(model, cols, ov) if a.family == "lr"
+            else export_hgb(model, cols, ov))
     spec.update({"name": a.name, "trained_on": a.train, "featureset": a.featureset,
                  "label": "PolyASite 2.0 within 25 bp, same strand",
                  "n_train": int(len(y)), "n_positive": int(y.sum())})
@@ -186,7 +177,7 @@ def main() -> int:
     for ds in sorted(p.name for p in T.iterdir() if (p / "candidates.parquet").exists()):
         e2 = Evaluator(T / ds)
         c2 = prep(e2.c)
-        s = m.predict_proba_matrix(build_matrix(c2, cols))
+        s = m.predict_proba_matrix(build_matrix(c2, cols, ov))
         pool2 = pool_of(c2)
         truths = {"atlas25": ((c2.d_atlas >= 0) & (c2.d_atlas <= 25)).values}
         if "d_kin_t5" in c2:
