@@ -58,8 +58,14 @@ sys.path.insert(0, str(Path(__file__).parent))
 from taskD_eval import Evaluator, interp_at            # noqa: E402
 
 # ---------------------------------------------------------------- features --
+#: Every name below is a column of ``pas_support.tsv`` VERBATIM -- `tier` rather
+#: than a derived `tier1` indicator, because "the model's feature list is a
+#: subset of the sidecar's header" is an invariant a test can assert, and a
+#: derived feature is a place for the offline fitter and the tool to disagree.
+#: (A tree splits `tier <= 1.5`; for a linear model `tier` and `1[tier==1]` are
+#: the same feature up to sign and intercept.)
 F_CLIP = ["clip_reads", "clip_umis", "clip_reads_f3844", "clip_umis_f3844",
-          "tier1", "clip_positions", "clip_span"]
+          "tier", "clip_positions", "clip_span"]
 F_COV = ["window_reads"]
 F_HEX = ["hex_strong", "hex_any12", "hex_n_types", "hex_best_off",
          "hex_strong_off", "seq_ok"]
@@ -72,11 +78,11 @@ F_ADOWN = ["ip_tool_flag", "ip_tool_afrac", "ip_tool_arun", "a_count_d18",
 
 #: NOA is the SHIPPABLE set: every column of it comes out of the caller's own
 #: ``pas_support.tsv``, so inference needs no second source and no BED re-read.
-#: NOAW adds ``width`` (BED end - start) purely to check that leaving it out
-#: costs nothing; ALL adds the downstream-A covariates the verifier dropped.
+#: ``width`` (BED end - start) is deliberately NOT in it for that reason and its
+#: cost is measured separately (`taskD_width_check.py`); ALL adds the
+#: downstream-A covariates the verifier dropped.
 FEATURESETS = {"NOA": F_CLIP + F_COV + F_HEX + F_CTX,
                "NOAR": F_CLIP + F_COV + F_HEX + F_CTX,
-               "NOAW": F_CLIP + F_COV + ["width"] + F_HEX + F_CTX,
                "ALL": F_CLIP + F_COV + F_HEX + F_CTX + F_ADOWN}
 
 #: The six covariates whose absolute scale is set by how deeply the library was
@@ -102,6 +108,22 @@ def prep(c: pd.DataFrame) -> pd.DataFrame:
     c = c.copy()
     c["tier1"] = (c.tier == 1).astype(np.int8)
     return c
+
+
+def design(table_dir, cols, overrides=None):
+    """The design matrix for a dataset's SCORED candidates, built the way the
+    tool builds it: over the whole ``pas_support.tsv`` population first, then
+    subset.  Only that order makes a within-run statistic (``rankpct``) the same
+    number offline and at run time.  Returns ``(X_candidates, pas_id_order)``.
+    """
+    from pathlib import Path as _P
+    d = _P(table_dir)
+    full = prep(pd.read_parquet(d / "support_full.parquet"))
+    Xf = build_matrix(full, cols, overrides)
+    pos = {p: i for i, p in enumerate(full.pas_id.astype(str).values)}
+    cand = pd.read_parquet(d / "candidates.parquet", columns=["pas_id"])
+    idx = np.array([pos[str(p)] for p in cand.pas_id.values], dtype=np.int64)
+    return Xf[idx], Xf, pos
 
 
 def rank_pct(v: np.ndarray) -> np.ndarray:
@@ -242,7 +264,7 @@ def main() -> int:
     ytr = label_of(cand[a.train], a.label)
     for fs, cols in FEATURESETS.items():
         ov = TRANSFORM_OVERRIDE.get(fs)
-        Xtr = build_matrix(cand[a.train], cols, ov)
+        Xtr = design(T / a.train, cols, ov)[0]
         for mk, mfn in MODELS.items():
             key = f"{mk}_{fs}"
             m = mfn()
@@ -250,7 +272,7 @@ def main() -> int:
             models[key] = (m, cols)
             print(f"[fit] {key}: {len(cols)} features on {a.train}, {ytr.sum():,} positives")
             for nm in names:
-                s = m.predict_proba(build_matrix(cand[nm], cols, ov))[:, 1]
+                s = m.predict_proba(design(T / nm, cols, ov)[0])[:, 1]
                 np.save(out / f"score_{key}_{nm}.npy", s)
                 for r in sweep(ev[nm], cand[nm], pools[nm], s, f"MODEL_{key}"):
                     r["dataset"] = nm
@@ -264,7 +286,7 @@ def main() -> int:
             fold = c.chrom.map(foldof).values
             for fs in ("NOA",):
                 cols = FEATURESETS[fs]
-                X = build_matrix(c, cols)
+                X = design(T / nm, cols, TRANSFORM_OVERRIDE.get(fs))[0]
                 for lab in (["atlas25"] + (["kin_t5_25"] if "d_kin_t5" in c else [])):
                     yy = label_of(c, lab)
                     s_oof = np.zeros(len(c))
