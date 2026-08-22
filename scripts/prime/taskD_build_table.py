@@ -121,9 +121,17 @@ def main() -> int:
 
     sup = pd.read_csv(run / "run/pas_support.tsv", sep="\t", dtype={"pas_id": str},
                       na_values=["NA"], keep_default_na=True)
+    # The FULL sidecar is kept, not just the scored subset.  It is the exact
+    # population the caller scores at run time (pas_support.tsv is written
+    # BEFORE any filter, so it holds every candidate peak calling emitted --
+    # 195,940 on mouse 1 against the 85,816 that survive gene assignment into
+    # pasbed.bed).  Any within-run statistic (the `rankpct` transform) must be
+    # computed over THAT population offline too, or the offline score and the
+    # tool's score are two different numbers with one name.
+    sup.to_parquet(out / "support_full.parquet", index=False)
     c = bed.merge(sup, on="pas_id", how="left", validate="one_to_one")
     print(f"[cand] {len(c):,} candidates ({len(bed):,} in pas.bed after contig filter); "
-          f"sidecar columns {len(sup.columns)}")
+          f"sidecar {len(sup):,} rows x {len(sup.columns)} columns")
 
     # ---- truth (never a feature) -------------------------------------------
     c["d_atlas"] = c.pas_id.map(closest_dist(calls, ref["atlas"], work, "d_atlas")).fillna(-1).astype(np.int64)
@@ -131,6 +139,7 @@ def main() -> int:
     n_det = int(sh(f"wc -l < {ref['det']}").split()[0])
 
     meta = {"species": a.species, "run": str(run), "n_candidates": int(len(c)),
+            "n_support_rows": int(len(sup)),
             "n_det_atlas": n_det, "atlas": str(ref["atlas"]), "det": str(ref["det"])}
 
     if a.kinnex:

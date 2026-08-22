@@ -94,4 +94,6 @@ class Evaluator:
 def interp_at(curve: pd.DataFrame, xcol: str, ycol: str, x: float) -> float:
     """Linear interpolation of *ycol* at *xcol* == x along a monotone-ish sweep."""
     g = curve[[xcol, ycol]].dropna().sort_values(xcol)
+    if g.empty:
+        return float("nan")
     return float(np.interp(x, g[xcol].values, g[ycol].values))
