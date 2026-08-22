@@ -35,7 +35,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 sys.path.insert(0, "/mnt/ssd1/Projects/PeakATail_wd/tools/pa-prime")
 from taskD_eval import Evaluator, interp_at              # noqa: E402
 from taskD_transfer import (FEATURESETS, TRANSFORM_OVERRIDE,  # noqa: E402
-                            build_matrix, pool_of, prep)
+                            design, pool_of, prep)
 
 from ema.countmatrix.pas_score import PasScoreModel      # noqa: E402
 
@@ -70,7 +70,7 @@ def main() -> int:
         ev = Evaluator(T / ds)
         c = prep(ev.c)
         pool = pool_of(c)
-        s = m.predict_proba_matrix(build_matrix(c, cols, ov))
+        s = m.predict_proba_matrix(design(T / ds, cols, ov)[0])
         scores[ds] = (c, s, pool, ev)
         mol = c.molecules.values
 

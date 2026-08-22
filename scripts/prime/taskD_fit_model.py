@@ -55,7 +55,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).parent))
 from taskD_eval import Evaluator                        # noqa: E402
 from taskD_transfer import (FEATURESETS, TRANSFORM_OVERRIDE,  # noqa: E402
-                            build_matrix, gb, kind_of, lr, pool_of, prep)
+                            build_matrix, design, gb, kind_of, lr, pool_of, prep)
 
 T1_P = 0.50
 T2_DECOY_PCT = 95.0
@@ -126,7 +126,7 @@ def main() -> int:
     ev = Evaluator(T / a.train)
     c = prep(ev.c)
     y = ((c.d_atlas >= 0) & (c.d_atlas <= 25)).values.astype(int)
-    X = build_matrix(c, cols, ov)
+    X = design(T / a.train, cols, ov)[0]
     model = (lr() if a.family == "lr" else gb())
     model.fit(X, y)
     p_sk = model.predict_proba(X)[:, 1]
@@ -177,7 +177,7 @@ def main() -> int:
     for ds in sorted(p.name for p in T.iterdir() if (p / "candidates.parquet").exists()):
         e2 = Evaluator(T / ds)
         c2 = prep(e2.c)
-        s = m.predict_proba_matrix(build_matrix(c2, cols, ov))
+        s = m.predict_proba_matrix(design(T / ds, cols, ov)[0])
         pool2 = pool_of(c2)
         truths = {"atlas25": ((c2.d_atlas >= 0) & (c2.d_atlas <= 25)).values}
         if "d_kin_t5" in c2:
