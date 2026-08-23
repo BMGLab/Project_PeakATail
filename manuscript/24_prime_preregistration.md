@@ -243,3 +243,36 @@ Amendments are appended, never edited in place, so the pre-registration's histor
    against goldens generated from the frozen v2 worktree `tools/pa-polya-run-9dfdefb3`. It is
    demonstrated to fail when a behavioural change lands without a flag. The slice-level check
    (`scripts/prime/identity_check.py`) is unchanged and remains the one that is quoted.
+
+## Amendment 3 (2026-08-23) — the §3.1 criterion was written against a v2 default that does not exist
+
+**The defect.** §3.1 compares "prime's default" against "v2's default" and, on a FAIL, requires the new
+behaviour to stay behind a non-default flag. It was drafted assuming v2's `--ip-filter-mode` default is
+`filter`. It is **`annotate`** — read programmatically out of the frozen `pa-polya-run-9dfdefb3` tree
+(`config_schema.py:547`) and out of the maintainer's own parameter reference
+(`PeakATail_Parameters_Reference.pdf`, §5: *"'annotate' (default) KEEPS every PAS and records the
+internal_priming flag"*). Every benchmark arm in the manuscript passes `--ip-filter-mode filter`
+explicitly, so no published number is affected — but the pre-registered comparison was defined against
+a configuration nobody ever ran.
+
+**What the measurement actually showed.** Prime's default output is **byte-identical** to v2's
+manuscript arm on all four libraries (md5-equal `pas.bed`, `pas_tier1.bed`, `pas_tier2.bed`), so §3.1
+fails with every delta exactly 0.000000 — an identity, not a regression. What prime changes is what a
+user gets by **typing nothing**: at matched call count it dominates the flagless v2 configuration on
+atlas precision, atlas recall and all three long-read read-outs simultaneously (atlas P 0.7062 vs
+0.6640, R_det 0.1754 vs 0.1675, Kinnex ≥5 UMI 0.7647 vs 0.6782, ≥20 UMI 0.5584 vs 0.5228, IP-decoy
+0.1300 vs 0.2810); at matched atlas precision +10.6% relative recall; at matched recall +11.5%
+relative precision.
+
+**Consequence, for the PI to ratify.** Two defensible options, and the choice must be recorded before
+the branch is proposed:
+1. **Re-register** §3.1 against the true v2 default (flagless), under which prime's change is a
+   measured improvement on both truths — and note that prime cannot move any manuscript number because
+   its output is byte-identical to the arm the manuscript ran.
+2. **Honour the criterion as written** and ship `--ip-filter-default auto` **off**, leaving the
+   internal-priming veto opt-in as it is today.
+Until ratified, the branch is described as a **defaults change with a no-op guarantee**, never as an
+accuracy gain. Three facts travel with any PR: it is a **breaking default change** (a flagless v2 user
+silently loses 17.09% of their calls); at the flagless configuration's own 62,110-call budget prime is
+marginally *behind*, a tie-break-dominated row that is not like-for-like; and `--read-geometry` and
+`--pas-score` remain off and were not exercised.
