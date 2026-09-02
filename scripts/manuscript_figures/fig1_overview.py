@@ -48,8 +48,10 @@ SOURCES OF TRUTH (nothing numeric is typed by hand except where cited)
   run_config.json                    every parameter printed on the figure
 
 OUTPUTS
-  manuscript/figures/fig1_overview.{png,pdf}      (PNG 300 dpi, PDF fonttype 42)
-  manuscript/figures/fig1_overview.caption.md     (sidecar caption + index para)
+  manuscript/figures/fig1_overview.{png,pdf}      (PNG 600 dpi, PDF fonttype 42)
+  manuscript/figures/fig1_overview.caption.md     (sidecar: '## Legend' = the
+                                                   journal legend, single source
+                                                   of the caption; '## Provenance')
   results/figures/manuscript/fig1_overview.tsv            every printed quantity
   results/figures/manuscript/fig1_overview_reads.tsv      every drawn read
   results/figures/manuscript/fig1_overview_sequence.tsv   every drawn base
@@ -718,16 +720,20 @@ record("b", "removed locus: flagged A-run (length, start, end offsets)", str(REM
 # ---------------------------------------------------------------------------
 # 6. figure
 #
-# Page-realistic geometry: the canvas is 7.35 x 10.40 in, i.e. the size the
-# figure will occupy on a journal page (180 mm column), so the point sizes here
-# are the point sizes in print.  Nothing is placed by eye: every panel is an
+# Page-realistic geometry: the canvas is 7.35 x 8.30 in (~the width the figure
+# occupies on a journal page), so the point sizes here are the point sizes in
+# print.  The former on-figure footer caption moved to the sidecar Legend at
+# the 2026-09-02 submission pass and the canvas height shrank by the freed
+# space (10.40 -> 8.30).  The width stays 7.35 in: panel a's box text and the
+# base-resolution sequence panels do not tolerate narrowing to 180 mm without
+# crowding.  Nothing is placed by eye: every panel is an
 # axes positioned in INCHES from the top-left corner, every stack of text is
 # spaced by lineh() (which turns a font size into axes-fraction for that
 # panel's own height), and every wrapped string is wrapped to chars(), which
 # turns the panel's own width into a character count.  Layout is therefore
 # stable when a number changes length.
 # ---------------------------------------------------------------------------
-FIG_W, FIG_H = 7.35, 10.40
+FIG_W, FIG_H = 7.35, 8.30
 ML, MR = 0.42, 0.14
 CW = FIG_W - ML - MR
 fig = plt.figure(figsize=(FIG_W, FIG_H))
@@ -824,12 +830,8 @@ for x, w, col, head, subs, note in stages:
                  color=VERM if col == VERM else MUTED)
 for x0, x1 in ((0.200, 0.240), (0.480, 0.520), (0.785, 0.825)):
     arrow(axA, x0 + 0.004, (BOX_T + BOX_B) / 2, x1 - 0.004, (BOX_T + BOX_B) / 2, lw=1.0, ms=6)
-_foot = (f"the same usable reads, extended to {SEQLEN} nt, are the coverage channel (tier 2, panel c) and the "
-         f"count column the switch test uses (panel f): {WINDOW_READS:,} reads counted onto the panel-b PAS "
-         f"— the coverage peak it claims plus read ends in [site − {SEQLEN}, site + 25], of which "
-         f"{WINDOW_ENDS_ONLY:,} — against {len(KEPT['clipped'])} clip reads")
-axA.text(0.0, 0.10, textwrap.fill(_foot, chars(CW, 5.4)), ha="left", va="top", fontsize=5.4,
-         color=MUTED, linespacing=1.35)
+# (the coverage-channel / count-column note that stood here moved to the
+#  sidecar Legend, panel-a paragraph, at the 2026-09-02 submission pass)
 
 # ===========================================================================
 # panel b -- one real locus, to scale
@@ -837,7 +839,7 @@ axA.text(0.0, 0.10, textwrap.fill(_foot, chars(CW, 5.4)), ha="left", va="top", f
 BX0, BX1 = -45.5, 32.5              # base-level window, offsets from the called base
 
 # ---- b0: context strip ----------------------------------------------------
-axB0 = style(axbox(ML, 1.42, CW, 0.48, "b0"))
+axB0 = style(axbox(ML, 1.14, CW, 0.48, "b0"))
 axB0.set_xlim(-300, 120)
 axB0.fill_between(COV_X, 0, COV, color=SKY, alpha=0.30, lw=0, zorder=2)
 axB0.plot(COV_X, COV, color=SKY, lw=0.7, zorder=3)
@@ -849,30 +851,30 @@ axB0.set_xlabel("nt from the called cleavage site", fontsize=5.8, color=MUTED, l
 panel_tag(axB0, "b", f"One real locus, drawn to scale — {KEPT['label']}", dy=0.22)
 axB0.add_patch(Rectangle((BX0, 0), BX1 - BX0, COV.max() * 1.50, facecolor=ORANGE, alpha=0.13,
                          edgecolor="none", zorder=1))
+# (the transcript-3'-end / gene-body-end distances and the "a coverage summit
+#  is not one" qualification moved to the sidecar Legend, panel-b paragraph)
 axB0.text(-296, COV.max() * 1.47,
-          f"coverage of the {KEPT['n_usable']:,} accepted reads within ±300 bp, each extended to {SEQLEN} nt"
-          f"  ·  {int(KEPT['tx3p']['distance'])} bp from the {KEPT['tx3p']['transcript']} 3′ end"
-          f" but {abs(KEPT['gene_body_end'] - (KEPT['site0'] + 1)):,} bp from the {KEPT['gene']} gene-body end",
+          f"coverage of the {KEPT['n_usable']:,} accepted reads within ±300 bp, each extended to {SEQLEN} nt",
           fontsize=5.3, color=MUTED, ha="left", va="top")
 axB0.annotate(f"local maximum {int(COV.max()):,} reads at {COV_MAX_OFF:+d} bp",
               xy=(COV_MAX_OFF, COV.max()), xytext=(-105, COV.max() * 1.18),
               fontsize=5.3, color=MUTED, ha="left", va="center",
               arrowprops=dict(arrowstyle="-", lw=0.5, color=MUTED))
-axB0.annotate(f"{int(_cov_site)} reads at the cleavage site:\na coverage summit is not one (07 §3)",
+axB0.annotate(f"{int(_cov_site)} reads at the cleavage site",
               xy=(3, _cov_site), xytext=(10, COV.max() * 1.30),
               fontsize=5.3, color=INK, ha="left", va="top", linespacing=1.3,
               arrowprops=dict(arrowstyle="-", lw=0.5, color=MUTED))
 axB0.text(BX1 - 1, COV.max() * 0.06, "zoom", fontsize=5.2, color=ORANGE, ha="right", va="bottom")
 
 # ---- b1: base-level zoom of the kept call ---------------------------------
-B1_TOP, B1_H = 2.12, 1.44
+B1_TOP, B1_H = 1.84, 1.44
 axB1 = plain(axbox(ML, B1_TOP, CW, B1_H, "b1"))
 axB1.set_xlim(BX0, BX1)
 
 # zoom connectors from the context strip (figure coordinates)
 for xa, xb in ((BX0, 0.0), (BX1, 1.0)):
     fig.add_artist(Line2D([(ML + CW * (xa + 300) / 420) / FIG_W, (ML + CW * xb) / FIG_W],
-                          [(FIG_H - 1.90) / FIG_H, (FIG_H - B1_TOP) / FIG_H],
+                          [(FIG_H - 1.62) / FIG_H, (FIG_H - B1_TOP) / FIG_H],
                           transform=fig.transFigure, color=ORANGE, lw=0.6, alpha=0.45, zorder=0))
 
 
@@ -975,10 +977,11 @@ for xx in (_b0, _b1):
     axB1.add_line(Line2D([xx, xx], [Y_STEM - 0.032, Y_STEM - 0.012], color=INK, lw=0.8, zorder=4))
 axB1.text(BX1 - 0.5, Y_STEM + STEM_MAX * 0.45, "clip reads\nper position", fontsize=5.3,
           color=VERM, ha="right", va="center", linespacing=1.3)
-axB1.text(BX0 + 0.5, Y_STEM - 0.042, textwrap.fill(
-          f"single linkage joins clip positions ≤ {P_RUN['polya_seed_window']} bp apart: these "
-          f"{len(clip_counts)} span {SPAN_CLIP} bp (bracket) and make one cluster, "
-          f"whose read-weighted mode is the call", 68),
+# (the single-linkage sentence moved to the sidecar Legend; a short label
+#  naming the bracket stays on the image)
+axB1.text(BX0 + 0.5, Y_STEM - 0.042,
+          f"cluster (single linkage, gap ≤ {P_RUN['polya_seed_window']} bp): "
+          f"{len(clip_counts)} positions over {SPAN_CLIP} bp — mode = the call",
           ha="left", va="top", fontsize=5.3, color=INK, linespacing=1.35)
 
 # --- sequence, hexamer, internal-priming window, ruler
@@ -1008,7 +1011,7 @@ axB1.text(BX1 - 0.5, Y_SEQ - 0.098,
           ha="right", va="top", fontsize=5.5, color=GREEN)
 
 # ---- legend strip ---------------------------------------------------------
-axLg = plain(axbox(ML, 3.62, CW, 0.12, "blegend"))
+axLg = plain(axbox(ML, 3.34, CW, 0.12, "blegend"))
 leg = [Line2D([], [], color=BLUE, lw=4, alpha=.62, label="aligned bases"),
        Line2D([], [], color=VERM, lw=4, label="non-templated poly(A) soft clip"),
        Line2D([], [], color=GREY, lw=4, alpha=.40, label="read with no qualifying clip"),
@@ -1019,7 +1022,7 @@ axLg.legend(handles=leg, loc="center", ncol=6, frameon=False, handlelength=1.4,
             columnspacing=1.0, handletextpad=0.35, fontsize=5.3)
 
 # ---- b2: the same geometry for a call the filter removed ------------------
-axB2 = plain(axbox(ML, 3.86, CW, 0.96, "b2"))
+axB2 = plain(axbox(ML, 3.58, CW, 0.96, "b2"))
 axB2.set_xlim(BX0, BX1)
 axB2.text(BX0 + 0.5, 1.10, REM["label"], fontsize=6.2, color=PURPLE, ha="left", va="top",
           fontweight="bold")
@@ -1027,8 +1030,10 @@ axB2.text(BX0 + 0.5, 1.10, REM["label"], fontsize=6.2, color=PURPLE, ha="left", 
 cl2 = REM["clipped"].drop_duplicates(subset=["cb", "ub"]).sort_values("clip_len", ascending=False)
 sel2 = np.unique(np.linspace(0, len(cl2) - 1, 4).round().astype(int))
 cl2 = cl2.iloc[sel2].sort_values("clip_len", ascending=False)
-axB2.text(BX0 + 0.5, 0.985, f"{len(sel2)} of {len(REM['clipped'])} clip reads here — read-level evidence "
-          "indistinguishable from the call above", fontsize=5.3, color=INK, ha="left", va="top")
+# ("read-level evidence indistinguishable from the call above" moved to the
+#  sidecar Legend, panel-b paragraph)
+axB2.text(BX0 + 0.5, 0.985, f"{len(sel2)} of {len(REM['clipped'])} clip reads here",
+          fontsize=5.3, color=INK, ha="left", va="top")
 Y2_TOP, RH2, PITCH2 = 0.855, 0.058, 0.076
 y = Y2_TOP
 for _, r in cl2.iterrows():
@@ -1060,7 +1065,7 @@ axB2.text(BX1 - 0.5, Y_SEQ2 - 0.130,
 # panel c -- the two tiers, the filter, the threshold
 # ===========================================================================
 CW_C = 3.50
-axC = plain(axbox(ML, 5.20, CW_C, 1.95, "c"))
+axC = plain(axbox(ML, 4.72, CW_C, 1.62, "c"))
 panel_tag(axC, "c", "From peaks to the pre-registered default (PBMC 10k v3)")
 LC = lineh(axC, 6.0)
 BH = 3.6 * LC
@@ -1104,13 +1109,13 @@ axC.text(0.42, Y2 - BH - LC * 0.30, f"discards {NB['tier1_ip'] - NB['default']:,
          ha="left", va="top", fontsize=5.3, color=MUTED, linespacing=1.35)
 YB = Y3 - BH - LC * 0.95
 CC = chars(CW_C, 5.4)
+# (the gate-PASS sentence, the null-ratio sentence, the tier-2-file note and
+#  the BED-rows-vs-scored-n note moved to the sidecar Legend, panel-c
+#  paragraph; the definition of the default and a short label for the grey
+#  null tick stay on the image)
 for i, (txt, col, fs, bold) in enumerate([
         ("= the pre-registered default: tier 1 ∩ IP-pass ∩ ≥ 2 distinct clip molecules", GREEN, 5.6, True),
-        (f"gate P@100 ≥ 0.50: PASS on all three — {S['default']['P']:.4f} PBMC, 0.7450 / 0.7572 mice (19 §1)", INK, 5.4, False),
-        (f"3-seed gene-body-shuffled null {S['default']['null_P']:.4f} (grey tick): "
-         f"{S['default']['P'] / S['default']['null_P']:.0f}× above chance", MUTED, 5.4, False),
-        ("tier 2 goes to its own file: not in the default, not switch-tested here", SKY, 5.4, False),
-        ("counts are BED rows; each P@100 is scored on primary contigs only (n 7–64 lower)", MUTED, 5.0, False)]):
+        (f"grey tick = 3-seed gene-body-shuffled null P@100 ({S['default']['null_P']:.4f})", MUTED, 5.4, False)]):
     axC.text(0.0, YB - LC * 1.10 * i, textwrap.fill(txt, CC), ha="left", va="top", fontsize=fs,
              color=col, fontweight="bold" if bold else "normal")
 
@@ -1118,7 +1123,7 @@ for i, (txt, col, fs, bold) in enumerate([
 # panel d -- the internal-priming filter, measured on the whole call set
 # ===========================================================================
 DX, DW = ML + 3.78, CW - 3.78
-axD = style(axbox(DX, 5.36, DW, 0.95, "d"))
+axD = style(axbox(DX, 4.88, DW, 0.95, "d"))
 panel_tag(axD, "d", "What the filter removes, measured", dy=0.30)
 axD.add_patch(Rectangle((IP_LO, 0), IP_HI - IP_LO, 1.05, facecolor=PURPLE, alpha=0.08,
                         edgecolor="none", zorder=1))
@@ -1141,29 +1146,15 @@ axD.annotate("genomic A-tract\nending at the call", xy=(-3, 0.95), xytext=(9, 1.
              fontsize=5.2, color=PURPLE, ha="left", va="top", linespacing=1.3,
              arrowprops=dict(arrowstyle="-", lw=0.5, color=PURPLE))
 
-axDt = plain(axbox(DX, 6.60, DW, 0.58, "dtext"))
-LD = lineh(axDt, 5.4)
-CD = chars(DW, 5.4)
-dlines = [
-    (f"{N_REMOVED:,} of {NB['ge2_noip']:,} ≥2-molecule calls removed "
-     f"({N_REMOVED / NB['ge2_noip']:.1%}): P@100 {S['ge2_noip']['P']:.3f} → {S['default']['P']:.3f}, "
-     f"R_det {S['ge2_noip']['R_det']:.3f} → {S['default']['R_det']:.3f}", INK),
-    (f"the removed calls score {P_REMOVED:.3f} against the atlas, the kept ones "
-     f"{S['default']['P']:.3f} [computed here]", INK),
-    (f"{TRIG['a6_rule'] / TRIG['n']:.2%} of removals fire on the ≥{P_RUN['ip_a_stretch']}-A run rule, "
-     f"{TRIG['a_fraction_rule'] / TRIG['n']:.2%} on the ≥{P_RUN['ip_a_fraction']:.0%} A-fraction rule; "
-     f"the run ends at or before the call in {TRIG['run_ends_at_or_before_call']:.0%}", MUTED),
-]
-yy = 0.98
-for txt, col in dlines:
-    wrapped = textwrap.fill(txt, CD)
-    axDt.text(0.0, yy, wrapped, ha="left", va="top", fontsize=5.4, color=col, linespacing=1.35)
-    yy -= LD * (wrapped.count("\n") + 1) + LD * 0.35
+# (the three panel-d statistics sentences that stood in a text block below the
+#  profile plot moved to the sidecar Legend, panel-d paragraph, verbatim in
+#  substance: removed/kept counts and the P/R_det moves, the removed set's own
+#  precision vs the kept set's, and the trigger breakdown)
 
 # ===========================================================================
 # panel e -- the molecule threshold is a trade surface; one point was gated
 # ===========================================================================
-axE = style(axbox(ML, 7.55, 2.48, 1.32, "e"))
+axE = style(axbox(ML, 6.60, 2.48, 1.32, "e"))
 panel_tag(axE, "e", "One point on a trade surface")
 DS = [("pbmc", BLUE, "PBMC 10k v3"), ("mouse1", GREY, "testis mouse 1"), ("mouse2", GREY, "testis mouse 2")]
 for ds, col, lab in DS:
@@ -1185,21 +1176,20 @@ axE.annotate("the only pre-registered point", (_d.recall_detected_genes, _d.atla
 axE.set_xlabel("detected-gene recall R_det @100 bp", fontsize=5.8, color=MUTED, labelpad=0.5)
 axE.set_ylabel("atlas-agreement P @100 bp", fontsize=5.8, color=MUTED, labelpad=1)
 axE.set_xlim(0.055, 0.325)
-axE.set_ylim(0.28, 1.16)
+axE.set_ylim(0.30, 1.03)     # top headroom shrank with the F1 note's move to the legend
 axE.set_yticks([0.4, 0.6, 0.8, 1.0])
 axE.grid(color=GRID, lw=0.5, alpha=0.7)
 axE.legend(loc="lower left", frameon=False, fontsize=5.2, handlelength=1.2, borderpad=0.05,
            labelspacing=0.2)
-axE.text(0.99, 0.99, f"F1_det is higher at ≥1 molecule ({_p1.F1_detected_genes:.3f})\n"
-                     f"than at the default ({_p.F1_detected_genes:.3f}): the default is\n"
-                     "a reliability choice, not the F1 optimum",
-         transform=axE.transAxes, ha="right", va="top", fontsize=5.3, color=INK, linespacing=1.4)
+# (the F1-honesty note — F1_det is higher at >=1 molecule than at the default,
+#  a reliability choice, not the F1 optimum — moved to the sidecar Legend,
+#  panel-e paragraph)
 
 # ===========================================================================
 # panel f -- what the default call set is used for
 # ===========================================================================
 FX, FW = ML + 2.88, CW - 2.88
-axF = plain(axbox(FX, 7.55, FW, 1.32, "f"))
+axF = plain(axbox(FX, 6.60, FW, 1.32, "f"))
 panel_tag(axF, "f", "What the paper does with the default call set")
 LF = lineh(axF, 5.3)
 CF = chars(FW * 0.94, 5.2)
@@ -1209,16 +1199,18 @@ STEPS = [
       f"[site − {SEQLEN}, site + 25] outside it, split at midpoints between neighbouring PAS"]),
     (BLUE, "PAS usage per cell type",
      ["within-gene proportions, per-cell-type PAS counts, 3′UTR length"]),
+    # (the "other five arms fail the pre-registered calibration rule" clause and
+    #  the "yields are Fig 5's numbers" note moved to the sidecar Legend,
+    #  panel-f paragraph)
     (GREEN, "calibrated switch test (14)",
      ["Fisher · --count-mode cells · marker pre-selection OFF",
       f"{FDR_NULL_P05:.1%} of label-shuffled tests p < 0.05; 0/{FDR_NULL_RUNS} null runs with a "
-      f"q < 0.05 hit; the other five arms fail the pre-registered calibration rule"]),
+      f"q < 0.05 hit"]),
     (GREEN, "replication across biological units (20)",
-     ["q < 0.05 in ≥ 2 patients, same direction, opposite-direction veto, |Δproportion| ≥ 0.1",
-      "yields and their label-shuffle nulls are Fig 5's numbers, not this figure's"]),
+     ["q < 0.05 in ≥ 2 patients, same direction, opposite-direction veto, |Δproportion| ≥ 0.1"]),
 ]
 yy = 1.0
-for col, head, subs in STEPS:
+for step_i, (col, head, subs) in enumerate(STEPS):
     wrapped = [textwrap.fill(s, CF) for s in subs]
     nlines = sum(w.count("\n") + 1 for w in wrapped)
     h = LF * (1.15 + 1.05 * nlines)
@@ -1230,15 +1222,16 @@ for col, head, subs in STEPS:
         axF.text(0.026, yline, w, fontsize=5.2, color=INK, ha="left", va="top", linespacing=1.3)
         yline -= LF * 1.05 * (w.count("\n") + 1)
     yy -= h
-    if yy > 0.06:
+    if step_i < len(STEPS) - 1:          # arrows join boxes; none dangles after the last
         arrow(axF, 0.06, yy, 0.06, yy - LF * 0.45, ms=5.0)
         yy -= LF * 0.60
 
 # ===========================================================================
-# footer caption
+# legend (sidecar only -- the on-figure footer was retired at the 2026-09-02
+# submission pass; the sidecar '## Legend' is the single source of the caption)
 # ===========================================================================
 caption = (
-    f"Fig 1 | What PeakATail does, drawn on the data it was measured on (code {CODE}; PBMC 10k v3 arm run "
+    f"Figure 1 | What PeakATail does, drawn on the data it was measured on (code {CODE}; PBMC 10k v3 arm run "
     f"{RUN_STAMP}). "
     f"(a) A read is used when it is mapped, on the strand of the pass, carries a {P_RUN['cb_len']}-nt CB tag and "
     f"aligns over \u2264 {SEQLEN} nt; it enters the poly(A) channel when its 3\u2032-side terminal soft clip is "
@@ -1259,23 +1252,16 @@ caption = (
     f"chemistry, and pipelines that trim poly(A) before alignment destroy this evidence (10 \u00a7R2); the "
     f"panel-b loci are examples chosen by stated criteria, not summaries; --polya-min-umis is 1 at the caller "
     f"and \u22652 molecules is the pre-registered OUTPUT. "
-    f"Full caption and sources: manuscript/figures/{NAME}.caption.md; every printed value: "
-    f"results/figures/manuscript/{NAME}*.tsv."
 )
-_wrapped = textwrap.fill(caption, 168)
-_nlines = _wrapped.count("\n") + 1
-assert _nlines <= 11, f"caption is {_nlines} wrapped lines; >11 runs off the canvas"
-fig.text(ML / FIG_W, (FIG_H - 9.15) / FIG_H, _wrapped, fontsize=5.5, color=INK, va="top",
-         ha="left", linespacing=1.38)
 
 # ---------------------------------------------------------------------------
 # write
 # ---------------------------------------------------------------------------
-for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
     fig.savefig(p, **kw)
     print("wrote", p)
-fig.savefig(OUTDIR / f"{NAME}.png", dpi=300)
+fig.savefig(OUTDIR / f"{NAME}.png", dpi=600)
 
 pd.DataFrame(rows_tsv).to_csv(OUTDIR / f"{NAME}.tsv", sep="\t", index=False)
 pd.DataFrame(drawn_reads).to_csv(OUTDIR / f"{NAME}_reads.tsv", sep="\t", index=False)
@@ -1298,9 +1284,11 @@ print("wrote", OUTDIR / f"{NAME}.tsv", "and 4 companion TSVs")
 # ---------------------------------------------------------------------------
 cap_md = f"""# Fig 1 — `fig1_overview` caption (generated by `scripts/manuscript_figures/fig1_overview.py`)
 
+## Legend
+
 {caption}
 
-## Panel-by-panel
+### Panel-by-panel
 
 **Panel a — ingestion.** The four acceptance conditions are `ema/countmatrix/read.py:read_check` as run
 (`strategy={P_RUN['strategy']}`, `--seq-len {SEQLEN}`, `--barcode-tag {P_RUN['barcode_tag']}`, `cb_len
@@ -1313,7 +1301,10 @@ control: it constrains alignment artefacts, not genomic A-runs — which is what
 `pas_support.tsv` rather than used as the gate. The genome-wide clip rate **{CLIP_RATE_GW:.4%}**
 ({CLIP_READS_GW:,} / {CB_READS_GW:,} accepted CB reads) is `23_algorithm_roadmap.md` §2 / `results/algo_headroom/VERIFY`
 §5 and **supersedes the 1.152% published in `10_caller_fix_plan.md`**, which was a head-sampling artefact of the
-QC estimator.
+QC estimator. The same usable reads, extended to {SEQLEN} nt, are the coverage channel (tier 2, panel c) and the
+count column the switch test uses (panel f): {WINDOW_READS:,} reads counted onto the panel-b PAS — the coverage
+peak it claims plus read ends in [site − {SEQLEN}, site + 25], of which {WINDOW_ENDS_ONLY:,} — against
+{len(KEPT['clipped'])} clip reads.
 
 **Panel b — one real locus.** {KEPT['label']}, PAS id {KEPT['pas_id']} of the v2 IP arm. Context strip: coverage
 of the {KEPT['n_usable']:,} accepted reads within ±300 bp, each extended to {SEQLEN} nt as the caller's coverage
@@ -1322,7 +1313,8 @@ carries {int(_cov_site)} — the reason a coverage summit is not a cleavage esti
 short of it, `07` §3). Zoom: {len(show)} of the {len(KEPT['clipped'])} qualifying clip reads
 ({KEPT['molecules_recomputed']} distinct molecules) drawn to scale with their real soft-clipped sequence,
 {len(un_show)} reads with no qualifying clip for contrast, the {len(clip_counts)} clip positions of the cluster with their read
-counts, the cluster's own {SPAN_CLIP} bp extent (bracket; the {P_RUN['polya_seed_window']} bp parameter bounds the
+counts, the cluster's own {SPAN_CLIP} bp extent (bracket; single linkage joins clip positions ≤
+{P_RUN['polya_seed_window']} bp apart into one cluster whose read-weighted mode is the call — the parameter bounds the
 GAP between consecutive positions, not the span, so the bracket is the cluster and not the parameter), the
 canonical AATAAA at {HEX_OFF:+d}, and the internal-priming window (offsets
 {IP_LO + 0.5:+.0f}…{IP_HI - 0.5:+.0f} from the called base). The lower track is {REM['label']} (PAS id {REM['pas_id']}), a ≥2-molecule tier-1 call
@@ -1359,7 +1351,11 @@ BED score 0) → ≥2 distinct clip molecules {NB['default']:,} = the pre-regist
 (one scorer, `score_tool.py`, 100 bp point matching, strand-matched, curated PolyASite 2.0 representative sites):
 tier 2 {S['tier2_ip']['P']:.4f} (n {S['tier2_ip']['n']:,}), tier 1 ≥1 molecule {S['tier1_ip']['P']:.4f}
 (n {S['tier1_ip']['n']:,}), default {S['default']['P']:.4f} (n {S['default']['n']:,}), 3-seed gene-body-shuffled
-null {S['default']['null_P']:.4f}. The BED row counts are 7–64 above the scored n because the scorer drops
+null {S['default']['null_P']:.4f}. The pre-registered gate P@100 ≥ 0.50 is a PASS on all three arms —
+{S['default']['P']:.4f} PBMC, 0.7450 / 0.7572 mice (`19` §1) — and the default sits
+{S['default']['P'] / S['default']['null_P']:.0f}× above its shuffled null (grey tick in the in-node precision
+bars). Tier 2 goes to its own file: it is not in the default and is not switch-tested here. The BED row counts
+are 7–64 above the scored n because the scorer drops
 non-primary contigs (`21` §10 item 1).
 
 **Panel d — the internal-priming filter, measured here.** Mean genomic A-fraction by transcript-oriented offset
@@ -1407,7 +1403,7 @@ switches are reported only when they replicate in ≥2 patients in the same dire
 veto and |Δproportion| ≥ 0.1 (`20`). **No replication or switch count appears on this figure**: those numbers are
 Fig 5's and are being regenerated on the Stage-3 v2 chain.
 
-## Caveats that travel with this figure
+### Caveats that travel with this figure
 
 1. Atlas-agreement precision is agreement with a curated atlas, not ground truth: atlas-novel true sites count as
    false positives, and the recall denominator is the atlas restricted to genes detected in the dataset.
@@ -1427,7 +1423,19 @@ Fig 5's and are being regenerated on the Stage-3 v2 chain.
    method is stated on the figure and in this caption, and the same pipeline reproduces the scorer's precision on
    the kept set as a control.
 
-## Index paragraph (for `05_figure_index.md` — add by hand, this script does not edit it)
+## Provenance
+
+- Script: `scripts/manuscript_figures/fig1_overview.py` (writes the figure, this sidecar and every audit TSV).
+- Caller code {CODE} (frozen worktree `tools/pa-polya-run-9dfdefb3`); PBMC 10k v3 arm run {RUN_STAMP};
+  pre-registration: {PREREG}.
+- Every printed value, with its method and source: `results/figures/manuscript/{NAME}.tsv`, plus the
+  `{NAME}_reads.tsv`, `{NAME}_sequence.tsv`, `{NAME}_ipprofile.tsv` and `{NAME}_trade.tsv` companions and the
+  cached intermediates in `results/figures/manuscript/{NAME}_work/`.
+- Sources of truth: `19_final_gate_v2.md` §1/§2 (verifier verdict FIXED), `22_performance_roadmap.md` §6,
+  `23_algorithm_roadmap.md` §2 + `results/algo_headroom/VERIFY` §5, `14_switch_calibration_v2.md` (SOUND),
+  `20_stage3_replication.md` (rule only), and the run's own `run_config.json` / `pas_support.tsv`.
+
+### Index paragraph (for `05_figure_index.md` — add by hand, this script does not edit it)
 
 **fig1_overview — Fig 1, what the method is, on real data ({RUN_STAMP[:10]}, built from verified artefacts
 plus quantities computed in-script, each with its method recorded in `{NAME}.tsv`).** Six panels: (a) ingestion and the acceptance rules, with the corrected

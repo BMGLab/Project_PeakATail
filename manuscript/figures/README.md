@@ -2,10 +2,18 @@
 
 Final sequential numbering for the draft submission (Genome Biology, Method track), executed
 2026-09-02. Naming convention: unpadded `fig1_<slug>` / `figS1_<slug>`; one stem owns every
-artefact — `scripts/manuscript_figures/<stem>.py` writes `<stem>.png` (300 dpi), `<stem>.pdf`
+artefact — `scripts/manuscript_figures/<stem>.py` writes `<stem>.png` (600 dpi,
+publication resolution since the 2026-09-02 submission surgery pass), `<stem>.pdf`
 (vector, fonttype 42, no Type 3), `<stem>.caption.md` (the caption is script-written, never
 hand-edited) here, plus `results/figures/manuscript/<stem>*.tsv` (every plotted value, for
 auditing). Never edit these files by hand; edit the script and re-run it.
+
+Legend location (submission surgery pass, 2026-09-02): the on-figure footer captions,
+figure-level titles and multi-sentence in-panel notes of the working phase moved into each
+sidecar's `## Legend` section, which is the single source of the journal legend (panel
+letters, short titles, axis labels and data annotations stay on the images); `## Provenance`
+below it holds sources and audit pointers. Every binding caveat listed in
+`../05_figure_index.md` sits in the Legend section, not in Provenance.
 
 The machine-checkable roster (status + exact regenerate command per figure) is
 [`FIGURES_MANIFEST.md`](FIGURES_MANIFEST.md); the old→new stem trace is
@@ -80,8 +88,10 @@ python3 scripts/manuscript_figures/<stem>.py
 
 Version switches (kept through the rename — they select runs, not stems; v1 renders stay
 reproducible): `FINAL_BENCHMARK_VERSION=v1` (fig2_accuracy), `TRUSTED_NOVEL_VERSION=v1`
-(figS7_novelfunnel), `LAUGHNEY_SWITCHES_VERSION=v1_code` (fig6_cohort), `FIG3_WORKDIR`
-(fig3_tradeoff cache).
+(figS7_novelfunnel), `LAUGHNEY_SWITCHES_VERSION=v1_code` (fig6_cohort),
+`SPERMATOGENESIS_VERSION=v1` (fig5_spermatogenesis), `FIG3_WORKDIR`
+(fig3_tradeoff cache). Note: fig2, fig5 and fig6 write both versions' outputs over the same
+file stems, so after a v1 render re-run the default to restore the v2 paper files.
 
 PDFs are vector throughout (no rasterized panels) with subsetted TrueType fonts embedded and
 no Type 3 fonts, which is what journals require. Every script asserts the 8-pixel blank-edge

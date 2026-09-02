@@ -49,8 +49,10 @@ NAMING RULES (manuscript/01 number policy)
     the pre-registered default and is not plotted.
 
 OUTPUTS
-  manuscript/figures/fig2_accuracy.{png,pdf}   (PNG 300 dpi, PDF fonttype 42)
-  manuscript/figures/fig2_accuracy.caption.md  (sidecar caption)
+  manuscript/figures/fig2_accuracy.{png,pdf}   (PNG 600 dpi, PDF fonttype 42)
+  manuscript/figures/fig2_accuracy.caption.md  (sidecar: '## Legend' = the journal
+                                                legend, single source of the
+                                                caption; '## Provenance')
   results/figures/manuscript/fig2_accuracy.tsv            (every point, a/b/c)
   results/figures/manuscript/fig2_accuracy_tiers.tsv      (panel d)
   results/figures/manuscript/fig2_accuracy_reference_lines.tsv (gates, isolines, nulls)
@@ -316,9 +318,14 @@ tiers["mouse2_frac_tier1_single_molecule"] = m_single["mouse2"][1]
 # ---------------------------------------------------------------------------
 # figure
 # ---------------------------------------------------------------------------
-fig = plt.figure(figsize=(8.3, 10.4))
+# 2026-09-02 submission pass: the footer caption moved to the sidecar Legend,
+# so the canvas height shrank by the freed band (10.4 -> 9.0 in; the bottom
+# margin now holds only the panel c/d x labels) and the width narrowed toward
+# the double-column norm (8.3 -> 7.5 in; the right-anchored path labels of
+# panels a/b do not tolerate 180 mm).
+fig = plt.figure(figsize=(7.5, 9.0))
 gs = fig.add_gridspec(2, 2, height_ratios=[1.0, 0.82], width_ratios=[1, 1],
-                      left=0.15, right=0.975, top=0.965, bottom=0.18,
+                      left=0.166, right=0.975, top=0.960, bottom=0.052,
                       hspace=0.38, wspace=0.30)
 axA = fig.add_subplot(gs[0, 0])
 axB = fig.add_subplot(gs[0, 1])
@@ -453,7 +460,9 @@ labels_H = {
     "path0": ("shipped\n(pre-fix)", -4, 7, "right", "bottom"),
     "path1": ("both tiers (no IP)", 0, -8, "center", "top"),
     "path2": ("tier-1 ≥1 mol\n(no IP)", 6, 0, "left", "center"),
-    "path3": ("tier-1 ≥1 mol (IP)", 7, 13, "left", "center"),
+    # at the 7.5 in canvas the old above-right slot (7, 13) hits the "F1 0.4"
+    # isoline tag and the left slot hits the original-gate label; level-right clears both
+    "path3": ("tier-1 ≥1 mol (IP)", 7, -1, "left", "center"),
     "path4": ("precision default\n(tier-1, IP, ≥2 mol)", 9, 0, "left", "center"),
 }
 draw_path(axA, subH, PATH_ROLES_H, paired=False, labels=labels_H)
@@ -461,11 +470,11 @@ axA.set_xlim(0, XMAX_H); axA.set_ylim(0, 0.9)
 axA.set_xlabel("detected-gene recall R_det @100 bp (n = 285,136 atlas sites)")
 axA.set_ylabel("atlas-agreement precision @100 bp")
 axA.set_title("a   PBMC 10k v3 (human, single donor)", loc="left", fontweight="bold")
-# right-anchored at 0.90 (not 0.985) and lifted to y=0.040 so the two-line block clears BOTH
-# the right-edge "F1 0.1" isoline label and the PBMC null ticks (drawn at P ~ 0.022, which the
-# previous y=0.02 placement ran straight through -- the ticks crossed the glyphs).
-axA.text(0.900, 0.040, "scTail: not runnable on this BAM (R1 = 28 bp)\n"
-         "| = 3-seed genic-shuffle null (mean) per call set",
+# right-anchored at 0.90 (not 0.985) and lifted to y=0.040 so the line clears BOTH
+# the right-edge "F1 0.1" isoline label and the PBMC null ticks (drawn at P ~ 0.022).
+# (the "scTail: not runnable" note moved to the sidecar Legend, panel-a paragraph;
+#  the null-tick key stays: it labels a drawn mark)
+axA.text(0.900, 0.040, "| = 3-seed genic-shuffle null (mean) per call set",
          transform=axA.transAxes, ha="right", va="bottom", fontsize=5.8, color=MUTED)
 hH.append((Line2D([], [], marker="o", ms=5.5, color=COLOR["PeakATail"], mec=COLOR["PeakATail"], lw=1.1),
            "PeakATail operating points (final run, arrows = filter steps)"))
@@ -490,15 +499,16 @@ draw_path(axB, subM, PATH_ROLES_M, paired=True, labels=labels_M)
 axB.set_xlim(0, XMAX_M); axB.set_ylim(0, 0.9)
 axB.set_xlabel("detected-gene recall R_det @100 bp (n = 126,686)")
 axB.set_ylabel("atlas-agreement precision @100 bp")
-axB.set_title("b   GSE104556 testis (2 mice, mean ± range)", loc="left", fontweight="bold")
-# right-anchored at 0.90 (not 0.985) so the 3-line block clears the right-edge "F1 0.1" isoline label
-axB.text(0.900, 0.02, "all mouse arms ran with the IP filter (no ‘no IP’ step)\n"
-         "SCAPTURE: mouse 1 plotted (mouse-2 sites scored 0.672; 15 §3)\n"
-         "| = 3-seed genic-shuffle null (mean) per call set",
+axB.set_title("b   GSE104556 testis (2 mice, mean ± range)", loc="left", fontweight="bold",
+              fontsize=7.5)   # 8 pt overruns the right margin at the 7.5 in canvas
+# right-anchored at 0.90 (not 0.985) so the block clears the right-edge "F1 0.1" isoline label.
+# (the "all mouse arms ran with the IP filter" and SCAPTURE mouse-2 notes moved to
+#  the sidecar Legend, panel-b paragraph; the null-tick key stays)
+axB.text(0.900, 0.02, "| = 3-seed genic-shuffle null (mean) per call set",
          transform=axB.transAxes, ha="right", va="bottom", fontsize=5.8, color=MUTED)
 style(axB)
-fig.legend([h for h, _ in hH], [n for _, n in hH], loc="center", bbox_to_anchor=(0.56, 0.528),
-           ncol=4, frameon=False, handletextpad=0.4, columnspacing=1.4, labelspacing=0.4)
+fig.legend([h for h, _ in hH], [n for _, n in hH], loc="center", bbox_to_anchor=(0.55, 0.455),
+           ncol=3, frameon=False, handletextpad=0.4, columnspacing=1.4, labelspacing=0.4)
 
 # ---- panel c: n sites per call set (log) ---------------------------------
 axC.set_label("c")
@@ -599,20 +609,23 @@ axD.text(GATE_P * x_scale, 0.44, "gate 0.50", ha="center", va="bottom", fontsize
 axD.text(0, -0.46, "atlas-agreement precision @100 bp of each scored output\n"
          "(x axis: 0 → 1 spans the width of the top bar)",
          fontsize=5.7, color=MUTED, va="top")
-axD.text(0, 1.95, textwrap.fill(f"{frac_single*100:.1f}% of tier-1 sites are single-molecule ({n_single:,} / {int(t1.n):,}) "
-         f"and are dropped by the default; mouse {m_single['mouse1'][1]*100:.0f}% / {m_single['mouse2'][1]*100:.0f}%.", 62),
-         fontsize=6.0, color=INK, va="bottom")
-axD.set_xlim(0, both.n * 1.30); axD.set_ylim(-0.80, 2.55)
+# (the single-molecule-share sentence moved to the sidecar Legend, panel-d
+#  paragraph; the freed headroom is taken out of the y range)
+axD.set_xlim(0, both.n * 1.30); axD.set_ylim(-0.80, 2.05)
 axD.set_yticks([]); axD.set_xticks([0, 1e5, 2e5, 3e5])
 axD.set_xticklabels(["0", "100k", "200k", "300k"])
 axD.set_xlabel("n sites (top bar)")
-axD.set_title("d   PeakATail tier decomposition, PBMC IP arm", loc="left", fontweight="bold")
+axD.set_title("d   Tier decomposition, PBMC IP arm", loc="left", fontweight="bold")
+# ("PeakATail" dropped from the on-figure title for the 7.5 in canvas — only
+#  PeakATail has tiers, and the legend names the panel in full)
 for s in ("top", "right", "left"):
     axD.spines[s].set_visible(False)
 axD.spines["bottom"].set_color(GRID)
 axD.tick_params(colors=MUTED, length=2.5, labelsize=7)
 
-# ---- footer caption -------------------------------------------------------
+# ---- legend (sidecar only -- the on-figure footer was retired at the
+# 2026-09-02 submission pass; the sidecar '## Legend' is the single source of
+# the caption) ---------------------------------------------------------------
 pA_pp = pick(MOUSE, "path4", "mouse1")
 poly_h = subH[subH.tool == "polyApipe"].iloc[0]
 poly_m = subM[subM.tool == "polyApipe"]
@@ -630,7 +643,7 @@ _ip = VERSIONS["ip_trade"]
 ip_note = _ip[0].upper() + _ip[1:]
 
 caption = (
-    "Fig 2 | Trustworthy PAS detection: the final Stage-2 run (PeakATail code "
+    "Figure 2 | Trustworthy PAS detection: the final Stage-2 run (PeakATail code "
     f"{CODE_COMMIT}, {VERSIONS['commit_note']}) against the competitor panel. "
     "Definitions: atlas-agreement precision = fraction of calls within 100 bp (point, strand-matched) of a "
     "PolyASite 2.0 representative site; it is agreement with a curated atlas, not ground truth (atlas-novel "
@@ -651,28 +664,21 @@ caption = (
     # with 120,916 of polyApipe's. The builder's first replacement dropped the limitation entirely and kept
     # only the favourable half; both halves must be here. So: the single-point deltas STAY (rel_h / rel_m /
     # dF1_h / dF1_m, data-driven), and the matched-N context is added and bounded to a specific N.
-    # Verified source: manuscript/25_competitive_position.md §2, §8.1. The in-figure caption is capped at 12
-    # wrapped lines (assert below) — this clause measures exactly 12; the full framing lives in `framing_md`.
+    # Verified source: manuscript/25_competitive_position.md §2, §8.1. (This caption is now the sidecar
+    # Legend, not an on-figure footer, so the old 12-line cap no longer applies; the full framing follows
+    # in `framing_md`, in the same Legend section.)
     f"Caveats: single PBMC donor / BAM; the two mice are one study and chemistry; the default's recall is below polyApipe's "
     f"({rel_h:+.0f}% / {rel_m:+.0f}%), F1_det lead {dF1_h:+.3f} / {dF1_m:+.3f} — at 2.6x fewer calls; at polyApipe's own N of 120,916 "
     f"PeakATail leads on both axes, 0.4036 / 0.2336 vs 0.3800 / 0.1988 (25 §2). "
-    "The non-IP PBMC ≥2-molecule file (pas_tier1_ge2mol_noIP_POSTHOC) is not the default and is not shown. "
-    f"Verified: {VERSIONS['verified_short']}. Every plotted value: "
-    "results/figures/manuscript/fig2_accuracy*.tsv."
+    "The non-IP PBMC ≥2-molecule file (pas_tier1_ge2mol_noIP_POSTHOC) is not the default and is not shown."
 )
-_cap_wrapped = textwrap.fill(caption, 165)
-_n_cap_lines = _cap_wrapped.count("\n") + 1
-# approved layout: the footer block must stay clear of the panel c/d x-axis labels
-assert _n_cap_lines <= 12, f"caption is {_n_cap_lines} wrapped lines; >12 collides with the panel x labels"
-fig.text(0.03, 0.012, _cap_wrapped, fontsize=5.8, color=INK, va="bottom", ha="left",
-         linespacing=1.35)
 
-for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
     fig.savefig(p, **kw)
     print("wrote", p)
 p = OUTDIR / f"{NAME}.png"
-fig.savefig(p, dpi=300); print("wrote", p)
+fig.savefig(p, dpi=600); print("wrote", p)
 
 # ---------------------------------------------------------------------------
 # TSVs: every plotted value
@@ -721,6 +727,8 @@ Full grid, tie-break brackets and provenance: `manuscript/25_competitive_positio
 
 cap_md = f"""# Fig 2 — `fig2_accuracy` caption (generated by `scripts/manuscript_figures/fig2_accuracy.py`; renamed 2026-09-02, see FIGURE_MAP.tsv)
 
+## Legend
+
 {caption}
 
 **Panel a** — PBMC 10k v3: atlas-agreement precision @100 bp (y) vs detected-gene recall R_det @100 bp (x) for
@@ -737,7 +745,8 @@ never describe the mouse-2 run as invalid (21 §11 stale-caption fix, 2026-09-02
 scale. **Panel d** — PeakATail tier decomposition on the PBMC IP arm: tier-2 / tier-1 single-molecule / tier-1 ≥2
 molecules (= default), with the atlas-agreement precision @100 bp of each scored output (tier-2 {t2.P:.3f},
 tier-1 ≥1 mol {t1.P:.3f}, default {dflt.P:.3f}); {frac_single*100:.1f}% of tier-1 sites are single-molecule
-({n_single:,} / {int(t1.n):,}; mouse {m_single['mouse1'][1]*100:.1f}% / {m_single['mouse2'][1]*100:.1f}%).
+({n_single:,} / {int(t1.n):,}) and are dropped by the default (mouse {m_single['mouse1'][1]*100:.1f}% /
+{m_single['mouse2'][1]*100:.1f}%).
 Definition matters here: {VERSIONS['single_mol_note']}.
 
 **Atlas-independent corroboration (C2; 16 §v2, verified FIXED).** The same precision default is corroborated by
@@ -751,9 +760,13 @@ Fig S7 (the pre-registered trusted-novel NEGATIVE result lives there); every val
 
 {framing_md}
 
+## Provenance
+
+Verified: {VERSIONS['verified_short']}. Every plotted value: `results/figures/manuscript/fig2_accuracy*.tsv`.
 Sources: `{VERSIONS["gate_doc_path"]}` + `{VERSIONS["verified_table"]}` ({VERSIONS["verdict"]}) and the score TSVs listed in the `source` column of
 `results/figures/manuscript/fig2_accuracy.tsv`. Reference lines: `fig2_accuracy_reference_lines.tsv`;
-panel d: `fig2_accuracy_tiers.tsv`.
+panel d: `fig2_accuracy_tiers.tsv`. Script: `scripts/manuscript_figures/fig2_accuracy.py`
+(env switch `FINAL_BENCHMARK_VERSION={VERSION}` selected this run).
 """
 p = FIGDIR / f"{NAME}.caption.md"; p.write_text(cap_md); print("wrote", p)
 

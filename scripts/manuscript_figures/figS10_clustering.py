@@ -36,15 +36,15 @@ each cited to a verified document)
            label on the retired sweep (results/paramsweep/VERDICTS.md).
 
 OUTPUTS
-  manuscript/figures/figS10_clustering.{png,pdf}   (PNG 300 dpi, PDF fonttype 42)
-  manuscript/figures/figS10_clustering.caption.md  (sidecar, script-written)
+  manuscript/figures/figS10_clustering.{png,pdf}   (PNG 600 dpi, PDF fonttype 42)
+  manuscript/figures/figS10_clustering.caption.md  (sidecar, script-written --
+      single source of the journal legend; the figure image carries no prose)
   results/figures/manuscript/figS10_clustering.tsv        (panels a+b values)
   results/figures/manuscript/figS10_clustering_sweep.tsv  (panel c values)
 
 Run:  export LC_ALL=C OMP_NUM_THREADS=1; python3 scripts/manuscript_figures/figS10_clustering.py
 """
 import os
-import textwrap
 from pathlib import Path
 
 os.environ.setdefault("OMP_NUM_THREADS", "1")
@@ -171,9 +171,13 @@ libsize_row = dn.loc["A2_trim_default -> A3_libsize"]
 # ---------------------------------------------------------------------------
 # figure
 # ---------------------------------------------------------------------------
-fig = plt.figure(figsize=(8.3, 8.6))
+# canvas: the figure-level title/description chrome and the footer caption moved
+# to the legend sidecar; height shrinks by the freed bands.  Width stays 8.3 in
+# (211 mm): a 7.1 in (180 mm) attempt clipped panel c's y tick labels and panel
+# b's title -- legibility outranks the double-column width target here.
+fig = plt.figure(figsize=(8.3, 6.65))
 gs = fig.add_gridspec(2, 2, width_ratios=[1.0, 1.12], height_ratios=[1.0, 1.18],
-                      left=0.135, right=0.965, top=0.862, bottom=0.20,
+                      left=0.135, right=0.965, top=0.935, bottom=0.083,
                       hspace=0.55, wspace=0.44)
 axA = fig.add_subplot(gs[0, 0])
 axC = fig.add_subplot(gs[1, 0])
@@ -267,11 +271,9 @@ axB.legend(handles=[
     Line2D([], [], marker="o", ls="", ms=4.6, mfc="white", mec=C_SITES, mew=1.3, label="ARI (Laughney)"),
     Line2D([], [], marker="o", ls="", ms=5.0, mfc=C_GENE, mec="white", mew=0.8, label="PBMC 10k v3"),
 ], loc="lower right", frameon=False, fontsize=6.0, handletextpad=0.35, labelspacing=0.3)
-axB.text(0.02, 0.845,
-         f"AMI range {min_ami:.3f}–{max_ami:.3f};\nAMI > ARI in 17/17\n"
-         f"scored on GEX-labelled cells\nonly (median coverage {med_cov:.3f};\n"
-         f"{n_cov_lo}/17 below 0.5); coverage does\nnot drive agreement\n"
-         f"(Spearman ρ = {rho_cov.statistic:.2f}, p = {rho_cov.pvalue:.2f})",
+# the coverage/scoring caveat block moved to the legend (sidecar); a short data
+# annotation keeps the 17/17 ordering fact visible
+axB.text(0.02, 0.845, f"AMI range {min_ami:.3f}–{max_ami:.3f};\nAMI > ARI in 17/17",
          transform=axB.transAxes, fontsize=5.5, color=MUTED, ha="left", va="top",
          linespacing=1.5)
 style(axB, axis="x")
@@ -302,32 +304,26 @@ axC.set_xlim(-45, 165)
 axC.set_xlabel("paired % change in Leiden cluster count per dataset\n(median across 17 samples, whiskers = IQR)")
 axC.set_title("c   One knob governs granularity (retired sweep's\n"
               "      sole durable finding)", loc="left", fontweight="bold")
+# the library-size caveat moved to the legend (sidecar); the cluster counts stay
+# as a data annotation
 axC.text(0.97, 0.06,
          f"resolution 0.5 → 2.0: clusters {n05['median']:.0f} → {n20['median']:.0f}\n"
          f"(res 1.0 default: {n10['median']:.0f}); 17/17 datasets move,\n"
-         f"per-dataset {res_row['q1_or_min']:+.0f}% to {res_row['q3_or_max']:+.0f}%\n"
-         "library-size bar: median only — per-dataset\n"
-         f"range {libsize_row['q1_or_min']:+.1f}% to {libsize_row['q3_or_max']:+.1f}%",
+         f"per-dataset {res_row['q1_or_min']:+.0f}% to {res_row['q3_or_max']:+.0f}%",
          transform=axC.transAxes, fontsize=5.5, color=MUTED, ha="right", va="bottom",
          linespacing=1.45)
 style(axC, axis="x")
 
-# ---- figure chrome ---------------------------------------------------------
-fig.text(0.03, 0.985, "Fig S10 | PAS-profile clustering: the dropped claim, stated honestly",
-         fontsize=10.5, color=INK, ha="left", va="top", fontweight="bold")
-fig.text(0.03, 0.958,
-         "Cells cluster on poly(A)-site count profiles (TF-IDF + LSI + Leiden) and recover GEX cell types — "
-         "but collapsing the sites to per-gene totals recovers them just as well:\n"
-         "the signal is 3′-end gene expression re-encoded, not isoform choice. Offered only as an optional "
-         "utility for label-free exploration when no GEX labels exist (01 §S4).",
-         fontsize=6.8, color=INK, ha="left", va="top", linespacing=1.45)
-fig.text(0.03, 0.912,
-         "Reference partition = marker-signature labels assigned per GEX Leiden cluster — an automated partition, not curated ground truth.\n"
-         "Features are per-site counts (TF-IDF + LSI), which carry gene abundance.",
-         fontsize=6.3, color=MUTED, ha="left", va="top", style="italic", linespacing=1.45)
-
-caption = (
-    "Fig S10 | The dropped clustering claim, stated honestly (optional utility only). "
+# ---- legend (moved OFF the image; the .caption.md sidecar is its single source)
+# The former on-figure title and description chrome open the legend verbatim.
+legend = (
+    "Figure S10 | PAS-profile clustering: the dropped claim, stated honestly (optional utility only). "
+    "Cells cluster on poly(A)-site count profiles (TF-IDF + LSI + Leiden) and recover GEX cell types — "
+    "but collapsing the sites to per-gene totals recovers them just as well: the signal is 3'-end gene "
+    "expression re-encoded, not isoform choice. Offered only as an optional utility for label-free "
+    "exploration when no GEX labels exist (01 S4). The reference partition is marker-signature labels "
+    "assigned per GEX Leiden cluster — an automated partition, not curated ground truth; features are "
+    "per-site counts (TF-IDF + LSI), which carry gene abundance. "
     f"(a) PBMC 10k v3: clustering on all {n_sites:,} PAS-site counts recovers GEX marker cell types "
     f"(AMI {ami_sites:.3f}, ARI {pbmc_ari_c:.3f}) — but summing the same counts to {n_gene:,} per-gene totals, "
     f"discarding all site-level resolution, recovers them just as well (AMI {ami_gene:.4f}; Δ {d_abl:+.4f}; "
@@ -343,23 +339,20 @@ caption = (
     f"(c) The retired parameter sweep's one durable finding: Leiden resolution dominates cluster count "
     f"({res_row['median']:+.1f}% median, 0.5 to 2.0, 17/17 datasets; clusters {n05['median']:.0f} to "
     f"{n20['median']:.0f}) while every annotation-trim knob is at least 8x smaller. "
+    f"The library-size bar's median must not be quoted alone (per-dataset range "
+    f"{libsize_row['q1_or_min']:+.1f}% to {libsize_row['q3_or_max']:+.1f}%). "
     "BINDING LABEL (results/paramsweep/VERDICTS.md 1): --min-pas-prominence is PROVEN byte-identically "
     "inert on the lambda strategies, so no prominence arm of the retired sweep could ever have been "
     "informative; the sweep ran on the pre-clip-seeded lambda_gradient cohort run and only this "
-    "clustering-knob finding survives. Sources: pbmc_novelty.tsv (verified ablation rows), "
-    "B2_gex_celltyping/concordance.csv (verified 05 R2), parameter_sweep.tsv (verified 05 R3)."
+    "clustering-knob finding survives."
 )
-_cap = textwrap.fill(caption, 168)
-_n_lines = _cap.count("\n") + 1
-assert _n_lines <= 13, f"caption is {_n_lines} wrapped lines; > 13 collides with panel x labels"
-fig.text(0.03, 0.012, _cap, fontsize=5.6, color=INK, va="bottom", ha="left", linespacing=1.32)
 
-for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
     fig.savefig(p, **kw)
     print("wrote", p)
 p = OUTDIR / f"{NAME}.png"
-fig.savefig(p, dpi=300)
+fig.savefig(p, dpi=600)
 print("wrote", p)
 
 # ---------------------------------------------------------------------------
@@ -422,9 +415,11 @@ print("wrote", p)
 # ---------------------------------------------------------------------------
 # sidecar caption
 # ---------------------------------------------------------------------------
-cap_md = f"""# Fig S10 — `figS10_clustering` caption (generated by `scripts/manuscript_figures/figS10_clustering.py`; rebuild of retired `clustering_concordance` + ablation, executed 2026-09-02)
+cap_md = f"""# Fig S10 — `figS10_clustering` sidecar (generated by `scripts/manuscript_figures/figS10_clustering.py`; rebuild of retired `clustering_concordance` + ablation, executed 2026-09-02; single source of the legend)
 
-{caption}
+## Legend
+
+{legend}
 
 **Binding rebuild rule honoured (21 §4.3-S7 / 05 §S10):** the positive result never appears without the
 ablation on the same axes — panel a carries the headline PBMC number only beside the per-gene-total bar on
@@ -450,8 +445,12 @@ one shared AMI axis, and panels b/c are downstream of that verdict.
 - Cluster count is a granularity proxy only; no cross-branch ARI was computed, so nothing here says cell
   *assignments* are stable across knobs.
 
+## Provenance
+
 Sources: `{SRC_NOV}`; `{SRC_LAU}`; `{SRC_SW}`; claim framing `manuscript/01_outline_and_journals.md` §S4.
 Every plotted value: `results/figures/manuscript/figS10_clustering.tsv` and `figS10_clustering_sweep.tsv`.
+Script: `scripts/manuscript_figures/figS10_clustering.py`; rendered at PNG 600 dpi / PDF fonttype 42,
+8.3 in (211 mm) wide (a 7.1 in narrowing clipped panel b/c labels and was rejected).
 """
 p = FIGDIR / f"{NAME}.caption.md"
 p.write_text(cap_md)

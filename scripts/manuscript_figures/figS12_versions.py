@@ -53,8 +53,9 @@ PANELS
      on the precision default.
 
 OUTPUTS
-  manuscript/figures/figS12_versions.{png,pdf}      (PNG 300 dpi, PDF fonttype 42)
-  manuscript/figures/figS12_versions.caption.md     (sidecar caption + index para)
+  manuscript/figures/figS12_versions.{png,pdf}      (PNG 600 dpi, PDF fonttype 42)
+  manuscript/figures/figS12_versions.caption.md     (sidecar: single source of the
+      legend, + provenance and the index para; the image carries no caption prose)
   results/figures/manuscript/figS12_versions.tsv               panels a-e, g
   results/figures/manuscript/figS12_versions_compute.tsv       panel f
   results/figures/manuscript/figS12_versions_criterion.tsv     24 section 3.1
@@ -241,10 +242,13 @@ assert all(c["dP"] == 0.0 and c["dR"] == 0.0 and c["dF1"] == 0.0 for c in CRIT)
 # ---------------------------------------------------------------------------
 # figure
 # ---------------------------------------------------------------------------
-fig = plt.figure(figsize=(9.6, 14.4))
+# canvas: the footer caption band and the long panel subtitles moved to the
+# legend sidecar; height shrinks by the freed footer/subtitle space (hspace was
+# sized for 4-5-line subtitles, now at most one line), axes keep their size
+fig = plt.figure(figsize=(9.6, 11.45))
 gs = fig.add_gridspec(4, 2, height_ratios=[1.00, 1.14, 0.92, 0.92],
-                      left=0.072, right=0.984, top=0.945, bottom=0.148,
-                      hspace=0.72, wspace=0.22)
+                      left=0.072, right=0.984, top=0.958, bottom=0.037,
+                      hspace=0.55, wspace=0.22)
 axA = fig.add_subplot(gs[0, 0])
 axB = fig.add_subplot(gs[0, 1])
 axC = fig.add_subplot(gs[1, 0])
@@ -282,7 +286,11 @@ def titled(ax, title, subtitle):
     (0.60 em per character is a safe upper bound for DejaVu Sans), and the title
     pad is then computed in points from the resulting line count -- so neither
     block can overflow the panel sideways or collide with the other vertically,
-    whatever text is passed in."""
+    whatever text is passed in.  An empty subtitle sets the title alone."""
+    if not subtitle:
+        ax.set_title(title, loc="left", fontweight="bold", pad=7.0)
+        TITLES.append((ax, title))
+        return
     w_pt = ax.get_position().width * ax.figure.get_figwidth() * 72.0
     ncols = max(20, int(w_pt / (SUB_FS * 0.60)))
     sub = "\n".join(textwrap.fill(par, ncols) for par in subtitle.split("\n"))
@@ -337,9 +345,9 @@ for ds in DS_A:
             axA.annotate(f"{y:.3f}", (VERSIONS.index(v), y), xytext=(dx, LAB_DY[ds]),
                          textcoords="offset points", fontsize=5.5, color=DCOL[ds],
                          ha=ha, va="center")
-titled(axA, "a   Progression on the full call set",
-       "the arm every version emits. shipped's code has no internal-priming veto; v1 and v2 were given one "
-       "with --ip-filter; prime turns it on by itself. Solid = precision, dashed = recall.")
+# the flag-matching explanation moved to the legend (sidecar); the metric
+# encoding is already carried by the in-panel legend
+titled(axA, "a   Progression on the full call set", "")
 axA.legend([Line2D([], [], color=DCOL[d], lw=1.3, marker="o", ms=4.5, mfc=DCOL[d], mec=DCOL[d])
             for d in DS_A]
            + [Line2D([], [], color=MUTED, lw=1.3, marker="o", ms=4.5, mfc=MUTED, mec=MUTED),
@@ -355,8 +363,9 @@ progression(axB, "b", "precision_default", DS_A, VERSIONS)
 axB.set_ylim(0, 1.02)
 axB.axvspan(-0.48, 0.5, color="#F5F2EF", zorder=0)
 axB.axvspan(2 - 0.13, 3 + 0.13, color="#EFF2F3", zorder=0)
-axB.text(-0.42, 0.30, "shipped has NO ranked\ndefault output at all:\nits BED score column\nis 0 for every call\n"
-         "(25 §2.1 records the\nsame for SCAPTURE)", fontsize=5.7, color=MUTED, ha="left", va="center")
+# full explanation (and the SCAPTURE parallel) moved to the legend (sidecar)
+axB.text(-0.42, 0.30, "shipped: no ranked\ndefault output\n(BED score column = 0)",
+         fontsize=5.7, color=MUTED, ha="left", va="center")
 # what a user gets by typing nothing: v2's flagless >=2-molecule output (PBMC only)
 p_nf = get("b", "pbmc10k", "v2_noIP", "ge2mol_noIP_POSTHOC", "P@100", note="v2 run with no behaviour flag")
 r_nf = get("b", "pbmc10k", "v2_noIP", "ge2mol_noIP_POSTHOC", "R_det@100", note="v2 run with no behaviour flag")
@@ -368,8 +377,8 @@ for y0, y1 in ((p_nf, p_pr), (r_nf, r_pr)):
     axB.annotate("", xy=(2.94, y1), xytext=(2.06, y0), zorder=7,
                  arrowprops=dict(arrowstyle="-|>", color=VCOL["v2_noIP"], lw=1.1,
                                  shrinkA=4, shrinkB=4))
-axB.text(0.62, 0.355, f"the only thing prime's default changes — v2 typed\n"
-         f"with NO behaviour flag (PBMC 10k v3, ≥2 molecules):\n"
+axB.text(0.62, 0.355, f"v2 with NO behaviour flag → prime\n"
+         f"(PBMC 10k v3, ≥2 molecules):\n"
          f"P  {p_nf:.4f} → {p_pr:.4f}  ({(p_pr/p_nf-1)*100:+.1f} %)\n"
          f"R  {r_nf:.4f} → {r_pr:.4f}  ({(r_pr/r_nf-1)*100:+.1f} %)",
          fontsize=5.8, color=VCOL["v2_noIP"], ha="left", va="center", zorder=8,
@@ -379,14 +388,13 @@ axB.text(2.5, 0.995, "prime = v2\nΔ = 0.000000", ha="center", va="top", fontsiz
 _dP = {ds: val(ds, "v2", "precision_default", "P@100")[0] - val(ds, "v1", "precision_default", "P@100")[0]
        for ds in ("pbmc10k", "mouse1", "mouse2")}
 axB.axhline(GATE_P, color=INK, lw=0.9, ls=(0, (4, 2)), zorder=2)
-axB.text(3.58, GATE_P + 0.012, "pre-registered gate\nP@100 ≥ 0.50 (13 §1)", fontsize=5.7,
+axB.text(3.58, GATE_P + 0.012, "pre-registered gate\nP@100 ≥ 0.50", fontsize=5.7,
          color=INK, ha="right", va="bottom")
 ref_lines.append(dict(panel="b", kind="gate", label="pre-registered gate (13 section 1)", value=GATE_P))
+# the hollow-marker explanation and the v1 -> v2 deltas moved to the legend
+# (sidecar); the default's definition stays as the panel's one-line subtitle
 titled(axB, "b   Progression at the pre-registered default",
-       "tier-1 ∩ IP-pass ∩ ≥2 clip molecules (12 CORRECTION, 13 §1). Hollow markers = v2 run with no "
-       "behaviour flag, i.e. what a user gets by typing nothing. Δ precision v1 → v2: PBMC %+.4f · "
-       "m1 %+.4f · m2 %+.4f — small, and drawn small."
-       % (_dP["pbmc10k"], _dP["mouse1"], _dP["mouse2"]))
+       "tier-1 ∩ IP-pass ∩ ≥2 clip molecules")
 axB.legend([Line2D([], [], color=VCOL["v2_noIP"], lw=0, marker="o", ms=5, mfc="white",
                    mec=VCOL["v2_noIP"], mew=1.5)],
            ["v2 as a user runs it (no behaviour flag)"], loc="lower right",
@@ -412,7 +420,7 @@ def plane(ax, panel, f2_dataset, ds_keys, xmax):
     ax.set_label(panel)
     f1_iso(ax, xmax)
     ax.axhline(GATE_P, color=INK, lw=0.9, ls=(0, (4, 2)), zorder=2)
-    ax.text(xmax * 0.995, GATE_P + 0.009, "pre-registered gate P@100 ≥ 0.50 (13 §1)",
+    ax.text(xmax * 0.995, GATE_P + 0.009, "pre-registered gate P@100 ≥ 0.50",
             ha="right", va="bottom", fontsize=5.8, color=INK)
     ref_lines.append(dict(panel=panel, kind="gate", label="pre-registered gate (13 section 1)", value=GATE_P))
     sub = F2[(F2.dataset == f2_dataset) & (F2.tool != "PeakATail")]
@@ -484,13 +492,11 @@ def plane(ax, panel, f2_dataset, ds_keys, xmax):
     return hands
 
 
+# the ring/arrow/scTail explanations moved to the legend (sidecar); a one-line
+# key naming the marker shapes stays
 hC = plane(axC, "c", "pbmc_10k_v3", ["pbmc10k"], 0.42)
 titled(axC, "c   Against the field — PBMC 10k v3",
-       "circles = full call set, diamonds = the precision default; grey arrows run shipped → v1 → v2 → "
-       "prime, and prime is a RING because it lands exactly on v2. The hollow pink diamond is v2 typed with no "
-       "behaviour flag — panel b draws the move from it to prime, which is too short to arrow at this scale. "
-       "Ticks along the bottom = the 3-seed genic-shuffle null (mean) of each call set. scTail is absent: not "
-       "runnable on this BAM (R1 = 28 bp).")
+       "circles = full call set · diamonds = precision default · | = genic-shuffle null (mean)")
 axC.annotate("shipped", (val("pbmc10k", "shipped", "full", "R_det@100")[0],
                          val("pbmc10k", "shipped", "full", "P@100")[0]),
              xytext=(0, -9), textcoords="offset points", fontsize=6.0,
@@ -503,11 +509,10 @@ axC.annotate("v2 = prime\nprecision default", (r_pr, p_pr), xytext=(10, 4),
              textcoords="offset points", fontsize=6.0, color=VCOL["v2"], ha="left",
              va="bottom", fontweight="bold")
 
+# the no-flagless-mouse-arm and SCAPTURE-mouse-2 notes moved to the legend
 hD = plane(axD, "d", "gse104556", ["mouse1", "mouse2"], 0.42)
 titled(axD, "d   Against the field — GSE104556 testis",
-       "two mice, mean ± range. Every mouse arm of every version ran with the IP veto, so there is no "
-       "‘no flags’ point here (19 §3, 24 §2). Ticks = the 3-seed genic-shuffle null (mean) of each call set. "
-       "SCAPTURE: mouse 1 plotted (mouse-2 sites scored 0.672; 15 §3).")
+       "two mice, mean ± range")
 axD.annotate("shipped", (np.mean([val(d, "shipped", "full", "R_det@100")[0] for d in ("mouse1", "mouse2")]),
                          np.mean([val(d, "shipped", "full", "P@100")[0] for d in ("mouse1", "mouse2")])),
              xytext=(0, -9), textcoords="offset points", fontsize=6.0,
@@ -525,7 +530,7 @@ _leg += [(Line2D([], [], marker="D", ms=6.2, mfc="none", mec=VCOL["prime"], mew=
          (Line2D([], [], marker="D", ms=6.2, mfc="white", mec=VCOL["v2_noIP"], mew=1.6, ls="none"),
           "v2, no behaviour flag")]
 fig.legend([h for h, _ in _leg], [n for _, n in _leg], loc="upper center",
-           bbox_to_anchor=(0.53, axC.get_position().y0 - 0.026), ncol=6, frameon=False,
+           bbox_to_anchor=(0.53, axC.get_position().y0 - 0.033), ncol=6, frameon=False,
            handletextpad=0.4, columnspacing=1.2, labelspacing=0.35, fontsize=6.1)
 
 
@@ -594,12 +599,9 @@ for s0, s1, btitle in block_span:
     axE.text((s0 + s1) / 2, 1.145, btitle, ha="center", va="bottom", fontsize=6.2, color=INK)
 _pu = val("pbmc10k", "v2", "matched_umiref_N46544", "P@100")[0]
 _pm = val("pbmc10k", "v2", "matched_molref_N46544", "P@100")[0]
-titled(axE, "e   Matched call count — each version's own ranking, truncated to a common N",
-       "the honest way to compare call sets of different sizes (25 §1). Two keys, because the four versions do "
-       "not share one: shipped has no clip-molecule column at all. Hatched = the cut falls inside a tie group and "
-       "the row is decided by the tie-break, not by evidence (on PBMC v1 keeps 2,131 of 117,243 tied sites) — not "
-       f"like-for-like. Same library, same budget (N = 46,544), same code, only the key differs: clip molecules "
-       f"{_pm:.4f} vs UMI depth {_pu:.4f} — the Stage-1 clip evidence is what makes the ranking work.")
+# the two-key rationale, tie-break numbers and the clip-vs-UMI comparison moved
+# to the legend (sidecar); the hatch is named in the in-panel legend
+titled(axE, "e   Matched call count — each version's own ranking, truncated to a common N", "")
 axE.legend([Patch(facecolor=VCOL[v], edgecolor="white") for v in VERSIONS]
            + [Line2D([], [], marker="D", ms=4, mfc="white", mec=INK, ls="none"),
               Patch(facecolor="#bbbbbb", edgecolor="white", hatch="////", alpha=0.55)],
@@ -664,10 +666,10 @@ _r1n = val("pbmc10k", "v1_noIP", "RUN", "peak_rss_gb", kind="measured")[0]
 _r2n = val("pbmc10k", "v2_noIP", "RUN", "peak_rss_gb", kind="measured")[0]
 _m1v2 = val("mouse1", "v2", "RUN", "peak_rss_gb", kind="measured")[0]
 _m1pr = val("mouse1", "prime", "RUN", "peak_rss_gb", kind="measured")[0]
+# the #97 RSS story and the concurrency detail moved to the legend (sidecar);
+# the binding wall-time qualifier stays as a one-line label of the upper strip
 titled(axFw, "f   What each step cost — compute",
-       f"the #97 work is the story: PBMC peak RSS {_r1:,.1f} → {_r2:,.1f} GB = {_r1/_r2:.1f}× ({_r1n:,.1f} → "
-       f"{_r2n:,.1f} = {_r1n/_r2n:.1f}× on the flagless pair); prime adds none back. WALL TIME IS A RUN RECORD, NOT "
-       "A BENCHMARK: the v2 arms ran concurrently, prime's one at a time with BLAS pinned to 1 thread. Both strips are log; wall time is the upper strip.")
+       "wall time (upper strip) is a run record, not a benchmark; both strips log")
 axF.text(0.985, 0.985, f"mouse 1 peak RSS moves {_m1v2:.2f} → {_m1pr:.2f} GB ({_m1pr/_m1v2:.2f}×)\n"
          "v2 → prime, inside the pre-registered 1.5× guard rail (24 §3.2)",
          transform=axF.transAxes, fontsize=5.7, color=INK, ha="right", va="top")
@@ -715,14 +717,10 @@ _mc = {m: getv("g", "matched_calls", "v2_flagless_topN46524", m,
        for m in ("P_atlas@100", "kinnex_t5@25", "kinnex_t20@25", "kinnex_decoy@25")}
 _mp_r = getv("g", "matched_precision", "v2_flagless_topN40687", "R_det@100",
              note="matched-precision control: v2 no-flags truncated to P@100 = prime's 0.706195")
+# the interpretation and matched-budget-control numbers moved to the legend
+# (sidecar); the dataset scope stays as a one-line subtitle
 titled(axG, "g   Does the atlas agree with the long reads?",
-       "PBMC 10k v3, ≥2-molecule output. Bars 1–3 higher is better; bar 4 (Kinnex internal-priming decoy) "
-       "lower is better. v1 → v2 moves both truths slightly DOWN together — a correctness fix, not a score "
-       "gain. v2-no-flags → prime moves all four the right way at once, the only change here that does — and "
-       f"still does at matched call count, which these bars are NOT at (n {_gn['v1']:,} / {_gn['v2']:,} / "
-       f"{_gn['prime']:,} / {_gn['v2_noIP']:,}; cut to prime's N, v2-no-flags reads "
-       f"{_mc['P_atlas@100']:.3f} / {_mc['kinnex_t5@25']:.3f} / {_mc['kinnex_t20@25']:.3f} / "
-       f"{_mc['kinnex_decoy@25']:.3f}).")
+       "PBMC 10k v3, ≥2-molecule output — human-only (the mice have no long-read truth)")
 axG.legend([Patch(facecolor=VCOL["v1"], edgecolor="white"),
             Patch(facecolor=VCOL["v2"], edgecolor="white"),
             Patch(facecolor=VCOL["prime"], edgecolor="white", hatch="\\\\\\"),
@@ -733,16 +731,15 @@ axG.legend([Patch(facecolor=VCOL["v1"], edgecolor="white"),
            handlelength=1.5, labelspacing=0.32, fontsize=5.9)
 _sh_t5 = get("g", "pbmc10k", "shipped", "full", "kinnex_t5_frac25",
              note="shipped has no >=2-molecule arm; its FULL call set is shown for scale only")
-axG.text(0.995, 1.0, f"shipped has no ≥2-molecule output at all;\n"
-         f"its full call set reaches Kinnex ≥5 UMI {_sh_t5:.4f}\n"
-         f"(prime's full set: {val('pbmc10k','prime','full','kinnex_t5_frac25')[0]:.4f}).\n"
-         "The mouse libraries have no long-read truth,\nso this panel is human-only.",
+# the scale numbers and the human-only note moved to the legend / subtitle; a
+# short absence label stays
+axG.text(0.995, 1.0, "shipped: no ≥2-molecule output",
          transform=axG.transAxes, fontsize=5.7, color=MUTED, ha="right", va="top")
 style(axG, xgrid=False)
 
 
 # ===========================================================================
-# footer
+# legend (moved OFF the image; the .caption.md sidecar is its single source)
 # ===========================================================================
 _v2p = [val(d, "v2", "precision_default", "P@100")[0] for d in ("pbmc10k", "mouse1", "mouse2")]
 _v1p = [val(d, "v1", "precision_default", "P@100")[0] for d in ("pbmc10k", "mouse1", "mouse2")]
@@ -751,8 +748,8 @@ _k5_pr = val("pbmc10k", "prime", "precision_default", "kinnex_t5_frac25")[0]
 _dc_nf = val("pbmc10k", "v2_noIP", "ge2mol_noIP_POSTHOC", "kinnex_decoy_frac25")[0]
 _dc_pr = val("pbmc10k", "prime", "precision_default", "kinnex_decoy_frac25")[0]
 
-caption = (
-    "Fig S12 | Four versions of the PeakATail caller on four libraries, scored once. shipped (pre-Stage-1, "
+legend_txt = (
+    "Figure S12 | Four versions of the PeakATail caller on four libraries, scored once. shipped (pre-Stage-1, "
     "coverage-only) → v1 (4efeb125, clip-seeded; 15) → v2 (9dfdefb3, + minus-strand IP fix #96 + performance "
     "#97; 19, verifier FIXED, pbmc4k added by 26) → prime (6954082d, branch peakAtail-prime). "
     "**v2 is the manuscript's current record. prime is a development branch: not merged, not the default, and "
@@ -775,13 +772,8 @@ caption = (
     "comparisons, 0 mismatches); prime's four arms are NEW runs from an unmerged branch, checked by this benchmark "
     "only and not yet through an independent manuscript verification pass. Atlas precision is agreement with "
     "PolyASite 2.0, not ground truth; Kinnex truth is a different donor and the mice have none; shipped and v1 were "
-    "never run on pbmc4k and no such run was fabricated; wall time is not comparable across version sets (f). "
-    "Every plotted value: results/figures/manuscript/figS12_versions*.tsv."
+    "never run on pbmc4k and no such run was fabricated; wall time is not comparable across version sets (f)."
 )
-_cap = textwrap.fill(caption.replace("**", "").replace("`", ""), 215)
-_n_cap = _cap.count("\n") + 1
-assert _n_cap <= 13, f"caption is {_n_cap} wrapped lines; >13 collides with panels f/g"
-fig.text(0.010, 0.008, _cap, fontsize=5.75, color=INK, va="bottom", ha="left", linespacing=1.34)
 
 # a panel title must fit inside its own panel -- measured on the real renderer,
 # not estimated, so a longer title in a future edit fails here instead of clipping
@@ -804,18 +796,18 @@ for _ax in (axA, axB, axC, axD, axE, axF, axFw, axG):
 # a panel's title + subtitle block grows UPWARD from its axes: it must not climb into the
 # panel above it.  Panel g sits under panel e and panel f under panel e too, so a longer
 # subtitle in a future edit fails here instead of printing over panel e's tick labels.
-for _ax, _above in ((axG, axE), (axF, axE)):
+for _ax, _above in ((axG, axE), (axFw, axE)):
     _blk = _ax.title.get_window_extent(renderer=_rend)
     _abv = _above.get_window_extent(renderer=_rend)
     assert _blk.y1 <= _abv.y0, (
         f"panel {_ax.get_label() or _ax.title.get_text()[:1]!r} title/subtitle block reaches "
         f"y={_blk.y1:.0f} px, above panel e's axes bottom y={_abv.y0:.0f} px -- shorten the subtitle")
 
-for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
     fig.savefig(p, **kw)
     print("wrote", p)
-fig.savefig(OUTDIR / f"{NAME}.png", dpi=300)
+fig.savefig(OUTDIR / f"{NAME}.png", dpi=600)
 print("wrote", OUTDIR / f"{NAME}.png")
 
 # ---------------------------------------------------------------------------
@@ -873,9 +865,11 @@ ranked by clip molecules; shipped and v1 were never run on pbmc4k; wall times ar
 sets. Full caption: `figures/figS12_versions.caption.md`; benchmark record `results/prime_bench/README.md`;
 pre-registration [24_prime_preregistration.md](24_prime_preregistration.md)."""
 
-cap_md = f"""# Fig S12 — `figS12_versions` caption (generated by `scripts/manuscript_figures/figS12_versions.py`; renamed 2026-09-02, see FIGURE_MAP.tsv)
+cap_md = f"""# Fig S12 — `figS12_versions` sidecar (generated by `scripts/manuscript_figures/figS12_versions.py`; renamed 2026-09-02, see FIGURE_MAP.tsv; single source of the legend)
 
-{caption}
+## Legend
+
+{legend_txt}
 
 **Panel a** — progression on the **full call set**, the output every version emits: atlas-agreement precision
 @100 bp (solid, filled circles) and detected-gene recall @100 bp (dashed, open squares); colour = dataset. PBMC
@@ -907,7 +901,9 @@ all 277,164 / 45,921 / 46,672 of its calls) — exactly the limitation 25 §2.1 
 four-way rows use UMI depth. The three hatched bars are the rows where more than one output's worth of tied sites
 was cut by the tie-break rather than by evidence: on PBMC at N = 46,544 v1 cuts at 1 clip molecule with 117,243
 sites tied and only 2,131 kept (1.8 %), while v2 and prime cut at 2 molecules and keep 16,718 of 16,718. **Do not
-quote a hatched bar as like-for-like.**
+quote a hatched bar as like-for-like.** Same library, same budget (N = 46,544), same code, only the ranking key
+differs: clip molecules {_pm:.4f} vs UMI depth {_pu:.4f} atlas precision — the Stage-1 clip evidence is what makes
+the ranking work.
 **Panel f** — compute, two stacked axes: the upper strip is wall time (lollipops, log), the lower is peak
 RSS (bars, log). The #97 performance work is
 the story: PBMC peak RSS {_r1:,.1f} → {_r2:,.1f} GB ({_r1/_r2:.1f}×) on the arms shown and {_r1n:,.1f} →
@@ -947,7 +943,9 @@ veto does **not** win: forced to v2-no-flags' own budget of {_gn['v2_noIP']:,} c
 {veto('crossing_check','v2_flagless_ge2mol','P_atlas@100')[0]:.4f} /
 {veto('crossing_check','v2_flagless_ge2mol','R_det@100')[0]:.4f}) — that row is
 {100*(1-veto('crossing_check','prime_topN62110','n_kept_at_cut')[0]/veto('crossing_check','prime_topN62110','n_tied_at_cut')[0]):.0f} %
-tie-decided at the cut and is not like-for-like.
+tie-decided at the cut and is not like-for-like. shipped has no ≥2-molecule output at all; its full call set
+reaches Kinnex ≥5-UMI {_sh_t5:.4f} against {val('pbmc10k','prime','full','kinnex_t5_frac25')[0]:.4f} for prime's
+full set — quoted for scale only, not drawn as a bar.
 
 **Must travel with it.**
 - **v2 is the manuscript's record; prime is not.** `peakAtail-prime` (6954082d) is unmerged. 24 §3.4 is explicit
@@ -983,9 +981,7 @@ tie-decided at the cut and is not like-for-like.
   thread); peak RSS is. The two things prime ships **off** — `--read-geometry true` and `--pas-score calibrated` —
   were not exercised here and are not on this figure.
 
-## Paragraph for `manuscript/05_figure_index.md` (this script does NOT write it there)
-
-{index_para}
+## Provenance
 
 Sources: `results/prime_bench/fourway.tsv` + `results/prime_bench/README.md` (the four-way benchmark record; every
 row carries its own source file) for panels a, b, e, f, g and the PeakATail points of c and d;
@@ -996,7 +992,12 @@ SOUND), `manuscript/19_final_gate_v2.md` + `results/benchmark_tools/final_v2_ver
 `manuscript/24_prime_preregistration.md` §3.1, §3.4. Every plotted value:
 `results/figures/manuscript/figS12_versions.tsv`; panel f `figS12_versions_compute.tsv`; the criterion
 evaluation `figS12_versions_criterion.tsv`; gates and isolines `figS12_versions_reference_lines.tsv`.
-Palette: Okabe-Ito (`manuscript/figures/README.md`).
+Palette: Okabe-Ito (`manuscript/figures/README.md`). Script: `scripts/manuscript_figures/figS12_versions.py`;
+rendered at PNG 600 dpi / PDF fonttype 42.
+
+### Paragraph for `manuscript/05_figure_index.md` (this script does NOT write it there)
+
+{index_para}
 """
 p = FIGDIR / f"{NAME}.caption.md"; p.write_text(cap_md); print("wrote", p)
 

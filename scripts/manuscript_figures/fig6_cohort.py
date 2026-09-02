@@ -51,8 +51,9 @@ here to lie in their OWN assigned gene's annotated 3' UTR) is written to an
 audit TSV only, and is not plotted.
 
 OUTPUTS
-  manuscript/figures/fig6_cohort.{png,pdf}      (PNG 300 dpi, PDF fonttype 42)
-  manuscript/figures/fig6_cohort.caption.md     (sidecar caption + index paragraph)
+  manuscript/figures/fig6_cohort.{png,pdf}      (PNG 600 dpi, PDF fonttype 42)
+  manuscript/figures/fig6_cohort.caption.md     ('## Legend' -- journal legend incl. the
+                                                binding cautions -- + '## Provenance')
   results/figures/manuscript/fig6_cohort_funnel.tsv          (panel a)
   results/figures/manuscript/fig6_cohort_per_pair.tsv        (panel b, all 59 pairs)
   results/figures/manuscript/fig6_cohort_effects.tsv         (panel c histogram)
@@ -151,8 +152,10 @@ VERSIONS = {
         commit="9dfdefb", commit_note="#96 minus-strand IP fix",
         doc="20", doc_path="manuscript/20_stage3_replication.md",
         verdict="verifier verdict SOUND",
-        record_note=("v2-code record, verified 2026-08-22; supersedes v1-code 4efeb125, "
-                     "kept in 20 as the labelled comparison row"),
+        record_note=("v2-code record, verified 2026-08-22; supersedes v1-code 4efeb125 "
+                     "(14,480 replicated over a 74,954-PAS universe), kept in 20 as the "
+                     "labelled comparison row and reproducible via "
+                     "LAUGHNEY_SWITCHES_VERSION=v1_code"),
         verify_subdir="verify_v2chain",         # verifier's exhaustive null scan, v2 layout
         null_recount="v2_files",
         # headline counts from the verified table in 20 -- asserted below
@@ -591,10 +594,14 @@ safe = safe.sort_values(["chrom", "start"])            # genomic order, NOT rank
 safe["disclosure"] = "own-gene 3'UTR verified vs GTF; audit only, not a published ranked list (20 disclosure 1, issue #99)"
 
 # ---------------------------------------------------------------------------
-# figure
+# figure -- publication layout: the on-figure title, subtitle, panel notes,
+# honesty block and cautions footer all live in the caption sidecar's Legend
+# now, so the canvas holds only the panel band (11.6 -> 8.1 in tall; 8.4 ->
+# 7.5 in wide, toward the 180 mm double-column norm -- panel b's long pair
+# labels rule out going all the way down without shrinking type).
 # ---------------------------------------------------------------------------
-fig = plt.figure(figsize=(8.4, 11.6))
-FW = 604.8  # figure width in points, for text-width budgeting
+fig = plt.figure(figsize=(7.5, 8.1))
+FW = 540.0  # figure width in points, for text-width budgeting
 
 
 def style(ax, grid_axis="both"):
@@ -612,8 +619,8 @@ def panel_title(ax, letter, text, pad=6):
 
 
 # ---- a: funnel ------------------------------------------------------------
-axA = fig.add_axes([0.275, 0.800, 0.700, 0.122])
-XMIN, XMAX = 0.55, 1.3e7
+axA = fig.add_axes([0.315, 0.786, 0.660, 0.175])
+XMIN, XMAX = 0.55, 3.0e7
 nstage = len(FUNNEL_STAGES)
 ys = np.arange(nstage)[::-1].astype(float)
 bh = 0.34
@@ -645,15 +652,10 @@ axA.legend([Patch(facecolor=BLUE), Patch(facecolor=GREY)],
            loc="lower right", bbox_to_anchor=(1.006, -0.045), frameon=False,
            handlelength=1.1, handleheight=0.85, borderpad=0.2, labelspacing=0.3)
 panel_title(axA, "a", "Replication funnel, real vs patient-wise label-shuffle null (one axis)")
-fig.text(0.275, 0.772, textwrap.fill(
-         f"Null = {N_NULL_COMBOS} patient-wise label-shuffle combinations through the identical pipeline; "
-         f"bars are the mean. Single-patient calls per null combination range "
-         f"{min(NULL_CALLED_GE1)}–{max(NULL_CALLED_GE1)}; nothing was called in two patients in any "
-         f"combination, so every later stage is exactly 0 in all {N_NULL_COMBOS}.", 140),
-         fontsize=5.9, color=MUTED, va="top", ha="left", linespacing=1.36)
+# (the null-design note under panel a moved to the caption Legend)
 
 # ---- b: per cell-type pair ------------------------------------------------
-axB = fig.add_axes([0.275, 0.505, 0.700, 0.215])
+axB = fig.add_axes([0.315, 0.416, 0.660, 0.308])
 yb = np.arange(len(TOPB))
 axB.barh(yb, TOPB.replicated_q_K2, height=0.66, color=SKY, edgecolor="none", zorder=3,
          label=f"K={K_PRIMARY} (pre-registered): ≥2 patients, same direction")
@@ -671,22 +673,18 @@ axB.set_xlabel("replicated (pair, PAS) switches")
 style(axB, grid_axis="x")
 axB.legend(loc="lower right", frameon=False, handlelength=1.1, handleheight=0.85,
            borderpad=0.2, labelspacing=0.3)
-panel_title(axB, "b", f"Top {N_SHOW} of the {N_MULTI_PAIRS} cell-type pairs tested in ≥{K_PRIMARY} "
-                      f"patients   ('n pt' = patients tested)")
-_note_b = (f"The other {REST_N} multi-patient pairs hold {REST_SUM:,} more ({REST_MIN}–{REST_MAX} each); "
-           f"{N_SINGLE_PATIENT_PAIRS} of the {N_PAIRS} pairs were tested in one patient only and cannot replicate.")
-assert len(_note_b) <= 140, f"panel-b note is {len(_note_b)} chars; >140 overflows the panel width"
-fig.text(0.975, 0.4735, _note_b, fontsize=5.9, color=MUTED, va="top", ha="right")
+panel_title(axB, "b", f"Top {N_SHOW} of the {N_MULTI_PAIRS} cell-type pairs tested in ≥{K_PRIMARY} patients")
+# (the remaining-pairs / single-patient-pairs note and the "n pt" definition moved to the caption Legend)
 
 # ---- c: effect sizes ------------------------------------------------------
-axC = fig.add_axes([0.085, 0.345, 0.385, 0.094])
+axC = fig.add_axes([0.085, 0.220, 0.385, 0.135])
 centers = bins[:-1] + BINW / 2
 cols = [VERM if c < FLOOR else BLUE for c in centers]
 axC.bar(centers, hist_all, width=BINW * 0.92, color=cols, edgecolor="none", zorder=3)
 CMAX = float(hist_all.max())
 axC.set_ylim(0, CMAX * 1.45)
 axC.axvline(FLOOR, color=INK, lw=0.8, ls=(0, (4, 2)), zorder=4)
-axC.text(FLOOR + 0.018, CMAX * 1.30, f"pre-registered effect floor |Δprop| ≥ {FLOOR:g}",
+axC.text(FLOOR + 0.018, CMAX * 1.16, f"pre-registered effect floor |Δprop| ≥ {FLOOR:g}",
          fontsize=5.9, color=INK, va="center", ha="left", zorder=6)
 axC.text(0.985, 0.985, f"median {MEDIAN_EFFECT:.2f}   mean {MEAN_EFFECT:.2f}",
          transform=axC.transAxes, fontsize=6.0, color=INK, va="top", ha="right")
@@ -697,7 +695,7 @@ style(axC, grid_axis="y")
 panel_title(axC, "c", f"Effect size of the {N_REPL:,} replicated switches")
 
 # ---- d: patient support ---------------------------------------------------
-axD = fig.add_axes([0.590, 0.345, 0.385, 0.094])
+axD = fig.add_axes([0.590, 0.220, 0.385, 0.135])
 dcols = [SKY if k < K_SENS else BLUE for k in SUPPORT_K]
 axD.bar(SUPPORT_K, SUPPORT_N, width=0.72, color=dcols, edgecolor="none", zorder=3)
 for k, n in zip(SUPPORT_K, SUPPORT_N):
@@ -716,11 +714,11 @@ axD.legend([Patch(facecolor=BLUE)],
 panel_title(axD, "d", "Patient support of the replicated set")
 
 # ---- e: honesty panel -----------------------------------------------------
-fig.text(0.085, 0.3030,
+fig.text(0.085, 0.168,
          f"e   Genomic context of the {N_DISTINCT_PAS:,} replicated PAS "
          f"(recomputed here from the Ensembl GRCh38.99 GTF)",
          fontsize=8, fontweight="bold", color=INK, va="top", ha="left")
-axE = fig.add_axes([0.085, 0.258, 0.890, 0.026])
+axE = fig.add_axes([0.085, 0.104, 0.890, 0.037])
 left = 0.0
 for cat in CONTEXT_ORDER:
     frac = CTX_N[cat] / N_DISTINCT_PAS
@@ -741,99 +739,22 @@ axE.spines["bottom"].set_color(GRID)
 axE.tick_params(colors=MUTED, length=2.5, labelsize=6.6)
 fig.legend([Patch(facecolor=CONTEXT_COLOR[c]) for c in CONTEXT_ORDER],
            [f"{c} — {int(CTX_N[c]):,} ({CTX_N[c]/N_DISTINCT_PAS*100:.1f}%)" for c in CONTEXT_ORDER],
-           loc="upper left", bbox_to_anchor=(0.085, 0.2410), frameon=False, ncol=3,
+           loc="upper left", bbox_to_anchor=(0.085, 0.060), frameon=False, ncol=2,
            handlelength=1.1, handleheight=0.85, borderpad=0.2, columnspacing=1.4,
            labelspacing=0.32, fontsize=6.2)
 
-honesty = (
-    "Exclusive, strand-matched partition of the distinct replicated PAS. "
-    f"Roll-ups: {FRAC_GENEBODY*100:.1f}% of the replicated PAS sit inside a same-strand gene body, "
-    f"{FRAC_EXONIC*100:.1f}% are exonic, {FRAC_ANY_3UTR*100:.1f}% are in some gene's 3' UTR, "
-    f"{FRAC_INTRONIC*100:.1f}% are intronic and {FRAC_OUTSIDE*100:.1f}% fall outside any same-strand gene "
-    + cite("(of these, only 62.5% and 96.8% appear in 20 disclosure 1, both reproduced here to "
-           "within 0.1 pp; the rest are recomputed for this figure). ",
-           "(20 disclosure 1 quotes 61.5%, 57.8% and 96.8%, all reproduced here; the rest are "
-           "recomputed for this figure). ")
-    + f"BUT only {FRAC_OWN_3UTR*100:.1f}% lie in the 3' UTR of the gene the caller ASSIGNED them to: "
-    f"{N_3UTR_MISASSIGNED:,} of the {N_ANY3:,} 3'-UTR PAS ({FRAC_3UTR_MISASSIGNED*100:.1f}%) lie in a "
-    f"DIFFERENT gene's 3' UTR, and {N_MULTI_GENE:,} ({FRAC_MULTI_GENE*100:.1f}%) lie inside ≥2 overlapping "
-    "same-strand gene models. NO ranked list of named top-switch genes is shown here: "
-    + cite("12 of the top-30 gene-level rows in 20 (40%, recounted 2026-08-22) name a gene whose 3' UTR does "
-           "not hold the PAS, 9 of them a different gene's 3' UTR, and seven have zero assigned PAS "
-           "cohort-wide (tool issue #99). ",
-           "12 of the top-30 gene-level rows in 20 (40%) name a gene whose 3' UTR does not hold the PAS, 8 of "
-           "them a different gene's 3' UTR, and seven have zero assigned PAS cohort-wide (tool issue #99). ")
-    + "Replication statistics are unaffected — they are computed on PAS identifiers, never on gene names."
-)
-_honesty_wrapped = textwrap.fill(honesty, 160)
-_n_honesty_lines = _honesty_wrapped.count("\n") + 1
-assert _n_honesty_lines <= 7, f"honesty block is {_n_honesty_lines} lines; >7 collides with the footer"
-fig.text(0.085, 0.2105, _honesty_wrapped, fontsize=5.9, color=INK, va="top", ha="left",
-         linespacing=1.36)
+# ---- no on-figure title / subtitle / honesty block / footer ---------------
+# Journal style (surgery pass, 2026-09-02): the figure title, the headline
+# subtitle, panel e's honesty prose and the numbered cautions footer are all
+# in the caption sidecar's '## Legend' now, sentence for sentence.  The values
+# they carried stay in fig6_cohort_cohort.tsv, which is unchanged.
 
-# ---- title ----------------------------------------------------------------
-fig.text(0.085, 0.9920,
-         "Fig 6 | Reliable cell-type APA switches in a tumour cohort",
-         fontsize=11.5, fontweight="bold", color=INK, va="top", ha="left")
-fig.text(0.085, 0.9725, textwrap.fill(
-         f"Laughney lung adenocarcinoma, {N_PATIENTS} patients ({N_GSM} scRNA-seq libraries): "
-         f"{N_REPL:,} of {N_FEATURES:,} tested (pair, PAS) hypotheses replicate in ≥{K_PRIMARY} "
-         f"patients in the same direction — and none replicate in any of the {N_NULL_COMBOS} "
-         f"patient-wise label-shuffle nulls.", 128),
-         fontsize=7.6, color=MUTED, va="top", ha="left", linespacing=1.4)
-
-# ---- footer ---------------------------------------------------------------
-footer = (
-    f"Design: one cohort run so all {N_GSM} libraries share a single PAS identifier space; "
-    f"pre-registered precision-first universe (IP-filtered ∧ tier-1 ∧ cohort clip-molecule sum ≥2) "
-    f"= {UNIVERSE:,} PAS; "
-    + (f"{V['cohort']['curated_cells']:,} curated cells → {V['cohort']['confirmed_cells']:,} "
-       f"confirmed ({V['cohort']['confirmed_frac']*100:.1f}%) by the pre-registered label policy (20), "
-       if V["cohort"] else "")
-    + f"of which {CELLS_TESTED:,} entered the tests in the {N_PATIENTS} primary patients; "
-    f"{N_PAIRS} cell-type pairs; test = Fisher on cells with no marker pre-selection (14); unit of "
-    f"replication = patient, so the {N_MULTILIB_PATIENTS} patients with "
-    f"{MAX_LIBS_PER_PATIENT} libraries each count once. "
-    f"RECORD: PeakATail code {V['commit']} ({V['commit_note']}) — {V['record_note']}; "
-    f"source of truth {V['doc_path']} ({V['verdict']}). "
-    f"NULL: not one feature replicates in ANY of the {N_NULL_COMBOS} patient-wise "
-    f"label-shuffle combinations run through the identical pipeline: 0 replicated in every one of the 10, over a "
-    f"comparable {NULL_TESTED_MEAN:,.0f} (pair, PAS) hypotheses tested per combination "
-    f"({NULL_TESTS_TOTAL/1e6:.1f}M null tests produced {NULL_QHITS_TOTAL} nominal q<{FDR:g} calls, none "
-    f"co-occurring in two patients). Ten permutations resolve only to an empirical "
-    f"p ≤ {EMP_P:.3f}; report this as 'none in {N_NULL_COMBOS} nulls', NEVER as an FDR estimate. "
-    f"EXCLUSION: GSM3516664-MetBone is excluded by pre-registration (13 addendum item 8), but its stated "
-    f"premise was WRONG — the 0.015% clip rate came from the caller sampling only the first 200,000 CB "
-    f"reads of a coordinate-sorted BAM (head of chr1); MetBone in fact has 306k clip molecules "
-    f"(tool issue #99). Never repeat the 'no clip evidence' justification. "
-    + (f"The {EXPECT['sens_patients']}-patient sensitivity run that includes it gives "
-       f"{EXPECT['sens_replicated']:,} / {EXPECT['sens_floor']:,}, a "
-       f"{abs(EXPECT['sens_replicated']-N_REPL)/EXPECT['sens_replicated']*100:.1f}% difference confined "
-       f"to one pair. " if EXPECT else "")
-    + f"GENE NAMES: no named top-gene list may be published until PAS→gene re-assignment (panel e; "
-    f"20 disclosure 1, tool issue #99) — the replication statistics themselves are computed on PAS ids. "
-    f"CAVEATS: one cohort, one chemistry, one caller — no orthogonal 3'-end assay confirms these sites; "
-    f"pairs tested in more patients replicate more, so panel b tracks cohort composition as much as "
-    f"biology; one library ({DISCLOSED_GSM.split(chr(45))[0]}) trips the per-GSM null rule only through BH "
-    f"discreteness ({DISCLOSED_NULL_QHITS} hits in {DISCLOSED_NULL_TESTS/1e6:.1f}M null tests) and is kept "
-    f"and disclosed (20). "
-    f"Panel c plots the consensus effect, but the pre-registered floor is applied PER PATIENT and the "
-    f"patients re-counted, so it removes {N_REMOVED_BY_FLOOR} switches ({N_REPL:,} → {N_REPL_FLOOR:,}) — "
-    f"more than the {N_CONSENSUS_BELOW_FLOOR} whose consensus alone falls below {FLOOR:g}. "
-    f"Every plotted value: results/figures/manuscript/{NAME}*.tsv."
-)
-_footer_wrapped = textwrap.fill(footer, 172)
-_n_footer_lines = _footer_wrapped.count("\n") + 1
-assert _n_footer_lines <= 15, f"footer is {_n_footer_lines} wrapped lines; >15 collides with panel e"
-fig.text(0.030, 0.010, _footer_wrapped, fontsize=5.8, color=INK, va="bottom", ha="left",
-         linespacing=1.36)
-
-for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
     fig.savefig(p, **kw)
     print("wrote", p)
 p = OUTDIR / f"{NAME}.png"
-fig.savefig(p, dpi=300)
+fig.savefig(p, dpi=600)
 print("wrote", p)
 
 # ---------------------------------------------------------------------------
@@ -1029,7 +950,9 @@ CAP_INDEX_CAVEAT = cite(
 
 cap_md = f"""# Fig 6 — `fig6_cohort` caption (generated by `scripts/manuscript_figures/fig6_cohort.py`; renamed 2026-09-02, see FIGURE_MAP.tsv)
 
-**Fig 6 | Reliable cell-type APA switches in a tumour cohort.** Across {N_PATIENTS} patients
+## Legend
+
+**Figure 6 | Reliable cell-type APA switches in a tumour cohort.** Across {N_PATIENTS} patients
 ({N_GSM} scRNA-seq libraries) of the Laughney lung-adenocarcinoma cohort, processed in a single cohort run so that
 all libraries share one PAS identifier space, PeakATail called cell-type APA switches in {N_PAIRS} cell-type pairs
 over a pre-registered precision-first PAS universe (clip-supported, internal-priming-filtered, ≥2 clip molecules;
@@ -1040,6 +963,13 @@ also exceed an effect floor of |Δproportion| ≥ {FLOOR:g}; these are {N_DISTIN
 {N_DISTINCT_GENES:,} genes across {N_PAIRS_WITH_HITS} pairs. **Under ten patient-wise label-shuffle nulls run
 through the identical pipeline, nothing replicated in any combination.** Requiring three patients retains
 {N_REPL_K3:,}.
+
+**Design.** One cohort run, so all {N_GSM} libraries share a single PAS identifier space;
+{V['cohort']['curated_cells']:,} curated cells → {V['cohort']['confirmed_cells']:,} confirmed
+({V['cohort']['confirmed_frac']*100:.1f}%) by the pre-registered label policy (20), of which {CELLS_TESTED:,}
+entered the tests in the {N_PATIENTS} primary patients; {N_PAIRS} cell-type pairs; test = Fisher on cells with no
+marker pre-selection (14); unit of replication = patient, so the {N_MULTILIB_PATIENTS} patients with
+{MAX_LIBS_PER_PATIENT} libraries each count once.
 
 **Panel a** — the funnel on one log axis, real (blue) against the mean of the {N_NULL_COMBOS} label-shuffle nulls
 (grey): {FUN['tested']:,} tested (pair, PAS) hypotheses → {FUN['called_ge1']:,} called at BH q<{FDR:g} in ≥1 patient
@@ -1084,14 +1014,28 @@ reads of a coordinate-sorted BAM (head of chr1) — MetBone in fact has 306k cli
 sensitivity run that includes it gives {format(EXPECT['sens_replicated'], ',') if EXPECT else 'n/a'} /
 {format(EXPECT['sens_floor'], ',') if EXPECT else 'n/a'}, a 0.4% difference confined to one pair.
 
+**Cautions, binding on any use of this figure (they are part of the legend and must travel with it).**
+One cohort, one chemistry, one caller — no orthogonal 3′-end assay confirms these sites. Pairs tested in more
+patients replicate more, so panel b tracks cohort composition as much as biology. One library
+({DISCLOSED_GSM.split(chr(45))[0]}) trips the per-GSM null rule only through BH discreteness
+({DISCLOSED_NULL_QHITS} hits in {DISCLOSED_NULL_TESTS/1e6:.1f}M null tests) and is kept and disclosed (20).
+Panel c plots the consensus effect, but the pre-registered floor is applied PER PATIENT and the patients
+re-counted, so it removes {N_REMOVED_BY_FLOOR} switches ({N_REPL:,} → {N_REPL_FLOOR:,}) — more than the
+{N_CONSENSUS_BELOW_FLOOR} whose consensus alone falls below {FLOOR:g}.
+
+## Provenance
+
 Sources: `{V['doc_path']}` ({V['verdict']}) and, read directly, `{SRC_REPL}/` (`pas_K2`, `pas_K3`, `gene_K2`:
 `all_features.tsv`, `replicated.tsv`, `null_control.tsv`, `summary.json`; `per_pair_pas_K{{2,3}}.tsv`), the per-GSM
 switch summaries `{SWITCH}/<GSM>/summary.json`, the verifier's null recount `{VERIFY}/`, and `{GTF}` for panel e.
 Every plotted value: `results/figures/manuscript/{NAME}_{{funnel,per_pair,effects,support,context,context_summary,cohort}}.tsv`.
 
----
+PeakATail code `{V['commit']}` ({V['commit_note']}); PNG 600 dpi, PDF vector with subsetted TrueType (fonttype 42,
+no Type 3). The working-phase render carried the title, headline, panel notes, honesty prose and cautions footer on
+the image; at the 2026-09-02 surgery pass they moved into the Legend above, sentence for sentence, and the image
+keeps panel letters, short titles, axis labels and data annotations only.
 
-## Index paragraph (for `manuscript/05_figure_index.md` — paste there; this script does not edit that file)
+### Index paragraph (for `manuscript/05_figure_index.md` — paste there; this script does not edit that file)
 
 **Fig 6 — `fig6_cohort` — reliable cell-type APA switches in a tumour cohort.** Stage-3 patient-level
 replication on the Laughney lung-adenocarcinoma cohort, PeakATail code `{V['commit']}`, source of truth

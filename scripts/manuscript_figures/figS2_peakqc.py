@@ -51,8 +51,9 @@ PANELS
      the boxed negative disposition.
 
 OUTPUTS
-  manuscript/figures/figS2_peakqc.{png,pdf}    300 dpi PNG / fonttype-42 PDF
+  manuscript/figures/figS2_peakqc.{png,pdf}    600 dpi PNG / fonttype-42 PDF
   manuscript/figures/figS2_peakqc.caption.md   script-written sidecar
+                                               ('## Legend' + '## Provenance')
   results/figures/manuscript/figS2_peakqc_composition.tsv    (a)
   results/figures/manuscript/figS2_peakqc_widths.tsv         (b)
   results/figures/manuscript/figS2_peakqc_pergene.tsv        (c)
@@ -366,9 +367,13 @@ disposition = pd.DataFrame([
 # ---------------------------------------------------------------------------
 # figure
 # ---------------------------------------------------------------------------
-fig = plt.figure(figsize=(8.3, 12.4))
-gs = fig.add_gridspec(3, 6, left=0.105, right=0.975, top=0.97, bottom=0.225,
-                      hspace=0.52, wspace=1.25)
+# Publication layout: the footer caption and the boxed disposition text live in
+# the caption sidecar's Legend now (surgery pass, 2026-09-02), so the canvas
+# keeps only the panel band (12.4 -> 10.0 in tall; 8.3 -> 7.9 in wide -- the
+# three dense bottom panels tolerate that much and no more at this type size).
+fig = plt.figure(figsize=(7.9, 10.0))
+gs = fig.add_gridspec(3, 6, left=0.105, right=0.975, top=0.963, bottom=0.058,
+                      hspace=0.48, wspace=1.25)
 axA = fig.add_subplot(gs[0, 0:3])
 axB = fig.add_subplot(gs[0, 3:6])
 axC = fig.add_subplot(gs[1, 0:3])
@@ -420,11 +425,7 @@ axA.legend([matplotlib.patches.Patch(facecolor=c, edgecolor="white") for c in (C
             "tier-1 >=2 mol (default, IP arms)"],
            loc="lower right", bbox_to_anchor=(1.0, 0.0), frameon=False,
            handlelength=1.2, labelspacing=0.3, fontsize=5.6)
-axA.text(0.0, -0.34,
-         f"single-molecule share of tier-1: {FRAC_SINGLE_IP*100:.1f}% on the PBMC IP arm shown "
-         f"({comp['pbmc_ip']['n_single']:,} / {comp['pbmc_ip']['n_t1']:,}); the no-IP arm's ratio, "
-         "72.1%, is the value the text quotes (19 §4) — always name the arm",
-         transform=axA.transAxes, fontsize=5.6, color=MUTED, va="top", wrap=True)
+# (the single-molecule-share / arm-naming note moved to the caption Legend)
 style(axA)
 axA.grid(False, axis="y")
 
@@ -442,10 +443,7 @@ axB.set_xlabel("tier-2 call width (bp; run/pasbed.bed interval)")
 axB.set_ylabel("% of tier-2 calls")
 axB.set_title("b   Tier-2 call widths (IP arms)", loc="left", fontweight="bold")
 axB.legend(loc="upper right", frameon=False, handlelength=1.2, labelspacing=0.3)
-axB.text(0.02, 0.98, "tier-1 clip-anchored calls are\n1-bp cleavage points by\nconstruction "
-         "(width $\\equiv$ 1,\nasserted on every arm);\ntier-2 intervals are whole\npeak regions "
-         "(VERDICTS §2:\nthe gradient candidates\nnever survive filtering)",
-         transform=axB.transAxes, fontsize=5.6, color=MUTED, ha="left", va="top", linespacing=1.35)
+# (the tier-1-width/tier-2-interval explanation moved to the caption Legend)
 style(axB)
 
 # ---- panel c: calls per gene of the default ------------------------------
@@ -484,7 +482,7 @@ axD.set_ylabel("% of tier-1 calls")
 axD.set_ylim(0, 78)
 axD.set_title("d   Tier-1 molecule support (IP arms)", loc="left", fontweight="bold")
 axD.legend(loc="upper right", frameon=False, handlelength=1.2, labelspacing=0.3,
-           bbox_to_anchor=(1.0, 0.88))
+           bbox_to_anchor=(1.0, 0.78))
 style(axD)
 
 # ---- panel e: offset sweep (slice) ---------------------------------------
@@ -533,9 +531,9 @@ axF.set_xlabel("signed distance to nearest atlas site (bp)\nd = truth − call; 
 axF.set_ylabel("% of tier-2 calls per 20-bp bin")
 axF.set_title("f   Tier-2 offset, before / after", loc="left", fontweight="bold")
 axF.legend(loc="upper left", frameon=False, handlelength=1.5, labelspacing=0.3, fontsize=5.2)
+# data annotations stay; the heavy-tails caveat sentence moved to the caption Legend
 axF.text(0.98, 0.73, "shaded: ~90–105 nt (07 §3)\nmedians +64 → +13 (PBMC),\n"
-         "+89 → +13 (mouse); real\ncorrected runs: +3 / +16.\nHeavy tails: only ~7% of\n"
-         "tier-2 calls lie within\n100 bp of any atlas site",
+         "+89 → +13 (mouse); real\ncorrected runs: +3 / +16",
          transform=axF.transAxes, fontsize=5.0, color=MUTED, ha="right", va="top", linespacing=1.3)
 style(axF)
 
@@ -549,24 +547,18 @@ axG.set_xlabel("signed distance to nearest atlas site (bp)")
 axG.set_ylabel("% of calls per 20-bp bin")
 axG.set_title("g   Tier-1 control: no offset", loc="left", fontweight="bold")
 axG.legend(loc="upper right", frameon=False, handlelength=1.5, labelspacing=0.3, fontsize=5.2)
+# short data label stays; "the offset is tier-2-specific" moved to the caption Legend
 axG.text(0.97, 0.55,
-         "clip-anchored tier-1\nsits at +0 (|d|≤10:\n63.2%); the offset\nis tier-2-specific",
+         "clip-anchored tier-1\nsits at +0\n(|d|≤10: 63.2%)",
          transform=axG.transAxes, fontsize=5.4, color=INK, ha="right", va="top", linespacing=1.35)
-verdict = ("Offset correction does NOT rescue tier-2 (VERDICTS §3, FAIL on 28 §2): "
-           f"after --cleavage-offset 95, tier-2 atlas-agreement P@100 {r_off95['P@100']:.3f} vs genic-shuffle "
-           f"null {r_off95['null_P@100_mean']:.3f} (3.0×; was 2.2×); internal-priming decoy rate "
-           f"{r_base['kin_decoy@25']:.3f} → {r_off95['kin_decoy@25']:.3f} (×3.2); R_det unchanged "
-           f"({r_base['R_det@100']:.4f} → {r_off95['R_det@100']:.4f}); mouse {r_m1auto['P@100']:.3f} vs null "
-           f"{r_m1auto['null_P@100_mean']:.3f}. The default arm is byte-identical across every offset arm "
-           "(tier-1 exempt by design). Disposition: report inferred cleavage, do not move calls.")
-fig.text(0.5, 0.163, textwrap.fill(verdict, 118), fontsize=5.7, color=INK, ha="center", va="top",
-         linespacing=1.35,
-         bbox=dict(facecolor="#FDF3EC", edgecolor=C_KINNEX, lw=0.8, boxstyle="round,pad=0.45"))
+# The boxed negative-disposition verdict is no longer drawn on the image
+# (surgery pass, 2026-09-02): its every sentence lives in the caption Legend's
+# "Negative disposition" paragraph, and its numbers in figS2_peakqc_disposition.tsv.
 style(axG)
 
-# ---- footer caption -------------------------------------------------------
+# ---- legend paragraph (written to the caption sidecar, not drawn) ---------
 caption = (
-    "Fig S2 | v2 peak-call QC and the tier-2 cleavage-offset census. "
+    "Figure S2 | v2 peak-call QC and the tier-2 cleavage-offset census. "
     "(a) Tier composition of every final v2 arm (code 9dfdefb), scored n from the single scoring path "
     "(score_tool.py, cutoff 100 bp): the pre-registered precision default (tier-1, IP filter, >=2 distinct "
     f"clip molecules) keeps {comp['pbmc_ip']['n_def']:,} of {comp['pbmc_ip']['n_t1']:,} tier-1 PBMC calls "
@@ -580,23 +572,21 @@ caption = (
     "post-hoc argmax +95 on atlas P@10 (both species) and on Kinnex t5 P@10 (PBMC; t5 = >=5 long-read records "
     "at the terminus, not de-duplicated UMIs). The signed-distance mode moves to ~0 when corrected (f) and the "
     "clip-anchored tier-1 control sits at +0 (g) -- the offset is real and tier-2-specific. It is also a "
-    "negative result: correction fails every pre-registered acceptance criterion of 28 §2 (boxed verdict). "
+    "negative result: correction fails every pre-registered acceptance criterion of 28 §2 (negative "
+    "disposition below). "
     "Sources: 19 + final_v2_verify (FIXED) score TSVs; v2 run outputs (read-only); results/paramsweep/ "
     "arms_all.tsv, leadB/, VERDICTS.md §2-§3 (slice sweep executing 28 §3 step 1; provisional "
     "pending verifier). Slice caveat: the PBMC slice is clip-richer than the genome (paramsweep README §1); "
     "whether the offset holds for all 166,355 full-BAM tier-2 sites is an inference from the slices, not a "
     "measurement. Every plotted value: results/figures/manuscript/figS2_peakqc_*.tsv."
 )
-_cap = textwrap.fill(caption, 168)
-assert _cap.count("\n") + 1 <= 14, "caption too tall for the reserved footer band"
-fig.text(0.03, 0.012, _cap, fontsize=5.8, color=INK, va="bottom", ha="left", linespacing=1.35)
 
-for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
     fig.savefig(p, **kw)
     print("wrote", p)
 p = OUTDIR / f"{NAME}.png"
-fig.savefig(p, dpi=300)
+fig.savefig(p, dpi=600)
 print("wrote", p)
 
 # ---------------------------------------------------------------------------
@@ -638,6 +628,8 @@ for suffix, df in outs:
 # ---------------------------------------------------------------------------
 cap_md = f"""# Fig S2 — `figS2_peakqc` caption (generated by `scripts/manuscript_figures/figS2_peakqc.py`)
 
+## Legend
+
 {caption}
 
 **Panel a** — every count names its arm. PBMC no-IP arm: {comp['pbmc_noip']['n_both']:,} calls
@@ -663,15 +655,19 @@ call (the BED score; selecting score >= 2 reproduces the default BED exactly, as
 baselines reproduce the reference runs to the call, paramsweep README §5). e: post-hoc shift sweep, each curve
 normalised to its own max (absolute maxima printed in the legend); the four agreeing estimates are marked.
 f: signed-distance histograms (d = truth − call, transcript orientation), tier-2 before vs after the shift;
-the [+90,+105] band is 07 §3's predicted offset. g: the tier-1 control (default arm) peaks at [0,+10) with
+the [+90,+105] band is 07 §3's predicted offset. The tails are heavy: only ~7% of tier-2 calls lie within
+100 bp of any atlas site, so the mode describes the near-atlas minority. g: the tier-1 control (default arm) peaks at [0,+10) with
 median +0 and is destroyed by the same +95 shift — the offset is tier-2-specific, which is why v2 already
 exempts clip-supported rows (`cleavage_offset.py::rewrite_bed_3prime_offset(skip_supported=True)`).
-**Negative disposition (boxed)** — correcting the offset triples tier-2 P@10 but leaves the tier at
-{r_off95['P@100']:.3f} atlas-agreement P@100 vs a {r_off95['null_P100'] if 'null_P100' in r_off95 else r_off95['null_P@100_mean']:.3f} genic-shuffle null on PBMC
-({r_m1auto['P@100']:.3f} vs {r_m1auto['null_P@100_mean']:.3f} on mouse), buys no detected-gene recall, and more
+**Negative disposition (VERDICTS §3; offset correction does NOT rescue tier-2)** — correcting the offset
+triples tier-2 P@10 but leaves the tier at {r_off95['P@100']:.3f} atlas-agreement P@100 vs a
+{r_off95['null_P100'] if 'null_P100' in r_off95 else r_off95['null_P@100_mean']:.3f} genic-shuffle null on PBMC
+(3.0× the null; was 2.2× before correction; {r_m1auto['P@100']:.3f} vs {r_m1auto['null_P@100_mean']:.3f} on
+mouse), buys no detected-gene recall (R_det@100 {r_base['R_det@100']:.4f} → {r_off95['R_det@100']:.4f}), and more
 than triples the internal-priming decoy rate ({r_base['kin_decoy@25']:.3f} → {r_off95['kin_decoy@25']:.3f} at
 matched IP-veto; ×12.8 with no veto) — the failure mode 24 §3.2.2 named in advance. FAIL on every 28 §2
-criterion; nothing is adopted; the prime branch's TASK-E disposition (report an `inferred_cleavage` column,
+criterion; nothing is adopted; the default arm is byte-identical across every offset arm (tier-1 exempt by
+design), and the prime branch's TASK-E disposition (report an `inferred_cleavage` column,
 do not move `pasbed.bed`) stands. Kinnex "t5" support is an alignment-record count, not de-duplicated UMIs
 (21 §7 MUST-NOT-CLAIM 8).
 
@@ -680,10 +676,16 @@ offset holds for all {comp['pbmc_ip']['n_t2']:,} full-BAM tier-2 sites (IP arm) 
 sweep is PROVISIONAL (unseen by the verifier). Width/per-gene/support distributions are computed from the v2
 run outputs read-only; BED-level counts differ from scored n by <0.05% (non-primary contigs).
 
+## Provenance
+
 Sources: `manuscript/19_final_gate_v2.md` + `results/benchmark_tools/final_v2_verify/VERIFIED_v2.md` (FIXED)
 score TSVs; v2 run outputs; `results/paramsweep/{{arms_all.tsv,leadB/,VERDICTS.md,README.md}}` (executing
 `manuscript/28` §3 step 1 under the pre-registered criteria of 28 §2); `manuscript/07` §3. Every plotted value:
-`results/figures/manuscript/figS2_peakqc_*.tsv` (source column per row).
+`results/figures/manuscript/figS2_peakqc_*.tsv` (source column per row). PNG 600 dpi, PDF vector with
+subsetted TrueType (fonttype 42, no Type 3). The working-phase render carried the legend paragraph, the
+boxed disposition verdict and several in-panel explanations on the image; at the 2026-09-02 surgery pass
+they moved into the Legend above, and the image keeps panel letters, short titles, axis labels, legends
+and data annotations only.
 """
 p = FIGDIR / f"{NAME}.caption.md"
 p.write_text(cap_md)

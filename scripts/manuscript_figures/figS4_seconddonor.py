@@ -39,8 +39,10 @@ against 26; panel c's five donor-1 reductions exist only in 26's verified
 table and are cited constants (source column says so). Nothing is approximated.
 
 OUTPUTS
-  manuscript/figures/figS4_seconddonor.{png,pdf}  (PNG 300 dpi, PDF fonttype 42)
-  manuscript/figures/figS4_seconddonor.caption.md
+  manuscript/figures/figS4_seconddonor.{png,pdf}  (PNG 600 dpi, PDF fonttype 42)
+  manuscript/figures/figS4_seconddonor.caption.md ('## Legend' = the journal
+      legend incl. every caveat moved off the image in the 2026-09-02
+      submission pass; '## Provenance' = record-keeping)
   results/figures/manuscript/figS4_seconddonor.tsv             (panel a)
   results/figures/manuscript/figS4_seconddonor_concordance.tsv (panel b)
   results/figures/manuscript/figS4_seconddonor_matchedN.tsv    (panel c)
@@ -48,7 +50,6 @@ OUTPUTS
 Run:  export LC_ALL=C OMP_NUM_THREADS=1; python3 scripts/manuscript_figures/figS4_seconddonor.py
 """
 import os
-import textwrap
 from pathlib import Path
 
 os.environ.setdefault("LC_ALL", "C")
@@ -222,10 +223,17 @@ for r in matched.itertuples():
 # ---------------------------------------------------------------------------
 # figure
 # ---------------------------------------------------------------------------
-fig = plt.figure(figsize=(8.3, 9.2))
+# canvas: the pre-submission 8.3 x 9.2 in canvas carried a 12-line footer
+# caption; it now lives in the caption sidecar ('## Legend') and the canvas
+# height drops by the freed space.  Width stays 8.3 in (211 mm): panel a's
+# paired per-bar value labels sit at their spacing limit, so narrowing to the
+# 180 mm double-column norm would collide them (legibility outranks the width
+# target).  Panel c stays a PANEL: the matched-N caveat is data, only the
+# prose footer moved.
+fig = plt.figure(figsize=(8.3, 7.2))
 gs = fig.add_gridspec(2, 2, height_ratios=[0.80, 1.0],
-                      left=0.105, right=0.975, top=0.955, bottom=0.230,
-                      hspace=0.52, wspace=0.34)
+                      left=0.105, right=0.975, top=0.958, bottom=0.076,
+                      hspace=0.42, wspace=0.34)
 axA = fig.add_subplot(gs[0, :])
 axB = fig.add_subplot(gs[1, 0])
 axC = fig.add_subplot(gs[1, 1])
@@ -276,9 +284,12 @@ for x, (lab, c, dflt, t1, src) in zip(xs, LIBS):
                          source=src))
 axA.axhline(GATE_P, color=INK, lw=0.9, ls=(0, (4, 2)), zorder=2)
 # gate label sits in the free gap between the donor-1 and mouse-1 groups
-axA.text(1.5, GATE_P + 0.025, "pre-registered gate\nP@100 ≥ 0.50\n(13 §1; unchanged, 26 §6)",
-         ha="center", va="bottom", fontsize=5.9, color=INK, linespacing=1.2,
-         bbox=dict(facecolor="white", edgecolor="none", pad=0.8))
+# short gate label; its document citation (13 §1; unchanged, 26 §6) moved to
+# the legend sidecar (2026-09-02 submission pass).  Three narrow lines so the
+# label fits the inter-group gap without its white box nicking a bar.
+axA.text(1.44, GATE_P + 0.018, "pre-registered\ngate\nP@100 ≥ 0.50",
+         ha="center", va="bottom", fontsize=5.7, color=INK, linespacing=1.2,
+         bbox=dict(facecolor="white", edgecolor="none", pad=0.6))
 axA.annotate("PASS on a 4th library --\nbut a more conservative\noperating point (see c)",
              xy=(xs[0] - bw / 2 - 0.02, d2_def["P100"]), xytext=(xs[0] + 0.32, 0.985),
              fontsize=6.0, color=C_D2, ha="left", va="top",
@@ -312,8 +323,10 @@ axB.set_yticks(ys)
 axB.set_yticklabels([b[0] for b in bars], fontsize=6.3)
 # the reverse direction's arithmetic ceiling, drawn only across its two bars
 axB.plot([CEIL] * 2, [ys[2] - 0.45, ys[3] + 0.45], color=C_D1, lw=1.0, ls=(0, (4, 2)), zorder=4)
+# data label for the dashed ceiling line; the interpreting sentence
+# ("asymmetry is call-count arithmetic, not disagreement") moved to the legend
 axB.text(CEIL + 0.015, (ys[2] + ys[3]) / 2, "arithmetic ceiling 44.4%\n(20,672 / 46,524):\n"
-         "39.9% = 90% of it.\nAsymmetry is call-count\narithmetic, not disagreement",
+         "39.9% = 90% of it",
          fontsize=5.8, color=C_D1, va="center", ha="left", linespacing=1.25)
 axB.annotate(f"{FOLD:.0f}× the genic-\nshuffle null (|)",
              xy=(fwd_null100, ys[0] + 0.26), xytext=(0.22, ys[0] + 0.33),
@@ -347,7 +360,7 @@ axC.annotate("donor 1 default\n(n = 46,524)", (d1_def["R_det"], d1_def["P100"]),
 axC.annotate("", xy=(0.1205, 0.893), xytext=(d1_def["R_det"], d1_def["P100"]),
              arrowprops=dict(arrowstyle="-|>", color=C_D1, lw=1.0, alpha=0.7,
                              shrinkA=8, shrinkB=10), zorder=2)
-axC.text(0.153, 0.790, "same rule, cut to\ndonor 2's call count\n(4 routes, 26)", fontsize=5.9,
+axC.text(0.153, 0.790, "same rule, cut to\ndonor 2's call count\n(4 routes)", fontsize=5.9,
          color=C_D1, ha="left", va="top", linespacing=1.25)
 mk = dict(marker="o", ms=6, mfc=C_D1, mec=C_D1, ls="none", zorder=6)
 lab_off = {">=4 molecules": (7, -1, "left", "center"),
@@ -373,15 +386,17 @@ axC.set_xlabel("detected-gene recall R_det @100 bp", fontsize=6.8)
 axC.set_ylabel("atlas-agreement precision @100 bp")
 axC.set_title("c   The matched-N caveat: donor 2's\nheadline is an operating-point effect",
               loc="left", fontweight="bold", fontsize=7.6)
-axC.text(0.1025, 0.684, "matched-call-count control: 26 (verifier,\n2026-08-22); every route lands up-and-right",
-         ha="left", va="bottom", fontsize=5.8, color=MUTED, linespacing=1.3)
+# (the provenance note that sat here — "matched-call-count control: 26
+# (verifier, 2026-08-22); every route lands up-and-right" — moved to the
+# legend sidecar in the 2026-09-02 submission pass)
 style(axC)
 
 # ---------------------------------------------------------------------------
-# caption (footer)
+# the journal legend (single source: the caption sidecar's '## Legend'; the
+# former 12-line on-figure footer, substance verbatim)
 # ---------------------------------------------------------------------------
 caption = (
-    "Fig S4 | Second-donor validation (pre-registered in 26 on 2026-08-21, BEFORE any pbmc4k number "
+    "Figure S4 | Second-donor validation (pre-registered in 26 on 2026-08-21, BEFORE any pbmc4k number "
     "existed; run 2026-08-22; verifier verdict FIXED). (a) The 10x public pbmc4k library (v2 chemistry, "
     "CellRanger 2.1.0, 4,340 cells) scored by the UNCHANGED pre-registered precision default under the "
     "identical frozen code (9dfdefb3), scorer, atlas and nulls: 107 of 108 recorded parameters identical, "
@@ -399,20 +414,15 @@ caption = (
     "operating-point effect: the fixed rule lands at a more conservative point on the shallower v2 library. "
     "Precision GENERALISES; it does not improve. Scope (26): a second library, chemistry and CellRanger "
     "version — only presumptively a second individual (10x publishes no donor id). Recall is genuinely lower "
-    "on donor 2 (R_det 0.1104 vs 0.1754; survives every denominator swap). "
-    "Values: results/figures/manuscript/figS4_seconddonor*.tsv."
+    "on donor 2 (R_det 0.1104 vs 0.1754; survives every denominator swap)."
 )
-_cap = textwrap.fill(caption, 158)
-_n_lines = _cap.count("\n") + 1
-assert _n_lines <= 13, f"caption is {_n_lines} wrapped lines; collides with panel x labels"
-fig.text(0.03, 0.012, _cap, fontsize=5.8, color=INK, va="bottom", ha="left", linespacing=1.35)
 
-for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
     fig.savefig(p, **kw)
     print("wrote", p)
 p = OUTDIR / f"{NAME}.png"
-fig.savefig(p, dpi=300); print("wrote", p)
+fig.savefig(p, dpi=600); print("wrote", p)
 
 # ---------------------------------------------------------------------------
 # audit TSVs
@@ -444,19 +454,25 @@ print("wrote", p)
 # ---------------------------------------------------------------------------
 # sidecar caption
 # ---------------------------------------------------------------------------
-cap_md = f"""# Fig S4 — `figS4_seconddonor` caption (generated by `scripts/manuscript_figures/figS4_seconddonor.py`)
+cap_md = f"""# Fig S4 — `figS4_seconddonor` caption (generated by `scripts/manuscript_figures/figS4_seconddonor.py`; submission pass 2026-09-02: the on-figure footer and citation/provenance notes moved into the Legend/Provenance below, image at 600 dpi)
+
+## Legend
 
 {caption}
 
-**Pre-registration provenance (26, verifier verdict FIXED).** Written 2026-08-21 23:47–23:53, before any
-accuracy number from pbmc4k existed; the driver `run_donor2.sh` was frozen at 23:48:30, 19 minutes before the
-caller started (2026-08-22 00:07:45). The gate is quoted verbatim from the committed, already-verified 19, so it
-demonstrably predates donor 2. Nothing was retuned — measured, not promised: a field-by-field diff of the two
-runs' `run_config.json` finds 107/108 recorded parameters identical, the single difference being
-`--seq-len 91→98` (the R2 read length, one correct value per library; `--threads` 16→8 is output-irrelevant
-per the byte-identity test of `chrom_parallel.py`).
+**Panel keys and moved on-figure notes (legend content).**
+- **Panel a** — solid bars: the pre-registered default (tier-1 ∩ IP-pass ∩ ≥2 clip molecules), the arm the
+  gate is defined over; hatched: the ≥1-molecule sensitivity arm, reported (not gated) because it is again the
+  F1 optimum (26 §R4.3). Black dashes: 3-seed genic-shuffle null means (~0.022 everywhere, as they must be —
+  same inclusion file). The gate P@100 ≥ 0.50 is 13 §1's, unchanged (26 §6). pbmc4k tier-1 clears 0.50
+  numerically (0.5042) but is not the gated arm.
+- **Panel b** — both pre-registered directions with their own nulls; the ceiling explains the asymmetry
+  (with 20,672 donor-2 calls, at most 44.4% of donor 1's 46,524 can have a counterpart; 39.9% is 90% of
+  that). The asymmetry is call-count arithmetic, not disagreement.
+- **Panel c** — the verifier's matched-call-count control (26, verifier, 2026-08-22): every route lands
+  up-and-right of donor 2 (dominates it on both axes).
 
-**What may and may not be claimed (26 §R4 + V).**
+**What may and may not be claimed (26 §R4 + V; legend content, binding).**
 - The reliability claim now holds on two human 10x 3' libraries spanning two chemistries (v2/v3) and two
   CellRanger versions (2.1.0/3.0.0), plus two mice — with the caveat that 10x publishes no donor identifier
   for pbmc4k, so it is demonstrably a second *library and chemistry* and only presumptively a second
@@ -470,14 +486,18 @@ per the byte-identity test of `chrom_parallel.py`).
   so channel poverty cannot be invoked as an excuse.
 - No claim about v2-vs-v3 chemistry as such — that needs its own design with >1 library per chemistry.
 
-**Panel a** — solid bars: the pre-registered default (tier-1 ∩ IP-pass ∩ ≥2 clip molecules), the arm the
-gate is defined over; hatched: the ≥1-molecule sensitivity arm, reported (not gated) because it is again the
-F1 optimum (26 §R4.3). Black dashes: 3-seed genic-shuffle null means (~0.022 everywhere, as they must be —
-same inclusion file). pbmc4k tier-1 clears 0.50 numerically (0.5042) but is not the gated arm.
-**Panel b** — both pre-registered directions with their own nulls; the ceiling explains the asymmetry
-(with 20,672 donor-2 calls, at most 44.4% of donor 1's 46,524 can have a counterpart; 39.9% is 90% of that).
-**Panel c** — the verifier's matched-call-count control (26): the numbers exist only in the verified document
-table, cited as constants with EXPECT asserts (`figS4_seconddonor_matchedN.tsv`, source column).
+## Provenance
+
+**Pre-registration provenance (26, verifier verdict FIXED).** Written 2026-08-21 23:47–23:53, before any
+accuracy number from pbmc4k existed; the driver `run_donor2.sh` was frozen at 23:48:30, 19 minutes before the
+caller started (2026-08-22 00:07:45). The gate is quoted verbatim from the committed, already-verified 19, so it
+demonstrably predates donor 2. Nothing was retuned — measured, not promised: a field-by-field diff of the two
+runs' `run_config.json` finds 107/108 recorded parameters identical, the single difference being
+`--seq-len 91→98` (the R2 read length, one correct value per library; `--threads` 16→8 is output-irrelevant
+per the byte-identity test of `chrom_parallel.py`).
+
+**Panel c constants.** The matched-call-count numbers exist only in the verified document table (26),
+cited as constants with EXPECT asserts (`figS4_seconddonor_matchedN.tsv`, source column).
 
 Sources: `manuscript/26_second_donor_preregistration.md` (FIXED) — panel a pbmc4k bars from the run's own
 `score_tool.py` TSVs (`results/benchmark_tools/pbmc4k_donor2/run_ipfilt/`), the other three libraries from the

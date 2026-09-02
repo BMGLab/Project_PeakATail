@@ -22,7 +22,7 @@ SOURCES OF TRUTH (verified)
         matrix (1,230 cells x 76,711 PAS) -- expressing-cells per PAS
   * manuscript/14_switch_calibration_v2.md                    EXPECT values
 
-STRATUM CAVEAT (stated on the figure and in the caption)
+STRATUM CAVEAT (stated in the legend of the .caption.md sidecar)
   14 records "6 strata, <50 to >=600 expressing cells gives 2.6-4.0%
   everywhere" but the per-stratum values and exact bin edges were never
   persisted.  Panel b is a deterministic recomputation from the two archived
@@ -48,6 +48,7 @@ PANELS
 
 OUTPUTS
   manuscript/figures/figS9_calibration_extended.{png,pdf,caption.md}
+      (PNG 600 dpi; PDF fonttype 42; legend lives in the sidecar, not on the image)
   results/figures/manuscript/figS9_calibration_extended_per_pair.tsv   (a)
   results/figures/manuscript/figS9_calibration_extended_strata.tsv    (b)
   results/figures/manuscript/figS9_calibration_extended_countmode.tsv (c)
@@ -61,7 +62,6 @@ the 4.3M-row gz + h5ad (layout iteration only; asserts still run either way).
 Run:  export LC_ALL=C OMP_NUM_THREADS=1; python3 scripts/manuscript_figures/figS9_calibration_extended.py
 """
 import os
-import textwrap
 from pathlib import Path
 
 os.environ.setdefault("OMP_NUM_THREADS", "1")
@@ -257,8 +257,10 @@ rt = pd.DataFrame(rt_rows)
 # ---------------------------------------------------------------------------
 # figure
 # ---------------------------------------------------------------------------
-fig = plt.figure(figsize=(8.3, 10.6))
-gs = fig.add_gridspec(3, 2, left=0.115, right=0.965, top=0.965, bottom=0.235,
+# canvas: the old footer band (bottom=0.235 of a 10.6 in canvas) is gone -- the
+# legend lives in the sidecar; height shrinks by the freed space, axes keep size
+fig = plt.figure(figsize=(8.3, 8.75))
+gs = fig.add_gridspec(3, 2, left=0.115, right=0.965, top=0.958, bottom=0.064,
                       hspace=0.56, wspace=0.30)
 axA = fig.add_subplot(gs[0, 0])
 axB = fig.add_subplot(gs[0, 1])
@@ -293,7 +295,7 @@ for xi, arm in enumerate(ORDER):
         axA.plot([xi + (k - 1) * 0.20], [v], PAIR_MARK[pair], ms=4.2, zorder=4, **kw)
 rate_lines(axA)
 axA.text(-0.45, 5.35, "5% nominal", fontsize=5.4, color=INK, ha="left")
-axA.text(-0.45, 7.35, "7% pre-registered gate (14)", fontsize=5.4, color=VERM, ha="left")
+axA.text(-0.45, 7.35, "7% pre-registered gate", fontsize=5.4, color=VERM, ha="left")
 axA.annotate("B0: 2.94-3.13%\nin every pair,\n0/20 runs with a\nq<0.05 hit", xy=(4.0, 3.4),
              xytext=(3.62, 12.0), fontsize=5.6, color=INK, ha="center", linespacing=1.3,
              arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.7))
@@ -319,10 +321,10 @@ for x, v in zip(xs, strata.frac_null_p_lt_05 * 100):
 rate_lines(axB)
 axB.text(5.35, 5.15, "5% nominal", fontsize=5.4, color=INK, ha="right")
 axB.text(5.35, 7.15, "7% pre-registered gate", fontsize=5.4, color=VERM, ha="right")
-axB.text(0.02, 0.99, "shaded band: 14's verified range, 2.6-4.0% (<50 to >=600 expressing cells).\n"
-         "bars: deterministic recomputation from the archived null p-values + input\n"
-         "matrix; the verifier's exact bin edges were not persisted (method in audit TSV)",
-         transform=axB.transAxes, fontsize=5.3, color=MUTED, va="top", linespacing=1.3)
+# the recomputation caveat behind the band moved to the legend (sidecar); the
+# band keeps a short name on the image
+axB.text(0.02, 0.99, "band: verified range 2.6-4.0%", transform=axB.transAxes,
+         fontsize=5.4, color=MUTED, va="top")
 axB.set_xticks(xs)
 axB.set_xticklabels([f"{l}\n{n/1e6:.2f}M" if n >= 1e6 else f"{l}\n{n/1000:.0f}k"
                      for l, n in zip(SLAB, strata.n_null_tests)], fontsize=5.6)
@@ -359,8 +361,7 @@ axC.set_title("c   count-mode reads vs cells", loc="left", fontweight="bold")
 axC.legend([Patch(color=BLUE), Patch(color=GREEN)],
            ["count-mode reads (pseudoreplicates UMIs within cells)", "count-mode cells"],
            loc="upper right", frameon=False, fontsize=5.4, handlelength=1.1, labelspacing=0.3)
-axC.text(0.99, 0.74, "number at each bar's base:\nmean false q<0.05 hits per null\nrun "
-         "(reads mode: ~1,500/run\neven with pre-selection off)",
+axC.text(0.99, 0.74, "numbers at bar bases:\nmean false q<0.05 hits\nper null run",
          transform=axC.transAxes, fontsize=5.4, color=MUTED, ha="right", va="top", linespacing=1.3)
 style(axC)
 axC.grid(False, axis="x")
@@ -384,11 +385,8 @@ axE.set_title("e   NB plug-in dispersion floor inflates the tail", loc="left", f
 axE.legend([Patch(color=VERM), Patch(facecolor="none", edgecolor=VERM, lw=1.2)],
            ["C  nb_pairwise, top-200 markers", "C0  nb_pairwise, no marker pre-sel."],
            loc="upper left", frameon=False, fontsize=5.4, handlelength=1.1, labelspacing=0.3)
-axE.text(0.03, 0.70, "8.5% of C0's null tests sit at the\n1e-4 dispersion floor but carry\n"
-         f"67% of its false q<0.05 hits;\nmin null p "
-         f"{float(stats.loc['C0_nb_pairwise_nomarker','min_null_p']):.0e}.\n"
-         "Whenever nb_pairwise is used,\npermutation-calibrated q is\nrequired (14 decision 2)",
-         transform=axE.transAxes, fontsize=5.4, color=INK, va="top", linespacing=1.35)
+# the mechanism/decision prose moved to the legend (sidecar); the two shares are
+# already printed on the bars
 style(axE)
 axE.grid(False, axis="x")
 
@@ -431,24 +429,20 @@ axD.legend([Patch(color=MUTED), Patch(color=MUTED, hatch="////", edgecolor="whit
             "bottom bar: q_perm<0.05 AND effect floor (|Δprop|≥0.1 / |log2FC|≥1)"],
            loc="upper right", bbox_to_anchor=(0.985, 0.70), frameon=False, fontsize=5.6,
            handlelength=1.2, labelspacing=0.3)
-axD.text(0.985, 0.97,
-         "B0: the permutation null is conservative, so q_perm ADDS hits (66,630 vs 60,332 nominal).\n"
-         "q_perm resolution = 1/(N_null+1): "
-         f"{float(stats.loc['A_fisher_reads','min_p_emp']):.5f} for the marker arms, "
-         f"{float(stats.loc['B0_fisher_cells_nomarker','min_p_emp']):.1e} without pre-selection.\n"
-         "TRUE hit counts are NOT comparable across marker modes: pre-selection changes the tested\n"
-         "universe AND the Fisher gene denominator (14 mechanism 2) -- it is a different test.",
-         transform=axD.transAxes, fontsize=5.5, color=INK, ha="right", va="top", linespacing=1.4)
+# the conservative-null / resolution / comparability prose moved to the legend
+# (sidecar); a short label keeps the B0 anomaly visible on the image
+axD.text(0.985, 0.97, "B0: q_perm ADDS hits", transform=axD.transAxes, fontsize=5.8,
+         color=INK, ha="right", va="top", fontweight="bold")
 style(axD)
 axD.grid(False, axis="y")
 
-# ---- footer caption -------------------------------------------------------
+# ---- legend (moved OFF the image; the .caption.md sidecar is its single source)
 rt_line = (f"Permutation-harness cost (fig4_calibration_stats.tsv): TRUE runs "
            f"{rt.true_run_elapsed_s.min():.0f}-{rt.true_run_elapsed_s.max():.0f} s per arm, "
            f"mean permutation run {rt.perm_run_elapsed_mean_s.min():.0f}-"
            f"{rt.perm_run_elapsed_mean_s.max():.0f} s (20 permutations per arm, shared seeds).")
-caption = (
-    "Fig S9 | Calibration deep-dive behind Fig 4 (fdr_calibration_v2 run; testis mouse 1, 1,230 cells, "
+legend = (
+    "Figure S9 | Calibration deep-dive behind Fig 4 (fdr_calibration_v2 run; testis mouse 1, 1,230 cells, "
     "76,711 PAS, 3 stage pairs, 20 shared label permutations; manuscript/14, verified SOUND). "
     "(a) Null p<0.05 per stage pair for all six switch-test configurations: no pair drives any verdict; "
     "the shipping configuration B0 (Fisher, count-mode cells, no marker pre-selection) is 2.94-3.13% with "
@@ -463,22 +457,23 @@ caption = (
     "null, BH per pair) vs nominal BH q on the TRUE runs; for B0 the permutation null is conservative and "
     "q_perm adds hits. (e) nb_pairwise's plug-in dispersion floor (1e-4): 8.5% of C0's null tests carry "
     "67% of its false q<0.05 hits (13% in C; min null p 4e-182) -- whenever marker pre-selection or "
-    "nb_pairwise is used, permutation-calibrated q is required (14 decision). " + rt_line + " "
+    "nb_pairwise is used, permutation-calibrated q is required (14 decision). "
+    "In panel d, B0's permutation null is conservative, so q_perm ADDS hits (66,630 vs 60,332 nominal); "
+    "the q_perm resolution is 1/(N_null+1): "
+    f"{float(stats.loc['A_fisher_reads','min_p_emp']):.5f} for the marker arms, "
+    f"{float(stats.loc['B0_fisher_cells_nomarker','min_p_emp']):.1e} without pre-selection. TRUE hit "
+    "counts are NOT comparable across marker modes: pre-selection changes the tested universe AND the "
+    "Fisher gene denominator (14 mechanism 2) -- it is a different test. " + rt_line + " "
     "Caveats travel from 14: single mouse, single tissue, very large true stage effects; the "
-    "label-permutation null tests exchangeability only. Sources: fig4_calibration_stats.tsv, "
-    "fig4_calibration_per_pair.tsv, results/fdr_calibration_v2/ (report.json; null p-values gz; input "
-    "h5ad); no permutation was re-run. Every plotted value: results/figures/manuscript/" + NAME + "_*.tsv."
+    "label-permutation null tests exchangeability only."
 )
-_cap = textwrap.fill(caption, 170)
-assert _cap.count("\n") + 1 <= 16, "caption too tall for the reserved footer band"
-fig.text(0.03, 0.012, _cap, fontsize=5.8, color=INK, va="bottom", ha="left", linespacing=1.38)
 
-for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
     fig.savefig(p, **kw)
     print("wrote", p)
 p = TSVDIR / f"{NAME}.png"
-fig.savefig(p, dpi=300)
+fig.savefig(p, dpi=600)
 print("wrote", p)
 
 # ---------------------------------------------------------------------------
@@ -496,9 +491,11 @@ for suffix, df in outs:
 # sidecar caption
 # ---------------------------------------------------------------------------
 smin, smax = pct1(strata.frac_null_p_lt_05.min()), pct1(strata.frac_null_p_lt_05.max())
-cap_md = f"""# Fig S9 — `{NAME}` caption (generated by `scripts/manuscript_figures/{NAME}.py`)
+cap_md = f"""# Fig S9 — `{NAME}` sidecar (generated by `scripts/manuscript_figures/{NAME}.py`; single source of the legend)
 
-{caption}
+## Legend
+
+{legend}
 
 **Panel a** — per-stage-pair null p<0.05 from `fig4_calibration_per_pair.tsv`: B0 spans
 {b0p.null_frac_p_lt_05.min()*100:.2f}-{b0p.null_frac_p_lt_05.max()*100:.2f}% with `null_frac_q_lt_fdr` 0 in
@@ -537,9 +534,13 @@ only; KS-vs-uniform rejects for every arm (discrete Fisher mass at p=1) — repo
 is the pre-registered operational rule of 14, not a standard. Panel b is the one recomputed panel — nothing
 else on this figure required computation beyond reading the verified TSVs, and no permutation was re-run.
 
+## Provenance
+
 Sources: `manuscript/14_switch_calibration_v2.md` (SOUND); `results/figures/manuscript/fig4_calibration_stats.tsv`,
 `fig4_calibration_per_pair.tsv`; `results/fdr_calibration_v2/{{report.json,fig4_calibration_null_pvalues_all_arms.tsv.gz,input/stage_labelled.h5ad}}`.
 Every plotted value: `results/figures/manuscript/{NAME}_*.tsv` (source column per row).
+Script: `scripts/manuscript_figures/{NAME}.py` (env `FIGS9_REUSE_STRATA=1` reuses an existing strata TSV;
+EXPECT asserts run either way). Rendered at PNG 600 dpi / PDF fonttype 42.
 """
 p = FIGDIR / f"{NAME}.caption.md"
 p.write_text(cap_md)

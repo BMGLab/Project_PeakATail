@@ -30,8 +30,10 @@ INPUTS (all primary or verified)
   manuscript/19_final_gate_v2.md, manuscript/18_spermatogenesis_final.md   (quoted facts)
 
 OUTPUTS
-  manuscript/figures/fig3_tradeoff.{png,pdf}   (PNG 300 dpi, PDF fonttype 42)
-  manuscript/figures/fig3_tradeoff.caption.md
+  manuscript/figures/fig3_tradeoff.{png,pdf}   (PNG 600 dpi, PDF fonttype 42)
+  manuscript/figures/fig3_tradeoff.caption.md  ('## Legend' = the journal legend,
+                                                single source of the caption;
+                                                '## Provenance')
   results/figures/manuscript/fig3_tradeoff.tsv               (panels a + b)
   results/figures/manuscript/fig3_tradeoff_reproducibility.tsv (panel c)
   results/figures/manuscript/fig3_tradeoff_compute.tsv         (panel d)
@@ -384,12 +386,16 @@ comp.insert(0, "panel", "d")
 # ---------------------------------------------------------------------------
 # FIGURE
 # ---------------------------------------------------------------------------
-FIG_W, FIG_H = 7.4, 10.0
+# 2026-09-02 submission pass: the on-figure title and footer moved to the
+# sidecar Legend; the canvas height shrank by the freed bands (10.0 -> 8.1 in,
+# same axes sizes in inches) and the width narrowed to the double-column norm
+# (7.4 -> 7.09 in = 180 mm).
+FIG_W, FIG_H = 7.09, 8.1
 fig = plt.figure(figsize=(FIG_W, FIG_H))
-gs_top = fig.add_gridspec(2, 2, left=0.080, right=0.988, top=0.950, bottom=0.575,
+gs_top = fig.add_gridspec(2, 2, left=0.084, right=0.988, top=0.969, bottom=0.506,
                           width_ratios=[1.02, 0.98], hspace=0.46, wspace=0.235)
-GS_BOT_BOTTOM = 0.218
-gs_bot = fig.add_gridspec(1, 2, left=0.150, right=0.988, top=0.500, bottom=GS_BOT_BOTTOM,
+GS_BOT_BOTTOM = 0.068
+gs_bot = fig.add_gridspec(1, 2, left=0.157, right=0.988, top=0.416, bottom=GS_BOT_BOTTOM,
                           width_ratios=[1.0, 0.90], wspace=0.34)
 axA = fig.add_subplot(gs_top[0:2, 0])
 axB1 = fig.add_subplot(gs_top[0, 1])
@@ -457,7 +463,10 @@ axA.text(0.303, ORIG_P + 0.010, "original two-sided gate  P ≥ 0.38",
          ha="right", va="bottom", fontsize=6.2, color=MUTED)
 
 d = sweep[(sweep.dataset == "pbmc") & (sweep.min_molecules == PREREG_K)].iloc[0]
-axA.annotate("pre-registered default:\n≥2 molecules (13 §1).\nThe only point on any\npath that was\npre-specified; the rest\nare descriptive.",
+# (the "only point on any path that was pre-specified; the rest are
+#  descriptive" qualification moved to the sidecar Legend, panel-a paragraph;
+#  the ring keeps its short label)
+axA.annotate("pre-registered default:\n≥2 molecules (13 §1)",
              xy=(d.recall_detected_genes, d.atlas_agreement_precision),
              xytext=(0.106, 0.588), fontsize=6.1, color=INK, ha="center", va="center",
              bbox=dict(boxstyle="round,pad=0.32", facecolor="white", edgecolor=MUTED, lw=0.55),
@@ -517,7 +526,7 @@ for ax, col, ylab, title, letter in (
     panel_tag(ax, letter, title)
 axB1.set_ylim(0.0, 1.20)
 axB1.set_yticks([0.0, 0.2, 0.4, 0.6, 0.8])
-axB2.set_ylim(0.0, 0.425)
+axB2.set_ylim(0.0, 0.335)   # headroom shrank with the P@10/P@100 block's move to the legend
 axB2.set_yticks([0.0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30])
 axB1.legend(loc="upper left", bbox_to_anchor=(-0.012, 1.012), frameon=False, ncol=2,
             handlelength=1.5, handletextpad=0.4, labelspacing=0.20, columnspacing=0.9,
@@ -525,13 +534,8 @@ axB1.legend(loc="upper left", bbox_to_anchor=(-0.012, 1.012), frameon=False, nco
 _p10 = {t: float(plotted[(plotted.tool == t) & (plotted.cutoff_bp == 10)].atlas_agreement_precision.iloc[0])
         / float(plotted[(plotted.tool == t) & (plotted.cutoff_bp == 100)].atlas_agreement_precision.iloc[0])
         for t in ORDER}
-axB2.text(0.985, 0.975,
-          "P@10 / P@100 (window dependence):\n"
-          f"PeakATail default {_p10['PeakATail v2 default']:.2f}, polyApipe {_p10['polyApipe']:.2f}, "
-          f"scUTRquant* {_p10['scUTRquant*']:.2f},\nSCAPTURE {_p10['SCAPTURE']:.2f}, "
-          f"Sierra {_p10['Sierra']:.2f}, scAPAtrap {_p10['scAPAtrap']:.2f} —\n"
-          "the precision lead is not a loose-window artefact.",
-          transform=axB2.transAxes, fontsize=5.9, color=INK, ha="right", va="top", linespacing=1.4)
+# (the P@10/P@100 window-dependence block and its "not a loose-window artefact"
+#  conclusion moved to the sidecar Legend, panel-b paragraph)
 
 # ---- panel c: replicate reproducibility ------------------------------------
 CROWS = [("scAPAtrap (v1)", ORANGE, "scAPAtrap"),
@@ -562,10 +566,13 @@ axC.set_yticks(range(len(CROWS)))
 axC.set_yticklabels([lab for _t, _c, lab in CROWS][::-1], fontsize=6.3)
 axC.set_xlim(0, 1.10)
 axC.set_xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
-axC.set_ylim(-2.70, len(CROWS) + 0.85)
+# the band below the bars that held the Jaccard / single-donor text block is
+# gone (the block moved to the sidecar Legend), so the y range holds bars only
+axC.set_ylim(-0.70, len(CROWS) + 0.85)
 axC.set_xlabel("replicate agreement, mouse 1 vs mouse 2\n(fraction of query sites with a strand-matched call ≤100 bp in the other mouse)",
                fontsize=6.2)
-axC.axvline(0.0095, ymin=0.245, ymax=0.850, color=MUTED, lw=0.8, ls=(0, (1, 2)), zorder=2)
+axC.plot([0.0095, 0.0095], [-0.36, len(CROWS) - 0.58], color=MUTED, lw=0.8, ls=(0, (1, 2)),
+         zorder=2)   # same data span the old axes-fraction axvline covered
 axC.legend(handles=[Patch(facecolor=GREY, edgecolor=GREY, label="mouse 1 → mouse 2"),
                     Patch(facecolor=GREY, alpha=0.55, edgecolor=GREY, label="mouse 2 → mouse 1"),
                     Line2D([], [], marker="D", ls="none", color=INK, markersize=3.2,
@@ -577,11 +584,9 @@ axC.legend(handles=[Patch(facecolor=GREY, edgecolor=GREY, label="mouse 1 → mou
 jd = repro[repro.tool == "PeakATail v2 default"]
 j25 = float(jd[jd.window_bp == 25].jaccard_strand_aware.iloc[0])
 j100 = float(jd[jd.window_bp == 100].jaccard_strand_aware.iloc[0])
-axC.text(0.016, -2.55,
-         "v2 default, strand-aware Jaccard\n"
-         f"of ±window site sets: {j25:.3f} (±25 bp),\n{j100:.3f} (±100 bp).\n"
-         "PBMC is a single donor — no human\nbiological replicate exists here.",
-         fontsize=5.9, color=INK, va="bottom", ha="left", linespacing=1.45)
+# (the strand-aware-Jaccard values and the "PBMC is a single donor — no human
+#  biological replicate exists here" caveat moved to the sidecar Legend,
+#  panel-c paragraph)
 panel_tag(axC, "c", "biological-replicate reproducibility (GSE104556 testis)")
 
 # ---- panel d: compute ------------------------------------------------------
@@ -629,21 +634,21 @@ axD.set_xlabel("wall time on the PBMC 10k v3 BAM (h, log)")
 axD.set_ylabel("peak RSS (GB, log)")
 _v1i = comp[comp.tool == "PeakATail v1 IP arm"].iloc[0]
 _v2i = comp[comp.tool == "PeakATail v2 IP arm"].iloc[0]
+# (the Stage-1d prose — arm identity, "no ≥300 GB node needed", the IP-arm
+#  audit pair — moved to the sidecar Legend, panel-d paragraph; the arrow keeps
+#  a short value label and the open circle keeps its key)
 axD.text(0.015, 0.985,
-         f"Stage 1d resolved (#96/#97). The v1→v2 pair\n"
-         f"is the no-IP arm: {v1.peak_rss_gb:.0f} → {v2.peak_rss_gb:.1f} GB "
-         f"({v1.peak_rss_gb / v2.peak_rss_gb:.1f}×),\n"
-         f"{v1.wall_str} → {v2.wall_str} — no ≥300 GB node needed.\n"
-         f"IP default arm: {_v1i.peak_rss_gb:.1f} → {_v2i.peak_rss_gb:.1f} GB (own logs).\n"
-         "Open circle = uncontended 27:43 (19 §3).",
+         f"v1 → v2: {v1.peak_rss_gb:.0f} → {v2.peak_rss_gb:.1f} GB "
+         f"({v1.peak_rss_gb / v2.peak_rss_gb:.1f}×), {v1.wall_str} → {v2.wall_str}\n"
+         "open circle = uncontended 27:43 (19 §3)",
          transform=axD.transAxes, fontsize=6.0, color=INK, ha="left", va="top", linespacing=1.4)
 panel_tag(axD, "d", "compute footprint, PBMC BAM")
 
-# ---- title + footer --------------------------------------------------------
-fig.text(0.012, 0.980,
-         "Fig 3  |  Operating-point trade surface, window sensitivity, replicate reproducibility and compute",
-         fontsize=9.2, fontweight="bold", color=INK, va="bottom", ha="left")
-
+# ---- legend text (sidecar only) --------------------------------------------
+# The figure-level title line and the footer below both moved to the sidecar
+# '## Legend' at the 2026-09-02 submission pass (journal style: the legend
+# opens 'Figure 3 | <title>.'); nothing is drawn on the canvas here.  The
+# footer string is kept verbatim as `footer` and written into the Legend.
 footer = (
     f"Code {CODE} (PRs #93/#96/#97 merged); every PeakATail v2 value is from the v2 run recorded in "
     "manuscript/19_final_gate_v2.md and results/benchmark_tools/final_v2_verify/VERIFIED_v2.md (verifier verdict FIXED). "
@@ -673,22 +678,12 @@ footer = (
     "carries each competitor run's retry/skipped-stage caveats. "
     "Every plotted value: results/figures/manuscript/fig3_tradeoff{,_reproducibility,_compute}.tsv."
 )
-FOOT_FS, FOOT_LS, FOOT_Y = 5.2, 1.36, 0.008
-wrapped = textwrap.fill(footer, 188)
-nlines = wrapped.count("\n") + 1
-foot_top_in = FOOT_Y * FIG_H + nlines * FOOT_FS * FOOT_LS / 72.0
-panel_bottom_in = GS_BOT_BOTTOM * FIG_H - 0.46   # panel c/d two-line x-labels
-assert foot_top_in + 0.06 <= panel_bottom_in, (
-    f"footer ({nlines} lines, top at {foot_top_in:.2f} in) collides with the panel c/d x labels "
-    f"(bottom at {panel_bottom_in:.2f} in)")
-fig.text(0.012, FOOT_Y, wrapped, fontsize=FOOT_FS, color=INK, va="bottom", ha="left",
-         linespacing=FOOT_LS)
 
-for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
     fig.savefig(p, **kw)
     print("wrote", p)
-fig.savefig(OUTDIR / f"{NAME}.png", dpi=300)
+fig.savefig(OUTDIR / f"{NAME}.png", dpi=600)
 print("wrote", OUTDIR / f"{NAME}.png")
 
 # ---------------------------------------------------------------------------
@@ -726,14 +721,9 @@ k10 = {ds: sweep[(sweep.dataset == ds) & (sweep.min_molecules == 10)].iloc[0]
        for ds in ("pbmc", "mouse1", "mouse2")}
 cap_md = f"""# Fig 3 — `fig3_tradeoff` caption (generated by `scripts/manuscript_figures/fig3_tradeoff.py`)
 
-**Index paragraph.** `fig3_tradeoff` — Fig 3: the reliability trade surface, its window
-sensitivity, replicate reproducibility and compute. Sweeping the molecule-support threshold on the
-IP-filtered v2 arms moves atlas-agreement precision @100 bp from
-{dfl['pbmc'].atlas_agreement_precision:.3f} to {k10['pbmc'].atlas_agreement_precision:.3f} (PBMC) while detected-gene
-recall falls {dfl['pbmc'].recall_detected_genes:.3f} → {k10['pbmc'].recall_detected_genes:.3f}; only the pre-registered
-≥2-molecule point is a claim. The de novo precision ordering is unchanged at a 10 bp matching window,
-the two testis mice agree on {rr.min():.3f}–{rr.max():.3f} of default sites at 100 bp against a ≤0.010 chance level, and
-the Stage-1d fixes cut peak RSS {v1.peak_rss_gb:.0f} → {v2.peak_rss_gb:.1f} GB on the PBMC BAM.
+## Legend
+
+Figure 3 | Operating-point trade surface, window sensitivity, replicate reproducibility and compute.
 
 **Panel a — trade surface.** Atlas-agreement precision @100 bp (y) against detected-gene recall
 R_det @100 bp (x) for the IP-filtered v2 arms as the molecule-support threshold sweeps ≥1, ≥2, ≥3, ≥5,
@@ -741,7 +731,9 @@ R_det @100 bp (x) for the IP-filtered v2 arms as the molecule-support threshold 
 the number of sites called (n {int(sweep.n.min()):,}–{int(sweep.n.max()):,}). Thresholds are labelled on the PBMC path and at both ends of
 the mouse 1 path; all three paths carry the same five thresholds in the same order. Black rings mark the **pre-registered
 default (≥2 molecules, `13_reliability_positioning.md` §1)** — **only that point was pre-registered;
-≥1, ≥3, ≥5 and ≥10 are descriptive points computed for this figure and were never gated.** Dashed
+≥1, ≥3, ≥5 and ≥10 are descriptive points computed for this figure and were never gated.** (The
+post-hoc sweep that informed the ≥2-molecule threshold is disclosed in 12 CORRECTION and is never
+cited as a result.) Dashed
 line: the pre-registered gate P ≥ 0.50. Dotted line: the original two-sided gate's precision side,
 P ≥ 0.38. Every point was recomputed with `scripts/benchmark_tools/score_tool.py` from `pas.bed`
 column 5 using the reference arguments of `scripts/benchmark_tools/stage2_final_launch.sh`; the ≥1 and
@@ -793,7 +785,8 @@ requirement is gone. **Both ends of that arrow are the clip-seeded arm run *with
 the like-for-like pair, and the pair `15` §5 and `19` §3 quote. The IP-filtered default arm whose call
 sets panels a–c show was cheaper on both codes ({_v1i.wall_str} / {_v1i.peak_rss_gb:.1f} GB →
 {_v2i.wall_str} / {_v2i.peak_rss_gb:.2f} GB, read here from the arms' own `runtime_mem.txt`); those two
-measurements are audit rows in `fig3_tradeoff_compute.tsv` and are not plotted.
+measurements are audit rows in `fig3_tradeoff_compute.tsv` and are not plotted. The Stage-1d fixes cut peak RSS
+{v1.peak_rss_gb:.0f} → {v2.peak_rss_gb:.1f} GB on the PBMC BAM — no ≥300 GB node is needed.
 The open circle is the uncontended single-run wall time (27:43, `19` §3); the
 filled v2 point was measured with all four arms running concurrently, so peak RSS is the production
 number and the wall time must be quoted with the concurrency disclosed (~28–35 min). Competitor and
@@ -803,6 +796,20 @@ competitor row carries that run's retry / skipped-stage caveat in the compute TS
 scAPAtrap's 4.07 h is a resumed run that skipped three completed stages and so understates a
 from-scratch run (12:58:50 of total machine time across both attempts). Peak RSS is
 GNU `time -v` maximum resident set size reported as kbytes/1e6, the convention of `19` §3 and `15` §5.
+
+**Definitions, pre-registration and scope** (the former on-figure footer, verbatim — it travels with the
+legend): {footer}
+
+## Provenance
+
+**Index paragraph.** `fig3_tradeoff` — Fig 3: the reliability trade surface, its window
+sensitivity, replicate reproducibility and compute. Sweeping the molecule-support threshold on the
+IP-filtered v2 arms moves atlas-agreement precision @100 bp from
+{dfl['pbmc'].atlas_agreement_precision:.3f} to {k10['pbmc'].atlas_agreement_precision:.3f} (PBMC) while detected-gene
+recall falls {dfl['pbmc'].recall_detected_genes:.3f} → {k10['pbmc'].recall_detected_genes:.3f}; only the pre-registered
+≥2-molecule point is a claim. The de novo precision ordering is unchanged at a 10 bp matching window,
+the two testis mice agree on {rr.min():.3f}–{rr.max():.3f} of default sites at 100 bp against a ≤0.010 chance level, and
+the Stage-1d fixes cut peak RSS {v1.peak_rss_gb:.0f} → {v2.peak_rss_gb:.1f} GB on the PBMC BAM.
 
 **Not drawn — what Fig 3 still lacks.** The long-read re-ranking panel (Spearman ρ between atlas and
 Kinnex precision orderings, 0.90 at 7 of 8 arms) is quarantined and was not regenerated for v2, so it is

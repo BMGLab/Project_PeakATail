@@ -27,7 +27,9 @@ Any revised definition must be pre-registered and validated on data not used her
 
 Outputs
 -------
-manuscript/figures/figS7_novelfunnel.{png,pdf}        300 dpi / fonttype 42 (no Type 3)
+manuscript/figures/figS7_novelfunnel.{png,pdf}        600 dpi / fonttype 42 (no Type 3);
+    all on-figure prose (suptitle, subtitle, caveat block) moved to the caption
+    sidecar's '## Legend' in the 2026-09-02 submission pass
 results/figures/manuscript/figS7_novelfunnel.png
 results/figures/manuscript/figS7_novelfunnel.tsv                  panel a (funnel + concordance per stage)
 results/figures/manuscript/figS7_novelfunnel_concordance.tsv      panel b (every point, CI, null)
@@ -35,7 +37,7 @@ results/figures/manuscript/figS7_novelfunnel_composition.tsv      panel c (featu
 results/figures/manuscript/figS7_novelfunnel_strata.tsv           panel d (post-hoc strata)
 results/figures/manuscript/figS7_novelfunnel_reference_lines.tsv  target + robustness values + sources
 """
-import os, re, textwrap
+import os, re
 
 import matplotlib
 matplotlib.use("Agg")
@@ -290,9 +292,17 @@ plt.rcParams.update({
     "axes.titlelocation": "left", "axes.titlepad": 5, "axes.linewidth": 0.7,
     "font.family": "DejaVu Sans", "hatch.linewidth": 0.6,
 })
-fig = plt.figure(figsize=(7.5, 8.7))
+# canvas: the pre-submission 7.5 x 8.7 in canvas carried a suptitle+subtitle
+# band on top and a 12-line caveat block below; both now live in the caption
+# sidecar ('## Legend') and the canvas height drops by the freed space.
+# figsize narrowed 7.5 -> 7.1 in; because this script saves with
+# bbox_inches='tight', the funnel's long y labels (left) and panel b's legend
+# (right) overhang the declared canvas, so the DELIVERED image is ~8.9 in
+# (225 mm) wide, down from 9.3 in pre-surgery.  Narrowing further crowds the
+# 5.2-6.5 pt annotations (legibility outranks the 180 mm width target).
+fig = plt.figure(figsize=(7.1, 7.3))
 gs = fig.add_gridspec(2, 2, height_ratios=[1.0, 1.0], width_ratios=[1.05, 1.0], hspace=0.46, wspace=0.30,
-                      left=0.055, right=0.985, top=0.885, bottom=0.160)
+                      left=0.058, right=0.985, top=0.965, bottom=0.105)
 gs_a = gs[0, 0].subgridspec(1, 2, width_ratios=[1.25, 1.0], wspace=0.05)
 ax_a1 = fig.add_subplot(gs_a[0, 0]); ax_a2 = fig.add_subplot(gs_a[0, 1], sharey=ax_a1)
 ax_b = fig.add_subplot(gs[0, 1])
@@ -313,7 +323,7 @@ ax_a1.set_yticks(y); ax_a1.set_yticklabels([s[2] for s in STAGES], fontsize=5.9,
 ax_a1.invert_yaxis(); ax_a1.set_xlim(0, N_INPUT * 1.95)
 ax_a1.set_xticks([0, 20000, 40000]); ax_a1.set_xticklabels(["0", "20k", "40k"])
 N_DEFAULT = int(funnel.loc["input", "n_pass"])   # 44,413 incl. 19 off-contig sites; frac_of_input is relative to this
-style(ax_a1, "x"); ax_a1.set_xlabel(f"sites retained\n(% of the {N_DEFAULT:,}-site default)")
+style(ax_a1, "x"); ax_a1.set_xlabel(f"sites retained (% of\nthe {N_DEFAULT:,}-site default)", fontsize=6.3)
 ax_a1.set_title("a  Pre-registered funnel (13 §3) and per-stage concordance")
 
 ax_a2.axvline(TARGET, color=INK, lw=0.9, ls=(0, (3, 2)), zorder=2)
@@ -331,7 +341,7 @@ for i, rw in A.iterrows():
 ax_a2.text(0.415, -0.5, "change vs\nprevious stage", ha="left", va="center", fontsize=5.2, color=MUTED)
 ax_a2.set_xlim(0.40, 1.0); ax_a2.set_xticks([0.5, 0.7, 0.9]); ax_a2.set_ylim(len(A) - 0.35, -0.85)
 plt.setp(ax_a2.get_yticklabels(), visible=False); ax_a2.tick_params(axis="y", length=0)
-style(ax_a2, "x"); ax_a2.set_xlabel("fraction within 25 bp of a Kinnex\n3' end (>=5 UMI), Wilson 95% CI")
+style(ax_a2, "x"); ax_a2.set_xlabel("fraction within 25 bp of a\nKinnex 3' end (>=5 UMI),\nWilson 95% CI", fontsize=6.3)
 
 # --- b: concordance vs truth stringency --------------------------------------
 xs = np.array(list(TRUTHS.values()), dtype=float)
@@ -339,7 +349,7 @@ nb = B[B.set == "trusted_novel"].sort_values("umi_threshold")
 ax_b.fill_between(xs, nb["null_min"].values, nb["null_max"].values, color=GREY, alpha=0.6, lw=0, zorder=1)   # true 10-seed range, not widened
 ax_b.plot(xs, nb["null_mean"].values, color=GREY, lw=1.3, ls="-", zorder=2)
 ax_b.axhline(TARGET, color=INK, lw=0.9, ls=(0, (3, 2)), zorder=2)
-ax_b.text(560, TARGET + 0.012, "pre-registered target (13 §3)", fontsize=5.9, color=INK, ha="right", va="bottom")
+ax_b.text(560, TARGET + 0.012, "pre-registered target 0.70", fontsize=5.9, color=INK, ha="right", va="bottom")
 handles = []
 for q, meta in SETS.items():
     g = B[B.set == q].sort_values("umi_threshold")
@@ -358,7 +368,7 @@ ax_b.set_xlim(4.2, 620); ax_b.set_ylim(0, 1.36); ax_b.set_yticks([0, 0.2, 0.4, 0
 ax_b.set_xlabel("Kinnex truth stringency: UMI per 3' end (log)"); ax_b.set_ylabel("fraction within 25 bp, strand-matched (Wilson 95% CI)")
 handles.append(Line2D([], [], color=GREY, lw=1.3, label=f"gene-body-shuffled null, 10 seeds (mean {float(nb['null_mean'].iloc[0]):.3f}, "
                       f"range {float(nb['null_min'].iloc[0]):.3f}-{float(nb['null_max'].iloc[0]):.3f} at >=5 UMI)"))
-style(ax_b); ax_b.legend(handles=handles, loc="upper left", frameon=False, handlelength=2.6, labelspacing=0.3, borderaxespad=0.1)
+style(ax_b); ax_b.legend(handles=handles, loc="upper left", frameon=False, handlelength=2.4, labelspacing=0.3, borderaxespad=0.1, fontsize=5.6)
 ax_b.set_title("b  Concordance vs truth stringency: target missed throughout")
 
 # --- c1: feature-class composition --------------------------------------------
@@ -395,7 +405,7 @@ for j, (_, rw) in enumerate(rows_d.iterrows()):
 ax_c2.set_yticks(yd); ax_c2.set_yticklabels([lab for _, lab, _ in DECOY_SETS], fontsize=6.2)
 ax_c2.invert_yaxis(); ax_c2.set_xlim(0, 0.40); ax_c2.set_xticks([0, 0.1, 0.2, 0.3, 0.4]); ax_c2.set_xticklabels(["0", "10", "20", "30", "40%"])
 style(ax_c2, "x")
-ax_c2.set_xlabel("within 25 bp (same strand) of a Kinnex x3p internal-priming decoy terminus\n(Kinnex: >=12 A in +1..+18; caller's IP rule: -10..+30, >=6 A or >=70% A)", labelpad=2)
+ax_c2.set_xlabel("within 25 bp (same strand) of a Kinnex x3p internal-priming decoy terminus\n(Kinnex: >=12 A in +1..+18; caller's IP rule: -10..+30, >=6 A or >=70% A)", labelpad=2, fontsize=6.0)
 
 # --- d: POST-HOC strata -------------------------------------------------------------
 plot_d = Dd[Dd.group.isin(["feature", "support"])].reset_index(drop=True)
@@ -448,51 +458,17 @@ frame = FancyBboxPatch((bb.x0 - pad_x, bb.y0 - pad_y), bb.width + 2 * pad_x, bb.
                        edgecolor=VERM, linewidth=0.9, linestyle=(0, (4, 2)), zorder=0, clip_on=False)
 fig.add_artist(frame)
 
-# --- title + caveats ------------------------------------------------------------------
-gene_txt = f", {N_GENES} genes" if N_GENES else ""
-fig.suptitle(f"Pre-registered trusted-novel definition: {FRAC_TN:.0%} long-read concordance, target {TARGET:.0%} not met",
-             x=0.055, ha="left", fontsize=9.6, fontweight="bold", y=0.988)
-fig.text(0.055, 0.962, textwrap.fill(
-    f"PBMC 10k v3, PeakATail precision default (IP arm, code {CODE}; {N_INPUT:,} sites on primary contigs) -> {N_TN:,} trusted-novel "
-    f"({N_TN / N_INPUT:.1%}{gene_txt}; {N_STRONG:,} with AATAAA/ATTAAA). Trusted-novel = clip-supported, >=2 molecules, not internal priming, "
-    f"canonical hexamer at -40..-5, >=100 bp from any PolyASite 2.0 site (13 §3, committed before any number existed). "
-    f"Truth = Kinnex x3p poly(A)-verified 3' ends; hit = within {WINDOW_BP} bp on the same strand. "
-    f"Result: {fmt_ci(FRAC_TN, TN['wilson95_lo'], TN['wilson95_hi'])} at >=5 UMI ({int(TN['n_hit']):,} / {N_TN:,}); "
-    f"{float(vrow('trusted_novel', 't20')['frac_hit']):.3f} / {float(vrow('trusted_novel', 't100')['frac_hit']):.3f} / "
-    f"{float(vrow('trusted_novel', 't500')['frac_hit']):.3f} at >=20 / >=100 / >=500 UMI.", 150),
-    ha="left", va="top", fontsize=6.0, color=INK, linespacing=1.35)
+# --- title + caveats: moved off the image (2026-09-02 submission pass) --------
+# The figure-level suptitle, the definition/result subtitle and the 12-line
+# truth-caveat block now live in the caption sidecar's '## Legend' (substance
+# verbatim; the sidecar describes the v2 default render).  A v1 record render
+# (TRUSTED_NOVEL_VERSION=v1) therefore carries no on-figure prose either; its
+# numbers remain in the run directory and manuscript/16.
 
-_prev = VERSIONS["prev"]
-prev_note = "" if not _prev else (
-    f"The {_prev['label']} gave {_prev['frac']:.3f} on {_prev['n_tn']:,} trusted-novel sites and "
-    f"{_prev['decoy']:.1%} decoy proximity; the corrected IP filter (#96) admits more raw peaks, so the negative result stands and "
-    f"slightly strengthens -- the leniency of the IP *rule*, not the strand bug, is the cause (19 §4). ")
-
-caveat = (
-    f"Truth caveats: both Kinnex sets come from donors other than the PBMC 10k v3 donor, so a site used in this sample but absent (or <5 UMI) in the "
-    f"long-read donor counts as a miss -- the atlas-known hexamer-pass complement scores {float(vrow('CAL_atlas_known_hexpass', 't5')['frac_hit']):.3f} under the same truth, "
-    f"so donor mismatch cannot explain the gap. Robustness (verifier, not part of the pre-registered metric): GEM-X truth {rob['gemx_t5_25bp']['frac']:.3f} "
-    f"({rob['gemx_t5_25bp']['k']:,}/{rob['gemx_t5_25bp']['n']:,}); x3p+GEM-X pooled {rob['pooled_t5_25bp']['frac']:.3f} at 25 bp, "
-    f"{rob['pooled_t5_50bp']['frac']:.3f} at 50 bp, {rob['pooled_t5_100bp']['frac']:.3f} at 100 bp -- the pre-registered 25-bp metric is missed under every truth choice. "
-    f"Null = sites shuffled within gene bodies (10 seeds; mean {float(TN['null_mean']):.4f} at >=5 UMI, enrichment {float(TN['enrichment']):.0f}x, empirical p at the "
-    f"{float(TN['empirical_p']):.3f} = 1/11 floor): the sites are far from random, but the target is an absolute fraction. Funnel stages clip / >=2 molecules / "
-    f"not-IP remove nothing (the caller enforces them); PolyA_DB could not be used (hg19 only). "
-    f"The hexamer stage adds +{float(A.loc[2, 'delta_frac_vs_previous']):.3f} on the whole set but nothing among atlas-novel sites "
-    f"(hexamer-FAIL {float(vrow('CAL_atlas_novel_hexfail', 't5')['frac_hit']):.3f} vs trusted-novel {FRAC_TN:.3f}); the atlas-novelty stage costs "
-    f"{float(A.loc[3, 'delta_frac_vs_previous']):.3f}. Panel d is exploratory: strata chosen after seeing the data, none is a definition, "
-    f"none validated on held-out data (candidate: 3'UTR-restricted and/or >=5 molecules and/or `--ip-rule kinnex`, Stage-1d). "
-    + prev_note +
-    f"Single PBMC donor, single CellRanger BAM. Sources: {VERSIONS['src']}/ ({VERSIONS['status']}), "
-    f"{VERSIONS['writeup']}. Every plotted value: results/figures/manuscript/{NAME}*.tsv."
-)
-_cav = textwrap.fill(caveat, 168)
-assert _cav.count("\n") + 1 <= 12, f"caveat block is {_cav.count(chr(10)) + 1} lines (approved layout: <= 12)"
-fig.text(0.055, 0.046, _cav, ha="left", va="top", fontsize=5.3, color=MUTED, linespacing=1.38)
-
-fig.savefig(f"{TSVDIR}/{NAME}.png", dpi=300, bbox_inches="tight", pad_inches=0.06)
+fig.savefig(f"{TSVDIR}/{NAME}.png", dpi=600, bbox_inches="tight", pad_inches=0.06)
 for ext in ("png", "pdf"):
     p = f"{FIGDIR}/{NAME}.{ext}"
-    fig.savefig(p, bbox_inches="tight", pad_inches=0.06, **({"dpi": 300} if ext == "png" else {}))
+    fig.savefig(p, bbox_inches="tight", pad_inches=0.06, **({"dpi": 600} if ext == "png" else {}))
     print("wrote", p)
 # edge check: nothing may be clipped; the outer 8 px of the PNG must be blank
 try:
@@ -520,9 +496,11 @@ print(f"VERDICT: trusted-novel {FRAC_TN:.3f} [{TN['wilson95_lo']:.3f}-{TN['wilso
 # it is only written when VERSION == 'v2' so a v1 record render cannot
 # overwrite the manuscript caption with mismatched prose.
 # ---------------------------------------------------------------------------
-CAPTION_MD = r"""# Fig S7 — `figS7_novelfunnel` caption (generated by `scripts/manuscript_figures/figS7_novelfunnel.py`; renamed 2026-09-02, see FIGURE_MAP.tsv — demoted from 21's main Fig 6 slot, prominence kept in R6/abstract/Author Summary)
+CAPTION_MD = r"""# Fig S7 — `figS7_novelfunnel` caption (generated by `scripts/manuscript_figures/figS7_novelfunnel.py`; renamed 2026-09-02, see FIGURE_MAP.tsv — demoted from 21's main Fig 6 slot, prominence kept in R6/abstract/Author Summary; submission pass 2026-09-02: the on-figure suptitle, subtitle and caveat block moved into the Legend below, image at 600 dpi)
 
-Fig S7 | Pre-registered trusted-novel definition vs Kinnex long-read truth: 49% concordance, target 70% not met (negative result). Input = the final PBMC 10k v3 precision default (IP arm, PeakATail code 9dfdefb; 46,524 sites on primary contigs). Definition (13 §3, committed before any number existed): clip-supported ∧ ≥2 molecules ∧ not internal priming ∧ canonical hexamer (any of 12) at −40..−5 ∧ ≥100 bp from any PolyASite 2.0 site → 7,259 trusted-novel sites (15.6%, 3,578 genes; 4,329 with AATAAA/ATTAAA). Truth = Kinnex x3p poly(A)-verified 3′ ends (different donor); hit = within 25 bp, same strand; Wilson 95% CIs; null = sites shuffled within gene bodies (10 seeds). Result: 0.485 [0.474–0.497] at ≥5 UMI (3,523 / 7,259); 0.239 / 0.066 / 0.012 at ≥20 / ≥100 / ≥500 UMI — the pre-registered ≥0.70 target is not met at any threshold. Robustness (verifier, not part of the pre-registered metric): GEM-X truth 0.515; x3p + GEM-X pooled 0.582 at 25 bp (0.669 at 50 bp, 0.714 at 100 bp). The sites are far from random (enrichment ~65× over the null at ≥5 UMI, empirical p at the 1/11 floor), but the target was an absolute fraction. Every plotted value: `results/figures/manuscript/figS7_novelfunnel*.tsv`.
+## Legend
+
+Figure S7 | Pre-registered trusted-novel definition vs Kinnex long-read truth: 49% concordance, target 70% not met (negative result). Input = the final PBMC 10k v3 precision default (IP arm, PeakATail code 9dfdefb; 46,524 sites on primary contigs). Definition (13 §3, committed before any number existed): clip-supported ∧ ≥2 molecules ∧ not internal priming ∧ canonical hexamer (any of 12) at −40..−5 ∧ ≥100 bp from any PolyASite 2.0 site → 7,259 trusted-novel sites (15.6%, 3,578 genes; 4,329 with AATAAA/ATTAAA). Truth = Kinnex x3p poly(A)-verified 3′ ends (different donor); hit = within 25 bp, same strand; Wilson 95% CIs; null = sites shuffled within gene bodies (10 seeds). Result: 0.485 [0.474–0.497] at ≥5 UMI (3,523 / 7,259); 0.239 / 0.066 / 0.012 at ≥20 / ≥100 / ≥500 UMI — the pre-registered ≥0.70 target is not met at any threshold. Robustness (verifier, not part of the pre-registered metric): GEM-X truth 0.515; x3p + GEM-X pooled 0.582 at 25 bp (0.669 at 50 bp, 0.714 at 100 bp). The sites are far from random (enrichment ~65× over the null at ≥5 UMI, empirical p at the 1/11 floor), but the target was an absolute fraction. Every plotted value: `results/figures/manuscript/figS7_novelfunnel*.tsv`.
 
 **Panel a** — the pre-registered funnel as horizontal bars (sites retained, % of input) with, on the right, each
 stage's concordance at ≥5 UMI: input 0.765 → clip / ≥2 molecules / not-IP 0.765 (no-op: the caller already
@@ -587,6 +565,8 @@ n = 1,723; ≥5: 0.71 / 0.56, n = 1,301 = the file's 5–9 and 10+ bins pooled).
   excluded before the funnel, so the 46,524-site "input" row is 99.96%, shown as 100%); all concordance
   denominators are the on-contig counts. The 3,578-gene count (subtitle only) and the 46,544 denominator are
   recorded in `figS7_novelfunnel_reference_lines.tsv`.
+
+## Provenance
 
 Sources: `manuscript/19_final_gate_v2.md` §4 (v2 gate, verifier verdict FIXED) and
 `manuscript/16_trusted_novel_kinnex.md` **§v2** (the v2 record for every number on this figure,

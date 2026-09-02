@@ -35,8 +35,11 @@ RULES THAT BIND EVERY PANEL (21 section 7 MUST-NOT-CLAIM 5)
   untimed.
 
 OUTPUTS
-  manuscript/figures/figS8_compute.{png,pdf}   (PNG 300 dpi, PDF fonttype 42)
-  manuscript/figures/figS8_compute.caption.md
+  manuscript/figures/figS8_compute.{png,pdf}   (PNG 600 dpi, PDF fonttype 42)
+  manuscript/figures/figS8_compute.caption.md  ('## Legend' = the journal
+      legend; the concurrency disclosures and the †/‡ marker explanations
+      moved there in the 2026-09-02 submission pass -- the per-bar markers
+      themselves stay on the image; '## Provenance' = record-keeping)
   results/figures/manuscript/figS8_compute.tsv          (panels a/b, per arm)
   results/figures/manuscript/figS8_compute_confirm.tsv  (panel c)
   results/figures/manuscript/figS8_compute_memory.tsv   (panel d)
@@ -44,7 +47,6 @@ OUTPUTS
 Run:  export LC_ALL=C OMP_NUM_THREADS=1; python3 scripts/manuscript_figures/figS8_compute.py
 """
 import os
-import textwrap
 from pathlib import Path
 
 os.environ.setdefault("LC_ALL", "C")
@@ -150,9 +152,15 @@ def bar_face(tag, tool_color):
     return dict(color=tool_color, edgecolor=tool_color, linewidth=0.8)
 
 
-fig = plt.figure(figsize=(8.7, 9.6))
+# canvas: the pre-submission 8.7 x 9.6 in canvas carried a 12-line footer
+# caption; it now lives in the caption sidecar ('## Legend') and the canvas
+# height drops by the freed space.  Width stays 8.7 in (221 mm): panel d's
+# multi-line y labels deliberately occupy the inter-column gap, interleaving
+# with panel c's bar annotations -- narrowing collides them (legibility
+# outranks the 180 mm width target).
+fig = plt.figure(figsize=(8.7, 7.6))
 gs = fig.add_gridspec(2, 2, height_ratios=[1.15, 0.85],
-                      left=0.235, right=0.965, top=0.955, bottom=0.235,
+                      left=0.235, right=0.965, top=0.945, bottom=0.070,
                       hspace=0.42, wspace=0.26)
 axA = fig.add_subplot(gs[0, 0])
 axB = fig.add_subplot(gs[0, 1])
@@ -187,20 +195,19 @@ for (lab, row, tag, disclosure), y in zip(ARMS, ys):
 
 axA.set_yticks(ys)
 axA.set_yticklabels([a[0] for a in ARMS], fontsize=6.4)
-axA.set_ylim(-0.7, len(ARMS) + 1.1)
+axA.set_ylim(-0.7, len(ARMS) + 0.5)   # headroom shrunk with the moved notes
 axA.set_xlim(0, 13.8)
 axA.set_xlabel("wall time on the PBMC 10k v3 BAM (hours)", fontsize=6.9)
-axA.set_title("a   Wall time per arm — * = concurrent, all\nfour arms at once (never quote without this)",
+# the concurrency disclosure and the †/‡ explanations moved to the legend
+# (2026-09-02 submission pass); the per-bar *, †, ‡ markers stay on the image
+axA.set_title("a   Wall time per arm",
               loc="left", fontweight="bold", fontsize=7.6)
-axA.text(0.985, 0.035, "† resumed run — UNDERSTATES from-scratch\n(12:58:50 total machine time)\n"
-         "‡ two attempts summed (salvage rerun)",
-         transform=axA.transAxes, ha="right", va="bottom", fontsize=5.8, color=MUTED, linespacing=1.3)
 style(axA)
 axA.grid(True, axis="x", color=GRID, lw=0.5, alpha=0.7)
 
 axB.set_yticks(ys)
 axB.set_yticklabels([])
-axB.set_ylim(-0.7, len(ARMS) + 1.1)
+axB.set_ylim(-0.7, len(ARMS) + 0.5)   # headroom shrunk with the moved notes
 axB.set_xscale("log")
 axB.set_xlim(2, 900)
 axB.set_xticks([3, 10, 30, 100, 300])
@@ -209,7 +216,8 @@ axB.set_xlabel("peak RSS (GB, log scale) — the production number", fontsize=6.
 axB.set_title("b   Peak memory per arm:\n293.7 GB → 12.53 GB (23.5×)",
               loc="left", fontweight="bold", fontsize=7.6)
 axB.axvline(150, color=INK, lw=0.8, ls=(0, (4, 2)), zorder=2)
-axB.text(150, len(ARMS) - 0.1, "150 GB stop signal (10 §5) —\nexceeded by v1, then profiled",
+# short line label; "(10 §5) — exceeded by v1, then profiled" moved to the legend
+axB.text(150, len(ARMS) - 0.1, "150 GB stop signal",
          fontsize=5.8, color=INK, ha="center", va="bottom", linespacing=1.25)
 style(axB)
 axB.grid(True, axis="x", color=GRID, lw=0.5, alpha=0.7)
@@ -254,7 +262,8 @@ axC.set_yticks(yc)
 axC.set_yticklabels([c0[0] for c0 in confirm], fontsize=6.2)
 axC.set_xlim(0, 10.6)
 axC.set_ylim(yc[-1] - 0.75, yc[0] + 1.30)
-axC.set_xlabel("wall time (hours; light = v1 4efeb125, solid = v2 9dfdefb)", fontsize=6.9)
+# commit hashes moved to the legend sidecar's provenance; the key stays
+axC.set_xlabel("wall time (hours; light = v1, solid = v2)", fontsize=6.9)
 axC.set_title("c   The #97 fix confirmed at cohort and\nmouse scale (wall, with peak RSS)",
               loc="left", fontweight="bold", fontsize=7.6)
 style(axC)
@@ -286,19 +295,23 @@ style(axD)
 axD.grid(True, axis="x", color=GRID, lw=0.5, alpha=0.7)
 
 # ---------------------------------------------------------------------------
-# caption (footer)
+# the journal legend (single source: the caption sidecar's '## Legend'; the
+# former 12-line on-figure footer plus the moved marker explanations,
+# substance verbatim)
 # ---------------------------------------------------------------------------
 caption = (
-    "Fig S8 | Compute detail behind Fig 3d. (a, b) Every PBMC 10k v3 arm from the verified compute registry "
+    "Figure S8 | Compute detail behind Fig 3d. (a, b) Every PBMC 10k v3 arm from the verified compute registry "
     "(fig3_tradeoff_compute.tsv; each bar's provenance and caveat travel in figS8_compute.tsv verbatim). "
     "Rule in force (21 §7 item 5): never quote wall time without the concurrency disclosure — the v2 arm "
-    "wall times (34:37 no-IP, 32:59 IP) were measured with all four benchmark arms running CONCURRENTLY; the "
+    "wall times (34:37 no-IP, 32:59 IP; marked * on the figure) were measured with all four benchmark arms "
+    "running CONCURRENTLY; the "
     "uncontended single run is 27:43 — and peak RSS is the production number: 293.7 GB (v1) → 12.53 GB (v2), "
-    "23.5×. v1 exceeded the pre-registered 150 GB stop signal (10 §5) and was profiled rather than shipped; "
+    "23.5×. v1 exceeded the pre-registered 150 GB stop signal (10 §5; dashed line in b) and was profiled "
+    "rather than shipped; "
     "on v1 a 10k-cell PBMC BAM needed a ≥300 GB node and used ~1.4 cores despite --threads 16 (15 §5). "
-    "Competitor caveats carried verbatim: scAPAtrap's 4:04:29 is the successful RESUMED run after an "
+    "Competitor caveats carried verbatim: scAPAtrap's (†) 4:04:29 is the successful RESUMED run after an "
     "OOM-killed first attempt and UNDERSTATES a from-scratch run (12:58:50 total machine time, disclosed, "
-    "not summed); scUTRquant's 30:45 sums two attempts (salvage rerun after exit 1); SCAPTURE's 12:14 sums "
+    "not summed); scUTRquant's (‡) 30:45 sums two attempts (salvage rerun after exit 1); SCAPTURE's 12:14 sums "
     "its two mandatory stages with the annotation prebuild untimed; polyApipe and Sierra ran clean. "
     "(c) The #97 performance fix confirmed at two other scales on the same box: the 17-library Laughney "
     "cohort (~224 GB of BAM, identical YAML and flags) fell 9:06:26 → 1:06:26 (8.2×) at IDENTICAL output — "
@@ -306,20 +319,15 @@ caption = (
     "RSS 23.1/22.4 → 3.07/3.65 GB (v1 --threads 12; v2 concurrent). (d) Why: profiling located the v1 peak "
     "in clustering (_tfidf_signac_method1), not peak calling — four dense float64 copies of the cells × PAS "
     "matrix (291 GB computed, 287.8 GB measured in isolation); the fix (sparse TF-IDF, per-(contig, strand) "
-    "parallel calling, streamed CB filter) is byte-identical on all 18/18 compared outputs. "
-    "Values and verbatim caveats: results/figures/manuscript/figS8_compute*.tsv."
+    "parallel calling, streamed CB filter) is byte-identical on all 18/18 compared outputs."
 )
-_cap = textwrap.fill(caption, 168)
-_n_lines = _cap.count("\n") + 1
-assert _n_lines <= 13, f"caption is {_n_lines} wrapped lines"
-fig.text(0.03, 0.012, _cap, fontsize=5.8, color=INK, va="bottom", ha="left", linespacing=1.35)
 
-for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
     fig.savefig(p, **kw)
     print("wrote", p)
 p = OUTDIR / f"{NAME}.png"
-fig.savefig(p, dpi=300); print("wrote", p)
+fig.savefig(p, dpi=600); print("wrote", p)
 
 # ---------------------------------------------------------------------------
 # audit TSVs
@@ -347,11 +355,14 @@ pd.DataFrame(mem_rows).to_csv(p, sep="\t", index=False, float_format="%.6f"); pr
 # ---------------------------------------------------------------------------
 cav = reg[["tool", "kind", "note", "source"]].copy()
 cav_lines = "\n".join(f"- **{r.tool}** ({r.kind}): {r.note} — `{r.source}`" for r in cav.itertuples())
-cap_md = f"""# Fig S8 — `figS8_compute` caption (generated by `scripts/manuscript_figures/figS8_compute.py`)
+cap_md = f"""# Fig S8 — `figS8_compute` caption (generated by `scripts/manuscript_figures/figS8_compute.py`; submission pass 2026-09-02: the on-figure footer, the concurrency-disclosure prose and the †/‡ explanations moved into the Legend below — the per-bar *, †, ‡ markers stay on the image; image at 600 dpi)
+
+## Legend
 
 {caption}
+Values and verbatim caveats: `results/figures/manuscript/figS8_compute*.tsv`.
 
-**Binding disclosure rules.**
+**Binding disclosure rules (legend content).**
 - 21 §7 MUST-NOT-CLAIM 5, verbatim: "Never quote wall time without the concurrency disclosure; peak RSS is
   the production number." The starred arms in panel a are the four-arm concurrent measurements of
   19 §3; 27:43 is the uncontended single run from the #97 PR (its peak RSS was not re-measured, so the v2
@@ -363,12 +374,15 @@ cap_md = f"""# Fig S8 — `figS8_compute` caption (generated by `scripts/manuscr
 - Competitor rows are the tools' own verified runs on the same box (v1-era benchmark); their caveat notes
   travel verbatim from the registry (below) and none is hidden or summed away.
 
+## Provenance
+
 **Registry rows carried verbatim (`fig3_tradeoff_compute.tsv` note column):**
 {cav_lines}
 
 **Panel c** numbers: 19 §5 (cohort table: wall 9:06:26 vs 1:06:26, peak RSS 13.63 vs 13.53 GB, unified PAS
 505,197 = 505,197, "same output scale at 1/8 the wall time") and 19 §3 / 15 §5 (mouse arms; v1 at
---threads 12, v2 measured with all four arms concurrent). **Panel d** numbers: 15 §5 addendum
+--threads 12, v2 measured with all four arms concurrent); light bars = v1 code 4efeb125, solid = v2 code
+9dfdefb. **Panel d** numbers: 15 §5 addendum
 (4 × 23,303 × 390,493 × 8 B = 291 GB computed; 287.8 GB measured in isolation; PBMC 12.45 GB / 27m43s
 uncontended after the fix; mouse1 3.68 GB / 9m03s).
 

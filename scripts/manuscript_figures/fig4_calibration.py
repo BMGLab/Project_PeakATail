@@ -30,8 +30,10 @@ The script reads whatever runs are complete (DONE.ok) and says so on the figure.
 
 Outputs
 -------
-manuscript/figures/fig4_calibration.{png,pdf}           300 dpi / fonttype 42
-manuscript/figures/fig4_calibration.caption.md          sidecar caption (script-written)
+manuscript/figures/fig4_calibration.{png,pdf}           600 dpi / fonttype 42
+manuscript/figures/fig4_calibration.caption.md          sidecar ('## Legend' = the journal
+                                                        legend, single source of the caption;
+                                                        '## Provenance'; script-written)
 results/figures/manuscript/fig4_calibration.png
 results/figures/manuscript/fig4_calibration.tsv         per-run summary
 results/figures/manuscript/fig4_calibration_stats.tsv   headline stats per arm
@@ -295,7 +297,10 @@ plt.rcParams.update({
     "axes.titlelocation": "left", "axes.titlepad": 5, "axes.linewidth": 0.7,
     "font.family": "DejaVu Sans", "hatch.linewidth": 0.6,
 })
-fig, axes = plt.subplots(2, 2, figsize=(7.5, 6.9))
+# 2026-09-02 submission pass: the suptitle and the bottom caveat block moved to
+# the sidecar Legend, and the canvas narrowed to the double-column norm
+# (7.5 -> 7.09 in = 180 mm); bbox_inches="tight" reclaims the freed bands.
+fig, axes = plt.subplots(2, 2, figsize=(7.09, 6.6))
 ax_a, ax_b, ax_c, ax_d = axes.ravel()
 def style(ax):
     ax.set_axisbelow(True); ax.grid(True, axis="y", color=GRID, lw=0.5)
@@ -353,7 +358,9 @@ ax_b.text(0.98, 0.03, "gray: 95% pointwise uniform band" + ("\n" + "\n".join(cli
           transform=ax_b.transAxes, ha="right", va="bottom", fontsize=5.6, color=MUTED, linespacing=1.3)
 style(ax_b); ax_b.set_xlim(0, lim)
 ax_b.set_xlabel(r"expected $-\log_{10}p$ (uniform)"); ax_b.set_ylabel(r"observed null $-\log_{10}p$")
-ax_b.set_title("b  QQ vs uniform (min null p: " + ", ".join(f"{short1(d)} {stats[a]['min_null_p']:.0e}" for a, d in data.items() if d["markers"]) + ")")
+# (the per-arm min-null-p listing moved from this title to the sidecar Legend,
+#  panel-b line -- at 180 mm the long parenthetical overflowed the canvas)
+ax_b.set_title("b  QQ vs uniform")
 
 # --- c: q<0.05 hits per null run vs TRUE ------------------------------------
 rng = np.random.default_rng(0)
@@ -406,7 +413,7 @@ hd = [Patch(facecolor=MUTED, lw=0), Patch(facecolor=MUTED, hatch="////", edgecol
       Patch(facecolor="none", edgecolor=MUTED, lw=1.0)]
 ax_d.legend(hd, [f"permutation-calibrated q<{FDR}", f"+ effect floor (|dprop|>={EFFECT_FLOOR}; nb |log2FC|>=1)", "no marker pre-selection"],
             frameon=False, loc="upper left", ncol=1, handletextpad=0.4, borderaxespad=0.1)
-ax_d.set_title("d  TRUE hits surviving permutation calibration (counts on bars)")
+ax_d.set_title("d  TRUE hits surviving permutation calibration")
 ax_d.set_xlabel("test arm (nominal q<0.05 hits in TRUE run)")
 
 # --- title + caveats --------------------------------------------------------
@@ -426,9 +433,8 @@ verdict_sentence = (
      + ", ".join(f"{short1(data[a])} {stats[a]['frac_null_p_lt_05']:.0%} null p<0.05" for a in notcal if data[a]["markers"]) + ")"
      + (", as is " + ", ".join(short1(data[a]) for a in notcal if not data[a]["markers"]) + " without pre-selection" if any(not data[a]["markers"] for a in notcal) else "")
      + "; permutation-calibrated q is NOT required for the calibrated arm but IS required whenever marker pre-selection or an anti-conservative test is used."))
-fig.suptitle(textwrap.fill(f"`switch diff` calibration on a correctly keyed count matrix -- {verdict} "
-             f"(testis mouse1 clip-seeded v2, {info['n_cells']:,} STARsolo cells, SPC/RS/ES, 3 stage pairs per run, 20 label permutations)", 118),
-             x=0.01, ha="left", fontsize=8.0, fontweight="bold", y=1.012)
+# (the suptitle -- the verdict line -- moved to the sidecar Legend opener,
+#  journal style: 'Figure 4 | <title>.'; the verdict text is unchanged there)
 prelim = "" if all(stats[a]["n_perms"] == N_PERMS_PLANNED for a in main_arms) else " (PRELIMINARY: main arms incomplete)"
 diag_note = ("; ".join(f"{data[a]['label']} {stats[a]['n_perms']}/{N_PERMS_PLANNED} perms" for a in diag_arms)
              if diag_arms else "no diagnostic (no-marker) arms complete")
@@ -452,12 +458,13 @@ caveat = (
                 for a in stats if not np.isnan(stats[a].get("null_share_dispersion_floor", np.nan)))
     + "; fisher p-values are discrete (mass at p=1). Palette six-checks validated 2026-08-19."
 )
-fig.text(0.01, -0.015, textwrap.fill(caveat, 168), ha="left", va="top", fontsize=5.6, color=MUTED, linespacing=1.4)
-fig.tight_layout(rect=(0, 0.0, 1, 0.985), h_pad=1.8, w_pad=1.4)
-fig.savefig(f"{TSVDIR}/{NAME}.png", dpi=300, bbox_inches="tight")
+# (the caveat block that hung below the panels moved to the sidecar Legend,
+#  verbatim -- the `caveat` string is written there; nothing is drawn here)
+fig.tight_layout(rect=(0, 0.0, 1, 1.0), h_pad=1.8, w_pad=1.4)
+fig.savefig(f"{TSVDIR}/{NAME}.png", dpi=600, bbox_inches="tight")
 for ext in ("png", "pdf"):
     p = f"{FIGDIR}/{NAME}.{ext}"
-    fig.savefig(p, bbox_inches="tight", **({"dpi": 300} if ext == "png" else {}))
+    fig.savefig(p, bbox_inches="tight", **({"dpi": 600} if ext == "png" else {}))
     print("wrote", p)
 
 # ----------------------------------------------------------------------------
@@ -478,15 +485,20 @@ _arm_lines = "\n".join(
     for a in stats)
 cap_md = f"""# Fig 4 — `fig4_calibration` caption (generated by `scripts/manuscript_figures/fig4_calibration.py`; renamed 2026-09-02, see FIGURE_MAP.tsv)
 
-Fig 4 | **{verdict_sentence}** `switch diff` calibration on a correctly keyed count matrix: testis mouse1
+## Legend
+
+Figure 4 | `switch diff` calibration on a correctly keyed count matrix — {verdict}.
+**{verdict_sentence}** Testis mouse1
 clip-seeded v2, {info['n_cells']:,} STARsolo cells (SPC {info['stage_counts']['SPC']} / RS {info['stage_counts']['RS']} / ES {info['stage_counts']['ES']}),
 {info['n_pas']:,} PAS, 3 stage pairs per run, {N_PERMS_PLANNED} label permutations shared identically across all arms, the full
 `switch diff` pipeline re-run per permutation.
 
 **Panel a** — null p-value distribution per arm (density; uniform = 1), with each arm's share of null p < 0.05.
-**Panel b** — QQ vs uniform on −log10 p with the 95% pointwise band. **Panel c** — q < {FDR} hits per null run
+**Panel b** — QQ vs uniform on −log10 p with the 95% pointwise band (min null p:
+{", ".join(f"{short1(d)} {stats[a]['min_null_p']:.0e}" for a, d in data.items() if d["markers"])}).
+**Panel c** — q < {FDR} hits per null run
 (dots) vs the TRUE run (diamond), log scale; bottom text = null runs with ≥1 hit / mean hits per null run.
-**Panel d** — share of TRUE nominal q < {FDR} hits surviving permutation-calibrated q, and additionally the
+**Panel d** — share of TRUE nominal q < {FDR} hits surviving permutation-calibrated q (counts on bars), and additionally the
 pre-registered effect floor (|Δproportion| ≥ {EFFECT_FLOOR} for fisher; |log2FC| ≥ 1 for nb). Dashed/hollow =
 marker pre-selection off (--marker-top-n 0).
 
@@ -499,6 +511,8 @@ marker pre-selection off (--marker-top-n 0).
 gene denominator (restricted matrix), so marker-on vs marker-off are different tests, not subsets; single
 mouse/tissue; TRUE hit counts are detectability upper bounds, not precision; the label-permutation null tests
 the global null only; KS rejects for every arm (discrete Fisher) and is not gated.
+
+## Provenance
 
 Sources: `manuscript/14_switch_calibration_v2.md` (verified SOUND) + `results/fdr_calibration_v2/report.json`.
 Every plotted value: `results/figures/manuscript/{NAME}.tsv` (per-run summary), `{NAME}_stats.tsv` (headline

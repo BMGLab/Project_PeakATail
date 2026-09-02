@@ -65,8 +65,10 @@ each cited to a verified document):
            tool on PBMC 10k v3 + testis mouse 1/2.
 
 OUTPUTS
-  manuscript/figures/figS3_nulldesign.{png,pdf}   (PNG 300 dpi, PDF fonttype 42)
-  manuscript/figures/figS3_nulldesign.caption.md  (sidecar, script-written)
+  manuscript/figures/figS3_nulldesign.{png,pdf}   (PNG 600 dpi, PDF fonttype 42)
+  manuscript/figures/figS3_nulldesign.caption.md  (sidecar, script-written;
+      '## Legend' = the journal legend incl. every caveat moved off the image
+      in the 2026-09-02 submission pass; '## Provenance' = record-keeping)
   results/figures/manuscript/figS3_nulldesign.tsv          (panels a+c values)
   results/figures/manuscript/figS3_nulldesign_density.tsv  (panel b values)
 
@@ -76,7 +78,6 @@ Cache: results/figures/manuscript/.cache_figS3_nulldesign/ (delete to force
 """
 import os
 import subprocess
-import textwrap
 from pathlib import Path
 
 os.environ.setdefault("OMP_NUM_THREADS", "1")
@@ -292,9 +293,15 @@ assert 32 < folds.min() < 34 and 53 < folds.max() < 56, folds.to_dict()  # 19: "
 # ---------------------------------------------------------------------------
 # figure
 # ---------------------------------------------------------------------------
-fig = plt.figure(figsize=(8.3, 8.9))
+# canvas: the pre-submission 8.3 x 8.9 in canvas carried a title/intro band on
+# top and a 15-line footer caption below; both now live in the caption sidecar
+# ('## Legend'), and the canvas height drops by the freed space.  Width stays
+# 8.3 in (211 mm): panels a/b carry right-aligned annotation blocks outside
+# their axes and panel c a 6-row per-block dot plot -- narrowing to the 180 mm
+# double-column norm crowds them (legibility outranks the width target).
+fig = plt.figure(figsize=(8.3, 6.1))
 gs = fig.add_gridspec(2, 2, width_ratios=[1.0, 1.02], height_ratios=[1.05, 1.0],
-                      left=0.085, right=0.975, top=0.845, bottom=0.215,
+                      left=0.085, right=0.975, top=0.925, bottom=0.090,
                       hspace=0.52, wspace=0.34)
 axA = fig.add_subplot(gs[0, 0])
 axB = fig.add_subplot(gs[1, 0])
@@ -402,10 +409,11 @@ axB.annotate(f"@100 bp: {frac_gb[I100]:.4f} of gene-body bp\n"
              (Xd[I100], frac_gb[I100]), xytext=(Xd[I100] - 0.35, 0.125),
              fontsize=6.0, color=C_NULL, ha="right", va="center", linespacing=1.35,
              arrowprops=dict(arrowstyle="-", color=C_NULL, lw=0.6))
+# short data label only; the scaffold-exclusion and retired-dump-count
+# sentences moved to the legend (2026-09-02 submission pass)
 axB.text(0.985, 0.04,
-         f"{N_ON_GENOME:,} sites on the {GENOME_BP/1e9:.2f} Gb genome —\n"
-         f"one per {BP_PER_SITE/1e3:.1f} kb ({N_SCAFFOLD} scaffold-only sites excluded);\n"
-         f"the retired dump had {EXP_N_DUMP:,} entries (32×).",
+         f"{N_ON_GENOME:,} sites on the {GENOME_BP/1e9:.2f} Gb genome\n"
+         f"— one per {BP_PER_SITE/1e3:.1f} kb",
          transform=axB.transAxes, fontsize=5.8, color=MUTED, ha="right",
          va="bottom", linespacing=1.4)
 axB.legend(loc="upper left", bbox_to_anchor=(0.0, 1.02), frameon=False,
@@ -464,40 +472,24 @@ axC.legend(handles=[
            label="catalog-based (not ranked)"),
 ], loc="lower right", bbox_to_anchor=(1.0, -0.005), frameon=False, fontsize=5.8,
     handletextpad=0.35, labelspacing=0.3)
-axC.text(0.015, 0.002,
-         "null: width-preserving 3-seed shuffle\n"
-         "inside 1.80 Gb of merged gene bodies,\n"
-         "scored like the real set; mouse rows\n"
-         "use the mouse curated atlas.",
-         transform=axC.transAxes, fontsize=5.6, color=MUTED, ha="left",
-         va="bottom", linespacing=1.4)
+# (the multi-sentence null-definition note that sat here moved to the legend
+# in the 2026-09-02 submission pass; its content is in the caption below)
 style(axC)
 
-# ---- figure chrome ---------------------------------------------------------
-fig.text(0.03, 0.985, "Fig S3 | Why the benchmark is built this way: "
-         "curated points, one reconciled null",
-         fontsize=10.5, color=INK, ha="left", va="top", fontweight="bold")
-fig.text(0.03, 0.958, textwrap.fill(
-         "Against the retired 18.4M-entry dump with whole-interval matching, five peak-calling strategies were "
-         "indistinguishable (spread < 0.004) and two retired figures shipped two different "
-         "\"nulls\" for the same arm (0.615 vs 0.753 — a 0.14 disagreement produced by definition choices alone). "
-         "The rebuilt benchmark scores the 3′-most base, strand-matched, against curated "
-         "PolyASite 2.0 representative sites, with a single reconciled null — random genic points, whose score is "
-         "simply the local density of the curated reference (b).", 156),
-         fontsize=6.6, color=INK, ha="left", va="top", linespacing=1.5)
-fig.text(0.03, 0.8935,
-         "Retired values (a, left) appear only as the superseded record (05 §R4/R5, 07 §1); "
-         "no dump density carried over; match-class panel omitted (only verified record is dump-derived).",
-         fontsize=5.9, color=MUTED, ha="left", va="top", style="italic")
-
+# ---------------------------------------------------------------------------
+# the journal legend (single source: the caption sidecar's '## Legend').
+# The former on-figure title, intro paragraph, italic retired-record note and
+# 15-line footer all live here now, substance verbatim.
+# ---------------------------------------------------------------------------
 caption = (
-    "Fig S3 | Why the benchmark is built this way (rebuild of the retired null_control against the curated "
-    "reference only). "
+    "Figure S3 | Why the benchmark is built this way: curated points, one reconciled null "
+    "(rebuild of the retired null_control against the curated reference only). "
     f"(a) Against the {EXP_N_DUMP:,}-entry PolyASite dump with whole-peak-interval matching, the five "
     f"peak-calling strategies scored {DUMP_REAL_LO:.3f}-{DUMP_REAL_HI:.3f} (spread < {DUMP_SPREAD_MAX}), "
     "while width-matched shuffled peaks already scored 0.62-0.75 (07 1) - and the two retired figures "
     "computed different nulls for the same arm (0.615 strand-matched chrom-shuffle vs 0.753 strand-agnostic "
-    "genome-shuffle; gene-body variant 0.749; gap 7): under that regime the benchmark can rank nothing. "
+    "genome-shuffle - a 0.14 disagreement produced by definition choices alone; gene-body variant 0.749; "
+    "gap 7): under that regime the benchmark can rank nothing. "
     "Scored at the strand-matched 3'-most base against the curated PolyASite 2.0 representative sites "
     f"({EXP_N_ATLAS:,} clusters, GRCh38.96), the same five arms separate (P@100 "
     f"{min(arm_real.values()):.3f}-{max(arm_real.values()):.3f}, spread {CUR_SPREAD:.2f}) over one "
@@ -506,7 +498,8 @@ caption = (
     f"{frac_gb[I100]*100:.2f}% of gene-body bp lies within 100 bp of a same-strand curated site, and the "
     f"measured null mean ({null_mean_bc:.4f}) equals that local density within {abs(dens_ratio-1)*100:.0f}% "
     f"- chance in this benchmark IS reference density, which is why the null is indispensable. One site per "
-    f"{BP_PER_SITE/1e3:.1f} kb of genome ({N_ON_GENOME:,} sites; {N_SCAFFOLD} scaffold-only excluded). "
+    f"{BP_PER_SITE/1e3:.1f} kb of genome ({N_ON_GENOME:,} sites; {N_SCAFFOLD} scaffold-only excluded; the "
+    f"retired dump held {EXP_N_DUMP / N_ON_GENOME:.0f}x as many entries). "
     "(c) The same score_tool.py null (width-preserving 3-seed shuffle inside 1.80 Gb of merged gene bodies, "
     "scored identically to the real calls) accompanies every verified score TSV: the pre-registered "
     f"PeakATail default scores {EXP_DEFAULT_P['pbmc']:.4f} / {EXP_DEFAULT_P['mouse1']:.4f} / "
@@ -517,22 +510,17 @@ caption = (
     f"{folds.min():.0f}-{folds.max():.0f}x above chance - and every competitor is scored with its own "
     "identically-built null. scUTRquant (*) is catalog-based and not ranked; SCAPTURE mouse 2 is not "
     "plotted (site-level run scored 0.672 (15 3) but only mouse 1 carries a verified null-bearing row - "
-    "fig2_accuracy convention). Sources: "
-    "benchmark_curated.tsv (07 2, SOUND), fig2_accuracy.tsv (19, FIXED), density recomputed from "
-    "polyasite2.GRCh38.96.rep_sites.bed6; retired-regime constants 05 R4/R5 (FIXED records)."
+    "fig2_accuracy convention). The rebuilt scoring is at the strand-matched 3'-most base; retired values "
+    "(a, left) appear only as the superseded record (05 R4/R5, 07 1), no dump density carried over, and "
+    "the match-class panel is omitted (the only verified record is dump-derived)."
 )
-_cap = textwrap.fill(caption, 168)
-_n_lines = _cap.count("\n") + 1
-assert _n_lines <= 15, f"caption is {_n_lines} wrapped lines; collides with panel x labels"
-fig.text(0.03, 0.012, _cap, fontsize=5.6, color=INK, va="bottom", ha="left",
-         linespacing=1.32)
 
-for ext, kw in (("png", dict(dpi=300)), ("pdf", {})):
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
     fig.savefig(p, **kw)
     print("wrote", p)
 p = OUTDIR / f"{NAME}.png"
-fig.savefig(p, dpi=300)
+fig.savefig(p, dpi=600)
 print("wrote", p)
 
 # ---------------------------------------------------------------------------
@@ -601,9 +589,25 @@ print("wrote", p)
 # ---------------------------------------------------------------------------
 # sidecar caption
 # ---------------------------------------------------------------------------
-cap_md = f"""# Fig S3 — `figS3_nulldesign` caption (generated by `scripts/manuscript_figures/figS3_nulldesign.py`; rebuild of retired `null_control` against the curated reference, executed 2026-09-02)
+cap_md = f"""# Fig S3 — `figS3_nulldesign` caption (generated by `scripts/manuscript_figures/figS3_nulldesign.py`; rebuild of retired `null_control` against the curated reference, executed 2026-09-02; submission pass 2026-09-02: all on-figure prose — title, intro, retired-record note, footer — moved into the Legend below, image at 600 dpi)
+
+## Legend
 
 {caption}
+
+**Caveats that travel with this figure (legend content, binding):**
+- Panel a's left group is the RETIRED record (05 R4/R5, verdicts FIXED), shown solely as the discrepancy
+  being reconciled; none of its values may be quoted as benchmark results.
+- The null-equals-density reading of panel b (ratio {dens_ratio:.2f} at 100 bp) is a consistency
+  observation of this recompute, not an independently verified claim; the small departure from 1 reflects
+  the width-preserving, non-overlapping shuffle geometry and gene-body edge effects (07 §5 item 6).
+- Panel c mouse rows are scored against the mouse curated atlas via the same `score_tool.py` machinery
+  (same shuffle, same matcher); folds are computed against each call set's own 3-seed null mean.
+- scUTRquant is catalog-based (hollow marker) and not ranked (fig2_accuracy conventions).
+- The gene-body density denominator is the merged annotated gene-body space (1.80 Gb) actually used by
+  the null shuffle — not the whole genome; the genome-wide curve is context only.
+
+## Provenance
 
 **Binding preconditions honoured (21 §4.3-S4 / manifest S3 row):**
 1. *Null reconciliation (gap 7).* The conflicting 0.753 (benchmark_strategies: strand-agnostic window,
@@ -625,18 +629,6 @@ cap_md = f"""# Fig S3 — `figS3_nulldesign` caption (generated by `scripts/manu
 - *Quantitative interval-vs-point matching on the curated reference* — the old 0.9985/0.9940 pair is
   dump-derived; no interval-mode score against the curated reference has been run. The point is carried
   qualitatively by panel a's regime contrast (07 §1 component table).
-
-**Caveats that travel with this figure:**
-- Panel a's left group is the RETIRED record (05 R4/R5, verdicts FIXED), shown solely as the discrepancy
-  being reconciled; none of its values may be quoted as benchmark results.
-- The null-equals-density reading of panel b (ratio {dens_ratio:.2f} at 100 bp) is a consistency
-  observation of this recompute, not an independently verified claim; the small departure from 1 reflects
-  the width-preserving, non-overlapping shuffle geometry and gene-body edge effects (07 §5 item 6).
-- Panel c mouse rows are scored against the mouse curated atlas via the same `score_tool.py` machinery
-  (same shuffle, same matcher); folds are computed against each call set's own 3-seed null mean.
-- scUTRquant is catalog-based (hollow marker) and not ranked (fig2_accuracy conventions).
-- The gene-body density denominator is the merged annotated gene-body space (1.80 Gb) actually used by
-  the null shuffle — not the whole genome; the genome-wide curve is context only.
 
 Sources: `{SRC_BC}`; `fig2_accuracy.tsv` (19 FIXED, v2 chain); density `{SRC_DENS}`;
 retired-regime constants `{SRC_07}` and `{SRC_05}`.
