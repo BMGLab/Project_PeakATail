@@ -109,9 +109,11 @@ q_perm<0.05: A 186/307 (85 with |Δprop| ≥ 0.1), B 640/668 (572 with floor), C
 
 ## Files
 
-- Figure: `manuscript/figures/fdr_calibration_v2.{png,pdf}`; script
-  `scripts/manuscript_figures/fdr_calibration_v2.py` (harvest → metrics → perm-q → figure → report).
-- Tables: `results/figures/manuscript/fdr_calibration_v2{,_stats,_per_pair,_hist,_null_pvalues,_true_permcal}.tsv`.
+- Figure: `manuscript/figures/fdr_calibration_v2.{png,pdf}` (now `fig4_calibration.{png,pdf}` + a script-written
+  `fig4_calibration.caption.md`); script
+  `scripts/manuscript_figures/fdr_calibration_v2.py` (now `fig4_calibration.py`) (harvest → metrics → perm-q → figure → report).
+- Tables: `results/figures/manuscript/fdr_calibration_v2{,_stats,_per_pair,_hist,_null_pvalues,_true_permcal}.tsv`
+  (now `fig4_calibration{,_stats,_per_pair,_hist,_null_pvalues,_true_permcal}.tsv`).
 - Machine-readable verdict: `results/fdr_calibration_v2/report.json`. Runs (resumable, `DONE.ok`
   markers): `results/fdr_calibration_v2/<arm>/{true,null/perm_01..20}/` (7.0 GB; the 20 permuted
   h5ads = 4 GB are deletable).

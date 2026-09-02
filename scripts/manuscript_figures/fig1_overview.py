@@ -33,7 +33,7 @@ SOURCES OF TRUTH (nothing numeric is typed by hand except where cited)
   19_final_gate_v2.md (FIXED)        pre-registered default 46,524 / 0.7062 /
                                      0.1754; tier-1 IP 0.3520 / 0.2685; nulls
   results/benchmark_tools/.../score_*.tsv   every P, R_det, F1, n on c and e
-  results/figures/manuscript/trade_reproducibility.tsv  the molecule sweep (Fig 3)
+  results/figures/manuscript/fig3_tradeoff.tsv  the molecule sweep (Fig 3, stem fig3_tradeoff)
   22_performance_roadmap.md          IP rule flags 68,855 / 402,860 peaks (17.09%)
                                      and lifts P 0.5907 -> 0.7062 (shipped rule
                                      vs --ip-rule kinnex, verified negative)
@@ -229,7 +229,7 @@ for k, v in P_RUN.items():
 # ---------------------------------------------------------------------------
 # 2. panel e: the molecule sweep, from the Fig 3 TSV (one scorer, same denominators)
 # ---------------------------------------------------------------------------
-TRADE_SRC = OUTDIR / "trade_reproducibility.tsv"
+TRADE_SRC = OUTDIR / "fig3_tradeoff.tsv"
 tr = pd.read_csv(TRADE_SRC, sep="\t")
 tr = tr[(tr.panel == "a") & (tr.cutoff_bp == 100)].copy()
 tr["min_molecules"] = tr["min_molecules"].astype(int)
@@ -1384,7 +1384,7 @@ here with `bedtools window -w 100 -sm -u` against the same reference; the identi
 100 bp but {P_REMOVED:.1%} does: the filter costs recall as well as buying precision. The non-IP ≥2-molecule
 file is a diagnostic arm only and is never the default (`21` §7).
 
-**Panel e — the trade surface.** The molecule sweep of Fig 3 (`results/figures/manuscript/trade_reproducibility.tsv`,
+**Panel e — the trade surface.** The molecule sweep of Fig 3 (`results/figures/manuscript/fig3_tradeoff.tsv`,
 same scorer and denominators): PBMC ≥1→≥10 molecules moves P@100 {_p1.atlas_agreement_precision:.3f}→
 {trade[(trade.dataset == 'pbmc') & (trade.min_molecules == 10)].iloc[0].atlas_agreement_precision:.3f} while R_det
 falls {_p1.recall_detected_genes:.3f}→

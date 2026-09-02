@@ -86,7 +86,7 @@ here with `bedtools window -w 100 -sm -u` against the same reference; the identi
 100 bp but 24.6% does: the filter costs recall as well as buying precision. The non-IP ≥2-molecule
 file is a diagnostic arm only and is never the default (`21` §7).
 
-**Panel e — the trade surface.** The molecule sweep of Fig 3 (`results/figures/manuscript/trade_reproducibility.tsv`,
+**Panel e — the trade surface.** The molecule sweep of Fig 3 (`results/figures/manuscript/fig3_tradeoff.tsv`,
 same scorer and denominators): PBMC ≥1→≥10 molecules moves P@100 0.352→
 0.941 while R_det
 falls 0.268→

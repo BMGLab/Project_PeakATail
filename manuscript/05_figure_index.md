@@ -1,15 +1,282 @@
-# PeakATail manuscript figures — round 1 index
+# PeakATail manuscript figures — index (final submission numbering, executed 2026-09-02)
 
-Generated 2026-08-12/13. Scripts: `/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/<name>.py`
-(each re-runnable end to end). Outputs: `<name>.png` (300 dpi) + `<name>.tsv` (every plotted value).
-Every figure below was independently re-verified from source by an adversarial pass; the numbers quoted
-here are the post-verification numbers. Where a verdict says a wording still has to change, that wording
-is given in **Must travel with it**.
+Definitive figure scheme for the draft submission (Genome Biology, Method track): 6 main
+figures + 12 supplementary, 9 stems retired outright. Naming convention: unpadded
+`fig1_<slug>` / `figS1_<slug>` (supersedes 21 §4.1's zero-padded proposal — Fig 1 shipped on
+the unpadded convention and D6's rename-once rule forbids repadding it). One stem owns every
+artefact: script (`scripts/manuscript_figures/<stem>.py`), `figures/<stem>.{png,pdf}`,
+`figures/<stem>.caption.md` (written by the script, never by hand), and
+`results/figures/manuscript/<stem>*.tsv` (every plotted value). The old→new stem trace is
+[`figures/FIGURE_MAP.tsv`](figures/FIGURE_MAP.tsv); the machine-checkable roster with
+regenerate commands is [`figures/FIGURES_MANIFEST.md`](figures/FIGURES_MANIFEST.md).
 
-All five figures re-run under `LC_ALL=C` (the machine locale is tr_TR; GNU `sort` misorders BED files
-without it and `bedtools closest` then returns silently wrong distances).
+The rename pass changed no numbers (21 §4.4): every renamed figure's audit TSVs were verified
+byte-identical (`cmp`) to the pre-rename outputs. Version switches keep their pre-rename
+names (`FINAL_BENCHMARK_VERSION`, `TRUSTED_NOVEL_VERSION`, `LAUGHNEY_SWITCHES_VERSION`,
+`FIG3_WORKDIR`) — they select runs, not stems, so v1 renders stay reproducible.
+
+Every figure re-runs under `LC_ALL=C` (the machine locale is tr_TR; GNU `sort` misorders BED
+files without it and `bedtools closest` then returns silently wrong distances) with
+`OMP_NUM_THREADS=1`.
+
+Standing correction, applies wherever the clip rate is quoted:
+**[CORRECTED 2026-08-21: the genome-wide clip rate is 0.573%, not 1.15%. The 1.15% figure came from the caller's head-sampling QC estimator, which reads only the first 200,000 CB reads of a coordinate-sorted BAM (the head of chr1) and reports 2.26% where the truth is 0.536%; see results/algo_headroom/VERIFY/ and manuscript/23_algorithm_roadmap.md §3 Step 0. The conclusion the figure supported — that clip evidence is a small, highly specific channel — is unchanged and in fact strengthened.]**
 
 ---
+
+# Main figures
+
+## Fig 1 — `fig1_overview` — what the method is, on real data (2026-08-21; stem unchanged at the rename pass)
+
+**fig1_overview — Fig 1, what the method is, on real data (2026-08-21, built from verified artefacts
+plus quantities computed in-script, each with its method recorded in `fig1_overview.tsv`).** Six panels: (a) ingestion and the acceptance rules, with the corrected
+genome-wide poly(A)-clip rate 0.5730% (3,195,067 / 557,564,408 accepted CB reads; `23` §2 —
+this supersedes 1.152%); (b) one real PBMC locus drawn to scale — real reads, real soft clips, real GRCh38
+sequence, the single-linkage cluster (5 clip positions spanning 16 bp, joined by the
+25 bp gap rule) and its read-weighted mode, the hexamer at
+-18, the internal-priming window — and beneath it a real ≥2-molecule call the filter removed;
+(c) the funnel 402,860 peaks → 68,855 internal-priming removals → tier 1
+167,629 / tier 2 166,376 → default 46,544, with P@100
+0.0558 / 0.3520 / 0.7062 against a
+0.0217 shuffled null; (d) the filter measured — A-fraction profiles of kept vs removed
+calls, 99.97% of removals triggered by the ≥6-A run rule, the run ending at or before
+the call in 92%, and removed-call precision 0.246 vs kept
+0.706; (e) the molecule trade surface with the single pre-registered point ringed and the
+F1 honesty note; (f) the downstream chain, calibrated test and replication rule, with no Fig 5 counts.
+**Caveats that travel with it:** atlas-agreement precision is not ground truth; single donor, single chemistry,
+and poly(A)-trimming pipelines destroy the evidence (`10` §R2); the panel-b loci are examples, not summaries;
+`--polya-min-umis` is 1 at the caller and ≥2 is the pre-registered *output*; panel d is computed in-script with
+its method stated and a control that reproduces the scorer. Full caption:
+`figures/fig1_overview.caption.md`; sources `19_final_gate_v2.md` §1/§2, `22_performance_roadmap.md` §6,
+`23_algorithm_roadmap.md` §2, `14_switch_calibration_v2.md`, `20_stage3_replication.md`, and the run's own
+`run_config.json` / `pas_support.tsv`.
+
+## Fig 2 — `fig2_accuracy` — final Stage-2 run vs the competitor panel (2026-08-21, v2 numbers verified FIXED in 19; renamed from `final_benchmark` 2026-09-02)
+
+Four panels: (a) PBMC 10k v3 and (b) testis mice — atlas-agreement precision@100 vs detected-gene recall for
+every tool, PeakATail drawn as a path of operating points (shipped → both tiers → tier-1 ≥1 mol → +IP →
+precision default), F1 isolines, the pre-registered gate P ≥ 0.50 and the original gate (P ≥ 0.38, F1 > 0.261),
+3-seed genic-shuffle nulls; (c) call-set sizes (log); (d) PeakATail tier decomposition on the PBMC IP arm
+(tier-2 / tier-1 singletons / ≥2-molecule default with each slice's P@100). Headline: precision default P@100
+0.706 / 0.745 / 0.757 (gate PASS on all three); single-point recall below polyApipe's and F1 near-tied, but
+**at matched call count PeakATail leads polyApipe on recall at every N and on precision at every N above
+20,320, on both datasets** (N = 120,916: 0.4036 / 0.2336 vs 0.3800 / 0.1988) and on both mice the
+≥1-molecule arm beats it on all three metrics — the single-point row compares 46,524 of our calls with
+120,916 of polyApipe's. Below N ≈ 15,000 polyApipe's precision is the higher of the two
+(corrected 2026-08-21; [25_competitive_position.md](25_competitive_position.md) §2, §8).
+**Caveats that travel with it:** atlas-agreement precision is not ground-truth precision (Kinnex check in 16);
+recall denominator is the detected-gene atlas (full-atlas recall 0.089 / 0.098–0.100 in caption); single PBMC
+donor; the non-IP ≥2-molecule file is not the default and is not shown; the IP-filter minus-strand bug (Stage 1d)
+is fixed and this is the corrected run (v1 0.717 → 0.706 on PBMC). Full caption: `figures/fig2_accuracy.caption.md`;
+write-up [19_final_gate_v2.md](19_final_gate_v2.md) (v1 record: [15_final_gate.md](15_final_gate.md)).
+
+## Fig 3 — `fig3_tradeoff` — the reliability trade surface (2026-08-21; renamed from `trade_reproducibility` 2026-09-02)
+
+**Index paragraph.** `fig3_tradeoff` — Fig 3: the reliability trade surface, its window
+sensitivity, replicate reproducibility and compute. Sweeping the molecule-support threshold on the
+IP-filtered v2 arms moves atlas-agreement precision @100 bp from
+0.706 to 0.941 (PBMC) while detected-gene
+recall falls 0.175 → 0.083; only the pre-registered
+≥2-molecule point is a claim. The de novo precision ordering is unchanged at a 10 bp matching window,
+the two testis mice agree on 0.776–0.779 of default sites at 100 bp against a ≤0.010 chance level, and
+the Stage-1d fixes cut peak RSS 294 → 12.5 GB on the PBMC BAM.
+
+**Caveats that travel with it:** only the ≥2-molecule point is pre-registered — every other sweep
+point is descriptive and was never gated (13 §1; the post-hoc sweep that informed the threshold is
+disclosed, 12 CORRECTION); PBMC is a single donor and a single CellRanger BAM, so no human
+biological replicate exists in this benchmark; the v2 wall time must be quoted with the
+concurrency disclosed (~28–35 min; uncontended 27:43); competitor compute rows carry their own
+retry/skip caveats in `fig3_tradeoff_compute.tsv` `note` column. Full caption:
+`figures/fig3_tradeoff.caption.md`; write-up [19_final_gate_v2.md](19_final_gate_v2.md) §1/§3/§4/§5.
+
+## Fig 4 — `fig4_calibration` — switch-test calibration on a correctly keyed matrix (2026-08-21, verified SOUND; renamed from `fdr_calibration_v2` 2026-09-02)
+
+Supersedes `fdr_calibration` (v1, mis-keyed matrix). 2×2: (a) null p histograms, (b) QQ, (c) q<0.05
+hits per null run vs TRUE, (d) TRUE hits surviving permutation-calibrated q. Six arms: fisher reads /
+fisher cells / nb_pairwise, each with default top-200 marker pre-selection (solid) and with
+`--marker-top-n 0` (dashed/hollow). Headline: only fisher-cells without pre-selection gives valid
+FDR control (conservative, 3.0% null p<0.05, 0/20 null runs with hits); defaults are
+anti-conservative (20.3% / 13.0% / 24.7%).
+**Caveats that travel with it:** marker mode also changes the Fisher gene denominator (restricted
+matrix), so marker-on vs marker-off are different tests, not subsets; single mouse/tissue; TRUE hit
+counts are detectability upper bounds, not precision; label-permutation null tests the global null
+only; KS rejects for every arm (discrete Fisher) and is not gated. Full write-up:
+[14_switch_calibration_v2.md](14_switch_calibration_v2.md). Caption (script-written since the rename pass —
+previously the one asset without a sidecar): `figures/fig4_calibration.caption.md`.
+
+## Fig 5 — `fig5_spermatogenesis` — testis 3′-UTR control on the final caller (2026-08-21, verified FIXED; renamed from `spermatogenesis_final` 2026-09-02; **v1 record — regenerate on 9dfdefb before freeze**)
+
+(a) the claim carrier: per-gene monotone-shortening fraction vs its 20-shuffle null in both mice (0.315 vs
+0.175, z 10.5; 0.302 vs 0.210, z 5.8), with monotone lengthening shown alongside and the shortening excess
+(binomial p 9.9e-9 / 0.0125); (b) composition-controlled per-cell distal-usage residual falls at every stage
+step (Cliff's δ SPC vs ES 0.56 / 0.61, outside the whole shuffle-null range); (c) cross-mouse replication:
+6.0–11.3k same-direction replicated PAS per pair at 99.7–99.8% sign agreement, 0 in all 15 null pairings,
+per-gene effect ρ 0.655 (n 917) vs a 200-permutation null; (d) boxed negatives — the across-gene UMI-weighted
+index reverses at RS→ES (protamine ceiling-PDUI UMIs) and the 16-gene literature panel does not reproduce
+(4 shorten / 5 lengthen / 5 discordant / 2 uninformative). **Caveats that travel with it:** per-gene
+equal-weight claim only (medians not monotone); mouse-2 direction excess modest; SPG excluded; two mice of
+one study; PROVISIONAL — v2 re-run at 9dfdefb regenerates it. Caption: `figures/fig5_spermatogenesis.caption.md`;
+write-up [18_spermatogenesis_final.md](18_spermatogenesis_final.md).
+
+## Fig 6 — `fig6_cohort` — reliable cell-type APA switches in a tumour cohort (2026-08-22, verified SOUND in 20; renamed from `laughney_switches` 2026-09-02)
+
+**Fig 6 — `fig6_cohort` — reliable cell-type APA switches in a tumour cohort.** Stage-3 patient-level
+replication on the Laughney lung-adenocarcinoma cohort, PeakATail code `9dfdefb`, source of truth
+`manuscript/20_stage3_replication.md` (verifier verdict SOUND). Headline: across 12 patients / 15 libraries and 59
+cell-type pairs over a precision-first universe of 80,464 PAS, **15,942 of 2,128,711 tested (pair, PAS)
+hypotheses replicate in ≥2 patients in the same direction (0.75%),
+15,212 of them over the |Δproportion| ≥ 0.1 floor, covering 5,951 PAS in
+2,883 genes across 47 pairs; requiring three patients retains 5,438;
+and nothing replicates in any of 10 patient-wise label-shuffle nulls** (58.9M
+null tests → 11 nominal q<0.05 calls, none in two patients). Caveats that must travel with the
+figure: (i) the null resolves only to empirical p ≤ 0.091, so say "none in 10 nulls" and never
+quote an FDR; (ii) these are the v2-code numbers (`9dfdefb`, #96 minus-strand internal-priming fix); the
+v1-code chain `4efeb125` recorded 14,480 replicated over a 74,954-PAS universe and stays reproducible with
+`LAUGHNEY_SWITCHES_VERSION=v1_code`; (iii) the MetBone exclusion is pre-registered but its stated premise was a
+clip-rate sampling artefact (issue #99), and the 13-patient sensitivity run differs by 0.4%; (iv) **no named
+top-gene list may be published** until PAS→gene re-assignment — 12 of the top-30 gene rows (40%) name a gene whose 3′ UTR does not hold the PAS (issue #99), and
+6.1% of 3′-UTR PAS are assigned to a different gene than the one whose 3′ UTR they occupy; (v) pairs tested in more patients replicate more, so panel b
+tracks cohort composition as much as biology.
+
+Full caption: `figures/fig6_cohort.caption.md`; write-up [20_stage3_replication.md](20_stage3_replication.md).
+
+---
+
+# Supplementary figures
+
+Ordered by first citation: S1–S7 support Figs 1–2 and the negative result, S8 supports Fig 3,
+S9 Fig 4, S10 R6's dropped claim, S11–S12 the audit trail. "TO BUILD" and "REBUILD" statuses,
+sources and blockers are normative in `figures/FIGURES_MANIFEST.md`.
+
+## Fig S1 — `figS1_datasets` — TO BUILD (NEW script; replaces retired `cohort_qc`)
+
+Dataset table made visual incl. per-BAM poly(A) clip rate, with the corrected 0.573%
+genome-wide clip rate (23 §2). Sources: v2 run_config/run_manifest JSONs, cohort manifest,
+04, 10 §R2. Cited from Methods/R1. The surviving `cohort_qc` caveats (RETIRED §R1 below)
+transfer to this figure's scope.
+
+## Fig S2 — `figS2_peakqc` — TO BUILD (NEW script)
+
+v2 peak-call QC: widths, per-gene PAS counts, tier composition, molecule-count distributions
+(arm always named — MUST-NOT-CLAIM 8), and the ~90–105 nt cleavage-offset analysis (07 §3;
+the `scripts/paramsweep/` offset-census scripts are a ready data source). Cited from R1.
+
+## Fig S3 — `figS3_nulldesign` — REBUILD of quarantined `null_control` (not yet executed)
+
+Why the benchmark is built this way: point-vs-interval matching, match-class composition, and
+that the 18.4M-entry dump could not rank strategies (spread 0.004) where the curated
+reference can (0.355–0.492 — `benchmark_strategies`' one durable lesson, absorbed here). Two
+MANDATORY preconditions (21 §4.3-S4): (i) reconcile the two conflicting nulls (0.753 vs
+0.615) to the `score_tool.py` gene-body-shuffled null (gap 7); (ii) recompute all density
+figures on the curated PolyASite 2.0 point reference — the 23/33/45/61/73% and "every 168 bp"
+numbers are dump-derived and may not be carried over. Cited with Fig 2. Superseded record and
+its caveats: RETIRED §R5 (and §R4 for the strategies lesson).
+
+## Fig S4 — `figS4_seconddonor` — TO BUILD (NEW script, small)
+
+The second-donor validation of 26: pbmc4k scored by the unchanged pre-registered default
+(gate PASS, P@100 0.8279; 4 libraries now) plus the cross-donor concordance panel (84.2%
+within 100 bp) — the human analogue of the cross-mouse reproducibility panel. Same scorer
+and nulls. Cited with Fig 2 (gap 8's citable asset).
+
+## Fig S5 — `figS5_longread_rerank` — REBUILD of QUARANTINED `kinnex_truth_validation` (not yet executed)
+
+Per-tool long-read re-ranking and the genuine / internal-priming / unsupported decomposition
+(incl. the Sierra ~half-IP finding). Rebuild under 11's BINDING corrections: never "every
+stringency"; support is an alignment-record count, not de-duplicated UMIs — de-duplicate or
+relabel the axis. Numbers quarantined and unquotable until rebuilt (QUARANTINE NOTE, RETIRED
+block). Cited with Fig 2.
+
+## Fig S6 — `figS6_motif` — REBUILD of `motif_validation`, re-anchored on cleavage points — BLOCKED
+
+Hexamer at −40..−5 of the clip-seeded cleavage point (76.7%), A-fraction profile, hexamer
+adds +0.046 overall and nothing among atlas-novel sites. BLOCKED on gap 5: the
+shuffled-position null for the re-anchored window does not exist; without it the panel cannot
+ship. Cited with Fig 2. Superseded record and its caveats: RETIRED §R7.
+
+## Fig S7 — `figS7_novelfunnel` — pre-registered trusted-novel definition vs Kinnex (2026-08-21, verified FIXED; renamed from `trusted_novel_funnel` 2026-09-02; demoted from a main slot with prominence kept in R6/abstract/Author Summary)
+
+(a) the pre-registered funnel 46,524 → 35,712 (hexamer) → 7,259 trusted-novel → 4,329 strong, with per-stage
+long-read concordance (0.765 → 0.811 → 0.485 → 0.502) showing that atlas-novelty, not the hexamer, is where
+concordance is lost; (b) concordance vs Kinnex UMI stringency with Wilson CIs for six sets and the 0.70 target —
+**missed throughout (0.485 at ≥5 UMI)**; (c) feature class (69.4% intronic vs 18.0% for atlas-known) and
+proximity to Kinnex internal-priming decoys (27.0% vs 7.6%); (d) a boxed, explicitly post-hoc stratification
+(3′-UTR 0.77, ≥5 molecules 0.71 at ≥5 UMI). **Caveats that travel with it:** negative result — no "trusted
+novel" claim; truth from other donors (robustness GEM-X 0.515, pooled 0.582 at 25 bp); panel d is exploratory
+and not a definition; single PBMC donor; the caller's IP rule is looser than Kinnex's (Stage-1d item, not
+superseded by the fix). Caption: `figures/figS7_novelfunnel.caption.md`; write-up
+[19_final_gate_v2.md](19_final_gate_v2.md) §4 (v1 record: [16_trusted_novel_kinnex.md](16_trusted_novel_kinnex.md)).
+
+## Fig S8 — `figS8_compute` — TO BUILD (NEW script over existing verified TSVs)
+
+Compute detail behind Fig 3d: 293.7 GB → 12.53 GB, 3:45:53 → 34:37 (concurrency disclosed —
+MUST-NOT-CLAIM 5), cohort 9:06:26 → 1:06:26 at identical output (505,197 unified PAS),
+competitor runtimes with retry/skip caveats. Sources: `fig3_tradeoff_compute.tsv` + 19 §3/§5.
+Cited with Fig 3.
+
+## Fig S9 — `figS9_calibration_extended` — TO BUILD (NEW script over existing verified TSVs)
+
+Per-stage-pair and per-stratum null rates (2.6–4.0%), permutation-calibrated q, reads-vs-cells
+count mode, the NB dispersion-floor diagnostic. Sources: `fig4_calibration_*.tsv` (verified) +
+14. Cited with Fig 4.
+
+## Fig S10 — `figS10_clustering` — REBUILD of `clustering_concordance` WITH the ablation as a panel (not yet executed)
+
+The dropped claim stated honestly: PAS-profile clustering recovers GEX types (PBMC AMI 0.708 /
+ARI 0.502; Laughney median AMI 0.662 / ARI 0.463, 17/17) AND collapsing 275,370 sites to
+14,891 gene totals gives AMI 0.698 — the site resolution adds nothing. The positive result
+without the ablation on the same axes must never ship. Absorbs the one durable finding of the
+retired `parameter_sweep` (Leiden resolution dominates cluster count, +112.5%). Cited from R6.
+Superseded record and its caveats: RETIRED §R2.
+
+## Fig S11 — `figS11_gatehistory` — TO BUILD (NEW script)
+
+The pre-registration timeline as a figure: original gate, stale Stage-2 failure, the disclosed
+post-hoc sweep, the default committed at `0e27b1a` 01:18:59, arms 02:59:36, v2 re-run 16:14,
+and every gate outcome on every arm (sources: 12 CORRECTION, 13, 15, 19; now also 24/26/27
+gates; table T3). Makes the pre-registration auditable rather than asserted. Cited from
+R2/R6 and Methods.
+
+## Fig S12 — `figS12_versions` — the four-way version comparison: shipped → v1 → v2 → prime (2026-08-22; renamed from `version_progression` 2026-09-02; prime EXPLORATORY, unmerged)
+
+Seven panels, four libraries, one scorer: (a) progression on the full call set — the arm every version emits —
+and (b) progression at the pre-registered precision default, which `shipped` cannot produce at all (its BED score
+column is 0 for every call); (c, d) the four versions in the precision/recall plane against the competitor panel,
+with F1 isolines, the pre-registered gate P@100 ≥ 0.50 and the genic-shuffle nulls, PBMC and testis; (e) matched
+call count under each version's own ranking, two keys (UMI depth for all four, clip molecules for v1/v2/prime only)
+with the tie-break exposure drawn; (f) compute — PBMC peak RSS 228.4 → 10.6 GB across v1 → v2
+(21.5×; 23.5× on the flagless pair), wall time as a run record only; (g) atlas precision beside
+Kinnex long-read concordance and the internal-priming decoy rate. **Headline: prime's default reproduces v2's
+manuscript arm byte for byte**, so the pre-registered PRIMARY criterion of
+[24](24_prime_preregistration.md) §3.1 **FAILS with every Δ exactly 0.000000** — no new accuracy on these four
+libraries, and no regression. What prime changes is the *flagless* default: typed with no behaviour flag, PBMC
+P@100 0.5907 → 0.7062 for R_det 0.1911 → 0.1754, Kinnex ≥5-UMI concordance 0.6081 →
+0.7647, decoy rate 0.3122 → 0.1300 — the one axis in the whole benchmark where the curated atlas
+and the long reads move together. **Caveats that travel with it:** v2 is the manuscript's record and prime is an
+unmerged development branch whose every number is EXPLORATORY (24 §3.4 — adoption needs its own pre-registration,
+a fresh independent verification pass and a statement of which figures move); shipped/v1/v2 arms are the runs
+verified in 15, 19 and 26 and were re-scored here (240 comparisons, 0 mismatches) while prime's are new; v1 → v2 is
+a bug fix, not an accuracy gain, and PBMC precision falls 0.0105 across it; atlas precision is
+atlas *agreement*; Kinnex truth is a different donor and the mice have no long-read truth; `shipped` cannot be
+ranked by clip molecules; shipped and v1 were never run on pbmc4k; wall times are not comparable across version
+sets. Full caption: `figures/figS12_versions.caption.md`; benchmark record `results/prime_bench/README.md`;
+pre-registration [24_prime_preregistration.md](24_prime_preregistration.md).
+
+---
+
+# RETIRED — superseded records (kept on disk and renderable for the record; do not regenerate, do not cite)
+
+Every stem below survives on disk under its old name as the superseded record; its row in
+`figures/FIGURE_MAP.tsv` names the replacement. Internal "fig N" cross-references inside this
+block use the round-1/round-2 numbering of the original index and are preserved verbatim, as
+are all "Must travel with it" caveat blocks (several transfer to the S1/S3/S6/S10 rebuilds).
+
+## R1. `cohort_qc` — RETIRED (replaced by figS1_datasets)
+
+Retired (21 D5/§4.3): its headline is a tautology of the upstream TIER filter, and the
+16,500-site "cohort PAS set" is a 17/17 intersection no analysis uses (the switch analysis
+runs in the 115,450-PAS unified space — see the caveats below). It is also the only figure
+script with no `NAME` constant. Original entry, preserved verbatim:
 
 ## 1. `cohort_qc.png` / `.tsv`
 
@@ -47,7 +314,10 @@ proved, not assumed. Three defects fixed in the figure (undisclosed selection ru
 - PAS are broad intervals, not cleavage sites; wide peaks probably merge several true sites.
 - Multi-PAS status is confounded by 3'UTR length — the APA-testable set is biased to long-3'UTR genes.
 
----
+## R2. `clustering_concordance` — figure retired as-is; REBUILD SOURCE for figS10_clustering
+
+The positive result must never ship without the gene-level ablation on the same axes (R6).
+Original entry, preserved verbatim (its caveats transfer to figS10):
 
 ## 2. `clustering_concordance.png` / `.tsv`
 
@@ -84,7 +354,23 @@ contradicted a panel title, undisclosed cluster-count provenance).
 - The 17 samples come from a smaller number of donors (normal/tumour/met sets likely paired); the 17
   values are not independent and no patient/batch effect was tested.
 
----
+## R3. `parameter_sweep` — RETIRED OUTRIGHT (binding inertness label)
+
+**Binding label demanded by `results/paramsweep/VERDICTS.md` §1** ("any retired
+parameter_sweep figure arm that swept it was a no-op and must be labelled"):
+(i) VERDICTS §1 has **PROVEN, by byte-identity of `run/pasbed.bed` on both species at levels
+1.0 and −1, that `--min-pas-prominence` is a no-op on the lambda strategies** —
+`compute_lambda(heights)` overrides it — so no prominence arm on the lambda_gradient cohort
+run could ever have been informative; (ii) audit of the shipped figure's 13 branches
+(`parameter_sweep_per_dataset.tsv`: `A2_trim_*`/`A3_*` only) shows they swept annotation-trim
+and clustering knobs, i.e. the shipped panels narrowly avoided plotting the proven no-op, but
+the figure's "robust to parameters" framing cannot ship over a pipeline whose advertised
+peak-calling knob is measured inert, and its underlying run is the pre-clip-seeded
+lambda_gradient cohort — the wrong caller for every current claim; (iii) its one real finding
+(Leiden resolution dominates, +112.5%) belongs to the dropped clustering claim and moves into
+figS10_clustering. The parameter sweep that matters now is Fig 3a's molecule-threshold sweep.
+If any panel of it were ever resurrected it must carry the VERDICTS §1 inertness label
+on-figure. Original entry, preserved verbatim:
 
 ## 3. `parameter_sweep.png` / `.tsv` (+ `parameter_sweep_per_dataset.tsv`, 221 rows)
 
@@ -121,7 +407,12 @@ fixed, chiefly a false symmetry claim and median-only bars that hid per-dataset 
 - Confound: the five distance branches all have `include_extended=True`, the pipeline default does not.
   `A2_trim_default` is not the d5000 point of that curve (drawn detached on purpose).
 
----
+## R4. `benchmark_strategies` — RETIRED as a figure (lesson absorbed by figS3_nulldesign)
+
+Superseded by curated-atlas scoring: its 18.4M-dump precision (0.996–1.000, spread <0.004)
+cannot rank strategies, and its null (0.753) contradicts null_control's (0.615) — gap 7. Its
+one durable lesson (the dump cannot rank what the curated point reference can, 0.355–0.492)
+moves into figS3_nulldesign. Original entry, preserved verbatim:
 
 ## 4. `benchmark_strategies.png` / `.tsv`
 
@@ -161,7 +452,10 @@ two fresh seeds (0.739, 0.740). Three defects fixed.
 - **Do not report F1** from these JSONs — it is built on the uninterpretable recall term.
 - No replicates: one cohort-level run per arm, no CIs on the arm curves.
 
----
+## R5. `null_control` — figure retired in its current form; REBUILD SOURCE for figS3_nulldesign
+
+The current PNG/TSV stay only as the superseded record; no number from them (dump-derived
+densities included) may reach the paper. Original entry, preserved verbatim:
 
 ## 5. `null_control.png` / `.tsv` (502 rows)
 
@@ -217,90 +511,10 @@ Six defects fixed, including a proven misattribution of strand-matching to the p
   `-chrom` (0.753 for lg_annotate @100 bp) where `null_control.py` gives 0.615. Both cannot ship with
   different null definitions.
 
----
+## R6. `benchmark_curated` — RETIRED (round-2 intermediate)
 
-## What these figures do and do not establish
-
-**Established.**
-1. The pipeline runs end to end on 17 samples and yields a QC-clean, reproducible cohort (fig 1), with
-   PAS and cell recovery insensitive to the annotation-trim parameters swept (fig 3).
-2. Called peaks are genuinely poly(A)-site-like and not explained by reference density: at the inferred
-   cleavage site they beat width-, count-, chromosome- and strand-matched controls by ~0.54 in precision,
-   and their PolyASite class composition is 10× enriched for terminal-exon and 32× depleted for
-   upstream/intergenic sites — an orthogonal signature that distance cannot fake (fig 5).
-3. PAS-space cell clustering carries real cell-type structure (median ARI 0.46, no sample near chance,
-   17/17 samples) (fig 2).
-4. Cluster granularity is a deliberate parameter choice (Leiden resolution, +112%), not an emergent
-   property of the data (fig 3).
-
-**Not established — the atlas-benchmark limitation.** The precision numbers in figs 4 and 5 cannot
-support an accuracy claim in the form they are usually quoted. The reference is a low-stringency
-18.4M-entry file whose ±100 bp windows tile a third of the genome; the pipeline matches strand-agnostically
-and pads whole multi-hundred-bp intervals; randomly placed peaks of the same widths already score
-0.62–0.75. Consequently: precision at ≥500 bp cutoffs is uninformative; "recall"/F1 against the full atlas
-are uninterpretable; and the atlas benchmark **cannot rank the five peak-calling strategies** — they span
-0.9959–0.9998, a spread of 0.004 (fig 4). Only the point-mode, null-referenced, class-composition analysis
-of fig 5 carries evidential weight, and even it inherits the wrong reference file.
-
-**Also not established.** (i) That the fig-2 concordance reflects *isoform choice* — the features are
-per-site counts carrying gene abundance, so expression-level signal is not excluded. (ii) That agreement
-is with true cell identity — the reference partition is automated marker-signature labels. (iii) Anything
-about clinical stage — n=4/7/5 with stage IV primary n=1, and samples are donor-correlated. (iv) That
-cluster *assignments* (not counts) are parameter-stable. (v) Robustness to the filtering stage, which was
-never swept and removes ~77% of called peaks.
-
-**Blocked on the per-celltype switch outputs.** The headline biology — differential poly(A)-site usage
-between cell types and between normal/primary/metastasis — is not in this round at all. All 24
-`SWITCH_CELLTYPE` tasks failed (exit 2) in the 2026-08-11/12 sweep: `pipeline/main.nf` line 215 builds
-`"${h5.parent}/pasbed.bed"` from a staged single-segment path, so `h5.parent` is `null` and the command
-requests the literal `null/pasbed.bed`. Diagnosis and the fix (point it at
-`${cohort}/unified/multi_sample_merged.bed`, **not** `${cohort}/pasbed.bed`, which would silently drop 86%
-of PAS) are in `/mnt/ssd1/Projects/PeakATail_wd/scripts/pipeline/rerun_switch_celltype_fix.md`.
-Everything upstream is cached; only ~24 short tasks need to re-execute. Until they do, there is no
-APA/PDUI result, no per-celltype switch figure, and fig 1's "APA-testable gene set" number (3,507) is a
-placeholder from the wrong PAS space.
-
----
-
-## Next analyses, in priority order
-
-1. **Rerun the 24 `SWITCH_CELLTYPE` tasks** (one-line fix, everything upstream cached). This is the only
-   item that adds new biology rather than new controls, and three claims across figs 1 and 2 stay
-   provisional until it lands.
-2. **Re-benchmark against the curated, filtered PolyASite 3.0 cluster set** (~570k clusters, or a stated
-   TPM/protocol filter) and make point (3'-most base) matching the primary metric, with interval matching
-   reported alongside. This retires the largest single caveat in the round.
-3. **Reconcile the two null definitions** so figs 4 and 5 ship one control (recommend strand-matched,
-   chromosome-preserving, gene-body-constrained), and drop recall/F1 against the full atlas everywhere.
-4. **Orthogonal, atlas-independent validation of the calls:** poly(A) signal motif (AATAAA/ATTAAA)
-   enrichment in the 40 bp upstream of the 3'-most base versus the matched shuffled controls, plus a
-   genomic A-richness / internal-priming scan. This is the cleanest way to support an accuracy claim
-   without the reference-density problem, and it also gives the internal-priming filter an evidence base
-   beyond "removes 8.9% of peaks".
-5. **Re-run fig 2's concordance on within-gene usage fractions** (per-gene-normalised PAS composition)
-   instead of TF-IDF'd counts. If AMI/ARI survive, the isoform-choice claim becomes defensible; if they
-   collapse, fig 2 must be reframed as an expression-proxy result.
-6. **Sweep the filter thresholds** (`min_read`, `min_cells`, `min_pas_per_cell`) — the unswept stage that
-   discards ~77% of called peaks and is plausibly a larger lever on `final_pas` than every annotation knob
-   in fig 3 combined.
-7. **Cluster-assignment stability across parameter branches** (ARI between branches, not just cluster
-   counts), which is what "robust clustering" actually means and what fig 3 currently cannot say.
-8. **Choose and justify the PAS set used for APA testing.** The 17/17 intersection (16,500) is one
-   defensible extreme; the unified space (115,450) is another. A prevalence rule (detected in ≥ k of 17)
-   with k chosen on a stated criterion is probably the right answer — and fig 1 needs whichever it is.
-9. **Peak-width diagnostics:** test whether the wide peaks (cohort median 811 bp, max 15 kb) merge
-   distinct cleavage sites — sub-peak decomposition, or per-peak read-3'-end profiles. Merged sites blunt
-   proximal/distal separation and directly limit PDUI sensitivity.
-10. **Donor and batch structure:** map the 17 samples to donors, run an integrated-cohort clustering, and
-    test patient effects. Every per-sample n=17 test in this round assumes an independence the design
-    probably does not have; this also determines whether any stage comparison is worth powering.
-
----
-
-# Round 2 addendum — curated benchmark + motif validation (2026-08-18)
-
-Full report: `07_curated_benchmark_report.md`. Both figures independently re-verified (adversarial
-pass); numbers below are post-verification. Executes round-1 next-analyses items 2, 3 and 4.
+Its verified matcher lessons live in 07; its role is superseded by fig2_accuracy's single
+scoring path (`score_tool.py`). Original entry, preserved verbatim:
 
 ## 6. `benchmark_curated.png` / `.tsv`
 
@@ -337,6 +551,11 @@ reduction proven formally and empirically (swapped 5'-base control collapses pre
 - Latent (not triggered): script pipelines lack pipefail and results are cached under
   `.cache_benchmark_curated/`; fix before reuse.
 
+## R7. `motif_validation` — figure retired in its current anchor; REBUILD SOURCE for figS6_motif
+
+To be re-anchored on cleavage points; blocked on gap 5. Original entry, preserved verbatim
+(its caveats transfer to figS6):
+
 ## 7. `motif_validation.png` / `.tsv`
 
 **Finding.** Atlas-independent sequence test: called peaks flank genuine polyadenylation sites, but the
@@ -372,6 +591,13 @@ on-figure numbers match the TSV.
   against the calls without the anchor-offset explanation.
 - Methods trap documented in the script: with `bedtools getfasta -s`, asymmetric windows break
   minus-strand index mapping (phantom −525 hump); symmetric ±160 nt windows are immune.
+
+## R8. `benchmark_headtohead` — RETIRED
+
+Superseded by fig2_accuracy + 25's matched-N framing; its PeakATail depth panels remain
+flagged (harness bug 0g re-keyed but blocked on caller bug 0a — see the entry), so it must
+not be cited. Its compute rows remain a verified data source for `fig3_tradeoff` panel d /
+figS8. Original entry, preserved verbatim:
 
 ## 8. `benchmark_headtohead.png` / `.tsv` (+ `benchmark_consolidated.tsv`, 1,066 rows)
 
@@ -547,68 +773,104 @@ hardcoded "READ WITH CARE" footnote, in `manuscript/09_headtohead_results.md` cl
 - Concordance is a nearest-neighbour fraction, not a symmetric statistic: the two directions differ
   only through their denominators (drawn as the vertical range on each bar).
 
+## R9. `benchmark_tools_running` — RETIRED
+
+A progress/status figure that supports no claim.
+
+## R10. `pbmc_novelty` — RETIRED
+
+Superseded by the pre-registered trusted-novel analysis (figS7_novelfunnel); the
+`pbmc_novelty_*` scripts remain analysis utilities, not figures.
+
+## R11. `fdr_calibration` — RETIRED
+
+v1 on the mis-keyed matrix; superseded by fig4_calibration. Kept renderable for the record
+only.
+
+## R12. `spermatogenesis_control` and the Kinnex quarantine — RETIRED / QUARANTINED
+
+`spermatogenesis_control`: quarantined v1 (verdict PROBLEM — prose overstates); superseded by
+fig5_spermatogenesis. Original note, preserved verbatim:
+
 ## QUARANTINE NOTE (2026-08-20)
 `spermatogenesis_control.*` and `kinnex_truth_validation.*`: adversarial verdicts PROBLEM — science
 reproduces, prose overstates. Binding corrections in `11_verifier_corrections.md`; do not quote either
 figure until regenerated (scheduled with the Stage 3 re-tests).
 
-## fdr_calibration_v2 — switch-test calibration on a correctly keyed matrix (2026-08-21, verified SOUND)
+---
 
-Supersedes `fdr_calibration` (v1, mis-keyed matrix). 2×2: (a) null p histograms, (b) QQ, (c) q<0.05
-hits per null run vs TRUE, (d) TRUE hits surviving permutation-calibrated q. Six arms: fisher reads /
-fisher cells / nb_pairwise, each with default top-200 marker pre-selection (solid) and with
-`--marker-top-n 0` (dashed/hollow). Headline: only fisher-cells without pre-selection gives valid
-FDR control (conservative, 3.0% null p<0.05, 0/20 null runs with hits); defaults are
-anti-conservative (20.3% / 13.0% / 24.7%).
-**Caveats that travel with it:** marker mode also changes the Fisher gene denominator (restricted
-matrix), so marker-on vs marker-off are different tests, not subsets; single mouse/tissue; TRUE hit
-counts are detectability upper bounds, not precision; label-permutation null tests the global null
-only; KS rejects for every arm (discrete Fisher) and is not gated. Full write-up:
-[14_switch_calibration_v2.md](14_switch_calibration_v2.md).
+# Historical round-1 assessment (2026-08-12/13; preserved verbatim — "fig N" references use the round-1 numbering above in R1–R5)
 
-## final_benchmark — Fig 2, final Stage-2 run vs the competitor panel (2026-08-21, v2 numbers verified FIXED in 19)
+## What these figures do and do not establish
 
-Four panels: (a) PBMC 10k v3 and (b) testis mice — atlas-agreement precision@100 vs detected-gene recall for
-every tool, PeakATail drawn as a path of operating points (shipped → both tiers → tier-1 ≥1 mol → +IP →
-precision default), F1 isolines, the pre-registered gate P ≥ 0.50 and the original gate (P ≥ 0.38, F1 > 0.261),
-3-seed genic-shuffle nulls; (c) call-set sizes (log); (d) PeakATail tier decomposition on the PBMC IP arm
-(tier-2 / tier-1 singletons / ≥2-molecule default with each slice's P@100). Headline: precision default P@100
-0.706 / 0.745 / 0.757 (gate PASS on all three); single-point recall below polyApipe's and F1 near-tied, but
-**at matched call count PeakATail leads polyApipe on recall at every N and on precision at every N above
-20,320, on both datasets** (N = 120,916: 0.4036 / 0.2336 vs 0.3800 / 0.1988) and on both mice the
-≥1-molecule arm beats it on all three metrics — the single-point row compares 46,524 of our calls with
-120,916 of polyApipe's. Below N ≈ 15,000 polyApipe's precision is the higher of the two
-(corrected 2026-08-21; [25_competitive_position.md](25_competitive_position.md) §2, §8).
-**Caveats that travel with it:** atlas-agreement precision is not ground-truth precision (Kinnex check in 16);
-recall denominator is the detected-gene atlas (full-atlas recall 0.089 / 0.098–0.100 in caption); single PBMC
-donor; the non-IP ≥2-molecule file is not the default and is not shown; the IP-filter minus-strand bug (Stage 1d)
-is fixed and this is the corrected run (v1 0.717 → 0.706 on PBMC). Full caption: `figures/final_benchmark.caption.md`;
-write-up [19_final_gate_v2.md](19_final_gate_v2.md) (v1 record: [15_final_gate.md](15_final_gate.md)).
+**Established.**
+1. The pipeline runs end to end on 17 samples and yields a QC-clean, reproducible cohort (fig 1), with
+   PAS and cell recovery insensitive to the annotation-trim parameters swept (fig 3).
+2. Called peaks are genuinely poly(A)-site-like and not explained by reference density: at the inferred
+   cleavage site they beat width-, count-, chromosome- and strand-matched controls by ~0.54 in precision,
+   and their PolyASite class composition is 10× enriched for terminal-exon and 32× depleted for
+   upstream/intergenic sites — an orthogonal signature that distance cannot fake (fig 5).
+3. PAS-space cell clustering carries real cell-type structure (median ARI 0.46, no sample near chance,
+   17/17 samples) (fig 2).
+4. Cluster granularity is a deliberate parameter choice (Leiden resolution, +112%), not an emergent
+   property of the data (fig 3).
 
-## trusted_novel_funnel — Fig 5b, pre-registered trusted-novel definition vs Kinnex (2026-08-21, verified FIXED)
+**Not established — the atlas-benchmark limitation.** The precision numbers in figs 4 and 5 cannot
+support an accuracy claim in the form they are usually quoted. The reference is a low-stringency
+18.4M-entry file whose ±100 bp windows tile a third of the genome; the pipeline matches strand-agnostically
+and pads whole multi-hundred-bp intervals; randomly placed peaks of the same widths already score
+0.62–0.75. Consequently: precision at ≥500 bp cutoffs is uninformative; "recall"/F1 against the full atlas
+are uninterpretable; and the atlas benchmark **cannot rank the five peak-calling strategies** — they span
+0.9959–0.9998, a spread of 0.004 (fig 4). Only the point-mode, null-referenced, class-composition analysis
+of fig 5 carries evidential weight, and even it inherits the wrong reference file.
 
-(a) the pre-registered funnel 46,524 → 35,712 (hexamer) → 7,259 trusted-novel → 4,329 strong, with per-stage
-long-read concordance (0.765 → 0.811 → 0.485 → 0.502) showing that atlas-novelty, not the hexamer, is where
-concordance is lost; (b) concordance vs Kinnex UMI stringency with Wilson CIs for six sets and the 0.70 target —
-**missed throughout (0.485 at ≥5 UMI)**; (c) feature class (69.4% intronic vs 18.0% for atlas-known) and
-proximity to Kinnex internal-priming decoys (27.0% vs 7.6%); (d) a boxed, explicitly post-hoc stratification
-(3′-UTR 0.77, ≥5 molecules 0.71 at ≥5 UMI). **Caveats that travel with it:** negative result — no "trusted
-novel" claim; truth from other donors (robustness GEM-X 0.515, pooled 0.582 at 25 bp); panel d is exploratory
-and not a definition; single PBMC donor; the caller's IP rule is looser than Kinnex's (Stage-1d item, not
-superseded by the fix). Caption: `figures/trusted_novel_funnel.caption.md`; write-up
-[19_final_gate_v2.md](19_final_gate_v2.md) §4 (v1 record: [16_trusted_novel_kinnex.md](16_trusted_novel_kinnex.md)).
+**Also not established.** (i) That the fig-2 concordance reflects *isoform choice* — the features are
+per-site counts carrying gene abundance, so expression-level signal is not excluded. (ii) That agreement
+is with true cell identity — the reference partition is automated marker-signature labels. (iii) Anything
+about clinical stage — n=4/7/5 with stage IV primary n=1, and samples are donor-correlated. (iv) That
+cluster *assignments* (not counts) are parameter-stable. (v) Robustness to the filtering stage, which was
+never swept and removes ~77% of called peaks.
 
-## spermatogenesis_final — Fig 5A–C(+negatives), testis 3′-UTR control on the final caller (2026-08-21, verified FIXED)
+**Blocked on the per-celltype switch outputs.** The headline biology — differential poly(A)-site usage
+between cell types and between normal/primary/metastasis — is not in this round at all. All 24
+`SWITCH_CELLTYPE` tasks failed (exit 2) in the 2026-08-11/12 sweep: `pipeline/main.nf` line 215 builds
+`"${h5.parent}/pasbed.bed"` from a staged single-segment path, so `h5.parent` is `null` and the command
+requests the literal `null/pasbed.bed`. Diagnosis and the fix (point it at
+`${cohort}/unified/multi_sample_merged.bed`, **not** `${cohort}/pasbed.bed`, which would silently drop 86%
+of PAS) are in `/mnt/ssd1/Projects/PeakATail_wd/scripts/pipeline/rerun_switch_celltype_fix.md`.
+Everything upstream is cached; only ~24 short tasks need to re-execute. Until they do, there is no
+APA/PDUI result, no per-celltype switch figure, and fig 1's "APA-testable gene set" number (3,507) is a
+placeholder from the wrong PAS space.
 
-(a) the claim carrier: per-gene monotone-shortening fraction vs its 20-shuffle null in both mice (0.315 vs
-0.175, z 10.5; 0.302 vs 0.210, z 5.8), with monotone lengthening shown alongside and the shortening excess
-(binomial p 9.9e-9 / 0.0125); (b) composition-controlled per-cell distal-usage residual falls at every stage
-step (Cliff's δ SPC vs ES 0.56 / 0.61, outside the whole shuffle-null range); (c) cross-mouse replication:
-6.0–11.3k same-direction replicated PAS per pair at 99.7–99.8% sign agreement, 0 in all 15 null pairings,
-per-gene effect ρ 0.655 (n 917) vs a 200-permutation null; (d) boxed negatives — the across-gene UMI-weighted
-index reverses at RS→ES (protamine ceiling-PDUI UMIs) and the 16-gene literature panel does not reproduce
-(4 shorten / 5 lengthen / 5 discordant / 2 uninformative). **Caveats that travel with it:** per-gene
-equal-weight claim only (medians not monotone); mouse-2 direction excess modest; SPG excluded; two mice of
-one study; PROVISIONAL — v2 re-run at 9dfdefb regenerates it. Caption: `figures/spermatogenesis_final.caption.md`;
-write-up [18_spermatogenesis_final.md](18_spermatogenesis_final.md).
- **[CORRECTED 2026-08-21: the genome-wide clip rate is 0.573%, not 1.15%. The 1.15% figure came from the caller's head-sampling QC estimator, which reads only the first 200,000 CB reads of a coordinate-sorted BAM (the head of chr1) and reports 2.26% where the truth is 0.536%; see results/algo_headroom/VERIFY/ and manuscript/23_algorithm_roadmap.md §3 Step 0. The conclusion the figure supported — that clip evidence is a small, highly specific channel — is unchanged and in fact strengthened.]**
+## Next analyses, in priority order
+
+1. **Rerun the 24 `SWITCH_CELLTYPE` tasks** (one-line fix, everything upstream cached). This is the only
+   item that adds new biology rather than new controls, and three claims across figs 1 and 2 stay
+   provisional until it lands.
+2. **Re-benchmark against the curated, filtered PolyASite 3.0 cluster set** (~570k clusters, or a stated
+   TPM/protocol filter) and make point (3'-most base) matching the primary metric, with interval matching
+   reported alongside. This retires the largest single caveat in the round.
+3. **Reconcile the two null definitions** so figs 4 and 5 ship one control (recommend strand-matched,
+   chromosome-preserving, gene-body-constrained), and drop recall/F1 against the full atlas everywhere.
+4. **Orthogonal, atlas-independent validation of the calls:** poly(A) signal motif (AATAAA/ATTAAA)
+   enrichment in the 40 bp upstream of the 3'-most base versus the matched shuffled controls, plus a
+   genomic A-richness / internal-priming scan. This is the cleanest way to support an accuracy claim
+   without the reference-density problem, and it also gives the internal-priming filter an evidence base
+   beyond "removes 8.9% of peaks".
+5. **Re-run fig 2's concordance on within-gene usage fractions** (per-gene-normalised PAS composition)
+   instead of TF-IDF'd counts. If AMI/ARI survive, the isoform-choice claim becomes defensible; if they
+   collapse, fig 2 must be reframed as an expression-proxy result.
+6. **Sweep the filter thresholds** (`min_read`, `min_cells`, `min_pas_per_cell`) — the unswept stage that
+   discards ~77% of called peaks and is plausibly a larger lever on `final_pas` than every annotation knob
+   in fig 3 combined.
+7. **Cluster-assignment stability across parameter branches** (ARI between branches, not just cluster
+   counts), which is what "robust clustering" actually means and what fig 3 currently cannot say.
+8. **Choose and justify the PAS set used for APA testing.** The 17/17 intersection (16,500) is one
+   defensible extreme; the unified space (115,450) is another. A prevalence rule (detected in ≥ k of 17)
+   with k chosen on a stated criterion is probably the right answer — and fig 1 needs whichever it is.
+9. **Peak-width diagnostics:** test whether the wide peaks (cohort median 811 bp, max 15 kb) merge
+   distinct cleavage sites — sub-peak decomposition, or per-peak read-3'-end profiles. Merged sites blunt
+   proximal/distal separation and directly limit PDUI sensitivity.
+10. **Donor and batch structure:** map the 17 samples to donors, run an integrated-cohort clustering, and
+    test patient effects. Every per-sample n=17 test in this round assumes an independence the design
+    probably does not have; this also determines whether any stage comparison is worth powering.

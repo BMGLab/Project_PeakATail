@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-final_benchmark.py -- manuscript Fig 2 ("final_benchmark"): the final Stage-2
-run head-to-head against the competitor panel.
+fig2_accuracy.py -- manuscript Fig 2 ("fig2_accuracy"; stem final_benchmark
+until the 2026-09-02 rename pass): the final Stage-2 run head-to-head against
+the competitor panel.
 
 VERSION SWITCH -- env var FINAL_BENCHMARK_VERSION picks which PeakATail run is
 plotted.  The competitor / catalog arms are the same TSVs in both versions.
@@ -48,14 +49,17 @@ NAMING RULES (manuscript/01 number policy)
     the pre-registered default and is not plotted.
 
 OUTPUTS
-  manuscript/figures/final_benchmark.{png,pdf}   (PNG 300 dpi, PDF fonttype 42)
-  manuscript/figures/final_benchmark.caption.md  (sidecar caption)
-  results/figures/manuscript/final_benchmark.tsv            (every point, a/b/c)
-  results/figures/manuscript/final_benchmark_tiers.tsv      (panel d)
-  results/figures/manuscript/final_benchmark_reference_lines.tsv (gates, isolines, nulls)
+  manuscript/figures/fig2_accuracy.{png,pdf}   (PNG 300 dpi, PDF fonttype 42)
+  manuscript/figures/fig2_accuracy.caption.md  (sidecar caption)
+  results/figures/manuscript/fig2_accuracy.tsv            (every point, a/b/c)
+  results/figures/manuscript/fig2_accuracy_tiers.tsv      (panel d)
+  results/figures/manuscript/fig2_accuracy_reference_lines.tsv (gates, isolines, nulls)
 
-Run:  export LC_ALL=C; python3 scripts/manuscript_figures/final_benchmark.py
-      export LC_ALL=C; FINAL_BENCHMARK_VERSION=v1 python3 .../final_benchmark.py
+Run:  export LC_ALL=C; python3 scripts/manuscript_figures/fig2_accuracy.py
+      export LC_ALL=C; FINAL_BENCHMARK_VERSION=v1 python3 .../fig2_accuracy.py
+      (the env-var name FINAL_BENCHMARK_VERSION is kept through the rename: it
+       selects a run, not a stem, and the reproduction commands recorded in
+       15/19 use it)
 """
 import os
 import textwrap
@@ -84,7 +88,7 @@ WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 BT = WD / "results/benchmark_tools"
 OUTDIR = WD / "results/figures/manuscript"
 FIGDIR = WD / "manuscript/figures"
-NAME = "final_benchmark"
+NAME = "fig2_accuracy"
 OUTDIR.mkdir(parents=True, exist_ok=True)
 FIGDIR.mkdir(parents=True, exist_ok=True)
 
@@ -209,7 +213,13 @@ for rep in ("mouse1", "mouse2"):
         (MOUSE, "PeakATail", "PeakATail tier-2 (coverage-only), IP filter", "tier-2 (IP)", rep,
          M / M_DIR / rep / f"score_{M_PFX.format(r=r)}__tier2.tsv", "extra"),
     ]
-# SCAPTURE mouse: mouse1 only (mouse2 run truncated by disk exhaustion; 09).
+# SCAPTURE mouse: mouse1 plotted. The mouse-2 SITE-LEVEL run COMPLETED
+# (gse104556/scapture/DONE.mouse2.ok: 24,076 points, P@100 0.672, scored in
+# mouse2/score_scapture_mouse2.tsv; 15 §3 reports both mice 0.694 / 0.672);
+# only the per-cell PASquant step failed, which site-level benchmarking does
+# not use. The panel keeps the single-mouse point (rename pass changes no
+# plotted numbers); the earlier "run truncated / invalid" wording was stale
+# (21 §11 unresolved item, fixed at the 2026-09-02 rename).
 ARMS.append((MOUSE, "SCAPTURE", "SCAPTURE", "SCAPTURE", "mouse1",
              M / "scapture/mouse1/score_scapture_mouse1.tsv", "competitor"))
 
@@ -483,7 +493,7 @@ axB.set_ylabel("atlas-agreement precision @100 bp")
 axB.set_title("b   GSE104556 testis (2 mice, mean ± range)", loc="left", fontweight="bold")
 # right-anchored at 0.90 (not 0.985) so the 3-line block clears the right-edge "F1 0.1" isoline label
 axB.text(0.900, 0.02, "all mouse arms ran with the IP filter (no ‘no IP’ step)\n"
-         "SCAPTURE: mouse 1 only (mouse-2 run invalid)\n"
+         "SCAPTURE: mouse 1 plotted (mouse-2 sites scored 0.672; 15 §3)\n"
          "| = 3-seed genic-shuffle null (mean) per call set",
          transform=axB.transAxes, ha="right", va="bottom", fontsize=5.8, color=MUTED)
 style(axB)
@@ -526,7 +536,14 @@ for i, (tool, short) in enumerate(order):
         axC.barh(y - bh, q2.n.iloc[0], color="white" if hollow else c, alpha=1 if hollow else 0.3, hatch="....", **kw)
         axC.text(q2.n.iloc[0] * 1.12, y - bh, f"{int(q2.n.iloc[0]):,}", va="center", fontsize=5.3, color=INK)
     elif not q1.empty:
-        axC.text(1.2e4, y - bh, "m2: no valid run", va="center", fontsize=5.3, color=MUTED)
+        # SCAPTURE's mouse-2 SITE-LEVEL run completed and was scored (P@100
+        # 0.672, panel b; 15 §3) — only its per-cell PASquant step failed,
+        # which site-level benchmarking does not use.  Never describe the run
+        # as invalid (21 §11 stale-caption fix, 2026-09-02); the bar stays
+        # unplotted because the rename pass changes no plotted numbers.
+        m2label = ("m2: scored, not plotted (panel b)" if tool == "SCAPTURE"
+                   else "m2: not run")
+        axC.text(1.2e4, y - bh, m2label, va="center", fontsize=5.3, color=MUTED)
     elif qh.empty is False and q1.empty:
         axC.text(1.2e4, y, "not run on mouse", va="center", fontsize=5.3, color=MUTED)
     yt.append(y); ytl.append(ylabels.get(short, short))
@@ -641,7 +658,7 @@ caption = (
     f"PeakATail leads on both axes, 0.4036 / 0.2336 vs 0.3800 / 0.1988 (25 §2). "
     "The non-IP PBMC ≥2-molecule file (pas_tier1_ge2mol_noIP_POSTHOC) is not the default and is not shown. "
     f"Verified: {VERSIONS['verified_short']}. Every plotted value: "
-    "results/figures/manuscript/final_benchmark*.tsv."
+    "results/figures/manuscript/fig2_accuracy*.tsv."
 )
 _cap_wrapped = textwrap.fill(caption, 165)
 _n_cap_lines = _cap_wrapped.count("\n") + 1
@@ -702,7 +719,7 @@ is higher (0.9671 vs 0.9527 at N = 9,456) while the recall half holds at every N
 reachable (787,138 > our maximum 333,920), and SCAPTURE has no non-circular ranking column so it cannot be truncated.
 Full grid, tie-break brackets and provenance: `manuscript/25_competitive_position.md` §2, §6, §8."""
 
-cap_md = f"""# Fig 2 — `final_benchmark` caption (generated by `scripts/manuscript_figures/final_benchmark.py`)
+cap_md = f"""# Fig 2 — `fig2_accuracy` caption (generated by `scripts/manuscript_figures/fig2_accuracy.py`; renamed 2026-09-02, see FIGURE_MAP.tsv)
 
 {caption}
 
@@ -713,18 +730,30 @@ isolines 0.1–0.4; dashed line = pre-registered gate P ≥ 0.50 (13 §1); dotte
 two-sided gate P ≥ 0.38 & F1_det > 0.261 (10 §5). Small ticks at the bottom = mean of the 3-seed gene-body-shuffled
 null for each call set. scTail is absent: not runnable on this BAM (R1 = 28 bp).
 **Panel b** — GSE104556 testis, two mice as mean ± range (both mice in the TSV); all mouse arms ran with the IP
-filter so the path has no "no IP" step; SCAPTURE is mouse 1 only. **Panel c** — n sites scored per call set, log
+filter so the path has no "no IP" step. SCAPTURE is plotted for mouse 1 only, but its mouse-2 site-level run
+COMPLETED (24,076 points, P@100 0.672 — `gse104556/scapture/mouse2/score_scapture_mouse2.tsv`; 15 §3 reports
+both mice, 0.694 / 0.672); only the per-cell PASquant step failed, which site-level benchmarking does not use —
+never describe the mouse-2 run as invalid (21 §11 stale-caption fix, 2026-09-02). **Panel c** — n sites scored per call set, log
 scale. **Panel d** — PeakATail tier decomposition on the PBMC IP arm: tier-2 / tier-1 single-molecule / tier-1 ≥2
 molecules (= default), with the atlas-agreement precision @100 bp of each scored output (tier-2 {t2.P:.3f},
 tier-1 ≥1 mol {t1.P:.3f}, default {dflt.P:.3f}); {frac_single*100:.1f}% of tier-1 sites are single-molecule
 ({n_single:,} / {int(t1.n):,}; mouse {m_single['mouse1'][1]*100:.1f}% / {m_single['mouse2'][1]*100:.1f}%).
 Definition matters here: {VERSIONS['single_mol_note']}.
 
+**Atlas-independent corroboration (C2; 16 §v2, verified FIXED).** The same precision default is corroborated by
+truth that owes nothing to the atlas: 0.7647 [Wilson 95% CI 0.7608–0.7685] of its 46,524 sites (35,575) lie within
+25 bp (strand-matched) of a poly(A)-verified Kinnex x3p 3′ end at ≥5 UMI, vs a gene-body-shuffled null of 0.0072
+(10 seeds; 106.5×); the atlas-known hexamer-pass complement scores 0.8941 on the same truth, calibrating the
+ceiling. Caveats travel (21 §5.1-C2): the Kinnex truth comes from different donors, and its "≥5 UMI" support is an
+alignment-record count that was never de-duplicated, so the support thresholds are slightly optimistic. Expanded in
+Fig S7 (the pre-registered trusted-novel NEGATIVE result lives there); every value:
+`results/figures/manuscript/figS7_novelfunnel_concordance.tsv` (set CAL_default_output_all).
+
 {framing_md}
 
 Sources: `{VERSIONS["gate_doc_path"]}` + `{VERSIONS["verified_table"]}` ({VERSIONS["verdict"]}) and the score TSVs listed in the `source` column of
-`results/figures/manuscript/final_benchmark.tsv`. Reference lines: `final_benchmark_reference_lines.tsv`;
-panel d: `final_benchmark_tiers.tsv`.
+`results/figures/manuscript/fig2_accuracy.tsv`. Reference lines: `fig2_accuracy_reference_lines.tsv`;
+panel d: `fig2_accuracy_tiers.tsv`.
 """
 p = FIGDIR / f"{NAME}.caption.md"; p.write_text(cap_md); print("wrote", p)
 

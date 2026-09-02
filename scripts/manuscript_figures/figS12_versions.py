@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-version_progression.py -- the four-way version-comparison figure:
+figS12_versions.py -- the four-way version-comparison figure:
 PeakATail  shipped -> v1 -> v2 -> prime, on four libraries, one scorer.
 
 WHAT THE FOUR VERSIONS ARE (manuscript/24_prime_preregistration.md section 1,
@@ -22,7 +22,7 @@ SOURCE OF TRUTH -- nothing numeric is typed by hand.
                                            (score_tool.py, stage2_final_launch.sh
                                            reference args), 2,950 tidy rows, each
                                            carrying its own source file.
-  results/figures/manuscript/final_benchmark.tsv   the competitor panel, i.e. the
+  results/figures/manuscript/fig2_accuracy.tsv   the competitor panel, i.e. the
                                            audit TSV of the manuscript's Fig 2
                                            (same scorer, same denominators).
 Consistency asserts below re-check the headline v2 numbers against 19/24, re-derive
@@ -53,14 +53,14 @@ PANELS
      on the precision default.
 
 OUTPUTS
-  manuscript/figures/version_progression.{png,pdf}      (PNG 300 dpi, PDF fonttype 42)
-  manuscript/figures/version_progression.caption.md     (sidecar caption + index para)
-  results/figures/manuscript/version_progression.tsv               panels a-e, g
-  results/figures/manuscript/version_progression_compute.tsv       panel f
-  results/figures/manuscript/version_progression_criterion.tsv     24 section 3.1
-  results/figures/manuscript/version_progression_reference_lines.tsv
+  manuscript/figures/figS12_versions.{png,pdf}      (PNG 300 dpi, PDF fonttype 42)
+  manuscript/figures/figS12_versions.caption.md     (sidecar caption + index para)
+  results/figures/manuscript/figS12_versions.tsv               panels a-e, g
+  results/figures/manuscript/figS12_versions_compute.tsv       panel f
+  results/figures/manuscript/figS12_versions_criterion.tsv     24 section 3.1
+  results/figures/manuscript/figS12_versions_reference_lines.tsv
 
-Run:  export LC_ALL=C; python3 scripts/manuscript_figures/version_progression.py
+Run:  export LC_ALL=C; python3 scripts/manuscript_figures/figS12_versions.py
 """
 import os
 import json
@@ -90,7 +90,7 @@ matplotlib.rcParams["legend.fontsize"] = 6.2
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 OUTDIR = WD / "results/figures/manuscript"
 FIGDIR = WD / "manuscript/figures"
-NAME = "version_progression"
+NAME = "figS12_versions"
 OUTDIR.mkdir(parents=True, exist_ok=True)
 FIGDIR.mkdir(parents=True, exist_ok=True)
 
@@ -129,7 +129,7 @@ F1_ISO = [0.1, 0.2, 0.3, 0.4]
 # sources
 # ---------------------------------------------------------------------------
 FOURWAY = WD / "results/prime_bench/fourway.tsv"
-FIG2 = OUTDIR / "final_benchmark.tsv"
+FIG2 = OUTDIR / "fig2_accuracy.tsv"
 # the adversarial verifier's matched-budget control for the flagless pair: the ONLY
 # pair on this figure whose two arms differ, compared at matched atlas precision,
 # matched atlas recall and matched call count (results/prime_bench/README.md section 10
@@ -507,7 +507,7 @@ hD = plane(axD, "d", "gse104556", ["mouse1", "mouse2"], 0.42)
 titled(axD, "d   Against the field — GSE104556 testis",
        "two mice, mean ± range. Every mouse arm of every version ran with the IP veto, so there is no "
        "‘no flags’ point here (19 §3, 24 §2). Ticks = the 3-seed genic-shuffle null (mean) of each call set. "
-       "SCAPTURE ran on mouse 1 only.")
+       "SCAPTURE: mouse 1 plotted (mouse-2 sites scored 0.672; 15 §3).")
 axD.annotate("shipped", (np.mean([val(d, "shipped", "full", "R_det@100")[0] for d in ("mouse1", "mouse2")]),
                          np.mean([val(d, "shipped", "full", "P@100")[0] for d in ("mouse1", "mouse2")])),
              xytext=(0, -9), textcoords="offset points", fontsize=6.0,
@@ -752,7 +752,7 @@ _dc_nf = val("pbmc10k", "v2_noIP", "ge2mol_noIP_POSTHOC", "kinnex_decoy_frac25")
 _dc_pr = val("pbmc10k", "prime", "precision_default", "kinnex_decoy_frac25")[0]
 
 caption = (
-    "Fig | Four versions of the PeakATail caller on four libraries, scored once. shipped (pre-Stage-1, "
+    "Fig S12 | Four versions of the PeakATail caller on four libraries, scored once. shipped (pre-Stage-1, "
     "coverage-only) → v1 (4efeb125, clip-seeded; 15) → v2 (9dfdefb3, + minus-strand IP fix #96 + performance "
     "#97; 19, verifier FIXED, pbmc4k added by 26) → prime (6954082d, branch peakAtail-prime). "
     "**v2 is the manuscript's current record. prime is a development branch: not merged, not the default, and "
@@ -776,7 +776,7 @@ caption = (
     "only and not yet through an independent manuscript verification pass. Atlas precision is agreement with "
     "PolyASite 2.0, not ground truth; Kinnex truth is a different donor and the mice have none; shipped and v1 were "
     "never run on pbmc4k and no such run was fabricated; wall time is not comparable across version sets (f). "
-    "Every plotted value: results/figures/manuscript/version_progression*.tsv."
+    "Every plotted value: results/figures/manuscript/figS12_versions*.tsv."
 )
 _cap = textwrap.fill(caption.replace("**", "").replace("`", ""), 215)
 _n_cap = _cap.count("\n") + 1
@@ -848,7 +848,7 @@ print("wrote", p)
 # ---------------------------------------------------------------------------
 # sidecar caption + the paragraph for manuscript/05_figure_index.md
 # ---------------------------------------------------------------------------
-index_para = f"""## version_progression — the four-way version comparison: shipped → v1 → v2 → prime (2026-08-22; prime EXPLORATORY, unmerged)
+index_para = f"""## figS12_versions — Fig S12, the four-way version comparison: shipped → v1 → v2 → prime (2026-08-22; prime EXPLORATORY, unmerged)
 
 Seven panels, four libraries, one scorer: (a) progression on the full call set — the arm every version emits —
 and (b) progression at the pre-registered precision default, which `shipped` cannot produce at all (its BED score
@@ -870,10 +870,10 @@ verified in 15, 19 and 26 and were re-scored here (240 comparisons, 0 mismatches
 a bug fix, not an accuracy gain, and PBMC precision falls {abs(_dP['pbmc10k']):.4f} across it; atlas precision is
 atlas *agreement*; Kinnex truth is a different donor and the mice have no long-read truth; `shipped` cannot be
 ranked by clip molecules; shipped and v1 were never run on pbmc4k; wall times are not comparable across version
-sets. Full caption: `figures/version_progression.caption.md`; benchmark record `results/prime_bench/README.md`;
+sets. Full caption: `figures/figS12_versions.caption.md`; benchmark record `results/prime_bench/README.md`;
 pre-registration [24_prime_preregistration.md](24_prime_preregistration.md)."""
 
-cap_md = f"""# Fig — `version_progression` caption (generated by `scripts/manuscript_figures/version_progression.py`)
+cap_md = f"""# Fig S12 — `figS12_versions` caption (generated by `scripts/manuscript_figures/figS12_versions.py`; renamed 2026-09-02, see FIGURE_MAP.tsv)
 
 {caption}
 
@@ -899,7 +899,7 @@ way to draw a zero difference. The hollow pink diamond in c is v2 typed with **n
 drawn from it to prime because at this scale the two points are ~21 pt apart while the markers are ~12 pt across,
 so any arrow between them degenerates into a stranded arrowhead — panel b draws that move, with the numbers.
 scUTRquant is catalog-based (hollow triangle, not ranked); scTail is absent (not
-runnable on this BAM, R1 = 28 bp); SCAPTURE is mouse 1 only.
+runnable on this BAM, R1 = 28 bp); SCAPTURE: mouse 1 plotted (mouse-2 sites scored 0.672; 15 §3, 21 §11 fix).
 **Panel e** — **matched call count**: each version's full set ranked under its own shipped ranking and truncated to
 a common N with the tie-break of `d3_rank_sweep.py` (descending key, then contig / start / strand / name). Two
 keys, because the four versions do not share one: `shipped` has **no clip-molecule column** (BED field 5 is 0 for
@@ -989,13 +989,13 @@ tie-decided at the cut and is not like-for-like.
 
 Sources: `results/prime_bench/fourway.tsv` + `results/prime_bench/README.md` (the four-way benchmark record; every
 row carries its own source file) for panels a, b, e, f, g and the PeakATail points of c and d;
-`results/figures/manuscript/final_benchmark.tsv` (the Fig 2 audit TSV, same scorer and denominators) for the
+`results/figures/manuscript/fig2_accuracy.tsv` (the Fig 2 audit TSV, same scorer and denominators) for the
 competitor points of c and d. Verified records behind the non-prime arms: `manuscript/15_final_gate.md` (v1,
 SOUND), `manuscript/19_final_gate_v2.md` + `results/benchmark_tools/final_v2_verify/VERIFIED_v2.md` (v2, FIXED),
 `manuscript/26` (pbmc4k). Pre-registration and the status of every prime number:
 `manuscript/24_prime_preregistration.md` §3.1, §3.4. Every plotted value:
-`results/figures/manuscript/version_progression.tsv`; panel f `version_progression_compute.tsv`; the criterion
-evaluation `version_progression_criterion.tsv`; gates and isolines `version_progression_reference_lines.tsv`.
+`results/figures/manuscript/figS12_versions.tsv`; panel f `figS12_versions_compute.tsv`; the criterion
+evaluation `figS12_versions_criterion.tsv`; gates and isolines `figS12_versions_reference_lines.tsv`.
 Palette: Okabe-Ito (`manuscript/figures/README.md`).
 """
 p = FIGDIR / f"{NAME}.caption.md"; p.write_text(cap_md); print("wrote", p)

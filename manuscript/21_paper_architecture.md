@@ -133,6 +133,21 @@ Biology's structured abstract, split at "We present PeakATail" (Background / Res
 
 ### 4.1 Naming convention (adopt now, execute once — see §4.4)
 
+> **[EXECUTED 2026-09-02 — with amendments.]** The rename pass ran on 2026-09-02 under the approved
+> definitive map (recorded in `figures/FIGURE_MAP.tsv` and `figures/FIGURES_MANIFEST.md`), which amends
+> this section: (a) stems are **unpadded** (`fig1_…`/`figS1_…`) because the built Fig 1 already shipped as
+> `fig1_overview` and D6's rename-once rule forbids repadding it; (b) D3 is amended — spermatogenesis is
+> **main Fig 5** (`fig5_spermatogenesis`) and the cohort figure is **Fig 6** (`fig6_cohort`); (c) D4 is
+> amended — the trusted-novel negative result moves to **`figS7_novelfunnel`** with its full text
+> prominence kept (own subsection R6, abstract sentence, Author Summary line); (d) the supplement is
+> renumbered S1–S12 (sperm leaves for main; novelfunnel enters as S7; new slots for the second-donor
+> validation `figS4_seconddonor` and the four-way version benchmark `figS12_versions`; §4.3's proposed
+> `figS10_ipfilter` has no slot in the executed map — the IP-filter measurement lives in Fig 1 panel d and
+> the caveat text). No numbers were
+> changed in the pass: all renamed figures' audit TSVs verified byte-identical (`cmp`). Env-var switches
+> keep their pre-rename names. The tables below are preserved as the historical proposal.
+
+
 ```
 main:           fig01_overview   fig02_accuracy   fig03_tradeoff
                 fig04_calibration  fig05_cohort   fig06_novelfunnel
@@ -188,15 +203,15 @@ caveat in `05_figure_index.md` can be traced to its new home.
 
 ---
 
-**Fig 2 — `fig02_accuracy` (was `final_benchmark`) — The default output is a low-false-positive PAS set.**
+**Fig 2 — `fig02_accuracy` (was `final_benchmark`) — The default output is a low-false-positive PAS set.** *[executed 2026-09-02 as `fig2_accuracy`]*
 - **Proves:** L1. Precision default P@100 0.7062 / 0.7450 / 0.7572, gate PASS on all three; the highest de novo
   precision in the panel on both datasets; recall lower than polyApipe's AT OUR OWN CALL COUNT but higher at polyApipe's own N (25 §2); the tier decomposition that explains
   where the precision comes from (IP arm: tier 2 0.0558, tier 1 ≥1 mol 0.3520, default 0.7062).
 - **Supports:** C1, C2, C5, C6.
-- **Script:** `scripts/manuscript_figures/final_benchmark.py` → rename to `fig02_accuracy.py`.
+- **Script:** `scripts/manuscript_figures/final_benchmark.py` → rename to `fig02_accuracy.py`. *[executed: `fig2_accuracy.py`]*
 - **Status: DONE on v2** (regenerated 2026-08-21 21:25; `05_figure_index.md` entry written; caption sidecar
   current). Needs only the rename.
-- **Caveats that travel with it (verbatim from `figures/final_benchmark.caption.md`):** atlas-agreement precision
+- **Caveats that travel with it (verbatim from `figures/final_benchmark.caption.md`, now `figures/fig2_accuracy.caption.md`):** atlas-agreement precision
   is agreement with a curated atlas, not ground truth — atlas-novel true sites count as false positives; the
   recall denominator is the detected-gene atlas and full-atlas recall (0.089 PBMC; 0.098 / 0.100 mice) must
   appear in the caption; single PBMC donor and single CellRanger BAM, and the two mice are one study and one
@@ -205,7 +220,7 @@ caveat in `05_figure_index.md` can be traced to its new home.
 
 ---
 
-**Fig 3 — `fig03_tradeoff` (was `trade_reproducibility`) — There is a trade surface, not a ranking.**
+**Fig 3 — `fig03_tradeoff` (was `trade_reproducibility`) — There is a trade surface, not a ranking.** *[executed 2026-09-02 as `fig3_tradeoff`]*
 - **Proves:** C5, C6, C8. The molecule-threshold sweep (≥1 → ≥10) moves PBMC precision 0.706 → 0.941 while
   R_det falls 0.175 → 0.083, and **only the ≥2 point was pre-registered**; the de novo precision ordering is
   unchanged at a 10 bp matching window (P@10/P@100 = 0.74 for our default and 0.77 for polyApipe against 0.46
@@ -213,7 +228,7 @@ caveat in `05_figure_index.md` can be traced to its new home.
   mice agree on 0.776–0.779 of default sites at 100 bp (0.729–0.737 at 25 bp) against a ≤0.010 chance level, and
   the ≥2-molecule threshold buys 12.5–14.3 points of replicate agreement over the ≥1-molecule arm; compute falls
   293.7 GB → 12.53 GB peak RSS on the PBMC BAM.
-- **Script:** `trade_reproducibility.py` → `fig03_tradeoff.py`.
+- **Script:** `trade_reproducibility.py` → `fig03_tradeoff.py`. *[executed: `fig3_tradeoff.py`]*
 - **Status: DONE** (2026-08-21 20:29, caption current). Rename only.
 - **Caveats:** the ≥1/≥3/≥5/≥10 points are descriptive and were never gated — never present ≥10 as a proposal;
   panel c compares a v2 PeakATail arm against v1-era competitor measurements (no competitor was re-run on v2);
@@ -224,11 +239,11 @@ caveat in `05_figure_index.md` can be traced to its new home.
 
 ---
 
-**Fig 4 — `fig04_calibration` (was `fdr_calibration_v2`) — A switch test you can trust, and five you cannot.**
+**Fig 4 — `fig04_calibration` (was `fdr_calibration_v2`) — A switch test you can trust, and five you cannot.** *[executed 2026-09-02 as `fig4_calibration`; the script now writes the previously missing caption sidecar]*
 - **Proves:** L3 / C3. Six arms × 21 runs, 20 shared label permutations, 0 failures; only Fisher cells-mode with
   marker pre-selection off controls FDR (3.0% null p < 0.05, 0/20 null runs with any q < 0.05 hit); the three
   mechanisms are named and each is separately demonstrated.
-- **Script:** `fdr_calibration_v2.py` → `fig04_calibration.py`.
+- **Script:** `fdr_calibration_v2.py` → `fig04_calibration.py`. *[executed: `fig4_calibration.py`]*
 - **Status: DONE** (2026-08-21 02:30). Rename only. **One addition worth its cost:** overlay the final-caller
   re-validation from `18` (null p < 0.05 3.169% / 3.166%, 0 q < 0.05 hits in all 30 null BH families) as a
   fifth marker in panel a, so the calibration is not resting on a single run of a superseded caller.
@@ -245,12 +260,12 @@ caveat in `05_figure_index.md` can be traced to its new home.
 
 ---
 
-**Fig 5 — `fig05_cohort` (was `laughney_switches`) — Replicated cell-type APA switches in a tumour cohort.**
+**Fig 5 — `fig05_cohort` (was `laughney_switches`) — Replicated cell-type APA switches in a tumour cohort.** *[executed 2026-09-02 as **Fig 6** `fig6_cohort` — the approved map's amendment (b): spermatogenesis holds the Fig 5 slot]*
 - **Proves:** L4 / C4. The replication funnel against the mean of 10 label-shuffle nulls; per-cell-type-pair
   yields; the effect-size distribution against the pre-registered \|Δproportion\| ≥ 0.1 floor; patient support;
   and the honesty panel (genomic context of the replicated sites: 58.6% own-gene 3′UTR, 96.8% inside a
   same-strand gene body).
-- **Script:** `laughney_switches.py` → `fig05_cohort.py`, re-run with `LAUGHNEY_SWITCHES_VERSION=v2_code`.
+- **Script:** `laughney_switches.py` → `fig05_cohort.py`, re-run with `LAUGHNEY_SWITCHES_VERSION=v2_code`. *[executed: `fig6_cohort.py`; v2_code is the default]*
 - **Status: NEEDS REGENERATION from the Stage-3 v2 chain.** [checked here] as of 2026-08-21 22:31 the chain at
   `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/` has finished `replication/primary_noMetBone/pas_K2`
   (22:29) and is running `pas_K3`; `gene_K2` follows. The figure is regenerable within minutes of the chain's
@@ -269,13 +284,13 @@ caveat in `05_figure_index.md` can be traced to its new home.
 
 ---
 
-**Fig 6 — `fig06_novelfunnel` (was `trusted_novel_funnel`) — The pre-registered de novo test, and its failure.**
+**Fig 6 — `fig06_novelfunnel` (was `trusted_novel_funnel`) — The pre-registered de novo test, and its failure.** *[executed 2026-09-02 as **`figS7_novelfunnel`** — the approved map's amendment (c) demotes the figure to the supplement; D4's prominence argument is honoured in text (R6, abstract, Author Summary)]*
 - **Proves:** C11 (the negative result) and, positively, C2's boundary: the funnel shows exactly where long-read
   concordance is lost. 46,524 → hexamer 35,712 (76.7%) → atlas-novel 7,259 (15.6%) → strong hexamer 4,329; the
   per-stage concordance 0.765 → 0.811 → **0.485** → 0.502 shows the loss is at the atlas-novelty stage and that
   the hexamer adds nothing among atlas-novel sites; 69.4% of the trusted-novel set is intronic and 27.0% sits
   within 25 bp of a Kinnex internal-priming decoy terminus against 7.6% for the atlas-known reference.
-- **Script:** `trusted_novel_funnel.py` → `fig06_novelfunnel.py`.
+- **Script:** `trusted_novel_funnel.py` → `fig06_novelfunnel.py`. *[executed: `figS7_novelfunnel.py`]*
 - **Status: DONE on v2** (2026-08-21 17:56). Rename only.
 - **Caveats:** this is a negative result and **no site may be called "trusted"**; the truth set comes from other
   donors, so it is site-level truth (robustness: GEM-X 0.5154, pooled 0.5816 at 25 bp; the atlas-known
@@ -350,7 +365,7 @@ that rules out the obvious alternative explanation. The verbatim caveat sentence
 | **C1** | The pre-registered precision-first default is a low-false-positive PAS set on both datasets. | `19` §1 (FIXED) | P@100 **0.7062** / **0.7450** / **0.7572**; gate ≥ 0.50 PASS ×3; R_det 0.1754 / 0.2048 / 0.2080 | *Alternative: reference density.* 3-seed gene-body-shuffled nulls 0.0217 / 0.0127–0.0150, i.e. 33–55× below; strand-matched point matching, not interval matching; every value reproduced to six decimals by an independent `bedtools closest`/`window` pipeline. |
 | **C2** | The default set is corroborated by truth that owes nothing to the atlas. | `16` §v2 (FIXED) + v2 REPORT | **0.7647** [0.7608–0.7685] within 25 bp of a Kinnex 3′ end at ≥5 UMI (35,575 / 46,524) | *Alternative: the long-read truth is dense enough to hit anything.* Gene-body-shuffled null 0.0072 (106.5×); the atlas-known hexamer-pass complement scores 0.8941 on the same truth, calibrating the ceiling; GEM-X and pooled truths reproduce the ordering. |
 | **C3** | Of six differential-APA test configurations, exactly one controls FDR; the shipped defaults did not. | `14` (SOUND) | 3.0% null p < 0.05 and **0/20** null runs with any q < 0.05 hit, vs 20.3% / 13.0% / 24.7% for the shipped arms | *Alternative: our null is too weak.* 20 label permutations shared identically across all six arms, full pipeline per run, 6 × 21 runs with 0 failures; the three mechanisms are each demonstrated separately (restricting B0's nulls to the permuted-label marker set reproduces the anti-conservativeness at 17.4%). |
-| **C4** | Reported switches replicate across independent biological units and do not appear under label-shuffle nulls. | `20` (FIXED, **v1 code — v2 pending**) + `18` (FIXED) | Laughney: **14,480 / 1,977,134** replicate (0.73%), 13,826 over the effect floor, **0 in each of 10 nulls**. Testis: 6,049 / 9,469 / 11,263 per pair, 99.7–99.8% sign agreement, **0 in all 15 null pairings**, ρ 0.655 | *Alternative: replication is an artefact of shared cells, shared labels or a shared PAS space.* One cohort PAS space so ids are comparable by construction; unit = patient with a two-GSM patient counted once; any opposite-direction patient vetoes; the nulls run through the identical pipeline with patient-wise label shuffles. |
+| **C4** | Reported switches replicate across independent biological units and do not appear under label-shuffle nulls. | `20` (FIXED, **v1 code — v2 pending**) *[superseded: `20` §v2 verified SOUND 2026-08-22 on the v2_code chain — the record is now **15,942 / 2,128,711** replicate, 15,212 over the effect floor, **0 in each of 10 nulls** (Fig 6 `fig6_cohort`, `fig6_cohort_funnel.tsv`); the row's 14,480 / 1,977,134 / 13,826 are the v1-code values]* + `18` (FIXED) | Laughney: **14,480 / 1,977,134** replicate (0.73%), 13,826 over the effect floor, **0 in each of 10 nulls**. Testis: 6,049 / 9,469 / 11,263 per pair, 99.7–99.8% sign agreement, **0 in all 15 null pairings**, ρ 0.655 | *Alternative: replication is an artefact of shared cells, shared labels or a shared PAS space.* One cohort PAS space so ids are comparable by construction; unit = patient with a two-GSM patient counted once; any opposite-direction patient vetoes; the nulls run through the identical pipeline with patient-wise label shuffles. |
 | **C5** | Evidence type, not peak-calling sophistication, separates single-cell PAS callers. | `09`, `19` §1, `15` §3 | Same BAM, same framework: coverage-only 0.118 → clip-seeded default **0.7062**; panel ordering (SCAPTURE 0.652 > polyApipe 0.380 > Sierra 0.256 > scAPAtrap 0.100) tracks evidence type, not algorithm class | *Alternatives tested and excluded:* not a coordinate offset (relaxing to 200 bp lifts 0.118 → 0.166 while polyApipe goes 0.380 → 0.410; `09` §2); not gene-distance bias (all tools ≥95% gene-proximal; `12` §5, verified). **The third alternative — "not a threshold problem" — is PROVISIONAL and may not be printed**: the top-22k/36k/106k UMI-rank triple (0.118–0.120) was computed on a mis-keyed matrix, and even the re-keyed triple is flagged provisional in `09` §"Why PeakATail underperforms" and forbidden by §7 item 11 of this file. Gap 13 re-runs it on v2; until then C5 stands on two excluded alternatives, not three. |
 | **C6** | Molecule support is the knob that buys reliability, and it is a trade, not a free lunch. | `19` §4, Fig 3 caption | ≥1 → ≥10 molecules moves P 0.352 → 0.941 as R_det falls 0.269 → 0.083; the ≥2 default discards **72.1%** of tier-1 sites (no-IP arm; 72.2% on the IP arm); replicate agreement 0.636–0.651 → 0.776–0.779 | *Alternative: the threshold is post-hoc tuning.* Only the ≥2 point was pre-registered (`13` §1, commit `0e27b1a` 01:18:59, arms 02:59:36); the sweep points are labelled descriptive on the figure and the post-hoc sweep that informed the threshold is disclosed (`12` CORRECTION). |
 | **C7** | The precision lead is not an artefact of a loose matching window. | Fig 3 caption (from verified per-tool score TSVs) | P@10 / P@100 = **0.74** (our default) and 0.77 (polyApipe) vs 0.46 / 0.33 / 0.24 for SCAPTURE / Sierra / scAPAtrap; the de novo ordering is unchanged at 10 bp | *Alternative: 100 bp flatters a caller whose sites are systematically offset.* The ordering is recomputed at 10 / 25 / 50 / 100 bp from the same call sets and the same scorer. |
@@ -495,7 +510,7 @@ four-stage spermatogenesis shortening; Read1 cleavage precision, sequence-model 
 
 **Gap 0 — the limitation this list must not hide: the recall deficit is real, and nothing below closes it.**
 The default's detected-gene recall (0.1754 / 0.2048 / 0.2080) is below polyApipe's (0.199 / 0.250 / 0.251) on
-**both** datasets — −12% PBMC, −18% mouse (`final_benchmark.caption.md`) — and far below scAPAtrap's 0.300 on
+**both** datasets — −12% PBMC, −18% mouse (`final_benchmark.caption.md`, now `fig2_accuracy.caption.md`) — and far below scAPAtrap's 0.300 on
 PBMC; full-atlas recall is 0.089 / 0.098 / 0.100. **The clip-rate budget is not an answer to this, and must
 never be offered as one.** The 1.152% clip rate and the 28.77% ceiling (`10` §R1) bound *every* clip-seeded
 caller equally, and polyApipe also requires non-templated poly(A) soft clips (`09` §4 "the discriminator is
@@ -513,8 +528,8 @@ from the P0/P1/P2 tables for its absence from the paper.
 
 | # | Gap | What closes it | Cost | Note |
 |---|---|---|---|---|
-| 1 | **Stage-3 v2 numbers** (Fig 5, `20`, L4, C4). | The chain at `stage3_laughney_v3/` finishes `replication/ALL.done`; re-run `laughney_switches.py` with `LAUGHNEY_SWITCHES_VERSION=v2_code`; write `20` §v2; one adversarial verification pass. | Chain: finishing tonight ([checked here] `pas_K2` done 22:29, `pas_K3` running at 22:31, `gene_K2` to follow). Figure: minutes. **Verification: ~half a day of a verifier's attention — that is the real cost.** | Every count in Fig 5 and C4 changes. Nothing downstream may be frozen before this. |
-| 2 | **Spermatogenesis v2 re-run** (S1, `18`, C9). | Re-run both mice on `9dfdefb` from a frozen worktree, redo `switch diff/length` + the replication analysis, regenerate `spermatogenesis_final.py`, verify. | 2 caller runs (~15 min each at v2 speeds) + switch/length + figure + verification ≈ 1 day. | The current record is `4efeb125`. Also the chance to re-check whether the literature panel behaves differently — if it does, that changes D3. |
+| 1 | **Stage-3 v2 numbers** (Fig 5, `20`, L4, C4). | The chain at `stage3_laughney_v3/` finishes `replication/ALL.done`; re-run `laughney_switches.py` (now `fig6_cohort.py`) with `LAUGHNEY_SWITCHES_VERSION=v2_code`; write `20` §v2; one adversarial verification pass. | Chain: finishing tonight ([checked here] `pas_K2` done 22:29, `pas_K3` running at 22:31, `gene_K2` to follow). Figure: minutes. **Verification: ~half a day of a verifier's attention — that is the real cost.** | Every count in Fig 5 and C4 changes. Nothing downstream may be frozen before this. |
+| 2 | **Spermatogenesis v2 re-run** (S1, `18`, C9). | Re-run both mice on `9dfdefb` from a frozen worktree, redo `switch diff/length` + the replication analysis, regenerate `spermatogenesis_final.py` (now `fig5_spermatogenesis.py`), verify. | 2 caller runs (~15 min each at v2 speeds) + switch/length + figure + verification ≈ 1 day. | The current record is `4efeb125`. Also the chance to re-check whether the literature panel behaves differently — if it does, that changes D3. |
 | 3 | **Figure 1 does not exist.** | Draft panels a–c as hand-authored SVG; build panel d from a real `ema switch geneview` track on the v2 run; assemble in `fig01_overview.py`. | 1–2 days including PI review of every printed number. | The only main figure with no asset at all. |
 | 4 | **Data and code availability.** | `Project_PeakATail` blockers: placeholder authors in `CITATION.cff`, no `LICENSE` file, benchmark pin `18678ef` living on the unpushed `biolab-manuscript` branch; repo must go public before Zenodo can mint a DOI; Docker image; bioRxiv preprint. | ~1 day of packaging plus PI decisions on authorship/licence. | Genome Biology and NAR both make this mandatory at submission, not at acceptance. |
 | 5 | **The re-anchored hexamer null** (S6, and the motif sentence in Results). | Shuffled-position null for the canonical hexamer in −40..−5 of clip-seeded cleavage points. | ~1 hour of compute with `scripts/reliability/trusted_novel_pas.py` machinery. | Without it, "76.7% carry a canonical hexamer" has no baseline and must not be presented as evidence. |
@@ -595,7 +610,8 @@ recall-lagging caller; a strong benchmark; a genuine calibration contribution; a
 Verified documents read in full for this pass: `01` (v0.4), `05`, `09`, `11`, `13`, `14`, `15` §1/§3, `16`,
 `18`, `19`, `20`, `github/PUBLISHED.md`, and the four generated caption sidecars
 (`final_benchmark`, `trade_reproducibility`, `laughney_switches` and, via `05`, `trusted_novel_funnel` and
-`spermatogenesis_final`).
+`spermatogenesis_final`; since 2026-09-02 these stems are `fig2_accuracy`, `fig3_tradeoff`, `fig6_cohort`,
+`figS7_novelfunnel` and `fig5_spermatogenesis`).
 
 Four things I re-derived from primary files rather than quoting **[checked here]**:
 
@@ -624,7 +640,7 @@ not an option.**
 
 An adversarial verifier re-derived every number in this file against its cited source (`19` + the
 `final_v2_verify/VERIFIED_v2.md` table, `16` §v2 + `trusted_novel_final_v2_pbmc/REPORT_PROVISIONAL.md` and
-`verifier_crosscheck/ADVERSARIAL_VERIFY_v2.txt`, `14`, `18`, `20` + `laughney_switches.caption.md`, `15` §3,
+`verifier_crosscheck/ADVERSARIAL_VERIFY_v2.txt`, `14`, `18`, `20` + `laughney_switches.caption.md` (now `fig6_cohort.caption.md`), `15` §3,
 `13`, `12`, `11`, `10`, `09`, `07`, `05`, `04`, `02`, `01`, the four generated caption sidecars) and, where the
 file claimed `[checked here]`, against the primary files. Twelve corrections were applied **into the text
 above**; each tightens a caveat and none softens one. Nothing else in the architecture was changed.
@@ -687,4 +703,5 @@ panel b says "SCAPTURE is mouse 1 only", but `15` §3 reports SCAPTURE on both m
 `results/benchmark_tools/gse104556/scapture/DONE.mouse2.ok` records that mouse-2 **PAS calling completed**
 (24,076 points, P@100 0.672) and only the per-cell `PASquant` step failed. The value quoted in §1 and §4.2 of
 this file is correct; the caption line is stale and must be fixed when Fig 2 is renamed.
+**[RESOLVED 2026-09-02: fixed at the rename — `fig2_accuracy.caption.md` panel b now records that the mouse-2 site-level run completed (24,076 points, P@100 0.672, only PASquant failed) while the plot still shows mouse 1 only; the on-figure note reads "SCAPTURE: mouse 1 plotted (mouse-2 sites scored 0.672; 15 §3)".]**
  **[CORRECTED 2026-08-21: the genome-wide clip rate is 0.573%, not 1.15%. The 1.15% figure came from the caller's head-sampling QC estimator, which reads only the first 200,000 CB reads of a coordinate-sorted BAM (the head of chr1) and reports 2.26% where the truth is 0.536%; see results/algo_headroom/VERIFY/ and manuscript/23_algorithm_roadmap.md §3 Step 0. The conclusion the figure supported — that clip evidence is a small, highly specific channel — is unchanged and in fact strengthened.]**

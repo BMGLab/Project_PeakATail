@@ -49,4 +49,4 @@ next to their shuffle-null column. SPG→SPC *lengthens* (kept out of the claim 
    equality as a strand inversion (`~(prox < dist)`), blaming the wrong cause. The per_gene path passes
    the same guard cleanly on both mice — the strand-correctness re-validation of 13 §2 **passes**.
 
-Figure: `figures/spermatogenesis_final.{png,pdf}` (+ `.caption.md`; script `scripts/manuscript_figures/spermatogenesis_final.py`; every plotted value in `results/figures/manuscript/spermatogenesis_final*.tsv`).
+Figure: `figures/spermatogenesis_final.{png,pdf}` (+ `.caption.md`; script `scripts/manuscript_figures/spermatogenesis_final.py`; every plotted value in `results/figures/manuscript/spermatogenesis_final*.tsv`) (now `fig5_spermatogenesis` throughout: `figures/fig5_spermatogenesis.{png,pdf,caption.md}`, `scripts/manuscript_figures/fig5_spermatogenesis.py`, `results/figures/manuscript/fig5_spermatogenesis*.tsv`).

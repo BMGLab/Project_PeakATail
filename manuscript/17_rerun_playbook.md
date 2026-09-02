@@ -45,7 +45,8 @@ Re-run the mouse1/mouse2 `switch length` SPC>RS>ES control and the 20-permutatio
 (`results/fdr_calibration_v2/` drivers) on the v2 mouse clusters.h5ad with Fisher cells-mode, `--marker-top-n 0`.
 
 ## 5. Figures and text
-Regenerate `final_benchmark`, `trusted_novel_funnel`, `fdr_calibration_v2` and the Stage-3 figures from the v2
+Regenerate `final_benchmark` (now `fig2_accuracy`), `trusted_novel_funnel` (now `figS7_novelfunnel`),
+`fdr_calibration_v2` (now `fig4_calibration`) and the Stage-3 figures from the v2
 outputs (scripts read the score TSVs; point them at `*_final_v2*`), then replace the v1 numbers in
 `01_outline_and_journals.md` — every number must again trace to a verified `*_v2.md`.
 

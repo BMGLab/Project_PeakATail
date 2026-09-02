@@ -181,7 +181,8 @@ two libraries call opposite directions).
 Files: `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/{primary_noMetBone,sensitivity_all}/`,
 `REPORT.md`, `PRIMARY_vs_SENSITIVITY.txt`; verifier artefacts (independent universe rebuild,
 independent replication re-derivation, exhaustive null scan `null_hits.tsv`, v1↔v2 set comparison) in
-`.../stage3_laughney_v3/verify_v2chain/`. Figure: [Fig 6 `laughney_switches`](figures/laughney_switches.caption.md),
+`.../stage3_laughney_v3/verify_v2chain/`. Figure: [Fig 6 `laughney_switches`](figures/laughney_switches.caption.md) (now `fig6_cohort`,
+`figures/fig6_cohort.caption.md`),
 regenerated from this tree with `LAUGHNEY_SWITCHES_VERSION=v2_code` (now the script default; `v1_code`
 still reproduces the comparison row).
 The v1-code tree `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v2/` is retained read-only.

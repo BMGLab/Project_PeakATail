@@ -400,7 +400,7 @@ the restriction is load-bearing. (b) State the tie-break status of any matched-N
 **Documents corrected on 2026-08-21:** [15](15_final_gate.md) §3, [19](19_final_gate_v2.md) §4 and new
 §6, [01](01_outline_and_journals.md) (§A one-liner, R3 key claim, two honesty bullets, one new honesty
 bullet), [05](05_figure_index.md) Fig 2 headline, [16](16_trusted_novel_kinnex.md) (IP-rule note),
-`github/issue10_stage1d_ipfilter_memory.md` §4, `figures/final_benchmark.caption.md` and its generator.
+`github/issue10_stage1d_ipfilter_memory.md` §4, `figures/final_benchmark.caption.md` (now `fig2_accuracy.caption.md`) and its generator.
 
 **Still carrying the retired framing — OUTSTANDING, not fixed here:**
 [21](21_paper_architecture.md) in several places — lines 42, 45, 184 and §8 "Gap 0" (line 488) — states
@@ -439,7 +439,9 @@ in that document's own prose — 68,855 / 12,186 = **5.65×** (§ [16](16_truste
 **Known stale artefact.** `manuscript/figures/final_benchmark.png` / `.pdf` were rendered before this
 correction and still carry the retired in-figure clause. The generator
 (`scripts/manuscript_figures/final_benchmark.py`) and the sidecar caption have been corrected; the
-figure must be re-rendered before any version of it is circulated.
+figure must be re-rendered before any version of it is circulated. (Now resolved: the figure was
+re-rendered from the corrected generator — commit `606968b`'s re-render — and renamed to
+`fig2_accuracy` at the 2026-09-02 rename pass.)
 
 *Everything in this file is PROVISIONAL as a manuscript claim until a verifier passes on this document
 itself; every number in it is already verified at source.*
