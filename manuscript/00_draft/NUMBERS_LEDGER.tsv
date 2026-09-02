@@ -1,0 +1,149 @@
+id	draft_loc	value	context	source	verdict	note
+1	MAIN Abstract	0.706 / 0.745 / 0.757	atlas-agreement precision (P@100) of the pre-registered default, PBMC / mouse1 / mouse2	19 §1 (0.7062/0.7450/0.7572, verifier FIXED)	traced	rounded 3-dp forms of the verified values
+2	MAIN Abstract	0.828	pbmc4k gate value, un-tuned	26 §R2 (0.8279, verifier FIXED)	traced	
+3	MAIN Abstract	P >= 0.50, four libraries	gate passed on all four	13 §1 (gate); 26 verdict ("gate now holds on four libraries")	traced	
+4	MAIN Abstract	0.013-0.022	gene-body-shuffled null range	19 §1 nulls 0.0217/0.0139/0.0138 + VERIFIED_v2 seeds 0.0127-0.0150 + 26 (0.0216-0.0222)	traced	range covers all 3-seed nulls of the four libraries
+5	MAIN Abstract	R_det 0.175-0.208 (three benchmarked libraries) + 0.110 (second donor); denominators 285,136/126,686/268,097	detected-gene recall at the default, abstract (split by comparator scope, denominators named)	19 §1 (0.1754/0.2048/0.2080) + 26 (0.1104); denominators 25 §0 / 26 §R1	traced (FIXED, fix pass)	fix pass resolved the audit PI flag: range split so "below polyApipe's" now scopes only the three libraries polyApipe ran on; pbmc4k quoted separately; denominators named per the binding rule
+6	MAIN Abstract	matched call count: leads polyApipe, recall every budget / precision from 20,320 calls upward	head-to-head one-liner, abstract compression	25 §8.1	traced (FIXED)	audit added "polyApipe" to name the comparator; unqualified "leads" was not licensed (25 §2.4 requires the de novo restriction or the named comparator); fix pass harmonised the precision bound to the 25 §8.7-licensed "from 20,320 upward" form (was "above 20,000 calls"), removing the 20,000-vs-20,320 inconsistency the review flagged
+7	MAIN Abstract	76.5% / 25 bp / >=5 records	Kinnex concordance of default PBMC sites, donor-mismatched	16 §v2 REPORT row 00_input (0.7647 = 35,575/46,524); 21 §10.3	traced	">=5 records" wording per 21 §7 MUST-NOT-CLAIM 8
+8	MAIN Abstract	3.0% / 13.0-24.7%	calibrated arm null p<0.05; shipped-default range	14 (B0 3.0%; A 20.3 / B 13.0 / C 24.7)	traced	
+9	MAIN Abstract	15 libraries / 12 patients; 15,942 / 2,128,711	replication primary and headline counts	20 (naming convention; verified primary table)	traced	
+10	MAIN Abstract	none in ten nulls, p <= 0.091, ten-permutation floor	null control wording	20 §null control (mandated wording)	traced	exact mandated phrasing; never an FDR
+11	MAIN Abstract	31.4%/30.5%, z 10.5/6.4	testis monotone shortening	18 §v2 claim	traced	
+12	MAIN Abstract	48.5% vs 70%	trusted-novel negative result	16 §v2 (0.4853)	traced	
+13	MAIN Abstract	12.53 GB	peak RSS, 10k-cell library	19 §3	traced	
+14	MAIN Key points	0.118 -> 0.7062	coverage-only vs clip-seeded on same BAM	21 C5; 15 §3 (shipped 0.118)	traced	
+15	MAIN Key points	0.7062 / 0.7450 / 0.7572; 0.8279; 84.2%	gate values, second donor, cross-donor concordance	19 §1; 26	traced	
+16	MAIN Key points	recall every budget / precision from 20,320 calls upward (vs polyApipe)	matched-N claim	25 §8.1	traced	comparator named in-sentence; fix pass harmonised to the 20,320 bound (25 §2.3.3/§8.7)
+17	MAIN Key points	3.0%; 13.0-24.7%; one of six	calibration key point	14	traced	
+18	MAIN Key points	15,942/2,128,711; 15 lib/12 pat; p<=0.091; 6,070/9,480/11,219; 0 in 15; rho 0.641 n=923	replication key point	20; 18 §v2 table	traced	
+19	MAIN Key points	48.5% vs 70%; AMI 0.708 vs 0.698; 16-gene panel; 16 precision points; 8-11%	negative-results key point	16 §v2; figS10 sidecar (0.6978); 18 §v2; 23 §5.4	traced	fix pass: "16 precision points" now reads "16 points of atlas-agreement precision" (binding language rule)
+20	MAIN Background	0.573%	clip rate, PBMC	23 §2/§4 [V]	traced	
+21	MAIN Background	22-fold	call-set size span in panel	25 §8.2 (35,759-787,138, 22x)	traced	
+22	MAIN R1 (Fig 1)	>=6 nt, >=80% A/T, >=6-nt flush, 16-nt CB	clip and acceptance rules	fig1_overview.caption.md panel a; 26 §3 flag set	traced	
+23	MAIN R1 (Fig 1)	92-fold	flush-condition wrong-end specificity (measured prototype)	fig1_overview.caption.md panel a (via 10 §R3)	traced	sidecar is the quotable carrier; fix pass added the measurement definition (identical clip test at the wrong read end fires ~92x less often) per the sidecar's wrong-end-control description
+24	MAIN R1 (Fig 1)	0.573% (3,195,067 / 557,564,408)	genome-wide qualifying clip rate	23 §2 [V]	traced	
+25	MAIN R1 (Fig 1)	1.152% (superseded)	corrected head-sampling artefact, issue #99	23 §3 Step 0; figS1 sidecar	traced	appears only as corrected estimate, as required
+26	MAIN R1 (Fig 1c)	402,860; 68,855 (17.09%); 167,629 / 166,376; 46,544 rows / 46,524 scored	funnel counts	19 §4 (68,855/402,860 = 17.09%); fig1 sidecar panel c; 21 §10.1 (BED rows vs scored n)	traced	
+27	MAIN R1 (Fig 1c)	0.0558 (n 166,355) / 0.3520 (n 167,565, IP arm) / 0.7062; null 0.0217	tier precisions	fig1 sidecar panel c; 19 §1/§2	traced	arm named
+28	MAIN R1 (Fig 1d)	15,588 of 62,132 (25.1%)	IP-filter removals on the >=2-molecule arm (BED rows)	fig1 sidecar panel d (scorer sees 15,586/62,110 = 19 §4's number)	traced	BED-row vs scorer count both recorded in sidecar
+29	MAIN R1 (Fig 1d)	0.5907 -> 0.7062; R_det 0.1911 -> 0.1754; removed 0.246; 99.97%	IP filter cost/benefit	19 §4; fig1 sidecar panel d	traced	
+30	MAIN R2 (Fig 2)	569,005 / 301,006; 285,136 / 126,686	atlas sizes; detected-gene denominators	25 §0	traced	
+31	MAIN R2 (Fig 2)	gate 01:19 commit 0e27b1a, arms 02:59, v2 16:14 (2026-08-21)	pre-registration timing	15 §pre-reg (01:18:59 / 02:59:36); 19 header (16:14); figS11	traced	
+32	MAIN R2 (Fig 2)	0.7062 (46,524) / 0.7450 (26,255) / 0.7572 (26,526); 33-55x	gate PASS values and null folds	19 §1	traced	
+33	MAIN R2 (Fig 2)	-1.1 pp	v1->v2 PBMC precision move (#96)	19 §1	traced	
+34	MAIN R2 (Fig 2)	35,759 to 787,138 (22x)	call-set span	25 §8.2	traced	
+35	MAIN R2 (Fig 2)	scTail R1 = 28 bp; SCAPTURE mouse-2 P@100 0.672	panel exclusions	15 §3; fig2 sidecar panel b	traced	"scored", never "invalid" - rule obeyed
+36	MAIN R2 (Fig 2)	R_det 0.1754/0.2048/0.2080; 46,524 vs 120,916; 0.4036/0.2336 vs 0.3800/0.1988	head-to-head one-liner	25 §8.1 (verbatim)	traced	binding wording preserved
+37	MAIN R2 (Fig 2)	0.5686/0.2806/0.3758 + 0.5880/0.2826/0.3818 vs 0.4005/0.2499/0.3078 + 0.4119/0.2508/0.3118	mice >=1-molecule arm vs polyApipe	25 §3 / §8.1	traced	
+38	MAIN R2 (Fig 2)	N ~= 15,000 lower bound; 20,320-call precision bound	claim bounds	25 §2.3.3 / §8.1	traced	fix pass: Results one-liner now states "from 20,320 calls upward" (25 §8.7 form); N~15,000 reversal bound retained
+39	MAIN R2 (Fig 2)	0.7647 (35,575; CI 0.7608-0.7685); null 0.0072 (10 seeds; 106.5x); polyApipe 0.3895; complement 0.8941	Kinnex corroboration	16 §v2 REPORT via fig2 sidecar; 25 §7; 21 §10.3	traced	
+40	MAIN R2 (Fig 2)	~10.5% record repeats; donor-mismatched	Kinnex caveats	21 §7.8 (via 11); 16	traced	both caveats stated as required
+41	MAIN R2 (Fig 2d)	72.2% (121,041/167,565); 72.1% no-IP; 50.3%/48.8% mice	single-molecule share of tier 1	fig2 sidecar panel d; 19 §4	traced	arm named; 72.5% never appears
+42	MAIN R3 (Fig 3a)	0.352 -> 0.941; 0.268 -> 0.083; 0.885 / 0.892 at >=10	molecule sweep	fig1 sidecar panel e; fig3 sidecar panel a	traced	>=5/>=10 flagged as not recommendations - rule obeyed
+43	MAIN R3 (Fig 3a)	F1_det 0.3046 vs 0.2811; 0.3758/0.3818 vs 0.3213/0.3264	default is not the F1 optimum	25 §8.3 (verbatim)	traced	reliability-choice sentence present as required
+44	MAIN R3 (Fig 3b)	P@10/P@100 0.74 / 0.77 / 0.46 / 0.33 / 0.24; scUTRquant 0.72	window-sensitivity ratios	fig3 sidecar panel b	traced	
+45	MAIN R3 (Fig 3c)	0.776-0.779; 0.729-0.737; chance <=0.010; 14.3/12.5 points; 0.636-0.651	cross-mouse reproducibility	fig3 sidecar panel c	traced	
+46	MAIN R3 (Fig 3c)	Sierra 0.790/0.834; scAPAtrap 0.884/0.793	competitor reproducibility rows (v1-era)	fig3 sidecar panel c	traced	reducePeaks caveat carried
+47	MAIN R3 (Fig S4)	107 of 108 parameters; seq-len 91 -> 98	pbmc4k held-fixed protocol	26 §R1	traced	
+48	MAIN R3 (Fig S4)	0.8279 (n 20,672); four libraries 0.7062/0.8279/0.7450/0.7572	unchanged gate PASS	26 §R2/verdict	traced	
+49	MAIN R3 (Fig S4)	0.886-0.907 (matched-N, any route); R_det 0.1104 vs 0.1754; 268,097 / 285,136	matched-N control; recall gap; denominators	26 verifier matched-N table; 26 §R4.2 / denominator audit	traced (FIXED)	audit re-attributed 0.886-0.907 to "any route" (clip-rank both tie-breaks or >=4/>=5 molecules) per 26/figS4; previous wording credited clip-rank alone (whose value is 0.9049)
+50	MAIN R3 (Fig S4)	84.2% (~361x); 39.9% vs 44.4% ceiling; 46,524 vs 20,672	cross-donor concordance both directions	26 §R3 + verifier (39.9% = 90% of 44.4% ceiling)	traced	both directions reported, as mandated
+51	MAIN R3 (Fig 3d)	293.7 GB -> 12.53 GB (23.5x); 3:45:53 -> 34:37; ~28-35 min concurrent; 27:43 uncontended	PBMC compute	19 §3	traced	concurrency disclosed - rule obeyed
+52	MAIN R3 (Fig 3d)	17 lib / 14 pat; ~224 GB; 9:06:26 -> 1:06:26 (8.2x); 505,197; 13.63 -> 13.53 GB	cohort compute	19 §5	traced	
+53	MAIN R3 (recall budget)	235,111; 79.96% / 84.53%; 20.04% / 15.47%; R_det ceilings 0.3406 / 0.3278	reachability decomposition	25 §4	traced	
+54	MAIN R3 (recall budget)	44.6% (127,188/285,136 union); x3p subset 107,260; 0.4372 vs 0.1754	denominator audit	25 §5 (verifier correction 4: two facts never divided across each other - the draft says so)	traced	
+55	MAIN R3 (recall budget)	20.0 vs 4.0 sites per detected gene	atlas density vs default output	25 §5 caveat	traced	
+56	MAIN R4 (Fig 4)	1,230 cells; 76,711 PAS; 3 stage pairs; 20 permutations; 6 x 21 runs; 0 failures	calibration harness	14 §Input	traced	
+57	MAIN R4 (Fig 4)	20.3% / 13.0% / 24.7%; 19-20 of 20 null runs	shipped defaults anti-conservative	14 arms A/B/C	traced	
+58	MAIN R4 (Fig 4)	3.0%; 0.00%; 0/20	the one calibrated configuration (B0)	14 arm B0	traced	
+59	MAIN R4 (Fig 4)	2.94-3.13%; 2.6-4.0%	per-pair and per-stratum ranges	14 §Per-pair	traced	
+60	MAIN R4 (Fig 4)	17.4%	marker double-dip reproduction	14 §Mechanism 1	traced	
+61	MAIN R4 (Fig 4)	9.6%; ~1,500 per null run	reads-mode pseudoreplication	14 (A0: 9.6%, 1,487 hits/run)	traced	~1,500 is honest rounding of 1,487
+62	MAIN R4 (Fig 4)	8.5% of null tests carry 67% of hits (pre-selection off; 13% marker arm)	NB dispersion floor	14 §Mechanism 4 (C0; 13% in C)	traced (FIXED)	audit named the arm - the pair is the C0 (pre-selection-off) arm's
+63	MAIN R4 (Fig 4)	<=7% / <=1.5% / <=5% / <=25%	pre-stated calibration rule	14 §Arms	traced	"our operational rule, not a community standard" stated
+64	MAIN R5 (Fig 5)	claim blockquote (31.4/30.5; 17.4/21.0; z 10.5/6.4; 486v318, 366v291; Cliff 0.55/0.63; ~25%)	the record claim	18 §v2 "The claim, in the exact form that survives on v2"	traced	VERBATIM match confirmed by diff
+65	MAIN R5 (Fig 5)	z 2.8 / 2.1; binomial 3.4e-9; 0.0039; 0 of 40 (defined); 1/21 shuffle floor	lengthening above null; direction excess	18 §v2 cautions + v1->v2 table; 40-draw derivation verified from results/figures/manuscript/fig5_spermatogenesis_null_shuffles.tsv (2 mice x 20 seeds, one excess per seed; 0 of 40 |excess| >= m2 observed 75/1200 recomputed); 1/21 = empirical floor of a 20-shuffle null (same convention as 20's 1/11)	traced	fix pass added the 40-draw definition and the 20-shuffle empirical-resolution caution (review M6a); z statistic unchanged
+66	MAIN R5 (Fig 5)	1,548 / 1,200 genes; Cliff 0.554 / 0.632	depth guard; exact residual values	18 §v2 table	traced	
+67	MAIN R5 (Fig 5c)	3.169% / 3.156%; 0 in 30 BH families; 0/10 runs	B0 re-validation on this caller	18 §v2 table	traced	
+68	MAIN R5 (Fig 5c)	6,070 / 9,480 / 11,219 (ES-RS / ES-SPC / RS-SPC); 99.7-99.8%; 0 in 15 pairings	cross-mouse replication	18 §v2 table (ES_RS/ES_SPC/RS_SPC order)	traced	pair order matches source
+69	MAIN R5 (Fig 5c)	rho 0.641, n = 923; null 0.004 +/- 0.033	per-gene effect correlation	18 §v2 table; fig5 sidecar panel c	traced	
+70	MAIN R5 (Fig 5d)	Cliff -0.93 / -0.87; 25.2% / 14.5%	UMI-weighted reversal; protamine share	18 §v2 negatives	traced	
+71	MAIN R5 (Fig 5d)	16 genes: 4 / 5 / 5 / 2	literature panel does not reproduce	18 §v2 negatives	traced	
+72	MAIN R6 cohort (Fig 6)	17 lib/14 pat; 15 lib/12 pat; MetBone; one single-type library	cohort naming and primary	20 §naming	traced	exact mandated phrases used
+73	MAIN R6 cohort (Fig 6)	claim blockquote (59 pairs; 80,464; 15,942/2,128,711 (0.75%); 15,212; 5,951/2,883/47; 10,415; 5,438)	the record claim	20 §Recommended claim wording	traced	VERBATIM match confirmed by diff
+74	MAIN R6 cohort (Fig 6)	58.9 M null tests; 11 nominal q<0.05; none twice	null scan	20 §null control (58,859,840; 11 hits; exhaustive scan)	traced	
+75	MAIN R6 cohort (Fig 6)	pooled null p<0.05 0.84-2.73%; GSM3516672-StageIB 3/10 vs allowed 2	per-library calibration + disclosed trip	20 §null control	traced	disclosure travels as required
+76	MAIN R6 cohort (Fig 6)	306,202 clip molecules; 30.2% of 28,983 post-tier-filter; 0.42%	MetBone disclosure	20 disclosure 2	traced	denominator labelled post-tier-filter per 20's correction
+77	MAIN R6 cohort (Fig 6)	12 of 30 (40%); 8 of 30 (27%)	top-gene assignment defect	20 disclosure 1 (corrected recount)	traced	
+78	MAIN R6 cohort (Fig 6e)	5,951; 96.8% / 61.5% / 57.8%	genomic context of replicated PAS	20 disclosure 1	traced	own-gene vs any-gene kept distinct as mandated
+79	MAIN R6 negatives (Fig S7)	7,259 (15.6%); 48.5% (CI 47.4-49.7); 70% target	trusted-novel failure	16 §v2	traced	
+80	MAIN R6 negatives (Fig S7)	52.1% -> 48.5%; GEM-X 51.5%; pooled 58.2%; complement 89.4%	alternative explanations excluded	16 §v2 (0.5211->0.4853; 0.5154; 0.5816; 0.8941)	traced	
+81	MAIN R6 negatives (Fig S7)	0.811 -> 0.485; hexamer-fail 0.487; 69.4% intronic; 27.0% vs 7.6% (atlas-known hexamer-pass)	loss localisation	figS7 sidecar panels a/c; 16 §v2	traced (FIXED)	audit relabelled the 7.6% comparison set to "atlas-known, hexamer-pass" (its true denominator, 2,171/28,453)
+82	MAIN R6 negatives (Fig S7)	31 of 46,524 (no-op); 65-179x enrichment	Kinnex-style rule; null enrichment	16 IP-rule note (19 §4); figS7 sidecar	traced	corrected IP-rule framing used (sidecar's stale sentence superseded per 16's dated note)
+83	MAIN R6 negatives (Fig S10)	AMI 0.708; 17/17 at median 0.662; 275,370 -> 14,891; AMI 0.698	clustering ablation	figS10 sidecar (0.6978)	traced	
+84	MAIN R6 negatives (Fig S12)	16 precision points; 8-11%; ~4x / ~2x; 15%	atlas-trained model and transferable variant	23 §5.4 + §2.1 [V]; 28 §2.3	traced (FIXED)	audit removed unsourced "at matched call budget" from the 15% clause (28 does not qualify it). FLAG: these model numbers are cited under the Fig S12 heading but are not drawn in Fig S12 (they trace to 23/28); the S12-supported parts are the byte-for-byte identity and the two in-force rules - PI may want the pointer softened
+85	MAIN Discussion (back-reference)	15.10% vs 49.50% (46,524 vs 120,916)	two-truth hard-FP comparison	25 §7 / §8.6	traced	fix pass moved the primary statement to Results (25 §8.6 slots it there; new row 140); Discussion retains a one-sentence back-reference with the 2.6x call-count context
+86	MAIN Discussion	0.573%; 1.152% (corrected)	clip-rate budget	23 §2/§3	traced	
+87	MAIN Discussion	twelve minutes; Delta = 0.000000	post-hoc sweep timing; prime FAIL identity	figS11 sidecar; 24 Amendment 3	traced	
+88	MAIN Discussion	0.8279; 84.2%	pbmc4k in limitations	26	traced	
+89	MAIN Discussion	0.6683 vs 0.4144	cross-sample corroboration headroom	23 row G [A5]	traced	23 marks A5 provisional/unverified; MAIN carries its caveats (unmeasured on human, IP replicates too, own pre-registration required)
+90	MAIN Discussion	~+0.04 R_det; +14.3% relative R_det	singleton ceiling; long-read-trained score	27 (§ceiling); 23 row C [V]	traced	
+91	MAIN Conclusions	15 lib / 12 pat; p <= 0.091	restated	20	traced	
+92	MAIN Methods datasets	CellRanger 3.0.0; GRCh38-3.0.0; 91 bp; ~10,000 cells; 557,564,408	pbmc_10k_v3 facts	26 §2/§3 (91 bp; CellRanger versions; GRCh38-3.0.0 at line 247); 23 §2 (read count); 15 §5 ("10k-cell")	traced	
+93	MAIN Methods datasets	v2 chemistry; 2.1.0; GRCh38-1.2.0; 98 bp; 4,340 cells; 87,433 reads/cell; H53GNBCXY	pbmc4k facts	26 §2	traced	
+94	MAIN Methods datasets	98 bp; 1,294 and 1,364 stage-labelled cells	GSE104556 mice	fig5 sidecar (1,294 / 1,364 labelled cells)	traced (FIXED)	audit replaced untraceable "~2,500 cells across the two mice" with the verified labelled-cell counts
+95	MAIN Methods datasets	GSE123904; 3 dual-library patients; ~224 GB; 29,063; 18,651 (64.2%)	cohort facts	20; 13 addendum §2; 19 §5	traced	
+96	MAIN Methods datasets	Ensembl 99 / Ensembl 102	annotation builds	27 §1 table	traced	
+97	MAIN Methods caller	4efeb125; 9dfdefb3eb353b0817ef79c4eb9ace6d6c8aab53; PRs #93/#96/#97; 1,277 passed	frozen commits and suite	19 header; 18 §v2 (full sha); 24 §3.2.5	traced	
+98	MAIN Methods caller	--seq-len 91/98; clip params 6 / 0.8; 25 bp gap; read-weighted mode	acceptance/clip/clustering rules	26 §3; fig1 sidecar panels a-b	traced	
+99	MAIN Methods caller	count window [site - seq-len, site + 25]	quantification credit window	fig1 sidecar panel f (--polya-count-window auto,25)	traced	"count column is not the clip evidence" caveat carried
+100	MAIN Methods caller	--min-read 1500 / --min-cells 3 / --min-pas-per-cell 50; 0.45% / 3.7%	cell filter; zero-count drops	28 §1 (cell-filter seam); 15 §6.3	traced	
+101	MAIN Methods IP	-9..+30 (40 nt); >=6 A or >=0.70; annotate default; explicit --ip-filter-mode filter	IP rule and mode	16 IP-rule note (window); 28 §0; 24 Amendment 3	traced	
+102	MAIN Methods IP	5,599 newly removed / 11,217 newly kept	#96 minus-strand footprint	19 §1	traced	
+103	MAIN Methods IP	byte-identical 18/18	#97 identity check	15 §5 addendum; figS8 sidecar	traced	
+104	MAIN Methods benchmark	end - 1 on + / start on -; W = 10/25/50/100/200	scoring conventions	27 §1 table (call position); 24 §2 + fig3 sidecar panel b (windows; 200 in audit TSV)	traced	
+105	MAIN Methods benchmark	285,136 (14,949 genes); 126,686; 268,097 (13,763 genes); recipe	R_det denominators	26 §R1 + §4 recipe; 25 §0	traced	
+106	MAIN Methods benchmark	3 seeds; bedtools shuffle -chrom -noOverlapping; six decimals	null design; independent reproduction	figS3 sidecar; 24 §2; 19 §1 / 15 header	traced	
+107	MAIN Methods benchmark	SCAPTURE mouse-2 0.672 site-level; scTail R1 28 bp	competitor caveats	15 §3; fig2 sidecar	traced	
+108	MAIN Methods matched-N	clip molecules / peakdepth rankings; tie-robust; SCAPTURE excluded	truncation protocol	25 §2 + §2.3.1 + §2.1 footnote	traced	
+109	MAIN Methods long-read	>=5/>=20/>=100/>=500 records; ~10.5%; decoy +1..+18; 25 bp; 10 seeds	truth construction	16 (§tables + IP-rule note); 21 §7.8; fig2 sidecar	traced	donor-mismatch stated
+110	MAIN Methods prereg	P@100 >= 0.38 and F1_det > 0.261; 0e27b1a 01:18:59; 1 h 41 m; 02:59:36; 16:14	gate history	figS11 sidecar (1:40:37); 15 §pre-reg	traced	1 h 41 m = rounded 1:40:37
+111	MAIN Methods prereg	Delta exactly 0.000000	prime Amendment 3	24 Amendment 3	traced	
+112	MAIN Methods switch test	--count-mode cells; --marker-top-n 0; BH per pair; |dprop| effect	shipped configuration	14 §What ships	traced	
+113	MAIN Methods switch test	1,294 cells; SPG 64 dropped -> 1,230 (370/504/356); 98.8%; 76,711; 6 configs x 21; 20 perms	harness input	14 §Input; fig4 sidecar	traced	
+114	MAIN Methods cohort	ema run -c; --threads 16 --peak-workers 16; 505,197; 80,464 (40,811 + / 39,653 -)	cohort run and universe	20 (§verified primary; disclosure 3); 19 §5	traced	
+115	MAIN Methods cohort	CellTypist conf >= 0.5; four marker panels; < 20 cells dropped	label-confirmation policy	13 addendum §5	traced	
+116	MAIN Methods cohort	replication_filter.py v0.2.0 md5-recorded; >=2 patients; veto; |dprop| >= 0.1; >=3 sensitivity; 1/11 = 0.091	replication filter	20 (provenance + naming); 13 addendum §10	traced	
+117	MAIN Methods spermatogenesis	370/504/356 and 268/757/271; >=50 UMI; 20 shuffles; 5/mouse; 15 pairings; gene+strand <=100 bp	v2 record protocol	18 §v2	traced	
+118	MAIN Methods second library	107/108; 91 -> 98; threads output-irrelevant; P@100 >= 0.50	pbmc4k protocol	26 §R1/§3	traced	
+119	MAIN Methods compute	tr_TR locale; 12.53/34:37 + 11.12/32:59 concurrent; 27:43/12.45 uncontended; mice 3.07/3.65 at 14:10/16:00; v1 293.7/3:45:53	compute environment	19 §3; 15 §5 addendum; FIGURES_MANIFEST (tr_TR)	traced	concurrency disclosed on every wall time
+120	MAIN Methods compute	cohort 1:06:26/13.53 vs 9:06:26/13.63; 505,197; pbmc4k 8 threads / 15:41 / 3.24 GB	cohort + donor-2 run records	19 §5; 26 §R1 (15:40.87 -> 15:41)	traced	pbmc4k labelled run record, not benchmark
+121	MAIN Declarations	PRs #92/#93/#96/#97/#100; issues #94/#95/#98/#99/#101; 4efeb125; 9dfdefb3eb...	open-development record	github/PUBLISHED.md; #92 = the clip-seeded PR referenced as "the merge of #92" in github/pr_stage1bc_tier1_quant_umi.md	traced	note: PUBLISHED.md itself has no #92 row; the number is carried by the github PR drafts (and the project record)
+122	MAIN Fig 1 legend	all printed values (0.573%; 3,195,067/557,564,408; THAP3 31 mol; funnel; 0.0558/0.3520/0.7062/0.0217; 0.246/0.706; 99.97%; 0.7060 vs 0.7062; 2,584 and 190)	legend vs sidecar	fig1_overview.caption.md	traced (1 FIX)	audit qualified "removed-call atlas-agreement precision" per the binding language rule
+123	MAIN Fig 2 legend	all printed values (denominators; full-atlas recall 0.089, 0.098/0.100; gate values; 72.2%/72.1%; -12%/-18%; +0.020/+0.014; 2.6x; 0.4036/0.2336 vs 0.3800/0.1988; 0.672; -1.1 pp)	legend vs sidecar	fig2_accuracy.caption.md	traced (1 FIX)	audit changed "at every N above 20,320" to the licensed "at every N from 20,320 upward" (25 §2.3.3 / §8.7)
+124	MAIN Fig 3 legend	all printed values (sweep; window ratios; 0.776-0.779/0.729-0.737; chance 0.0017-0.0094; Sierra/scAPAtrap rows; 3:45:53/293.7 -> 34:37/12.53; 27:43)	legend vs sidecar	fig3_tradeoff.caption.md	traced	
+125	MAIN Fig 4 legend	all printed values (1,230; 76,711; 20 perms; 20.3/13.0/24.7; 19-20/20; 3.0/0.00/0-20)	legend vs sidecar	fig4_calibration.caption.md; 14	traced	
+126	MAIN Fig 5 legend	all printed values (1,548/1,200; 31.4/30.5 vs 17.4/21.0; z 10.5/6.4; 486v318/366v291 p 3.4e-9/0.0039; 0/40; Cliff 0.55/0.63; 6,070/9,480/11,219; 99.7-99.8%; 0/15; 3.169/3.156; 30 BH; rho 0.641 n 923 null 0.004+/-0.033; -0.93/-0.87; 25.2/14.5; 4/5/5/2; ~60%; 64/68)	legend vs sidecar	fig5_spermatogenesis.caption.md; 18 §v2	traced	
+127	MAIN Fig 6 legend	all printed values (2,128,711 -> 68,546 -> 15,942 -> 15,212; null mean 1.1; top 16 of 47; 12 single-patient; median 0.34; 5,438; 5,951; 96.8/61.5/57.8; 14,480/74,954 v1 labelled; 0.4%; 12/30)	legend vs sidecar	fig6_cohort.caption.md; 20	traced	v1 numbers appear only as the labelled comparison - rule obeyed
+128	SUPP S1	0.5730% (3,195,067/557,564,408); 2.2565%; 0.5364%; ~4.2x; 1.64x; 0.015% (invalid); 17=14; 15=12; 29,063; 18,651 (64.2%); 108 params	S1 legend	figS1_datasets.caption.md; 23 §2/§3; 26; 20	traced	unmeasured cells omitted, never approximated - rule obeyed
+129	SUPP S2	333,920 (167,565/166,355); 46,524 (0.7062); 26,255/26,526 (0.7450/0.7572); 72.2%/72.1%; medians 371/259/248; offsets 103/87; +95; ~0.085 vs 0.028; decoy triples; 166,355	S2 legend	figS2_peakqc.caption.md; 19	traced (1 FIX)	audit renamed the bare "precision remains ~0.085" to "atlas-agreement P@100 remains ~0.085"; t5 = records not de-duplicated UMIs stated
+130	SUPP S3	18,432,135; 0.996-1.000 (<0.004); 0.62-0.75; 0.615 vs 0.753; 0.355-0.492; 0.020-0.024; 2.26%; 0.0219 (within 3%); 0.97; 1.80 Gb; 0.7062/0.7450/0.7572 vs 0.0217/0.0139/0.0138; 33-55x; 0.672	S3 legend	figS3_nulldesign.caption.md	traced	retired-regime values marked unquotable - rule obeyed
+131	SUPP S4	19 minutes; 107/108; 91->98; 0.8279 (38x); 0.2635 vs 0.1948; 84.2% (81.3%; ~361x); 39.9% (44.4% ceiling); 46,524 vs 20,672; 0.886-0.907 / 0.112-0.124; 0.1104 vs 0.1754; 1.64x	S4 legend	figS4_seconddonor.caption.md; 26	traced (1 FIX)	audit qualified "headline atlas-agreement precision"; "precision generalises; it does not improve" slogan carried verbatim from sidecar
+132	SUPP S5/S6	~10.5% (CB,UMI) repeats	pending-slot blocker descriptions only	figS5 row of FIGURES_MANIFEST; 21 §7.8	traced	no result cited from S5/S6 anywhere in either draft - verified by grep
+133	SUPP S7	7,259 (15.6%); 46,524; 0.765->0.811->0.485->0.502; 0.894; null 0.007; 69.4%; 27.0% vs 7.6%; GEM-X 0.515 / pooled 0.582; 50/100 bp values excluded; 65-179x; 0.487; 31/46,524; 0.39 vs 0.52; 0.521->0.485	S7 legend	figS7_novelfunnel.caption.md; 16 §v2 + IP-rule note	traced (1 FIX)	7.6% comparison set relabelled to the atlas-known hexamer-pass complement; the legend deliberately uses 16's corrected IP-rule framing, superseding the sidecar's stale "rule is looser" sentence (per SUPPLEMENTARY header note)
+134	SUPP S8	34:37/32:59 concurrent; 27:43; 293.7 -> 12.53 (23.5x); 150 GB stop; >=300 GB; ~1.4 cores; scAPAtrap 4:04:29 (12:58:50); scUTRquant 30:45; SCAPTURE 12:14; cohort 9:06:26 -> 1:06:26; 505,197; mice 1:01:09/1:01:48 -> 14:10/16:00; 23.1/22.4 -> 3.07/3.65; 291 GB / 287.8 GB; 18/18	S8 legend	figS8_compute.caption.md; 19 §3/§5; 15 §5	traced	every wall time carries its concurrency/retry caveat - rule obeyed
+135	SUPP S9	2.94-3.13%; 2.5-4.0% recomputed vs 2.6-4.0% verified; 3.03%; 20.3/13.0; 9.6/3.0; ~1,500; 60,332 -> 66,630; 46,230; 8.5% -> 67% (pre-selection off; 13% marker)	S9 legend	figS9_calibration_extended.caption.md; 14	traced (1 FIX)	NB-floor pair now names its arm; recomputed-vs-verified binning caveat carried
+136	SUPP S10	275,370; 14,891; AMI 0.708/ARI 0.502; 0.6978; k-matched 0.7878 vs 0.7602; 17/17 median AMI 0.662 (0.367-0.779); Leiden +112.5%, 8x; coverage 0.498; rho -0.34 p 0.18; -41.7% to +93.3%	S10 legend	figS10_clustering.caption.md	traced	
+137	SUPP S11	0.38 / 0.261; 12 minutes; 0e27b1a 01:18:59; 1:40:37; 02:59:36; 16:14; 19 minutes; 0.8279; Delta 0.000000	S11 legend	figS11_gatehistory.caption.md	traced	
+138	SUPP S12	6954082d; Delta 0.000000; flagless 0.5907 -> 0.7062 / 0.1911 -> 0.1754; Kinnex 0.6081 -> 0.7647; decoy 0.3122 -> 0.1300; 228.4 -> 10.6 GB; 0.0105; n = 44,394/46,524/46,524/62,110 context	S12 legend	figS12_versions.caption.md; 24 Amendment 3	traced	">=5-record" wording used; wall-time non-comparability stated
+139	SUPP T7	competitor versions to be read from run logs	placeholder discipline	FIGURES_MANIFEST T7 note	traced	correctly not a number source
+140	MAIN R2 (Fig 2) two-truth	15.10% vs 49.50%; 46,524 vs 120,916; 35.5% single class	two-truth hard-FP composite now stated in Results (was Discussion-only)	25 §7 (hard FPs 7,027=15.10% / 59,856=49.50%; intronic-no-hexamer cell 35.5% of FPs) / §8.6 wording	traced	fix pass: moved per review structure item 3; call-budget caveat and >=5-records long-read half carried in-sentence
+141	MAIN R2 (Fig 2) matched-N panel	Sierra/scAPAtrap truncated, below PeakATail on both axes at every budget tested; scAPAtrap 19,410-call cap; 787,138 > 333,920 not reachable	matched-N scope extended beyond polyApipe (review M5c)	25 §2.1/§2.2 tables (every matched-N row) + §2.3.2 (cap; not reachable)	traced	fix pass addition; "every budget tested" = every N row of 25 §2.1/§2.2 where both tools have values
+142	MAIN Methods read acceptance	13.74% of valid-CB reads excluded (96% spliced); +1.76% clip reads / ~+0.4% recall if relaxed	reference-span vs --seq-len rule disclosed (review M9i)	23 Step 2 (read.py span rule)	traced	fix pass addition; relaxation is roadmap work, ships in no result
+143	MAIN Methods benchmark denominator	detection source = lambda_gradient run (PBMC) / own run (pbmc4k, declared deviation); rebuild control 15,271 genes / 288,740 sites vs 14,949 / 285,136 (+1.26%, 99.5% sites shared); bias runs against the arm supplying detection	R_det denominator provenance + sensitivity (review M2)	26 §4 recipe + §"Denominator-construction control" + verifier denominator-swap table	traced	fix pass addition; full tool-independent rebuild (STARsolo/CellRanger matrix) remains a PI decision item
+144	MAIN Methods cohort pairs	59 distinct cell-type pairs; 12 single-patient (can never replicate); replicated set spans 47	pair universe defined (review minor 11)	20 §primary (59 pairs) + fig6_cohort sidecar (top 16 of 47; 12 single-patient)	traced	fix pass addition
+145	MAIN Methods replication audits	89 PAS removed by patient-collapse (Macrophage-T cell); 2 PAS vetoed where one patient's two libraries called opposite directions	two-library-patient handling (review M9v)	20 §"Two-GSM patients verified to count once"	traced	fix pass addition
+146	MAIN Methods spermatogenesis	PDUI = distal/(proximal+distal); proximal/distal = first/last PAS of the gene in transcription order; depth-weighted pseudobulk; >=50 UMI at the PAS pair in every stage; 1,548/1,200 of ~10,500 genes with a pair; marker-panel argmax over Leiden clusters of STARsolo GEX	PDUI pair-selection rule and label recipe (review M6b/M9ii)	fig5_spermatogenesis.caption.md (definitions paragraph)	traced	fix pass addition; the marker panel gene list itself is not in the quotable evidence base - PI decision item
+147	MAIN R6 cohort (Fig 6e) caution	2,883 genes / 10,415 combinations / 57.8% own-3'UTR flagged as assignment-dependent; 96.8% / 61.5% and PAS-level statistics assignment-independent	gene-keyed quantities carry the issue-#99 caution (review M7)	20 disclosure 1 (values); caution is a scope statement, no new number	traced	fix pass addition; recompute on non-overlapping-locus subset remains a PI decision item
+148	MAIN R5/R6 null-test link	58.9 M library-level null tests vs 2,128,711 patient-level (pair, PAS) hypotheses connected in one sentence	review M3 connecting sentence	20 §null control (58,859,840 over 15 primary libraries; 10 combinations) + §primary (2,128,711 rows into the replication filter)	traced	fix pass addition; no new number
