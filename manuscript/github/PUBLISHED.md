@@ -7,3 +7,5 @@
 - PR Stage 1d-B (memory/CPU): https://github.com/BMGLab/PeakATail/pull/97
 - Issue 11 (per_isoform degenerate pairs): https://github.com/BMGLab/PeakATail/issues/98
 - Issue 12 (gene assignment overlapping loci + clip-rate sampling): https://github.com/BMGLab/PeakATail/issues/99
+- 2026-09-02 09:32 PR peakAtail-prime (defaults, no-op guarantee, head 5e18e6f): https://github.com/BMGLab/PeakATail/pull/100
+- Issue 19 (dynamic-threshold crash + doc defects): https://github.com/BMGLab/PeakATail/issues/101
