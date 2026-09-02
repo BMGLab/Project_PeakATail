@@ -1,0 +1,1 @@
+../prime/score_pas.sh

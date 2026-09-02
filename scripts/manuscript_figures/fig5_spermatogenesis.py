@@ -1,32 +1,45 @@
 #!/usr/bin/env python3
 """
-fig5_spermatogenesis.py -- the verified testis 3'-UTR control on the final caller
-(manuscript/18_spermatogenesis_final.md, verdict FIXED; code 4efeb125, both GSE104556 mice).
+fig5_spermatogenesis.py -- the verified testis 3'-UTR control
+(manuscript/18_spermatogenesis_final.md; both GSE104556 mice).
 
-The claim the figure carries, in the exact form that survives (18):
+VERSION SWITCH -- env var SPERMATOGENESIS_VERSION picks which record is drawn:
+
+  v2  (default)                       merged caller, frozen tree 9dfdefb3 (#96 + #97);
+                                      results/stage3_spermatogenesis_v2/; the record of
+                                      18's v2 section (verified SOUND, 2026-09-02)
+  v1  (SPERMATOGENESIS_VERSION=v1)    final caller 4efeb125; results/stage3_spermatogenesis_final/;
+                                      18's v1 body (verified FIXED, 2026-08-21), kept
+                                      reproducible as the labelled comparison
+
+      export LC_ALL=C; SPERMATOGENESIS_VERSION=v1 python3 .../fig5_spermatogenesis.py
+
+The claim the figure carries, in the exact form that survives (18, v2 section):
 
     Per-gene 3'UTR usage shifts progressively proximal along spermatocyte -> round ->
-    elongating spermatid in both mice: 31.5% and 30.2% of depth-guarded genes shorten
-    monotonically across the three stages against label-shuffle nulls of 17.5% and 21.0%
-    (z = 10.5 and 5.8, 20 shuffles), exceeding monotone lengthening (489 vs 325 and
-    361 vs 296 genes), and the composition-controlled per-cell distal-usage residual falls
-    at every step (Cliff's delta SPC vs ES = 0.56 and 0.61).  It is a per-gene, equal-weight
+    elongating spermatid in both mice: 31.4% and 30.5% of depth-guarded genes shorten
+    monotonically across the three stages against label-shuffle nulls of 17.4% and 21.0%
+    (z = 10.5 and 6.4, 20 shuffles), exceeding monotone lengthening (486 vs 318 and
+    366 vs 291 genes), and the composition-controlled per-cell distal-usage residual falls
+    at every step (Cliff's delta SPC vs ES = 0.55 and 0.63).  It is a per-gene, equal-weight
     statement: the per-gene medians are not monotone and the across-gene UMI-weighted distal
     index reverses at RS->ES.
 
-Nothing is typed in that is not read from the sources below (the two literal p-values in the
+Nothing is typed in that is not read from the sources below (the literal p-values in the
 footer are quoted from manuscript/18 and asserted to be present in that file):
 
-  results/stage3_spermatogenesis_final/mouseN/summary/pdui_summary.json        panels a,b,d1
-  results/stage3_spermatogenesis_final/mouseN/summary/pdui_null_shuffles.tsv   panel a (20-shuffle null)
-  results/stage3_spermatogenesis_final/mouseN/summary/pdui_per_cell.tsv        panel b (per-cell residual)
-  results/stage3_spermatogenesis_final/summary/switch_cross_mouse_replication.tsv  panel c1 + switch TRUE hits
-  results/stage3_spermatogenesis_final/summary/switch_null_summary.tsv         panel c1 (null calibration)
-  results/stage3_spermatogenesis_final/summary/gene_cross_mouse_delta.tsv      panel c2 (917 genes)
-  results/stage3_spermatogenesis_final/summary/gene_replication_summary.json   panel c2 (rho + null) , panel d2
-  results/stage3_spermatogenesis_final/summary/gene_literature_panel.tsv       panel d2 (16 genes)
-  results/stage3_spermatogenesis_final/REPORT_PROVISIONAL.md                   provenance asserts
-  manuscript/18_spermatogenesis_final.md                                       claim + cautions
+  <SRC>/mouseN/summary/pdui_summary.json        panels a,b,d1
+  <SRC>/mouseN/summary/pdui_null_shuffles.tsv   panel a (20-shuffle null)
+  <SRC>/mouseN/summary/pdui_per_cell.tsv        panel b (per-cell residual)
+  <SRC>/summary/switch_cross_mouse_replication.tsv  panel c1 + switch TRUE hits
+  <SRC>/summary/switch_null_summary.tsv         panel c1 (null calibration)
+  <SRC>/summary/gene_cross_mouse_delta.tsv      panel c2 (per-gene scatter)
+  <SRC>/summary/gene_replication_summary.json   panel c2 (rho + null) , panel d2
+  <SRC>/summary/gene_literature_panel.tsv       panel d2 (16 genes)
+  <SRC>/REPORT_PROVISIONAL.md                   provenance asserts
+  manuscript/18_spermatogenesis_final.md        claim + cautions
+
+where <SRC> = results/stage3_spermatogenesis_v2 (v2) or results/stage3_spermatogenesis_final (v1).
 
 Panels d1/d2 are the negative findings and are drawn inside a dashed frame: they are NOT
 claim carriers.
@@ -65,12 +78,62 @@ mpl.rcParams["pdf.fonttype"] = 42
 mpl.rcParams["ps.fonttype"] = 42
 
 WD = "/mnt/ssd1/Projects/PeakATail_wd"
-SRC = f"{WD}/results/stage3_spermatogenesis_final"
 FIGDIR = f"{WD}/manuscript/figures"
 TSVDIR = f"{WD}/results/figures/manuscript"
 os.makedirs(FIGDIR, exist_ok=True); os.makedirs(TSVDIR, exist_ok=True)
 NAME = "fig5_spermatogenesis"
-CODE = "4efeb125"                 # frozen caller tree (18 / REPORT_PROVISIONAL §0)
+
+# ---------------------------------------------------------------------------
+# Which record: v2 (default; merged caller 9dfdefb3, 18's v2 section, verified
+# SOUND 2026-09-02) or v1 (final caller 4efeb125, 18's v1 body, verified FIXED
+# 2026-08-21, kept reproducible as the labelled comparison).
+# ---------------------------------------------------------------------------
+VERSION = os.environ.get("SPERMATOGENESIS_VERSION", "v2").lower()
+VERSIONS = {
+    "v1": dict(
+        src="results/stage3_spermatogenesis_final",
+        code="4efeb125", commit_full="4efeb1252e6d7c7d51b252b443b5be5947ae000f",
+        caller_phrase="PeakATail final caller",
+        report_commit_assert="commit `4efeb1252e6d7c7d51b252b443b5be5947ae000f` (`4efeb125`)",
+        report_flag_assert="PRs #96",       # v1 report flags the v2 re-run as pending
+        # the literal p-values quoted in the footer live in manuscript/18 (v1 body) --
+        # asserted below so the figure can never drift from the write-up
+        binom_p={"mouse1": "9.9e-9", "mouse2": "0.0125"},
+        claim_asserts=("binomial\np 9.9e-9",
+                       "p 0.0125; 1 of 40 null draws reached the same excess in absolute value"),
+        expect_m2_null_draws_ge_excess=1,   # 18 (v1 body): "1 of 40"
+        genes_with_pair_approx="~10,400",
+        prm_share_text="~26% of the guarded ES UMIs",
+        record_note="manuscript/18 v1 body (verdict FIXED, 2026-08-21); superseded by the v2 section",
+        footer_status=("PROVISIONAL: code is the frozen tree 4efeb125, and a v2 re-run after PRs #96 "
+                       "(IP-filter/strand) and #97 will redo every number here"),
+        v2_pending_ref=("v2_rerun_pending", "PRs #96 (IP-filter/strand) and #97",
+                        "REPORT_PROVISIONAL.md status line; manuscript/18 header"),
+    ),
+    "v2": dict(
+        src="results/stage3_spermatogenesis_v2",
+        code="9dfdefb3", commit_full="9dfdefb3eb353b0817ef79c4eb9ace6d6c8aab53",
+        caller_phrase="PeakATail merged caller",
+        report_commit_assert="commit `9dfdefb3eb353b0817ef79c4eb9ace6d6c8aab53` (`9dfdefb3`)",
+        report_flag_assert="PR #96 IP-filter/strand + PR #97 clip-memory",
+        # quoted from manuscript/18's v2 section (verifier-recomputed from the raw outputs)
+        binom_p={"mouse1": "3.4e-9", "mouse2": "0.0039"},
+        claim_asserts=("binomial\np 3.4e-9",
+                       "p 0.0039; 0 of 40 null draws reached the\nexcess in absolute value"),
+        expect_m2_null_draws_ge_excess=0,   # 18 (v2 section): "0 of 40"
+        genes_with_pair_approx="~10,500",
+        prm_share_text="25.2% / 14.5% of guarded ES UMIs (m1/m2)",
+        record_note="manuscript/18 v2 section (verdict SOUND, 2026-09-02); v1 retained as the labelled comparison",
+        footer_status=("RECORD: code is the frozen merged tree 9dfdefb3 (#96 IP-filter/strand + #97), verified "
+                       "SOUND 2026-09-02; the v1 render (4efeb125) stays reproducible via SPERMATOGENESIS_VERSION=v1"),
+        v2_pending_ref=("v1_comparison_render", "SPERMATOGENESIS_VERSION=v1",
+                        "manuscript/18 v2 section; the v1-code render is the labelled comparison, not the record"),
+    ),
+}
+assert VERSION in VERSIONS, f"SPERMATOGENESIS_VERSION must be one of {sorted(VERSIONS)}, got {VERSION!r}"
+V = VERSIONS[VERSION]
+SRC = f"{WD}/{V['src']}"
+CODE = V["code"]                  # frozen caller tree (18 / REPORT_PROVISIONAL §0)
 STAGES = ["SPC", "RS", "ES"]      # SPG is excluded from the claim (manuscript/11)
 MICE = ["mouse1", "mouse2"]
 MOUSE_LABEL = {"mouse1": "mouse 1", "mouse2": "mouse 2"}
@@ -90,16 +153,15 @@ MOUSE_LS = {"mouse1": "-", "mouse2": (0, (4, 2))}
 # ---------------------------------------------------------------------------
 report_txt = open(f"{SRC}/REPORT_PROVISIONAL.md").read()
 claim_txt = open(f"{WD}/manuscript/18_spermatogenesis_final.md").read()
-assert f"commit `4efeb1252e6d7c7d51b252b443b5be5947ae000f` (`{CODE}`)" in report_txt, "report does not record the frozen commit"
-assert "PROVISIONAL" in report_txt and "PRs #96" in report_txt, "report does not carry the PROVISIONAL / v2 flag"
-# the two literal p-values quoted in the footer live in manuscript/18 and nowhere else on disk
-assert "binomial\np 9.9e-9" in claim_txt, "manuscript/18 no longer states the mouse-1 binomial p"
-# guard-string synced 2026-09-02: manuscript/18 was reworded 2026-08-21 16:47 (after this
-# figure's last render) to "1 of 40 null draws reached the same excess in absolute value
-# (0/40 one-sided)" -- same fact (p 0.0125, 1/40 two-sided), stricter statement.
-assert "p 0.0125; 1 of 40 null draws reached the same excess in absolute value" in claim_txt, \
-    "manuscript/18 no longer states the mouse-2 excess p"
-BINOM_P = {"mouse1": "9.9e-9", "mouse2": "0.0125"}       # quoted from manuscript/18 (asserted above)
+assert V["report_commit_assert"] in report_txt, "report does not record the frozen commit"
+assert "PROVISIONAL" in report_txt and V["report_flag_assert"] in report_txt, \
+    "report does not carry the expected version flag"
+# the literal p-values quoted in the footer live in manuscript/18 and nowhere else on disk
+# (v1 body and v2 section respectively; both guard strings survive the v2 supersession
+# because the v1 claim block is retained as the labelled comparison)
+for s in V["claim_asserts"]:
+    assert s in claim_txt, f"manuscript/18 no longer states the quoted excess fact: {s!r}"
+BINOM_P = V["binom_p"]                                   # quoted from manuscript/18 (asserted above)
 
 S = {m: json.load(open(f"{SRC}/{m}/summary/pdui_summary.json")) for m in MICE}
 NULLS = {m: pd.read_csv(f"{SRC}/{m}/summary/pdui_null_shuffles.tsv", sep="\t") for m in MICE}
@@ -161,7 +223,8 @@ for m in MICE:
                          n_null_draws=int(both.size),
                          n_null_draws_abs_ge_true=int((np.abs(both) >= te).sum())))
 EXC = pd.DataFrame(exc_rows).set_index("mouse")
-assert int(EXC.loc["mouse2", "n_null_draws_abs_ge_true"]) == 1, "manuscript/18's 1/40 no longer reproduces"
+assert int(EXC.loc["mouse2", "n_null_draws_abs_ge_true"]) == V["expect_m2_null_draws_ge_excess"], \
+    f"manuscript/18's {V['expect_m2_null_draws_ge_excess']}/40 no longer reproduces"
 
 null_long = []
 for m in MICE:
@@ -516,7 +579,7 @@ style(ax_d1)
 ax_d1.set_title("d  Negative findings — not claim carriers", color=VERM)
 ax_d1.legend(loc="upper left", frameon=False, handlelength=2.0, labelspacing=0.25, borderaxespad=0.2)
 cap_d1 = ax_d1.text(0.5, -0.30, "The across-gene UMI-weighted index rises at RS → ES in both mice: protamine\n"
-           "transcripts alone carry ~26% of the guarded ES UMIs and sit at ceiling PDUI. The claim\n"
+           f"transcripts alone carry {V['prm_share_text']} and sit at ceiling PDUI. The claim\n"
            "is equal-weight per gene; this index must not be used for it (name collision with 11's wdi).",
            transform=ax_d1.transAxes, ha="center", va="top", fontsize=5.4, color=VERM, linespacing=1.35)
 
@@ -558,7 +621,7 @@ m1s, m2s = arow("mouse1", "shortening"), arow("mouse2", "shortening")
 fig.suptitle("Per-gene 3′UTR usage shifts progressively proximal along spermatocyte → round → elongating spermatid, in both mice",
              x=LEFT, ha="left", fontsize=9.4, fontweight="bold", y=0.988)
 fig.text(LEFT, 0.968, textwrap.fill(
-    f"GSE104556 testis, both mice, PeakATail final caller (frozen tree {CODE}); GEX marker-argmax stage labels; "
+    f"GSE104556 testis, both mice, {V['caller_phrase']} (frozen tree {CODE}); GEX marker-argmax stage labels; "
     f"PDUI = distal / (proximal + distal) per gene, pseudobulk per stage, over genes with ≥ {GUARD_UMI} UMI at the "
     f"gene's proximal/distal PAS pair in every stage. "
     f"{m1s['true_frac']:.1%} and {m2s['true_frac']:.1%} of guarded genes ({int(m1s['n_monotone']):,} / {int(m1s['n_genes_guarded']):,} and "
@@ -585,11 +648,11 @@ footer = (
     f"{S['mouse1']['info']['stage_counts']['SPG']} / {S['mouse2']['info']['stage_counts']['SPG']} cells (11). "
     f"(4) Two mice of one study (GSE104556), one protocol — this controls animal-level and sampling noise, not study- or protocol-level artefacts. "
     f"Stage labels are marker-panel argmax over GEX leiden clusters (98.8% agreement with independent PAS-cluster labels), not ground truth. "
-    f"(5) The ≥ {GUARD_UMI}-UMI depth guard keeps {int(m1s['n_genes_guarded']):,} / {int(m2s['n_genes_guarded']):,} of ~10,400 genes with a PAS pair, biased toward "
+    f"(5) The ≥ {GUARD_UMI}-UMI depth guard keeps {int(m1s['n_genes_guarded']):,} / {int(m2s['n_genes_guarded']):,} of {V['genes_with_pair_approx']} genes with a PAS pair, biased toward "
     f"highly expressed genes; the null uses the same guarded set. (6) The switch test's null is conservative, not exact (Fisher discreteness), so TRUE hit counts "
     f"are not “N true switches”; only 5 label shuffles per mouse there (20 for the PDUI arm). Cross-mouse PAS matching is coordinate-based (100 bp, greedy 1:1), "
-    f"so only the matched subset can replicate. (7) PROVISIONAL: code is the frozen tree {CODE}, and a v2 re-run after PRs #96 (IP-filter/strand) and #97 will redo "
-    f"every number here. Sources: manuscript/18_spermatogenesis_final.md (verdict FIXED, 2026-08-21) and results/stage3_spermatogenesis_final/ "
+    f"so only the matched subset can replicate. (7) {V['footer_status']}. "
+    f"Sources: {V['record_note']} and {V['src']}/ "
     f"(REPORT_PROVISIONAL.md §2–4, summary/ and mouse{{1,2}}/summary/). Every plotted value: results/figures/manuscript/{NAME}*.tsv."
 )
 fig.text(LEFT, 0.140, textwrap.fill(footer, 166), ha="left", va="top", fontsize=5.3, color=MUTED, linespacing=1.38)
@@ -603,12 +666,14 @@ for ext in ("png", "pdf"):
 
 # --- reference lines: every number that appears only in the title or footer -----------
 ref = [
-    dict(item="claim_sentence_source", value="manuscript/18_spermatogenesis_final.md", source="verified FIXED 2026-08-21; the figure states this claim and no stronger one"),
-    dict(item="code_frozen_tree", value=CODE, source="REPORT_PROVISIONAL.md §0 (commit 4efeb1252e6d7c7d51b252b443b5be5947ae000f)"),
-    dict(item="binomial_p_excess_mouse1", value=BINOM_P["mouse1"], source="manuscript/18 (shortening-vs-lengthening excess, 489 vs 325)"),
-    dict(item="binomial_p_excess_mouse2", value=BINOM_P["mouse2"], source="manuscript/18 (361 vs 296)"),
+    dict(item="claim_sentence_source", value="manuscript/18_spermatogenesis_final.md", source=f"{V['record_note']}; the figure states this claim and no stronger one"),
+    dict(item="code_frozen_tree", value=CODE, source=f"REPORT_PROVISIONAL.md §0 (commit {V['commit_full']})"),
+    dict(item="binomial_p_excess_mouse1", value=BINOM_P["mouse1"],
+         source=f"manuscript/18 (shortening-vs-lengthening excess, {int(EXC.loc['mouse1', 'n_monotone_shortening'])} vs {int(EXC.loc['mouse1', 'n_monotone_lengthening'])})"),
+    dict(item="binomial_p_excess_mouse2", value=BINOM_P["mouse2"],
+         source=f"manuscript/18 ({int(EXC.loc['mouse2', 'n_monotone_shortening'])} vs {int(EXC.loc['mouse2', 'n_monotone_lengthening'])})"),
     dict(item="null_draws_reaching_mouse2_excess", value=f"{int(EXC.loc['mouse2', 'n_null_draws_abs_ge_true'])}/{int(EXC.loc['mouse2', 'n_null_draws'])}",
-         source="computed here from mouse2/summary/pdui_null_shuffles.tsv (|short-long| over 20 fixed + 20 free-guard draws); reproduces 18's '1/40'"),
+         source=f"computed here from mouse2/summary/pdui_null_shuffles.tsv (|short-long| over 20 fixed + 20 free-guard draws); reproduces 18's '{V['expect_m2_null_draws_ge_excess']}/40'"),
     dict(item="median_pdui_mouse1_SPC_RS_ES", value="/".join(f"{S['mouse1']['true_3stage_pseudobulk']['median_pdui'][s]:.4f}" for s in STAGES),
          source="mouse1/summary/pdui_summary.json (NOT monotone: RS > SPC)"),
     dict(item="median_pdui_mouse2_SPC_RS_ES", value="/".join(f"{S['mouse2']['true_3stage_pseudobulk']['median_pdui'][s]:.4f}" for s in STAGES),
@@ -626,12 +691,12 @@ ref = [
     dict(item="switch_null_bh_families_with_a_hit", value=f"0/{SW_NULL_FAM}", source="summary/switch_null_summary.tsv (null_q05_total and null_runs_with_hit both 0)"),
     dict(item="replicate_pearson_r", value=round(float(grep_["replicate_pearson_r"]), 4), source="summary/gene_replication_summary.json"),
     dict(item="binom_p_both_shorten_vs_both_lengthen", value=round(float(grep_["binom_p_shorten_vs_lengthen"]), 5),
-         source="summary/gene_replication_summary.json (338 vs 278; per-gene reproducibility and net shortening are different claims)"),
+         source=f"summary/gene_replication_summary.json ({grep_['both_shorten']} vs {grep_['both_lengthen']}; per-gene reproducibility and net shortening are different claims)"),
     dict(item="genes_monotone_shortening_in_both_mice", value=f"{grep_['n_monotone_shortening_in_both']} ({grep_['frac_monotone_shortening_in_both']:.3f})",
-         source="summary/gene_replication_summary.json (expected under independence 0.095)"),
+         source=f"summary/gene_replication_summary.json (expected under independence {float(grep_['expected_frac_mono_both_if_independent']):.3f})"),
     dict(item="label_agreement_gex_vs_pas_clusters", value="0.9878 / 0.9877", source="REPORT_PROVISIONAL.md §0 (3-stage set)"),
-    dict(item="protamine_share_of_guarded_ES_umis", value="~26%", source="manuscript/18 and REPORT_PROVISIONAL.md caveat 8 (Prm2 + Prm1, mouse1 ES)"),
-    dict(item="v2_rerun_pending", value="PRs #96 (IP-filter/strand) and #97", source="REPORT_PROVISIONAL.md status line; manuscript/18 header"),
+    dict(item="protamine_share_of_guarded_ES_umis", value=V["prm_share_text"], source="manuscript/18 and REPORT_PROVISIONAL.md caveat 8 (Prm2 + Prm1)"),
+    dict(item=V["v2_pending_ref"][0], value=V["v2_pending_ref"][1], source=V["v2_pending_ref"][2]),
 ]
 pd.DataFrame(ref).to_csv(f"{TSVDIR}/{NAME}_reference_lines.tsv", sep="\t", index=False)
 
@@ -654,13 +719,13 @@ print(f"VERDICT: monotone shortening {m1s['true_frac']:.3f} (z {m1s['z_vs_null_f
       f"{cliff('mouse2', 'SPC', 'ES'):.3f}; cross-mouse rho {RHO:.3f} (n {RHO_N})")
 
 # ---------------------------------------------------------------------------
-# sidecar caption -- script-written as of the 2026-09-02 rename pass (the
-# figure convention requires the script, never a hand edit, to own the
-# caption; the text below is the verified 2026-08-21 caption, stems
-# renumbered, content unchanged).  Regenerate the numbers in it only
-# together with the v2 re-run of results/stage3_spermatogenesis_final.
+# sidecar caption -- script-written (the figure convention requires the
+# script, never a hand edit, to own the caption).  Version-selected: the v1
+# text is the verified 2026-08-21 caption kept verbatim, so
+# SPERMATOGENESIS_VERSION=v1 reproduces the v1 sidecar; the v2 text is the
+# verified 2026-09-02 record (manuscript/18 v2 section).
 # ---------------------------------------------------------------------------
-CAPTION_MD = r"""# Fig 5 — `fig5_spermatogenesis` caption (generated by `scripts/manuscript_figures/fig5_spermatogenesis.py`; renamed 2026-09-02, see FIGURE_MAP.tsv)
+CAPTION_V1 = r"""# Fig 5 — `fig5_spermatogenesis` caption (generated by `scripts/manuscript_figures/fig5_spermatogenesis.py`; renamed 2026-09-02, see FIGURE_MAP.tsv)
 
 Fig 5 | **Per-gene 3′UTR usage shifts progressively proximal along spermatocyte → round → elongating spermatid, in both mice.** GSE104556 testis, both mice, PeakATail final caller (frozen tree `4efeb125`); stage labels are marker-panel argmax over leiden clusters of the STARsolo **gene-expression** matrix, joined to the PAS matrix by exact cell-barcode match (1,294 / 1,364 labelled cells; 98.8% agreement with the independent PAS-clustering labels). PDUI = distal / (proximal + distal), higher = longer 3′UTR; proximal/distal = first/last PAS of the gene in transcription order, strand taken from `pasbed.bed` and re-asserted per row (this is the strand/counts re-validation of 13 §2, which the `per_gene` path **passes**). The per-gene statistic is the **pseudobulk PDUI per stage** over genes with ≥ 50 UMI at the PAS pair in **every** stage (1,553 / 1,194 genes of ~10,400 with a pair). **31.5% and 30.2%** of guarded genes shorten monotonically across SPC > RS > ES (**489 / 1,553** and **361 / 1,194**) against label-shuffle nulls of **17.5% and 21.0%** (z = **10.5** and **5.8**, 20 shuffles, one label per cell, composition preserved), exceeding monotone lengthening (489 vs 325 and 361 vs 296 genes), and the composition-controlled per-cell distal-usage residual falls at every step (Cliff's δ SPC vs ES = **0.56** and **0.61**, outside the entire 20-shuffle null range in both mice). The claim is a **per-gene, equal-weight** statement: the per-gene medians are not monotone and the across-gene UMI-weighted distal index reverses at RS → ES (panel d). Every plotted value: `results/figures/manuscript/fig5_spermatogenesis*.tsv`.
 
@@ -795,6 +860,151 @@ statistic is the **20-shuffle** column
 outside the entire null range ([−0.114, +0.097] and [−0.066, +0.071]), which is what the figure states.
 The Mann–Whitney p for the same comparison is 3.0e-39 / 2.6e-34, but it treats cells as independent.
 """
+
+CAPTION_V2 = r"""# Fig 5 — `fig5_spermatogenesis` caption (generated by `scripts/manuscript_figures/fig5_spermatogenesis.py`; v2 record, verified SOUND 2026-09-02 — manuscript/18 v2 section)
+
+Fig 5 | **Per-gene 3′UTR usage shifts progressively proximal along spermatocyte → round → elongating spermatid, in both mice.** GSE104556 testis, both mice, PeakATail merged caller (frozen tree `9dfdefb3`, PR #96 IP-filter/strand + PR #97; the v1-code render on `4efeb125` stays reproducible via `SPERMATOGENESIS_VERSION=v1` and is retained in 18 as the labelled comparison); stage labels are marker-panel argmax over leiden clusters of the STARsolo **gene-expression** matrix, byte-identical to the v1 run, joined to the PAS matrix by exact cell-barcode match (1,294 / 1,364 labelled cells; 98.8% agreement with the independent PAS-clustering labels). PDUI = distal / (proximal + distal), higher = longer 3′UTR; proximal/distal = first/last PAS of the gene in transcription order, strand taken from `pasbed.bed` and re-asserted per row (the strand/counts re-validation of 13 §2, which the `per_gene` path **passes on the merged code**). The per-gene statistic is the **pseudobulk PDUI per stage** over genes with ≥ 50 UMI at the PAS pair in **every** stage (1,548 / 1,200 genes of ~10,500 with a pair). **31.4% and 30.5%** of guarded genes shorten monotonically across SPC > RS > ES (**486 / 1,548** and **366 / 1,200**) against label-shuffle nulls of **17.4% and 21.0%** (z = **10.5** and **6.4**, 20 shuffles, one label per cell, composition preserved), exceeding monotone lengthening (486 vs 318 and 366 vs 291 genes), and the composition-controlled per-cell distal-usage residual falls at every step (Cliff's δ SPC vs ES = **0.55** and **0.63**, outside the entire 20-shuffle null range in both mice). The claim is a **per-gene, equal-weight** statement: the per-gene medians are not monotone and the across-gene UMI-weighted distal index reverses at RS → ES (panel d). Every plotted value: `results/figures/manuscript/fig5_spermatogenesis*.tsv`.
+
+**Panel a (the claim carrier)** — fraction of depth-guarded genes strictly monotone across the three
+stages, per mouse and per direction, with the 20 label-shuffle draws as grey dots (fixed TRUE gene set;
+bar = null mean) and the TRUE value as a filled marker (● mouse 1, ■ mouse 2): shortening 0.314 vs
+0.174 ± 0.013 (z 10.5, 1.80×) and 0.305 vs 0.210 ± 0.015 (z 6.4, 1.45×); lengthening 0.205 vs
+0.177 ± 0.010 (z 2.8, 1.16×) and 0.242 vs 0.204 ± 0.019 (z 2.1, 1.19×). Dotted line = 1/6, the chance
+rate for a random ordering of three stages. The bracket carries the direction-specific evidence: the
+**excess** of shortening over lengthening (486 vs 318, binomial p 3.4e-9; 366 vs 291, p 0.0039).
+**Panel b** — the composition-controlled per-cell index: for each cell, the mean over genes of
+(per-cell PDUI − that gene's 3-stage pseudobulk PDUI), which removes the gene-composition confound
+(the median cell carries 292.5 / 326 / 119 genes over SPC / RS / ES in mouse 1, so raw per-cell
+medians are not comparable across stages). Medians fall at every step in both mice
+(+0.0018 → −0.0036 → −0.0114 and +0.0031 → −0.0014 → −0.0081); Cliff's δ SPC vs RS 0.26 / 0.32,
+RS vs ES 0.41 / 0.46, SPC vs ES 0.55 / 0.63 against 20-shuffle null ranges of [−0.10, +0.11] and
+[−0.08, +0.07]. **Panel c** — reliability payload. Left: PAS called switching at q < 0.05 in **both**
+mice with the same sign of Δ proportion (arm B0: `fisher --count-mode cells --marker-top-n 0`), per
+stage pair — 11,219 / 6,070 / 9,480 of 36,840 / 35,668 / 35,382 coordinate-matched PAS (gene + strand,
+≤ 100 bp, greedy 1:1), sign agreement 99.7–99.8%, 3.25–5.05× the independence expectation (hollow bars;
+the 10-draw PAS-shuffle mean agrees with the analytic value to within 0.8%), and **0 replicated in all 15 null
+pairings** (▼). TRUE switch hits over the three pairs: 50,354 / 52,111; label-shuffle null 3.2% / 3.2%
+at p < 0.05 with **0 q < 0.05 hits in all 30 null BH families**. Right: the per-gene effect
+Δ PDUI (ES − SPC) in mouse 1 vs mouse 2 over the 923 genes guarded in both — Spearman ρ = **0.641**
+(Pearson r = 0.842) against a gene-correspondence null of 0.004 ± 0.033 (200 permutations, max |ρ|
+0.088; strip below the scatter). 339 genes (36.7%) shorten in both mice, 273 (29.6%) lengthen in both,
+253 are strictly discordant, 58 have Δ exactly 0 in one mouse. **Panel d (boxed — NEGATIVE findings,
+not claim carriers)** — left: the **across-gene UMI-weighted** per-cell distal index rises at RS → ES
+in both mice (0.587 → 0.572 → 0.627 and 0.640 → 0.636 → 0.672; Cliff δ RS vs ES −0.93 / −0.87), because
+protamine transcripts alone carry 25.2% (mouse 1) / 14.5% (mouse 2) of the guarded ES UMIs at ceiling
+PDUI. Right: of the 16 genes of the 27-gene curated literature panel measurable in both mice, only
+**4 shorten in both** (Prm3, Ybx2, Ppp1cc, Nsun7), **5 lengthen in both** (Prm1, Tnp2, Odf1, Spata19,
+Smcp), 5 are discordant and 2 uninformative — the identical classification to v1.
+
+**Must travel with it.**
+- **Monotone LENGTHENING is also above its null** (z 2.8 / 2.1). The label shuffle destroys ordered
+  structure of *either* sign, so "above null" alone is not directional evidence; the direction-specific
+  claim rests on the **excess** of shortening over lengthening — strong in mouse 1 (binomial p 3.4e-9),
+  weaker in mouse 2 though clearer than on v1 (p 0.0039; 0 of 40 null draws — 20 fixed-gene-set +
+  20 free-guard — reached the excess in absolute value, where v1 had 1 of 40). Never write "shortening
+  is above null" without the lengthening column.
+- **The per-gene MEDIANS are not monotone**: RS sits marginally above SPC in both mice
+  (0.7953 → 0.8014 → 0.7364 and 0.8787 → 0.8874 → 0.8813), and in mouse 2 the ES median sits marginally
+  above SPC. The means *are* monotone (0.595/0.578/0.558 and 0.634/0.619/0.602). The ordering is
+  carried by the monotone fraction (panel a), the paired per-gene tests and the per-cell residual
+  (panel b) — never quote the medians as the gradient.
+- **The statistic is the depth-weighted pseudobulk per-gene PDUI**, and that choice must be stated
+  wherever these numbers are used. The cell-weighted arm (per-gene median of per-cell PDUI) is
+  **unusable at this depth**: the guard leaves 215 / 194 genes and every median delta is 0.0 to 5 dp
+  (v2 REPORT_PROVISIONAL §2.3b; its SPC→RS rank-biserial even flips sign vs v1 at trivial magnitude,
+  disclosed in 18's v2 section).
+- **Wilcoxon p-values are quoted only next to their shuffle-null column** and are therefore not on the
+  figure. On the fixed TRUE gene set the best (smallest) of the 20 shuffle p-values reaches 2.6e-4
+  (mouse 1 SPC→ES) and 1.4e-4 (mouse 2 SPC→ES), so a bare Wilcoxon p from this design is not
+  interpretable on its own.
+- **SPG is excluded from the claim** (manuscript/11): SPG → SPC *lengthens* under exactly the
+  marker-argmax labelling used here, and rests on 64 / 68 cells. All 4-stage numbers are supplementary
+  (mouse 1's supplementary SPG→SPC Wilcoxon crosses 0.05 on v2 — 0.0509 vs v1's 0.0354 — disclosed in
+  18's v2 section; it touches nothing in the claim).
+- **Gene-level and UMI-weighted summaries disagree in direction** (panel d, left) and both framings must
+  appear wherever these data are used. This `wdi` is **not** the `wdi` of manuscript/11 (documented name
+  collision): 11's is equal-weight per gene over all PAS, this one pools UMIs *across* genes on the
+  proximal/distal endpoint pair only. The discrepancy is reproduced on the merged code, **not resolved**.
+  Fig 5 must not use across-gene UMI weighting.
+- **The literature-gene leg is dropped or shown with these numbers.** The quarantined "6/6 literature
+  genes in the expected direction" was computed on a different index over a different gene set, so it is
+  not a straight contradiction — but this panel is not a positive control, and Prm1 / Prm2 / Tnp1 / Tnp2
+  sit at |Δ| < 0.003 because their PDUI is at ceiling in the stages where they are expressed.
+- **Per-gene reproducibility and net shortening are different claims** and must not be conflated: the
+  cross-mouse effect correlation is strong (ρ 0.64 / r 0.84, null 0.00 ± 0.03) and monotone shortening
+  co-occurs in both mice in 165 genes (17.9%) against 9.5% expected under independence, while the
+  aggregate sign-level bias is weak (339 both-shorten vs 273 both-lengthen, binomial p 0.0085).
+- **"Replication" here is two mice of one study** (GSE104556), one protocol, one chemistry: it controls
+  animal-level and sampling noise, not study- or protocol-level artefacts. Labels are argmax GEX labels,
+  not ground truth — cluster-level misassignment moves whole blocks of cells.
+- **The switch test's null is conservative, not exact** (manuscript/14; Fisher discreteness puts a large
+  fraction of p-values at exactly 1), so the TRUE hit counts are **not** to be read as "N true switches";
+  only 5 label shuffles per mouse there (20 for the PDUI arm; pooled null p<0.05 3.169% / 3.156%).
+  Cross-mouse PAS matching is coordinate-based, so only the matched subset (~60% of tested PAS) can
+  replicate — the denominator is on the figure.
+- **The ≥ 50-UMI depth guard** keeps 1,548 / 1,200 of ~10,500 genes with a PAS pair; the surviving set is
+  biased toward highly expressed genes. The shuffle null is computed on the *same* guarded set, so the
+  comparison is internally valid, but the gene set is not a random sample of the transcriptome.
+- **This is the record.** Code is the frozen merged tree `9dfdefb3`; every headline was recounted to the
+  digit by an adversarial verifier from the raw v2 outputs (18's v2 section, verdict SOUND, 2026-09-02).
+  The only v1→v2 input change is 100% minus-strand pasbed churn (m1 −1,505/+1,248, m2 −1,302/+1,279,
+  zero plus-strand changes) — the #96 footprint — and no headline moved beyond the small,
+  churn-consistent tier.
+- Not covered by this run and therefore not on the figure: the `wul` vs `wdi` reconciliation, the
+  feature-class decomposition, a 200-permutation null for the PDUI arm, and the 3′UTR-scoped PDUI arm —
+  the last still cannot be produced (issue #98 reproduces bit-for-bit on the merged code: `per_isoform`
+  emits degenerate proximal == distal pairs on both mice, same offending-row counts as v1).
+
+**Index entry (for `manuscript/05_figure_index.md`).**
+
+> ## fig5_spermatogenesis — Fig 5, testis 3′-UTR control on the merged caller (v2 record, verified SOUND 2026-09-02)
+>
+> (a) the claim carrier: 31.4% / 30.5% of depth-guarded genes shorten monotonically across SPC > RS > ES
+> against 20-shuffle label nulls of 17.4% / 21.0% (z 10.5 / 6.4), with monotone lengthening shown
+> alongside (0.205 / 0.242, z 2.8 / 2.1) because the shuffle destroys ordered structure of either sign —
+> the direction-specific evidence is the **excess** (486 vs 318, p 3.4e-9; 366 vs 291, p 0.0039, 0/40
+> null draws); (b) the composition-controlled per-cell distal-usage residual falls at every step in both
+> mice (Cliff's δ SPC vs ES 0.55 / 0.63, outside the whole 20-shuffle null range); (c) reliability
+> payload — 11,219 / 6,070 / 9,480 PAS replicate across mice with the same direction (99.7–99.8% sign
+> agreement, 3.25–5.05× over independence, **0 in all 15 null pairings**; arm B0 TRUE hits
+> 50,354 / 52,111, 0 hits in 30 null BH families) and the per-gene effect correlates across mice at
+> ρ 0.641 (n 923, null 0.004 ± 0.033); (d) boxed **negatives** — the across-gene UMI-weighted distal
+> index *reverses* at RS → ES (Cliff −0.93 / −0.87; protamine ceiling-PDUI UMIs dominate ES: 25.2% /
+> 14.5%) and the 16-gene literature panel does not reproduce (4 shorten / 5 lengthen / 5 discordant /
+> 2 uninformative — identical to v1). **Caveats that travel with it:** lengthening is also above null,
+> so quote the excess, not "above null"; per-gene medians are **not** monotone and must never be quoted
+> as the gradient; the statistic is depth-weighted pseudobulk PDUI (the cell-weighted arm is unusable at
+> this depth); SPG excluded (it lengthens under these labels); two mice of one study with argmax GEX
+> labels; switch null conservative, not exact; issue #98 still blocks the 3′UTR-scoped arm. **v2 record
+> on frozen merged code `9dfdefb3`, verified SOUND 2026-09-02** (18's v2 section; v1 render 4efeb125
+> reproducible via `SPERMATOGENESIS_VERSION=v1`). Caption: `figures/fig5_spermatogenesis.caption.md`;
+> write-up [18_spermatogenesis_final.md](18_spermatogenesis_final.md).
+
+**`figures/README.md` table row.**
+
+> \| `fig5_spermatogenesis` \| Fig 5a–c: per-gene 3′UTR shortening along SPC → RS → ES in both testis mice — 31.4% / 30.5% of depth-guarded genes monotone vs 17.4% / 21.0% label-shuffle null (z 10.5 / 6.4); cross-mouse ρ 0.641; UMI-weighted index and literature panel reported as negatives (v2 record, code 9dfdefb3) \|
+
+Sources: `manuscript/18_spermatogenesis_final.md` **v2 section** (verdict **SOUND**, 2026-09-02 — the
+figure states that claim and no stronger one; the v1 body is the labelled comparison) and
+`results/stage3_spermatogenesis_v2/` — `REPORT_PROVISIONAL.md` §0–§8,
+`mouse{1,2}/summary/pdui_summary.json`, `mouse{1,2}/summary/pdui_null_shuffles.tsv`,
+`mouse{1,2}/summary/pdui_per_cell.tsv`, `summary/switch_cross_mouse_replication.tsv`,
+`summary/switch_null_summary.tsv`, `summary/gene_cross_mouse_delta.tsv`,
+`summary/gene_replication_summary.json`, `summary/gene_literature_panel.tsv`. Audit TSVs (every
+plotted value):
+`results/figures/manuscript/fig5_spermatogenesis{,_null_shuffles,_percell_resid,_percell_values,_replication,_gene_scatter,_negatives,_reference_lines}.tsv`.
+Palette: Okabe-Ito (#0072B2 #009E73 #D55E00 #CC79A7 #E69F00 #56B4E9 #999999); every series also carries a
+marker or fill style, so nothing depends on hue alone. PNG 300 dpi, PDF vector with subsetted TrueType
+(fonttype 42, no Type 3).
+
+**Note for whoever quotes the residual test.** The on-disk null for the per-cell residual Cliff's δ is
+the **20-shuffle** column `cell_cliffs_resid_SPC_ES`, whose empirical p floor is 1/21 ≈ 0.048; the
+observed δ (0.554 / 0.632) lies outside the entire null range ([−0.100, +0.108] and [−0.078, +0.073]),
+which is what the figure states. The Mann–Whitney p for the same comparison is 3.3e-38 / 5.6e-37, but
+it treats cells as independent.
+"""
+
+CAPTION_MD = CAPTION_V1 if VERSION == "v1" else CAPTION_V2
 with open(f"{FIGDIR}/{NAME}.caption.md", "w") as fh:
     fh.write(CAPTION_MD)
-print("wrote", f"{FIGDIR}/{NAME}.caption.md")
+print("wrote", f"{FIGDIR}/{NAME}.caption.md", f"({VERSION})")

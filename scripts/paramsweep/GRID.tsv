@@ -1,0 +1,39 @@
+#label	species	block	extra_flags
+pbmc_I_lfc1.2	human	I	--lambda-fold-change 1.2
+pbmc_I_gap25	human	I	--pas-gap 25
+pbmc_I_prom1	human	I	--min-pas-prominence 1.0
+pbmc_A_mp10	human	AD	--max-pas 10
+pbmc_A_mp20	human	AD	--max-pas 20
+pbmc_A_mp100	human	AD	--max-pas 100
+pbmc_D_dyn_lfc2.0	human	AD	--dynamic-threshold --lambda-fold-change 2.0
+pbmc_D_dyn_lfc1.2	human	AD	--dynamic-threshold --lambda-fold-change 1.2
+pbmc_AD_mp20_dyn1.2	human	AD	--max-pas 20 --dynamic-threshold --lambda-fold-change 1.2
+pbmc_AD_mp100_dyn1.2	human	AD	--max-pas 100 --dynamic-threshold --lambda-fold-change 1.2
+pbmc_B_auto	human	B	--auto-cleavage-offset
+pbmc_B_off90	human	B	--cleavage-offset 90
+pbmc_B_off95	human	B	--cleavage-offset 95
+pbmc_B_off100	human	B	--cleavage-offset 100
+pbmc_B_off105	human	B	--cleavage-offset 105
+pbmc_C_gap200	human	C	--pas-gap 200
+pbmc_C_spacing0	human	C	--min-pas-spacing 0
+pbmc_C_spacing25	human	C	--min-pas-spacing 25
+pbmc_C_seed10	human	C	--polya-seed-window 10
+pbmc_C_seed50	human	C	--polya-seed-window 50
+pbmc_S_cells1	human	S	--min-cells 1
+pbmc_S_read500	human	S	--min-read 500
+pbmc_S_pas10	human	S	--min-pas-per-cell 10
+pbmc_S_alloff	human	S	--min-read 0 --min-cells 1 --min-pas-per-cell 0
+m1_I_lfc1.2	mouse	I	--lambda-fold-change 1.2
+m1_A_mp10	mouse	AD	--max-pas 10
+m1_A_mp20	mouse	AD	--max-pas 20
+m1_A_mp100	mouse	AD	--max-pas 100
+m1_D_dyn_lfc1.2	mouse	AD	--dynamic-threshold --lambda-fold-change 1.2
+m1_AD_mp100_dyn1.2	mouse	AD	--max-pas 100 --dynamic-threshold --lambda-fold-change 1.2
+m1_B_auto	mouse	B	--auto-cleavage-offset
+m1_B_off95	mouse	B	--cleavage-offset 95
+m1_B_off105	mouse	B	--cleavage-offset 105
+m1_C_spacing0	mouse	C	--min-pas-spacing 0
+m1_C_seed10	mouse	C	--polya-seed-window 10
+m1_C_seed50	mouse	C	--polya-seed-window 50
+m1_S_cells1	mouse	S	--min-cells 1
+m1_S_alloff	mouse	S	--min-read 0 --min-cells 1 --min-pas-per-cell 0

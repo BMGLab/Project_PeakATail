@@ -104,18 +104,22 @@ only; KS rejects for every arm (discrete Fisher) and is not gated. Full write-up
 [14_switch_calibration_v2.md](14_switch_calibration_v2.md). Caption (script-written since the rename pass —
 previously the one asset without a sidecar): `figures/fig4_calibration.caption.md`.
 
-## Fig 5 — `fig5_spermatogenesis` — testis 3′-UTR control on the final caller (2026-08-21, verified FIXED; renamed from `spermatogenesis_final` 2026-09-02; **v1 record — regenerate on 9dfdefb before freeze**)
+## Fig 5 — `fig5_spermatogenesis` — testis 3′-UTR control on the merged caller (v2 record, verified SOUND 2026-09-02; renamed from `spermatogenesis_final` 2026-09-02; **submission-ready**)
 
-(a) the claim carrier: per-gene monotone-shortening fraction vs its 20-shuffle null in both mice (0.315 vs
-0.175, z 10.5; 0.302 vs 0.210, z 5.8), with monotone lengthening shown alongside and the shortening excess
-(binomial p 9.9e-9 / 0.0125); (b) composition-controlled per-cell distal-usage residual falls at every stage
-step (Cliff's δ SPC vs ES 0.56 / 0.61, outside the whole shuffle-null range); (c) cross-mouse replication:
-6.0–11.3k same-direction replicated PAS per pair at 99.7–99.8% sign agreement, 0 in all 15 null pairings,
-per-gene effect ρ 0.655 (n 917) vs a 200-permutation null; (d) boxed negatives — the across-gene UMI-weighted
-index reverses at RS→ES (protamine ceiling-PDUI UMIs) and the 16-gene literature panel does not reproduce
-(4 shorten / 5 lengthen / 5 discordant / 2 uninformative). **Caveats that travel with it:** per-gene
-equal-weight claim only (medians not monotone); mouse-2 direction excess modest; SPG excluded; two mice of
-one study; PROVISIONAL — v2 re-run at 9dfdefb regenerates it. Caption: `figures/fig5_spermatogenesis.caption.md`;
+(a) the claim carrier: per-gene monotone-shortening fraction vs its 20-shuffle null in both mice (0.314 vs
+0.174, z 10.5; 0.305 vs 0.210, z 6.4), with monotone lengthening shown alongside and the shortening excess
+(486 vs 318, binomial p 3.4e-9; 366 vs 291, p 0.0039, 0/40 null draws); (b) composition-controlled per-cell
+distal-usage residual falls at every stage step (Cliff's δ SPC vs ES 0.55 / 0.63, outside the whole
+shuffle-null range); (c) cross-mouse replication: 6.1–11.2k same-direction replicated PAS per pair at
+99.7–99.8% sign agreement, 0 in all 15 null pairings, per-gene effect ρ 0.641 (n 923) vs a 200-permutation
+null; (d) boxed negatives — the across-gene UMI-weighted index reverses at RS→ES (protamine ceiling-PDUI
+UMIs, 25.2% / 14.5% of guarded ES UMI) and the 16-gene literature panel does not reproduce (4 shorten /
+5 lengthen / 5 discordant / 2 uninformative, identical to v1). **Caveats that travel with it:** per-gene
+equal-weight claim only (medians not monotone); mouse-2 direction excess weaker (though clearer than v1);
+SPG excluded; two mice of one study; issue #98 still blocks the 3′UTR-scoped arm. **v2 record on frozen
+merged code `9dfdefb3`, adversarially verified to the digit** (18's v2 section; the v1-code render
+`4efeb125` stays reproducible via `SPERMATOGENESIS_VERSION=v1` and is retained in 18 as the labelled
+comparison). Caption: `figures/fig5_spermatogenesis.caption.md`;
 write-up [18_spermatogenesis_final.md](18_spermatogenesis_final.md).
 
 ## Fig 6 — `fig6_cohort` — reliable cell-type APA switches in a tumour cohort (2026-08-22, verified SOUND in 20; renamed from `laughney_switches` 2026-09-02)
@@ -145,39 +149,65 @@ Full caption: `figures/fig6_cohort.caption.md`; write-up [20_stage3_replication.
 # Supplementary figures
 
 Ordered by first citation: S1–S7 support Figs 1–2 and the negative result, S8 supports Fig 3,
-S9 Fig 4, S10 R6's dropped claim, S11–S12 the audit trail. "TO BUILD" and "REBUILD" statuses,
-sources and blockers are normative in `figures/FIGURES_MANIFEST.md`.
+S9 Fig 4, S10 R6's dropped claim, S11–S12 the audit trail. Statuses, sources and blockers are
+normative in `figures/FIGURES_MANIFEST.md`. 2026-09-02: the eight missing supplements (S1–S4,
+S8–S11) were built and adversarially verified the same day (cold re-runs byte-identical, ≥4
+values per figure traced to the verified documents, PDFs Type-3-free, captions script-written
+— see the manifest's verification-pass note); S5 and S6 are KEPT pending with their unblocking
+runs named, so the S1–S12 numbering is unchanged and gapless.
 
-## Fig S1 — `figS1_datasets` — TO BUILD (NEW script; replaces retired `cohort_qc`)
+## Fig S1 — `figS1_datasets` — BUILT 2026-09-02, verified same day (replaces retired `cohort_qc`)
 
 Dataset table made visual incl. per-BAM poly(A) clip rate, with the corrected 0.573%
-genome-wide clip rate (23 §2). Sources: v2 run_config/run_manifest JSONs, cohort manifest,
-04, 10 §R2. Cited from Methods/R1. The surviving `cohort_qc` caveats (RETIRED §R1 below)
-transfer to this figure's scope.
+genome-wide clip rate (23 §2; 1.152% drawn only as the SUPERSEDED reference). Sources: v2
+run_config/run_manifest JSONs, cohort manifest, 04, 10 §R2, 26, 20. Cited from Methods/R1.
+The surviving `cohort_qc` caveats (RETIRED §R1 below) transfer to this figure's scope.
+Caveats that travel: unmeasured cells (testis clip rates, cohort clip rate/read counts) are
+em-dashes with reasons, never approximated; head-sample estimator values (2.2565% / 3.6965%)
+are comparable only to each other, never to the genome-wide 0.5730% bar (~4.2× head bias,
+23 §3). Caption: `figures/figS1_datasets.caption.md`.
 
-## Fig S2 — `figS2_peakqc` — TO BUILD (NEW script)
+## Fig S2 — `figS2_peakqc` — BUILT 2026-09-02, verified same day
 
 v2 peak-call QC: widths, per-gene PAS counts, tier composition, molecule-count distributions
-(arm always named — MUST-NOT-CLAIM 8), and the ~90–105 nt cleavage-offset analysis (07 §3;
-the `scripts/paramsweep/` offset-census scripts are a ready data source). Cited from R1.
+(arm always named — MUST-NOT-CLAIM 8: the IP arm's 72.2% single-molecule share and the no-IP
+arm's 72.1% are both drawn arm-named), and the ~90–105 nt cleavage-offset census (07 §3
+prediction; measured in the paramsweep lead-B census) with its boxed NEGATIVE disposition —
+after `--cleavage-offset 95`, tier-2 P@100 is 0.085 vs null 0.028 and the internal-priming
+decoy rate triples (0.020 → 0.065): correction FAILS every 28 §2 criterion, nothing adopted,
+the default arm is byte-identical across offset arms. Cited from R1. Caveat that travels:
+panels e–g cite `results/paramsweep/VERDICTS.md` §2–§3, self-marked provisional pending its
+own verifier (stated on-figure). Caption: `figures/figS2_peakqc.caption.md`.
 
-## Fig S3 — `figS3_nulldesign` — REBUILD of quarantined `null_control` (not yet executed)
+## Fig S3 — `figS3_nulldesign` — REBUILT 2026-09-02 (both mandatory preconditions met), verified same day
 
-Why the benchmark is built this way: point-vs-interval matching, match-class composition, and
-that the 18.4M-entry dump could not rank strategies (spread 0.004) where the curated
-reference can (0.355–0.492 — `benchmark_strategies`' one durable lesson, absorbed here). Two
-MANDATORY preconditions (21 §4.3-S4): (i) reconcile the two conflicting nulls (0.753 vs
-0.615) to the `score_tool.py` gene-body-shuffled null (gap 7); (ii) recompute all density
-figures on the curated PolyASite 2.0 point reference — the 23/33/45/61/73% and "every 168 bp"
-numbers are dump-derived and may not be carried over. Cited with Fig 2. Superseded record and
-its caveats: RETIRED §R5 (and §R4 for the strategies lesson).
+Why the benchmark is built this way: the dump regime could not rank strategies (0.996–1.000,
+spread <0.004, null floor 0.62–0.75) where the curated point reference can (0.355–0.492 over
+one reconciled null 0.020–0.024 — `benchmark_strategies`' one durable lesson, absorbed here);
+chance = local density of the curated reference (gene-body density@100 bp 0.0226 vs measured
+null mean 0.0219, ratio 0.97 — a consistency observation of the fresh recompute, labelled as
+such); one null across every verified score TSV, defaults 33–55× their own nulls. Both
+MANDATORY preconditions of 21 §4.3-S4 were met: (i) the 0.753-vs-0.615 conflict appears only
+as the RETIRED discrepancy over 07 §1's reconciled `score_tool.py` gene-body-shuffled null;
+(ii) every density was recomputed fresh on the curated PolyASite 2.0 point reference — no
+dump-derived density (23/33/45/61/73%, "every 168 bp") was carried over. Two sub-panels
+dropped with reasons in the caption sidecar (match-class composition: only verified record is
+dump-derived; interval-vs-point on curated: never run). Cited with Fig 2. Superseded record
+and its caveats: RETIRED §R5 (and §R4). Caption: `figures/figS3_nulldesign.caption.md`.
 
-## Fig S4 — `figS4_seconddonor` — TO BUILD (NEW script, small)
+## Fig S4 — `figS4_seconddonor` — BUILT 2026-09-02, verified same day
 
 The second-donor validation of 26: pbmc4k scored by the unchanged pre-registered default
-(gate PASS, P@100 0.8279; 4 libraries now) plus the cross-donor concordance panel (84.2%
-within 100 bp) — the human analogue of the cross-mouse reproducibility panel. Same scorer
-and nulls. Cited with Fig 2 (gap 8's citable asset).
+(gate PASS, P@100 0.8279, 38× its null; 4 libraries now) plus cross-donor concordance in BOTH
+directions (84.2% fwd at ~361× null; 39.9% rev against its 44.4% arithmetic ceiling — the
+asymmetry is call-count arithmetic, not disagreement) — the human analogue of the cross-mouse
+reproducibility panel. Same scorer and nulls. Cited with Fig 2 (gap 8's citable asset).
+**Caveats that travel (mandatory):** the verifier's matched-N control is its own co-equal
+panel — every route to donor 2's call count puts donor 1 up-and-right (P@100 0.886–0.907),
+so donor 2's higher headline is an operating-point effect: precision GENERALISES, it does not
+improve; scope is a second library/chemistry/CellRanger version, only presumptively a second
+individual; recall is genuinely lower on donor 2 (R_det 0.1104 vs 0.1754). Caption:
+`figures/figS4_seconddonor.caption.md`.
 
 ## Fig S5 — `figS5_longread_rerank` — REBUILD of QUARANTINED `kinnex_truth_validation` (not yet executed)
 
@@ -185,14 +215,24 @@ Per-tool long-read re-ranking and the genuine / internal-priming / unsupported d
 (incl. the Sierra ~half-IP finding). Rebuild under 11's BINDING corrections: never "every
 stringency"; support is an alignment-record count, not de-duplicated UMIs — de-duplicate or
 relabel the axis. Numbers quarantined and unquotable until rebuilt (QUARANTINE NOTE, RETIRED
-block). Cited with Fig 2.
+block). Cited with Fig 2. **Disposition 2026-09-02 (adversarial verification pass): KEPT
+pending, slot retained** — blocker confirmed real (no de-duplicated truth-set support exists).
+Unblocking run: de-duplicate the Kinnex truth-set records (or relabel the support axis),
+re-score at ≥5/≥20 only, verify, then build. Its content (Sierra decomposition, per-tool ρ) is
+not carried by Fig 2/S7; 21 §S5 records it strengthens R3 without blocking submission — if
+still unbuilt at freeze, drop it then and renumber S6→S5 … S12→S10 in one pass.
 
 ## Fig S6 — `figS6_motif` — REBUILD of `motif_validation`, re-anchored on cleavage points — BLOCKED
 
 Hexamer at −40..−5 of the clip-seeded cleavage point (76.7%), A-fraction profile, hexamer
 adds +0.046 overall and nothing among atlas-novel sites. BLOCKED on gap 5: the
 shuffled-position null for the re-anchored window does not exist; without it the panel cannot
-ship. Cited with Fig 2. Superseded record and its caveats: RETIRED §R7.
+ship. Cited with Fig 2. Superseded record and its caveats: RETIRED §R7. **Disposition
+2026-09-02 (adversarial verification pass): KEPT pending, slot retained** — blocker confirmed
+real (no re-anchored shuffled-position null artefact exists under `results/`; 21 calls it
+cheap to compute). Unblocking run: the gap-5 null for the re-anchored −40..−5 window,
+verified, then the re-anchored rebuild. If still unbuilt at freeze, drop and renumber with
+S5's pass.
 
 ## Fig S7 — `figS7_novelfunnel` — pre-registered trusted-novel definition vs Kinnex (2026-08-21, verified FIXED; renamed from `trusted_novel_funnel` 2026-09-02; demoted from a main slot with prominence kept in R6/abstract/Author Summary)
 
@@ -207,35 +247,57 @@ and not a definition; single PBMC donor; the caller's IP rule is looser than Kin
 superseded by the fix). Caption: `figures/figS7_novelfunnel.caption.md`; write-up
 [19_final_gate_v2.md](19_final_gate_v2.md) §4 (v1 record: [16_trusted_novel_kinnex.md](16_trusted_novel_kinnex.md)).
 
-## Fig S8 — `figS8_compute` — TO BUILD (NEW script over existing verified TSVs)
+## Fig S8 — `figS8_compute` — BUILT 2026-09-02, verified same day
 
-Compute detail behind Fig 3d: 293.7 GB → 12.53 GB, 3:45:53 → 34:37 (concurrency disclosed —
-MUST-NOT-CLAIM 5), cohort 9:06:26 → 1:06:26 at identical output (505,197 unified PAS),
-competitor runtimes with retry/skip caveats. Sources: `fig3_tradeoff_compute.tsv` + 19 §3/§5.
-Cited with Fig 3.
+Compute detail behind Fig 3d: 293.7 GB → 12.53 GB (23.5×), 3:45:53 → 34:37 concurrent +
+27:43 uncontended (concurrency disclosed on-figure — MUST-NOT-CLAIM 5), cohort 9:06:26 →
+1:06:26 (8.2×) at identical output (505,197 unified PAS) plus both mouse arms, competitor
+runtimes with retry/skip caveats verbatim (scAPAtrap resumed-run understates from-scratch;
+scUTRquant sums two attempts; SCAPTURE prebuild untimed), the 150 GB stop-signal line (10 §5),
+and the where-the-memory-went panel (four dense float64 copies in clustering, 287.8 GB
+measured in isolation; fix byte-identical 18/18 — 15 §5 addendum). Sources:
+`fig3_tradeoff_compute.tsv` + 19 §3/§5 + 15 §5 + 10 §5. Cited with Fig 3. Caption:
+`figures/figS8_compute.caption.md`.
 
-## Fig S9 — `figS9_calibration_extended` — TO BUILD (NEW script over existing verified TSVs)
+## Fig S9 — `figS9_calibration_extended` — BUILT 2026-09-02, verified same day
 
-Per-stage-pair and per-stratum null rates (2.6–4.0%), permutation-calibrated q, reads-vs-cells
-count mode, the NB dispersion-floor diagnostic. Sources: `fig4_calibration_*.tsv` (verified) +
-14. Cited with Fig 4.
+Per-stage-pair null rates (B0 2.94–3.13%, 0/20 runs with a q hit — no pair drives any
+verdict), B0 per-expression-stratum rates, reads-vs-cells count mode (20.3/13.0/9.6/3.0%),
+permutation-calibrated q per arm (B0 q_perm adds hits: 66,630 vs 60,332 nominal), the NB
+dispersion-floor diagnostic (8.5% of C0 null tests at the 1e-4 floor carry 67% of false hits).
+Sources: `fig4_calibration_*.tsv` (verified) + 14 (SOUND) + `results/fdr_calibration_v2/`
+(read-only; no permutation re-run). Cited with Fig 4. **Caveat that travels:** the strata
+panel is a deterministic recomputation from the archived B0 null p-values under a declared
+binning (2.5–4.0%; 14's verified range is 2.6–4.0%, its exact bin edges were not persisted) —
+stated on-figure, in both captions and the strata TSV; the pooled rate matches 14's 3.03%
+exactly. Caption: `figures/figS9_calibration_extended.caption.md`.
 
-## Fig S10 — `figS10_clustering` — REBUILD of `clustering_concordance` WITH the ablation as a panel (not yet executed)
+## Fig S10 — `figS10_clustering` — REBUILT 2026-09-02 WITH the ablation as a co-equal panel, verified same day
 
 The dropped claim stated honestly: PAS-profile clustering recovers GEX types (PBMC AMI 0.708 /
-ARI 0.502; Laughney median AMI 0.662 / ARI 0.463, 17/17) AND collapsing 275,370 sites to
-14,891 gene totals gives AMI 0.698 — the site resolution adds nothing. The positive result
-without the ablation on the same axes must never ship. Absorbs the one durable finding of the
-retired `parameter_sweep` (Leiden resolution dominates cluster count, +112.5%). Cited from R6.
-Superseded record and its caveats: RETIRED §R2.
+ARI 0.502; Laughney median AMI 0.6616 / ARI 0.4627, 17/17) AND collapsing 275,370 sites to
+14,891 gene totals gives AMI 0.6978 (Δ +0.010) — the site resolution adds nothing; both on
+ONE shared AMI axis, satisfying the mandatory condition (the positive result without the
+ablation on the same axes must never ship). Absorbs the one durable finding of the retired
+`parameter_sweep` (Leiden resolution dominates cluster count, +112.5%; VERDICTS §1's
+inert-prominence label carried in the caption). Caveats that travel: reference partition is
+marker-derived, not curated truth (stated on-figure); the mis-keyed isoform-only USAGE spaces
+are excluded and the ablation verdict does not depend on them (01 §S4). Cited from R6.
+Superseded record and its caveats: RETIRED §R2. Caption: `figures/figS10_clustering.caption.md`.
 
-## Fig S11 — `figS11_gatehistory` — TO BUILD (NEW script)
+## Fig S11 — `figS11_gatehistory` — BUILT 2026-09-02, verified same day
 
-The pre-registration timeline as a figure: original gate, stale Stage-2 failure, the disclosed
-post-hoc sweep, the default committed at `0e27b1a` 01:18:59, arms 02:59:36, v2 re-run 16:14,
-and every gate outcome on every arm (sources: 12 CORRECTION, 13, 15, 19; now also 24/26/27
-gates; table T3). Makes the pre-registration auditable rather than asserted. Cited from
-R2/R6 and Methods.
+The pre-registration timeline as a figure: original two-sided gate (10 §5), stale Stage-2
+failure + the disclosed post-hoc sweep (12 CORRECTION; drawn as disclosed, never as a result),
+the default committed at `0e27b1a` 01:18:59 with the arms 1:40:37 LATER, v1 and v2 runs
+(0.50 gate PASS ×3 each; the original 0.38 floor FAIL throughout on ≥1-mol output), prime
+prereg + Amendment 3 FAIL at Δ 0.000000 (an identity, not a regression), second-donor prereg
+→ PASS 0.8279, 27 PENDING — every gate outcome on every arm, table T3 drawn (sources: 12
+CORRECTION, 13, 15, 19, 24, 26, 27). Makes the pre-registration auditable rather than
+asserted. Cited from R2/R6 and Methods. Caveats that travel: docs 10/12/24/27 record dates
+without clock times — those markers sit at display positions flagged in the audit TSV;
+Stage-2 values are citations from 12 (call sets superseded), all other gate values re-read
+programmatically from surviving score TSVs. Caption: `figures/figS11_gatehistory.caption.md`.
 
 ## Fig S12 — `figS12_versions` — the four-way version comparison: shipped → v1 → v2 → prime (2026-08-22; renamed from `version_progression` 2026-09-02; prime EXPLORATORY, unmerged)
 

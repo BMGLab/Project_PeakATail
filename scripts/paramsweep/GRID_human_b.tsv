@@ -1,0 +1,12 @@
+pbmc_B_off95	human	B	--cleavage-offset 95
+pbmc_B_off100	human	B	--cleavage-offset 100
+pbmc_B_off105	human	B	--cleavage-offset 105
+pbmc_C_gap200	human	C	--pas-gap 200
+pbmc_C_spacing0	human	C	--min-pas-spacing 0
+pbmc_C_spacing25	human	C	--min-pas-spacing 25
+pbmc_C_seed10	human	C	--polya-seed-window 10
+pbmc_C_seed50	human	C	--polya-seed-window 50
+pbmc_S_cells1	human	S	--min-cells 1
+pbmc_S_read500	human	S	--min-read 500
+pbmc_S_pas10	human	S	--min-pas-per-cell 10
+pbmc_S_alloff	human	S	--min-read 0 --min-cells 1 --min-pas-per-cell 0

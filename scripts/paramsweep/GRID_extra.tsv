@@ -1,0 +1,14 @@
+m1_ADC_mp20_nomerge	mouse	AD	--min-pas-spacing 0 --min-pas-prominence -1 --max-pas 20
+m1_A_mp1	mouse	AD	--max-pas 1
+m1_A_mp3	mouse	AD	--max-pas 3
+m1_A_prom0	mouse	AD	--min-prominence 0
+m1_A_prom0_mp20	mouse	AD	--min-prominence 0 --max-pas 20
+m1_C_nomerge	mouse	C	--min-pas-spacing 0 --min-pas-prominence -1
+m1_C_prom_off	mouse	C	--min-pas-prominence -1
+pbmc_ADC_mp20_nomerge	human	AD	--min-pas-spacing 0 --min-pas-prominence -1 --max-pas 20
+pbmc_A_mp1	human	AD	--max-pas 1
+pbmc_A_mp3	human	AD	--max-pas 3
+pbmc_A_prom0	human	AD	--min-prominence 0
+pbmc_A_prom0_mp20	human	AD	--min-prominence 0 --max-pas 20
+pbmc_C_nomerge	human	C	--min-pas-spacing 0 --min-pas-prominence -1
+pbmc_C_prom_off	human	C	--min-pas-prominence -1

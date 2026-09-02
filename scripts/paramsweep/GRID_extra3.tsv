@@ -1,0 +1,4 @@
+m1_A_prom0	mouse	AD	--min-prominence 0
+m1_A_prom0_mp20	mouse	AD	--min-prominence 0 --max-pas 20
+pbmc_A_prom0	human	AD	--min-prominence 0
+pbmc_A_prom0_mp20	human	AD	--min-prominence 0 --max-pas 20

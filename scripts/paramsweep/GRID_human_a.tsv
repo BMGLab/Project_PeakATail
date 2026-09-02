@@ -1,0 +1,12 @@
+pbmc_I_lfc1.2	human	I	--lambda-fold-change 1.2
+pbmc_I_gap25	human	I	--pas-gap 25
+pbmc_I_prom1	human	I	--min-pas-prominence 1.0
+pbmc_A_mp10	human	AD	--max-pas 10
+pbmc_A_mp20	human	AD	--max-pas 20
+pbmc_A_mp100	human	AD	--max-pas 100
+pbmc_D_dyn_lfc2.0	human	AD	--dynamic-threshold --lambda-fold-change 2.0
+pbmc_D_dyn_lfc1.2	human	AD	--dynamic-threshold --lambda-fold-change 1.2
+pbmc_AD_mp20_dyn1.2	human	AD	--max-pas 20 --dynamic-threshold --lambda-fold-change 1.2
+pbmc_AD_mp100_dyn1.2	human	AD	--max-pas 100 --dynamic-threshold --lambda-fold-change 1.2
+pbmc_B_auto	human	B	--auto-cleavage-offset
+pbmc_B_off90	human	B	--cleavage-offset 90

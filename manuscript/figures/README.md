@@ -20,24 +20,35 @@ must travel with each figure are in [`../05_figure_index.md`](../05_figure_index
 | 2 | `fig2_accuracy` | Final Stage-2 run vs competitors on PBMC and testis; precision default P@100 0.706/0.745/0.757 passes the pre-registered P ≥ 0.50 gate ×3; matched-N framing per 25 |
 | 3 | `fig3_tradeoff` | The reliability trade surface: molecule sweep P 0.706→0.941 vs R_det 0.175→0.083 (only ≥2 pre-registered), 10 bp window check, cross-mouse replicate agreement, compute 293.7 GB → 12.53 GB |
 | 4 | `fig4_calibration` | Only Fisher cells-mode without marker pre-selection controls FDR (3.0% null p<0.05, 0/20 null runs with hits); shipped defaults anti-conservative (20.3/13.0/24.7%) |
-| 5 | `fig5_spermatogenesis` | Testis control: per-gene monotone shortening above shuffle nulls in both mice; per-cell residual falls at every stage; 6–11.3k replicated PAS/pair, 0 in all 15 null pairings; negatives boxed. **v1 record — regenerate on 9dfdefb before freeze** |
+| 5 | `fig5_spermatogenesis` | Testis control: per-gene monotone shortening above shuffle nulls in both mice (31.4% / 30.5% vs 17.4% / 21.0%); per-cell residual falls at every stage; 6.1–11.2k replicated PAS/pair, 0 in all 15 null pairings; negatives boxed. **v2 record (merged code 9dfdefb3, verified SOUND 2026-09-02; `SPERMATOGENESIS_VERSION=v1` reproduces the v1 render)** |
 | 6 | `fig6_cohort` | Tumour-cohort application: Stage-3 v2 replication funnel, 0 replicated in each of 10 patient-wise label-shuffle nulls, effect floor, genomic-context honesty panel |
 
 ## Supplementary figures
 
-Built: `figS7_novelfunnel` (the pre-registered trusted-novel NEGATIVE result, 0.485 vs the
-0.70 target — demoted from a main slot, prominence kept in R6/abstract/Author Summary) and
-`figS12_versions` (the four-way version benchmark; everything prime is EXPLORATORY).
+Built and verified (the eight missing supplements were built 2026-09-02 and adversarially
+verified the same day — cold re-runs byte-identical, values traced to the verified documents,
+PDFs Type-3-free, captions script-written; see FIGURES_MANIFEST.md's verification-pass note
+for caveats per figure):
 
-To build / rebuild (see FIGURES_MANIFEST.md for sources, blockers and preconditions):
-`figS1_datasets` (NEW; replaces retired cohort_qc), `figS2_peakqc` (NEW),
-`figS3_nulldesign` (REBUILD of null_control on the curated PolyASite 2.0 point reference;
-dump-derived densities forbidden), `figS4_seconddonor` (NEW; 26's pbmc4k gate PASS 0.8279),
+| # | File | Shows |
+|---|---|---|
+| S1 | `figS1_datasets` | Dataset table made visual + per-BAM poly(A) clip rate (corrected 0.5730% genome-wide; 1.152% only as the SUPERSEDED reference; unmeasured cells are em-dashes) |
+| S2 | `figS2_peakqc` | v2 peak-call QC (tiers, widths, per-gene calls, molecule support — arm always named) + the tier-2 cleavage-offset census with its boxed NEGATIVE disposition (nothing adopted) |
+| S3 | `figS3_nulldesign` | Why the benchmark is built this way: dump vs curated regimes, chance = local reference density (ratio 0.97), one reconciled null everywhere (defaults 33–55× null) |
+| S4 | `figS4_seconddonor` | pbmc4k gate PASS 0.8279 (4 libraries), cross-donor concordance both directions, and the mandatory matched-N panel (precision generalises; it does not improve) |
+| S7 | `figS7_novelfunnel` | The pre-registered trusted-novel NEGATIVE result, 0.485 vs the 0.70 target — demoted from a main slot, prominence kept in R6/abstract/Author Summary |
+| S8 | `figS8_compute` | Compute detail behind Fig 3d: 293.7 GB → 12.53 GB, concurrency disclosed (MUST-NOT-CLAIM 5), cohort 8.2× at identical output, competitor retry/skip caveats verbatim |
+| S9 | `figS9_calibration_extended` | Calibration deep-dive behind Fig 4: per-pair/per-stratum null rates, reads-vs-cells, permutation-calibrated q, NB dispersion-floor diagnostic |
+| S10 | `figS10_clustering` | The dropped clustering claim stated honestly — gene-total ablation co-equal on the same AMI axis (site resolution adds nothing); Leiden +112.5% |
+| S11 | `figS11_gatehistory` | The pre-registration timeline + every gate outcome on every arm (table T3 drawn), incl. both FAILs and the untested pre-registration |
+| S12 | `figS12_versions` | The four-way version benchmark; everything prime is EXPLORATORY (Amendment 3: FAIL at Δ 0.000000 is an identity) |
+
+Pending (slots KEPT at the 2026-09-02 verification pass — blockers confirmed real, unblocking
+runs named in FIGURES_MANIFEST.md; numbering stays gapless because no slot was dropped):
 `figS5_longread_rerank` (REBUILD of quarantined kinnex_truth_validation under 11's binding
-corrections), `figS6_motif` (REBUILD, re-anchored; BLOCKED on gap 5),
-`figS8_compute` (NEW; over fig3_tradeoff_compute.tsv), `figS9_calibration_extended` (NEW; over
-fig4_calibration_*.tsv), `figS10_clustering` (REBUILD of clustering_concordance WITH the
-gene-level ablation on the same axes — mandatory), `figS11_gatehistory` (NEW).
+corrections; needs the truth-set support de-duplication first) and `figS6_motif` (REBUILD,
+re-anchored; BLOCKED on the gap-5 shuffled-position null). If either is still unbuilt at
+freeze, drop it then and renumber the downstream stems in one pass.
 
 ## Retired (kept on disk as the superseded record; do not regenerate, do not cite)
 
