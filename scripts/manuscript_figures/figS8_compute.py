@@ -62,7 +62,7 @@ import pandas as pd
 import re
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+from _pubstyle import PAL, TOOL_STYLE, TYPE, apply_rc, sentence_case   # shared publication style
 
 apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
 ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
@@ -82,14 +82,10 @@ OUTDIR.mkdir(parents=True, exist_ok=True)
 FIGDIR.mkdir(parents=True, exist_ok=True)
 
 INK, MUTED, GRID = "#1B2429", "#5A6B73", "#D8E0E3"
-COLOR = {  # Okabe-Ito, same tool assignment as Fig 2/3
-    "PeakATail":  "#0072B2",
-    "polyApipe":  "#D55E00",
-    "SCAPTURE":   "#009E73",
-    "Sierra":     "#CC79A7",
-    "scAPAtrap":  "#E69F00",
-    "scUTRquant": "#56B4E9",
-}
+# One tool identity across all 16 figures: read the colours from the shared module
+# rather than restating them here.  (Restating them is how this figure came to paint
+# scUTRquant light blue while Figs 2/3 painted it neutral grey -- judge finding 1.)
+COLOR = {tool: st["color"] for tool, st in TOOL_STYLE.items()}
 
 # ---------------------------------------------------------------------------
 # the verified compute registry (Fig 3d's source TSV)

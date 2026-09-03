@@ -1535,11 +1535,13 @@ else:
     axC.text(0.50, 0.598, sentence_case("The tail-like end is identical in both reads — "
                                         "the difference is in the genome"), fontsize=AN,
              color=INK, ha="center", va="center")
-    axC.text(0.50, 0.020, sentence_case(
-        "The A’s a read carries can come from the tail, or from an A-rich stretch the RNA "
-        "copied from the genome;\nPeakATail reads the genome at every called end and removes "
-        "the sites that sit on such a stretch"),
-        fontsize=AN, color=INK, ha="center", va="bottom", linespacing=1.55)
+    # The two-line explanatory note that used to close this panel is GONE from the image
+    # (judge finding 5): it was the panel's fourth callout, one over this style's limit of
+    # three, and it said in other words exactly what the Legend already says -- "An A-rich
+    # stretch encoded by the genome is copied into the RNA ... The genome tells the two
+    # apart, so PeakATail reads the 40 nt of genome sequence around every called end
+    # (offsets -9...+30) and removes calls that sit on a run of genomic A."  No-loss holds
+    # because the Legend is that sentence's home, and it is unchanged.
 
     axG2 = plain(axbox(ML, TOP_G2, CW, H_G2, "badge2"))
     sbadge(axG2, BADGES[1][1], BADGES[1][0])

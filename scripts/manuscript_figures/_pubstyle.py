@@ -56,3 +56,37 @@ def sentence_case(label: str) -> str:
         if ch.isalpha():
             return label[:i] + ch.upper() + label[i + 1:]
     return label
+
+
+def plain_log(ax, axis="y", compact=False):
+    """Label a log axis in plain text instead of matplotlib's 10^n mathtext.
+
+    Mathtext superscripts and subscripts are drawn at 0.7x the surrounding font
+    size, so a 6.5 pt tick label carries a 4.55 pt exponent -- below the 6 pt
+    print floor of DESIGN_DIRECTIVES.md item 1.  The per-script type guards
+    measure Text artists, not the glyph runs inside a mathtext string, so they
+    cannot see it (design-judge finding 3, 2026-09-03).  This keeps every tick
+    label at the tick size.
+
+    Ticks themselves are untouched (the LogLocator still chooses them): only the
+    label text changes.  `compact` switches thousands to the 10k / 1M form the
+    call-count axes already use; minor ticks stay unlabelled, as the default log
+    formatter leaves them on every axis this is applied to.
+    """
+    from matplotlib.ticker import FuncFormatter, NullFormatter
+
+    def fmt(v, _pos=None):
+        if v <= 0:
+            return ""
+        if compact and v >= 1e6:
+            return f"{v / 1e6:g}M"
+        if compact and v >= 1e3:
+            return f"{v / 1e3:g}k"
+        if v >= 1:
+            return f"{v:g}"
+        return f"{v:.10f}".rstrip("0")
+
+    a = ax.yaxis if axis == "y" else ax.xaxis
+    a.set_major_formatter(FuncFormatter(fmt))
+    a.set_minor_formatter(NullFormatter())
+    return ax

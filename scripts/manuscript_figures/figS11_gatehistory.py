@@ -239,8 +239,10 @@ axB = fig.add_subplot(gsB[0])
 axA.set_xlim(-0.05, 5.05)
 axA.set_ylim(-4.6, 4.6)
 axA.axis("off")
-axA.set_title(sc_title("a   the pre-registration timeline — every gate fixed "
-                       "before the number it judges"),
+# Short identifier, not a sentence (judge finding 4): the clause it used to carry
+# on the image -- "every gate fixed before the number it judges" -- is now the
+# opening of the Legend's panel-a sentence below, so nothing is lost.
+axA.set_title(sc_title("a   Pre-registration timeline"),
               loc="left", fontweight="bold", fontsize=TYPE["panel_title"])
 
 # day bands + labels
@@ -428,7 +430,7 @@ axB.axhline(y, color="#3D5A6C", lw=0.8, zorder=2)
 # ---------------------------------------------------------------------------
 legend = (
     "Figure S11 | The pre-registration record, drawn so it can be audited rather than taken on trust. "
-    "(a) Timeline. The original two-sided gate (P@100 ≥ 0.38 AND F1_det > 0.261) was fixed in 10 §5 on "
+    "(a) Timeline: every gate fixed before the number it judges. The original two-sided gate (P@100 ≥ 0.38 AND F1_det > 0.261) was fixed in 10 §5 on "
     "2026-08-19, one day before the run it judged; the stale Stage-2 run FAILED it in full (12: 'NO arm "
     "passes'). The ≥2-molecule threshold was then examined in a sweep created 12 minutes after that FAIL "
     "was recorded — post hoc, full stop (12 CORRECTION) — and is disclosed as such: it informed the choice "

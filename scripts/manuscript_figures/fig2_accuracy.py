@@ -617,7 +617,10 @@ for ax, key, sub, ds_keys, paired, title in (
     callout(ax, key, "≥2 mol", p_default, color=TOOL_STYLE["PeakATail"]["color"],
             weight="bold", literal=True)
     callout(ax, key, "≥1 mol", p_sens, color=TOOL_STYLE["PeakATail"]["color"], literal=True)
-    ax.set_xlabel(sentence_case("detected-gene recall R$_{det}$ @100 bp"))
+    # plain "R_det", not mathtext R$_{det}$: a mathtext subscript renders at 0.7x the
+    # label size (7.5 -> 5.25 pt), under the 6 pt floor, and the type guard below
+    # measures Text artists, not the glyph runs inside mathtext (judge finding 3)
+    ax.set_xlabel(sentence_case("detected-gene recall R_det @100 bp"))
     ax.set_ylabel(sentence_case("atlas-agreement precision @100 bp"))
     panel_tag(ax, key, title)
     style(ax)
@@ -682,7 +685,10 @@ for tool in ["polyApipe", "scAPAtrap", "SCAPTURE", "Sierra", "scUTRquant"]:
                        label="scUTRquant (catalog)" if tool == "scUTRquant" else tool))
 lg1 = fig.legend(handles=row1, loc="center", bbox_to_anchor=(0.537, 0.531), ncol=3, frameon=False,
                  handletextpad=0.4, columnspacing=1.7, borderpad=0.0, fontsize=TYPE["annotation"])
-fig.add_artist(lg1)
+# NB: fig.legend() already registers the legend on the figure; the fig.add_artist(lg1)
+# that used to stand here registered the SAME artist a second time, so row 1 was drawn
+# twice -- invisible in the raster (identical pixels) but two stacked text/marker objects
+# in the vector PDF (design-judge finding 2, 2026-09-03).
 fig.legend(handles=row2, loc="center", bbox_to_anchor=(0.537, 0.4985), ncol=5, frameon=False,
            handletextpad=0.4, columnspacing=1.7, borderpad=0.0, fontsize=TYPE["annotation"])
 

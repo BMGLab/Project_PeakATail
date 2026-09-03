@@ -487,7 +487,9 @@ TOOL_OF = {"scUTRquant*": "scUTRquant", "SCAPTURE": "SCAPTURE", "polyApipe": "po
            "Sierra": "Sierra", "scAPAtrap": "scAPAtrap", SENS_ARM: "PeakATail",
            DEFAULT_ARM: "PeakATail"}
 for ax, col, key, ylab in ((axA, "atlas_agreement_precision", "a", "atlas-agreement precision"),
-                           (axB, "recall_detected_genes", "b", "detected-gene recall R$_{det}$")):
+                           (axB, "recall_detected_genes", "b", "detected-gene recall R_det")):
+    # plain "R_det", not mathtext: a mathtext subscript renders at 0.7x the label
+    # size (7.5 -> 5.25 pt), under the 6 pt floor the type guard cannot measure
     ax.set_label(key)
     for tool in ORDER:
         s = plotted[plotted.tool == tool].sort_values("cutoff_bp")
@@ -661,7 +663,10 @@ for tool in ["polyApipe", "scAPAtrap", "SCAPTURE", "Sierra", "scUTRquant"]:
 lg1 = fig.legend(handles=row1, loc="center", bbox_to_anchor=(0.537, 0.590), ncol=2, frameon=False,
                  handletextpad=0.5, columnspacing=2.0, borderpad=0.0, handlelength=1.8,
                  fontsize=TYPE["annotation"])
-fig.add_artist(lg1)
+# NB: fig.legend() already registers the legend on the figure; the fig.add_artist(lg1)
+# that used to stand here registered the SAME artist a second time, so row 1 was drawn
+# twice -- invisible in the raster (identical pixels) but two stacked text/marker objects
+# in the vector PDF (design-judge finding 2, 2026-09-03).
 fig.legend(handles=row2, loc="center", bbox_to_anchor=(0.537, 0.5585), ncol=5, frameon=False,
            handletextpad=0.5, columnspacing=1.7, borderpad=0.0, handlelength=1.8,
            fontsize=TYPE["annotation"])

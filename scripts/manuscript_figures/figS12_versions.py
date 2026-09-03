@@ -83,7 +83,7 @@ import pandas as pd
 import re
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+from _pubstyle import PAL, TOOL_STYLE, TYPE, apply_rc, plain_log, sentence_case   # shared publication style
 
 apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
 ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
@@ -118,13 +118,13 @@ DCOL = {                       # colour = dataset (panels a-b)
     "mouse2":  "#E69F00",
     "pbmc4k":  "#56B4E9",
 }
-TOOLCOL = {                    # competitor panel, same as Fig 2
-    "polyApipe":  "#D55E00",
-    "SCAPTURE":   "#009E73",
-    "Sierra":     "#CC79A7",
-    "scAPAtrap":  "#E69F00",
-    "scUTRquant": "#56B4E9",
-}
+# Competitor colours come from the ONE tool identity in `_pubstyle.TOOL_STYLE`, the map
+# Figs 2 and 3 draw from -- the local copy that used to sit here had drifted, painting
+# scUTRquant light blue where the shared map makes it neutral grey (judge finding 1).
+# Marker SHAPE is deliberately not taken from TOOL_STYLE in panels c/d: on this figure
+# shape encodes the ARM (circle = full call set, diamond = precision default, see the
+# panel key), so every competitor keeps one neutral triangle and colour carries the tool.
+TOOLCOL = {tool: st["color"] for tool, st in TOOL_STYLE.items()}
 DLABEL = {"pbmc10k": "PBMC 10k v3", "mouse1": "testis mouse 1",
           "mouse2": "testis mouse 2", "pbmc4k": "pbmc4k (donor 2)"}
 VERSIONS = ["shipped", "v1", "v2", "prime"]
@@ -434,7 +434,7 @@ def plane(ax, panel, f2_dataset, ds_keys, xmax):
         if q.empty:
             continue
         c = TOOLCOL[tool]
-        hollow = tool == "scUTRquant"
+        hollow = "mfc" in TOOL_STYLE[tool]        # catalog-based tools are hollow (shared identity)
         x = float(q.recall_detected_genes_100bp.mean())
         y = float(q.atlas_agreement_precision_100bp.mean())
         if len(q) == 2:
@@ -652,6 +652,8 @@ for i, ds in enumerate(DS_F):
                                  wall_minutes=wall / 60.0, cpu_percent=cpu, source_file=src))
 axF.set_yscale("log")
 axF.set_ylim(1.0, 2500)
+plain_log(axF, "y")     # 1 / 10 / 100 / 1000, not 10^n: a mathtext exponent lands at
+                        # 4.55 pt under the 6.5 pt tick size (judge finding 3)
 axF.set_xticks(range(len(DS_F)))
 axF.set_xticklabels([sentence_case(DLABEL[d]) for d in DS_F], fontsize=TYPE["tick"])
 axF.set_xlim(-0.5, len(DS_F) - 0.5)
@@ -660,6 +662,7 @@ axF.set_xlim(-0.5, len(DS_F) - 0.5)
 axF.set_ylabel(sentence_case("peak RSS\n(GB, log)"), fontsize=TYPE["axis_label"])
 axFw.set_yscale("log")
 axFw.set_ylim(WALL_FLOOR, 6000)
+plain_log(axFw, "y")    # same: 10 / 100 / 1000
 axFw.set_xlim(-0.5, len(DS_F) - 0.5)
 axFw.set_xticks(range(len(DS_F)))
 axFw.set_xticklabels([])

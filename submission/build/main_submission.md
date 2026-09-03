@@ -1,18 +1,28 @@
-# PeakATail: precision-first poly(A)-site calling and calibrated alternative polyadenylation analysis in single-cell RNA-seq
+::: {custom-style="Title"}
+PeakATail: precision-first poly(A)-site calling and calibrated alternative polyadenylation analysis in single-cell RNA-seq
+:::
 
+::: {custom-style="TitlePageLine"}
 Amir Amiri Tabat^1^, Yasin Kaymaz^2,\*^
+:::
 
+::: {custom-style="TitlePageLine"}
 ^1^ Department of Computer Engineering, Faculty of Computer and Informatics Sciences, Ege University, İzmir, Türkiye
+:::
+
+::: {custom-style="TitlePageLine"}
 ^2^ Department of Bioengineering, Faculty of Engineering, Ege University, İzmir, Türkiye
+:::
 
+::: {custom-style="TitlePageLine"}
 \* Corresponding author: Yasin Kaymaz, yasin.kaymaz@ege.edu.tr (ORCID: 0000-0002-9725-7536)
+:::
 
-<!-- AUTHORS SET 2026-09-02 per PI instruction (verbatim): Amir Amiri Tabat (Ege University Faculty of
-     Computer and Informatics Sciences, Department of Computer Engineering); Yasin Kaymaz* (Ege University
-     Faculty of Engineering, Bioengineering Department); * Corresponding Author. Corresponding e-mail and Y.K. ORCID supplied by the PI 2026-09-02.
-     A.A.T. ORCID: optional, not yet supplied — [[PLACEHOLDER: A.A.T. ORCID if available]]. -->
+```{=openxml}
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>
+```
 
-## Abstract
+# Abstract
 
 **Background:** Alternative polyadenylation (APA) remodels 3′UTRs across cell types, yet single-cell poly(A)-site (PAS) calls are rarely scored against independent truth and differential tests are rarely calibrated.
 
@@ -22,7 +32,7 @@ Amir Amiri Tabat^1^, Yasin Kaymaz^2,\*^
 
 **Keywords:** alternative polyadenylation; poly(A) sites; single-cell RNA-seq; 3′ end sequencing; benchmarking; false-discovery-rate calibration; pre-registration; replication
 
-## Key points
+# Key points
 
 - **Evidence type, not peak-calling sophistication, separates single-cell PAS callers.** Re-seeding our own coverage-only caller on non-templated poly(A)-tail reads moved atlas-agreement precision at 100 bp from 0.118 to 0.7062 on the same PBMC BAM, and the six-tool panel ordering tracks the evidence available to each caller, not its algorithm class.
 
@@ -34,7 +44,7 @@ Amir Amiri Tabat^1^, Yasin Kaymaz^2,\*^
 
 - **The failures are results.** The pre-registered "trusted novel PAS" definition missed its 70% long-read target (48.5%), and no site in this paper is called trusted-novel; PAS-profile clustering recovers cell types no better than gene-level totals (AMI 0.708 vs 0.698), so that claim is withdrawn; a 16-gene literature panel of spermatogenesis 3′UTR shortening does not reproduce; and an atlas-trained scoring model that gained 16 points of atlas-agreement precision lost 8–11% on every long-read axis—curated-atlas benchmarking rewards atlas-shaped priors. The pre-registration timeline that makes these outcomes auditable is Supplementary Fig S11.
 
-# Background
+# 1 Background
 
 Most mammalian genes carry more than one polyadenylation site (PAS), and the choice among them — alternative polyadenylation (APA) — rewrites the transcript's 3' untranslated region, changing its stability, localization and translational output [[CITE: review of APA mechanisms and functional consequences]]. The choice tracks cell state: proliferating and transformed cells favour proximal sites and shorter 3'UTRs [[CITE: 3'UTR shortening in proliferating and transformed cells]], and differentiation programs — spermatogenesis above all — remodel 3'-end usage wholesale [[CITE: APA remodelling during spermatogenesis]]. Droplet-based 3' scRNA-seq primes on the poly(A) tail and sequences the transcript's 3' end, so every such library is, in principle, an untargeted single-cell 3'-end assay, and the raw material for placing PAS and testing their differential usage between cell types already sits in the public archives. Extracting it is harder than it looks. Oligo(dT) also primes internally at genomically templated A-rich stretches, producing spurious 3' ends [[CITE: internal-priming artefacts in oligo(dT)-primed sequencing]]; and most reads stop short of the cleavage site, so a coverage pile-up marks a 3'-proximal neighbourhood, not a cleavage event.
 
@@ -48,9 +58,9 @@ Pre-registration is informative only if failure is a reportable outcome, and thi
 
 The claim of this paper, in one sentence: PeakATail calls poly(A) sites from direct poly(A) evidence with the highest atlas-agreement precision of any de novo tool benchmarked, couples them to an FDR-calibrated switch test, and demonstrates — under pre-registered gates, a shuffled-null discipline and an atlas-independent long-read check — that its cell-type APA switches replicate across patients, with zero replication in label-shuffled nulls.
 
-# Results
+# 2 Results
 
-## Direct poly(A) evidence: a scarce, specific channel and one pre-registered operating point
+## 2.1 Direct poly(A) evidence: a scarce, specific channel and one pre-registered operating point
 
 PeakATail calls poly(A) sites (PAS) from the one element of a droplet 3′-end library that observes cleavage directly: the non-templated poly(A) tail carried in a read's 3′-side terminal soft clip (Fig 1). A read is accepted when it is mapped on the strand of the pass, carries a 16-nt cell barcode and aligns over at most the library read length; it enters the poly(A) channel when its 3′-side terminal soft clip is ≥6 nt and ≥80% A (+) / T (−), with a ≥6-nt run flush to the alignment edge (Fig 1a; per-library parameters in Fig S1). In the measured prototype the flush condition alone buys a 92-fold specificity against wrong-end clips — the identical clip test applied at the read's opposite (wrong) end fires ~92× less often — a control on alignment artefacts, not on genomic A-runs. Support is counted in distinct (cell barcode, UMI) molecules, never in reads. The channel is scarce by construction: genome-wide, 0.573% of accepted cell-barcoded reads carry a qualifying clip (3,195,067 of 557,564,408 on the PBMC 10k v3 library; an earlier 1.152% figure was a head-sampling artefact of the QC estimator and is reported only as a corrected estimate). The channel is destroyed outright by any pipeline that trims poly(A) before alignment.
 
@@ -58,7 +68,7 @@ Fig 1 shows what the scarcity buys. On PBMC 10k v3 (CellRanger 3.0.0 [[CITE: Cel
 
 The internal-priming filter is measured on its own output rather than assumed (Fig 1c). On the PBMC ≥2-molecule arm it removes 15,588 of 62,132 calls (25.1%), moving atlas-agreement P@100 from 0.5907 (no-IP arm) to 0.7062 while costing detected-gene recall (R_det) 0.1911 → 0.1754; the removed calls' own atlas-agreement precision is 0.246, and 99.97% of removals are triggered by the ≥6-consecutive-A rule. The default is one point on a measured curve (Fig 2a; the full sweep below), and only the ≥2-molecule point was pre-registered.
 
-## Accuracy against the field, under a gate committed before the run
+## 2.2 Accuracy against the field, under a gate committed before the run
 
 Every comparison in Fig 2 uses one scorer and identical denominators for every tool. Atlas-agreement precision (P@100) is the fraction of called 1-bp points with a strand-matched PolyASite 2.0 representative site within 100 bp (atlases of 569,005 sites on GRCh38 and 301,006 on GRCm38); an atlas-novel true site counts as a false positive. Detected-gene recall (R_det) is the fraction of the atlas restricted to genes detected in each dataset that is recovered within 100 bp — denominators 285,136 sites (PBMC 10k v3) and 126,686 (GSE104556 testis; STARsolo [[CITE: STARsolo paper]]; datasets, Fig S1). The precision-first default and its gate, P@100 ≥ 0.50, were committed before the benchmark arms ran (2026-08-21: gate 01:19 in commit 0e27b1a, arms 02:59, v2 re-run 16:14) and passed on all three: 0.7062 (PBMC, n 46,524), 0.7450 (mouse 1, n 26,255) and 0.7572 (mouse 2, n 26,526), each 33–55× its three-seed gene-body-shuffled null (null design, Fig S3); the same gate, unchanged, later passed on a fourth, pre-registered library (Fig S4; below). The −1.1 pp PBMC move from the v1 code is the corrected minus-strand internal-priming window, reconstructed key-for-key.
 
@@ -68,7 +78,7 @@ The default is also corroborated by truth that owes nothing to the atlas: 0.7647
 
 Fig S2a decomposes where the default's stringency acts: 72.2% of tier-1 sites on the PBMC IP arm are single-molecule (121,041 of 167,565; 72.1% on the no-IP arm; mice 50.3% / 48.8%), so the ≥2-molecule rule does most of the selection, and the operating curve of Fig 2a, b prices what it costs.
 
-## The trade surface: resolution, reproducibility across libraries, and compute
+## 2.3 The trade surface: resolution, reproducibility across libraries, and compute
 
 Sweeping the molecule-support threshold on the IP-filtered v2 arms from ≥1 to ≥10 moves atlas-agreement P@100 from 0.352 to 0.941 on PBMC while R_det falls 0.268 → 0.083; the mice reach 0.885 / 0.892 at ≥10 (Fig 2a, b). Only the ≥2-molecule point was pre-registered; the others are descriptive, and ≥5 or ≥10 must not be read as a recommendation. The ≥2-molecule default is not the F1 optimum on any dataset — the ≥1-molecule arm reaches F1_det 0.3046 (PBMC) and 0.3758 / 0.3818 (mice) against the default's 0.2811 and 0.3213 / 0.3264. The default is chosen for reliability, not for F1: it is the arm whose calls a biologist can act on without re-validating each site, and we report both arms as labelled operating points.
 
@@ -82,7 +92,7 @@ The same code revision that produced the v2 numbers removed the tool's hardware 
 
 **The recall budget, measured.** We measured how much of the recall gap any configuration of this caller could ever recover. Of the 235,111 detected-gene atlas sites the PBMC default misses, 79.96% have no peak of any kind within 100 bp (84.53% in mouse 1), so at most 20.04% / 15.47% of the gap is reachable by any threshold, filter or tier policy; keeping every peak the caller ever produced reaches R_det 0.3406 (PBMC) and 0.3278 (mouse 1) — the hard ceiling for anything downstream of this caller's peak calling. That ceiling is a property of PeakATail's evidence-generation (seeding) step, not of the library: what the reads could support for a different candidate generator is not bounded by it. The denominator itself deserves context rather than being read as fully attainable: only 44.6% of the detected-gene atlas is corroborated by matched-tissue Kinnex long reads at ≥5 records (the union count, 127,188 of 285,136) — long reads from a different donor, with un-deduplicated record support, so "not corroborated" is not "not real" and the fraction contextualises the denominator without bounding what is real — and against the x3p-corroborated subset (107,260 sites) the same default recalls 0.4372, not 0.1754. Those are facts about two different subsets and must not be divided across each other. The atlas places 20.0 sites in an average detected human gene where the default emits 4.0: absolute recall against such a denominator should not be read as sensitivity.
 
-## The switch test is calibrated because the shipped defaults were not
+## 2.4 The switch test is calibrated because the shipped defaults were not
 
 Before reporting a single switch we asked whether `ema switch diff` controls the false-discovery rate it states (Fig 4). A label-permutation harness on testis mouse 1 (1,230 cells with expression-derived stage labels, orthogonal to the PAS matrix under test; 76,711 PAS; three stage pairs) ran 20 permutations, shared identically across configurations, through the full pipeline (six configurations × 21 runs, zero failures): Fisher on read counts, Fisher on cell counts and a pairwise negative-binomial test, each with the shipped top-200 Wilcoxon marker pre-selection on and off.
 
@@ -92,7 +102,7 @@ The mechanisms are named and separately demonstrated. Marker pre-selection is a 
 
 PeakATail therefore ships Fisher on cells with pre-selection off (`--marker-top-n 0`, nominal Benjamini–Hochberg q [[CITE: Benjamini–Hochberg FDR procedure]]) as its only default, and requires permutation-calibrated q whenever pre-selection or the negative-binomial test is used (Fig S9d). "Calibrated" is our pre-stated operational rule (null p < 0.05 ≤ 7%, p < 0.01 ≤ 1.5%, q < 0.05 ≤ 5%, ≤ 25% of null runs with any hit), not a community standard, and the assessment rests on one mouse and one tissue with very large true stage effects. The harness measures only this tool's test: no competitor's differential test has been run through it, so Background's field-level concern about uncalibrated shipped defaults is, for every other tool, a hypothesis this paper does not test.
 
-## A biological control with its own nulls: the spermatogenesis gradient
+## 2.5 A biological control with its own nulls: the spermatogenesis gradient
 
 We next asked whether the calibrated test recovers a known biological program when every claim carries its own null: both testis mice, the frozen merged caller, expression-derived stage labels, spermatogonia excluded in advance as fragile (Fig 5). The claim, in the exact form that survives adversarial verification [[CITE: mouse spermatogenesis 10x scRNA-seq dataset GSE104556]]:
 
@@ -104,7 +114,7 @@ Fig 5c, d carry the reliability payload. The calibrated test re-validates on thi
 
 Two results ran against expectation; Fig 5e, f box them as findings, not footnotes. The across-gene UMI-weighted distal index reverses at RS→ES in both mice (Cliff's δ −0.93 / −0.87): protamine transcripts at ceiling PDUI alone carry 25.2% and 14.5% of guarded elongating-spermatid UMIs, so gene-level and UMI-weighted summaries disagree in direction and both are reported. And of the 16 genes of a curated literature shortening panel measurable in both mice [[CITE: literature sources of the spermatogenesis 3′UTR-shortening gene panel]], only 4 shorten in both, 5 lengthen in both, 5 are discordant and 2 are uninformative: the panel does not reproduce under our PAS-to-gene assignment, is dropped as a positive control, and only the per-gene, null-referenced statement stands. One alternative explanation is not excluded here: a named-gene measurement runs through the PAS-to-gene assignment that is under revision in overlapping loci (tool issue #99), so per-gene mis-assignment could contribute to individual panel verdicts. Replication here is two mice of one study and one chemistry — it controls animal-level noise, not protocol-level artefacts.
 
-## Reliable cell-type APA switches in a tumour cohort
+## 2.6 Reliable cell-type APA switches in a tumour cohort
 
 We then applied the same discipline where labels are noisier and effects smaller (Fig 6). The Laughney lung-adenocarcinoma cohort [[CITE: Laughney et al. lung adenocarcinoma scRNA-seq cohort]] comprises 17 libraries from 14 patients; the replication primary is 15 libraries from 12 patients (the pre-registered MetBone exclusion; one further library has a single confirmed cell type, so no testable pair). The unit of replication is the patient, never the library, so two-library patients cannot "replicate" within one person.
 
@@ -114,7 +124,7 @@ The two test totals connect as follows: the switch test itself runs per library,
 
 Two disclosures bound Fig 6. The MetBone exclusion stands because it was pre-registered, but its stated premise was wrong: the near-zero clip-rate estimate behind it came from a QC estimator sampling only the first 200,000 cell-barcoded reads of a coordinate-sorted BAM (tool issue #99). MetBone in fact carries 306,202 clip molecules (30.2% of its 28,983 post-tier-filter PAS hold ≥2 of its own clip molecules); the sensitivity run including it differs by 0.42%, confined to the one pair it contributes. Second, no ranked list of named top-switch genes is reported: in overlapping loci, 12 of the top-30 gene-level rows (40%) have a representative PAS outside the named gene's 3′UTR and 8 of 30 (27%) sit in a different gene's 3′UTR, so switch results stay keyed by PAS identifier — replication statistics are unaffected — until PAS-to-gene re-assignment lands (the same issue). Fig 6d gives the genomic context of the 5,951 replicated PAS: 96.8% inside a same-strand gene body, 61.5% in some same-strand 3′UTR, 57.8% in the assigned gene's own 3′UTR. The gene-keyed quantities — 2,883 genes, the 10,415 (pair, gene) combinations, and the 57.8% own-3′UTR fraction — are computed through that same assignment and carry the same caution as the withheld gene list; the gene-body and any-same-strand-3′UTR fractions and every PAS-level statistic do not depend on choosing an assigned gene.
 
-## What did not work, reported as results
+## 2.7 What did not work, reported as results
 
 We pre-registered four claims and their acceptance gates before the final run existed and report all four outcomes (Figs S7, S10–S12). Three negative results are contributions in their own right; each names the alternative explanation tested and excluded.
 
@@ -126,7 +136,7 @@ We pre-registered four claims and their acceptance gates before the final run ex
 
 **Curated-atlas benchmarking rewards atlas-shaped priors.** In algorithmic-headroom work, a per-site scoring model trained against the curated atlas won 16 points of atlas-agreement precision over the shipped ≥2-molecule rule while losing 8–11% on every long-read read-out at matched operating points — the sites it swapped in were ~4× better by the atlas and ~2× worse by long reads — and a transferable variant likewise fooled the atlas while losing 15% of long-read-verified sites. A model can raise the benchmark number while destroying agreement with evidence the atlas never saw. Two rules follow, in force throughout this paper: long-read truth is a read-out only, never used to select a threshold, feature or model; and every later parameter pre-registration carries an anti-atlas-prior guard — the long-read truth must move in the same direction before a change ships as a default. No learned score ships here; the reported default remains the pre-registered rule, verified byte-for-byte across caller versions in Fig S12.
 
-# Discussion
+# 3 Discussion
 
 What a precision-first default buys a biologist is trust per call. At its pre-registered operating point — clip-supported tier-1 sites, internal-priming-filtered, ≥2 distinct clip molecules — PeakATail's output is the most atlas-concordant de novo call set in the benchmark on both datasets and is corroborated by donor-mismatched long reads (Fig 2); the matched-call-count analysis, with the N-range bounds that travel with it, is given once in Results and is the only licensed form of the head-to-head. The two-truth hard-false-positive composite of Results is the summary a biologist should carry: 15.10% of the default's PBMC calls fail both truths, against 49.50% of polyApipe's [[CITE: polyApipe paper]] at 2.6× the call count. The default is not the F1 optimum on any dataset (Fig 3): it is chosen for reliability — the arm whose calls a biologist can act on without re-validating each site — and both arms ship as labelled operating points.
 
@@ -138,17 +148,17 @@ Limitations. The human results rest on one donor at depth; the second library (p
 
 Future work follows the measured roadmap. Cross-sample "cohort borrowing" is the one recall mechanism with verified headroom: mouse-1 single-clip-molecule tier-1 sites corroborated by a mouse-2 default call within 10 bp score atlas-agreement P@100 0.6683 versus 0.4144 for expression-matched singletons — but internal priming replicates across samples too, the effect is unmeasured on human data, and it ships only behind its own pre-registration. The 3′UTR singleton promotion is pre-registered — rule, thresholds and falsifiers fixed, flag default OFF — and untested: its deciding evidence is reserved to data unused in its discovery, and its ceiling is ~+0.04 R_det. Re-ranking is nearly exhausted — a long-read-trained score gains +14.3% relative R_det at matched atlas-agreement precision on the one library it was fitted on, but adopting it would replace the pre-registered default and so requires its own pre-registration and multi-dataset runs; the next real gain lies in the candidate generator or in the chemistry, not in thresholds.
 
-# Conclusions
+# 4 Conclusions
 
 PeakATail calls poly(A) sites from direct poly(A)-tail read evidence and reports, for every claim, the gate it was required to pass, the null it was tested against, and whether it failed. Under that discipline its precision-first default is the most atlas-concordant de novo call set in the benchmark on both datasets, corroborated by donor-independent long reads, and its calibrated, replication-filtered switch test yields cell-type APA switches that recur across patients (replication primary: 15 libraries from 12 patients) with none in 10 label-shuffle nulls (empirical p ≤ 0.091, the 10-permutation floor). Just as deliberately, it reports a failed pre-registered gate, a withdrawn clustering claim, anti-conservative shipped defaults and a literature panel that does not reproduce. We offer the method — and the evaluation discipline it was built to survive — as the contribution.
 
-# Methods
+# 5 Methods
 
-## Datasets and reference resources
+## 5.1 Datasets and reference resources
 
 No new sequencing data were generated. **Human PBMC, donor 1** — the 10x Genomics public library `pbmc_10k_v3` (Single Cell 3′ v3 chemistry; CellRanger 3.0.0 [[CITE: CellRanger paper]] on the GRCh38-3.0.0 reference bundle; 91 bp read 2; ~10,000 estimated cells; 557,564,408 accepted cell-barcoded reads). **Human PBMC, donor 2** — the 10x public library `pbmc4k` (Single Cell 3′ v2; CellRanger 2.1.0 on GRCh38-1.2.0; 98 bp read 2; 4,340 estimated cells; mean 87,433 reads per cell; flow cell H53GNBCXY). 10x publishes no donor identifier for `pbmc4k`: it is demonstrably a second library, chemistry, flow cell and CellRanger version, and only presumptively a second individual. **Mouse testis** — the two adult spermatogenesis libraries of GEO GSE104556 [[CITE: study describing the GSE104556 mouse testis 10x dataset]] (Single Cell 3′ v2; 98 bp read 2; 1,294 and 1,364 stage-labelled cells), aligned with STARsolo [[CITE: STARsolo paper]]. **Cohort** — the Laughney lung-adenocarcinoma atlas, GEO GSE123904 [[CITE: Laughney et al. lung adenocarcinoma single-cell atlas]]: **17 libraries from 14 patients** (three patients contributed a tumour and a normal library; ~224 GB of BAM); 29,063 curated cells entered the switch pipeline, 18,651 (64.2%) surviving label confirmation (below). Annotation builds are Ensembl 99 (GRCh38) and Ensembl 102 (GRCm38); the accuracy reference is the PolyASite 2.0 representative-site atlas [[CITE: PolyASite 2.0 paper]] (569,005 sites on GRCh38, 301,006 on GRCm38). Per-library parameters, pipelines and poly(A) clip rates are in Fig S1; unmeasured values are shown as missing, never approximated.
 
-## The caller and the pre-registered default output
+## 5.2 The caller and the pre-registered default output
 
 PeakATail (CLI: `ema`) was run at two frozen commits: v1 `4efeb125` and v2 `9dfdefb3eb353b0817ef79c4eb9ace6d6c8aab53` — the development branch after PR #93 (tier-1 quantification and molecule counting), PR #96 (minus-strand internal-priming window fix) and PR #97 (memory/CPU) — each from a dedicated worktree whose path every run manifest asserts (test suite at v2: 1,277 passed). All current numbers come from the v2 runs; v1 values are labelled comparisons.
 
@@ -162,7 +172,7 @@ PeakATail (CLI: `ema`) was run at two frozen commits: v1 `4efeb125` and v2 `9dfd
 
 **The pre-registered default output** is tier 1 ∩ IP-pass ∩ ≥2 distinct clip molecules, filtered from the tier-1 file (`--polya-min-umis` remains 1 at the caller; ≥2 molecules is the pre-registered *output*). The ≥2-molecule threshold is a reliability choice, not the F1 optimum on any dataset tested; the ≥1-molecule tier-1 output is reported alongside as the sensitivity arm.
 
-## Benchmark protocol
+## 5.3 Benchmark protocol
 
 All accuracy numbers come from one scorer, `score_tool.py` (analysis repository), applied identically to every tool. Call sets are reduced to strand-aware 1-bp points (the 3′-most base: `end − 1` on `+`, `start` on `−`) and matched to PolyASite 2.0 representative sites by strand-matched point distance (`bedtools closest -s -d -t first` [[CITE: bedtools paper]]; `LC_ALL=C` throughout). **Atlas-agreement precision at window W (P@W)** is the fraction of scored calls with a strand-matched atlas site within W bp (W = 10, 25, 50, 100, 200); it measures agreement with a curated atlas, not ground truth — atlas-novel true sites count as false positives. **Detected-gene recall (R_det@100)** is the fraction of the atlas restricted to genes detected in the dataset that is recovered within 100 bp; the denominators are **285,136** sites (14,949 genes, `pbmc_10k_v3`), **126,686** (GSE104556) and **268,097** (13,763 genes, `pbmc4k`). Each denominator is built once per dataset by one recorded recipe and then shared, fixed, by every tool: detected gene IDs are read from a single PeakATail run's `annotatedpas.bed` on that dataset (for `pbmc_10k_v3`, the earlier coverage-strategy `lambda_gradient` run, not the benchmarked clip-seeded arm; for `pbmc4k`, its only run — a declared deviation), gene bodies are restricted to those IDs, and the atlas is intersected strand-matched. Because the detection source is a PeakATail run, the construction's sensitivity to that choice was measured on PBMC, where two runs exist: rebuilding from the clip-seeded v2 run gives 15,271 genes / 288,740 sites versus the shipped 14,949 / 285,136 (+1.26% denominator size, 99.5% of shipped sites in common), and a larger denominator lowers R_det, so the choice biases against the arm supplying the detection; the donor-2 recall gap additionally survives scoring both arms against both donors' denominators. Full-atlas recall (569,005 / 301,006 sites), which involves no detection choice, is reported next to every R_det; F1_det is the harmonic mean. Each call set is compared against its own **null**: 3 seeds of width-preserving `bedtools shuffle -chrom -noOverlapping` inside merged detected-gene bodies. Scored n sits slightly below raw BED line counts because the scorer drops non-primary contigs. The v2 gate table was reproduced to six decimals by an independent `bedtools`-based reimplementation.
 
@@ -170,15 +180,15 @@ All accuracy numbers come from one scorer, `score_tool.py` (analysis repository)
 
 **Matched-call-count comparisons.** Because atlas-agreement precision and recall both move with call budget, no single-point head-to-head is quoted without both tools' call counts. Each tool's call set was truncated to a common N under its own shipped ranking (clip molecules for PeakATail, `peakdepth` for polyApipe, and Sierra's and scAPAtrap's own shipped per-peak rankings); within-tie ordering was checked in both directions and matched-N claims are quoted only where tie-robust. Two exclusions are principled: SCAPTURE ships no non-circular ranking column, so it cannot be truncated; and scAPAtrap truncations below its 19,410-call score cap cut arbitrarily inside a tied group and are reported as such, never as a real ranking.
 
-## Long-read truth construction
+## 5.4 Long-read truth construction
 
 The atlas-independent read-out uses publicly available PacBio Kinnex [[CITE: Kinnex paper]] long-read PBMC data from the x3p and GEM-X library preparations [[CITE: the public Kinnex PBMC datasets used as long-read truth (x3p and GEM-X library preparations) — data citation with accession/identifier]] — **a different donor from the short-read libraries**, so it is site-level, donor-mismatched truth. Poly(A)-verified read 3′ ends were collapsed to strand-aware point BEDs at support thresholds of ≥5, ≥20, ≥100 and ≥500 records; support is an alignment-record count at the terminus (~10.5% of records repeat a (cell barcode, UMI) pair there and were not de-duplicated), so the thresholds are slightly optimistic. A **decoy set** of termini flagged by Kinnex's own internal-priming rule (A-rich +1..+18 window) provides the false-positive read-out. Concordance is the fraction of calls with a same-strand truth terminus within 25 bp, read against a gene-body-shuffled positional null (10 seeds); the build script and truth BEDs are in the analysis repository.
 
-## Pre-registration practice
+## 5.5 Pre-registration practice
 
 Every acceptance gate was committed before the run it judges; the record is drawn as an auditable timeline (Fig S11). The original two-sided benchmark gate (P@100 ≥ 0.38 and F1_det > 0.261) predates the Stage-2 run that failed it; the precision-first default and its added gate (P@100 ≥ 0.50 on `pbmc_10k_v3` and both mice) were committed in `0e27b1a` at 01:18:59 on 2026-08-21, 1 h 41 m before the final arms started (02:59:36), and were unchanged for the v2 re-run (16:14). The ≥2-molecule threshold was informed by a post-hoc sweep of a superseded run before being pre-registered — a disclosed deviation, cited nowhere as a result. Later tests were pre-registered the same way: the trusted-novel definition and its 70% target, the second-library test, the `peakAtail-prime` adoption criterion, and a 3′UTR-singleton promotion rule (still untested; shipped flag-off). Amendments are appended, never rewritten; Amendment 3 records that the prime criterion was drafted against a v2 default configuration that never existed and that prime's default output is byte-identical to the v2 manuscript arm (every pre-registered delta exactly 0.000000; Fig S12). Every prime-branch number is exploratory with respect to the manuscript's gates.
 
-## Differential APA test and its calibration
+## 5.6 Differential APA test and its calibration
 
 Cell-type APA switches are tested with `ema switch diff`: for each (cell-type pair, PAS), a Fisher exact test of PAS counts against the within-gene total across the two cell types, with `--count-mode cells` (a cell contributes at most once per PAS; `reads` mode counts UMIs and pseudoreplicates within cells) and marker pre-selection off (`--marker-top-n 0`); Benjamini–Hochberg correction [[CITE: Benjamini and Hochberg FDR]] is applied per cell-type pair within each library — each (library, pair) is one BH family — and |Δproportion| is reported as the effect size. Genes with a single tested PAS yield no table and are dropped.
 
@@ -186,7 +196,7 @@ Fisher on cells treats cells within a library as independent; ambient RNA, doubl
 
 The configuration was chosen by a calibration harness: on testis mouse 1 (1,230 cells with GEX-derived stage labels — marker-panel argmax on the STARsolo gene matrix, orthogonal to the PAS matrix under test; SPC 370 / RS 504 / ES 356; 76,711 PAS; three stage pairs), six configurations (Fisher reads/cells × marker pre-selection on/off, and `nb_pairwise`) were each run on the true labels and on 20 label permutations shared identically across arms (6 × 21 runs, 0 failures). The pre-stated calibration rule — null p < 0.05 ≤ 7%, null p < 0.01 ≤ 1.5%, null q < 0.05 ≤ 5%, and ≤25% of null runs carrying any q < 0.05 hit — is our operational rule, committed in the figure script; Kolmogorov–Smirnov tests against uniformity are reported, not gated. Wherever marker pre-selection or `nb_pairwise` is used, permutation-calibrated q-values (empirical p ranked within pooled same-pair null p-values, BH per pair) are required. The calibrated configuration was re-validated on the final caller on both mice.
 
-## Cohort switch replication (Laughney)
+## 5.7 Cohort switch replication (Laughney)
 
 All 17 libraries were peak-called in **one cohort-mode run** (`ema run -c`, v2 code, `clip_seeded` with `--ip-filter --ip-filter-mode filter`, `--threads 16 --peak-workers 16`), so every library shares the tool's own unified PAS identifier space (505,197 sites), with no post-hoc coordinate harmonisation. The pre-registered tested universe (`tier1_ge2`) is IP-pass ∧ tier 1 in ≥1 member library ∧ cohort clip-molecule sum ≥2 — **80,464 PAS** (40,811 `+`, 39,653 `−`); restricting to it changes the within-gene Fisher denominator (cells expressing any universe PAS of the gene) and drops genes with fewer than two universe PAS. Tier-2 sites are never switch-tested.
 
@@ -194,15 +204,15 @@ Cells enter the test only under the pre-registered **label-confirmation policy**
 
 **The unit of replication is the patient, not the library** (either library of a two-library patient counts once toward that patient's support — audited on the Macrophage–T cell pair: collapsing to patients removes 89 PAS that would have "replicated" on two libraries of single patients). The pre-registered replication filter (`replication_filter.py` v0.2.0, md5-recorded) reports a (pair, PAS) switch only if called at q < 0.05 in the same direction in ≥2 patients, with any opposite-direction call vetoing it — including between the two libraries of one patient (audited: 2 vetoed PAS where one patient's two libraries called opposite directions); |Δproportion| ≥ 0.1 is reported alongside as the effect floor, and a ≥3-patient sensitivity configuration is reported. The **replication primary is 15 libraries from 12 patients**: GSM3516664 (bone metastasis) is excluded by a pre-declared data-quality rule — whose stated premise later proved to be a clip-rate sampling artefact of the head-of-BAM estimator, so the exclusion stands only as pre-registered, with a sensitivity run including it reported — and GSM3516671 retains one confirmed cell type, so it yields no testable pair. Null combinations are index-aligned; ten permutations floor the empirical p at 1/11 = 0.091, so the null yield is a null control ("none in 10 label-shuffle nulls, empirical p ≤ 0.091"), never an FDR estimate. Replication statistics are computed on PAS identifiers; no ranked list of named switch genes is reported, because PAS-to-gene assignment in overlapping loci is under revision (tool issue #99).
 
-## Spermatogenesis analysis
+## 5.8 Spermatogenesis analysis
 
 The v2 record reuses the frozen v2 benchmark runs of both mice (h5ad checksums verified against the run manifests; no caller re-run) with byte-identical GEX-derived stage labels (marker-panel argmax over Leiden clusters of the STARsolo gene-expression matrix, orthogonal to the PAS matrix under test; panel and assignment script in the companion repository; SPC/RS/ES = 370/504/356 and 268/757/271 cells; spermatogonia excluded as fragile). The per-gene statistic is PDUI = distal / (proximal + distal), where the proximal and distal member of each gene's PAS pair are its first and last PAS in transcription order (strand from `pasbed.bed`, re-asserted per row), computed as the depth-weighted pseudobulk PDUI per stage. Per-gene 3′UTR usage across SPC → RS → ES was computed on depth-guarded genes (≥50 UMI at the PAS pair in every stage; 1,548 / 1,200 of ~10,500 genes with a pair); the monotone-shortening fraction is read against 20 stage-label shuffles (z-score against the shuffle distribution), monotone lengthening is tabulated identically, and the direction-specific evidence is the shortening-minus-lengthening excess (binomial test). A composition-controlled per-cell distal-usage residual is compared between stages by Cliff's δ against the full label-shuffle null range; per-gene medians and the across-gene UMI-weighted index are reported as descriptive scope checks. The calibrated switch test (five label shuffles per mouse) ran on all three stage pairs; cross-mouse replication matches q < 0.05 PAS between mice by gene and strand within 100 bp, requires the same direction, and is read against all 15 null pairings of label-shuffled runs, with per-gene effect sizes correlated across mice (Spearman ρ).
 
-## Second-library generalisation test
+## 5.9 Second-library generalisation test
 
 The `pbmc4k` run was pre-registered before any number existed: the frozen v2 tree, the flag set copied verbatim from the `pbmc_10k_v3` arm, the same P@100 ≥ 0.50 gate. Of the 108 recorded parameters in `run_config.json`, 107 are identical between the two human runs; the only change is the library descriptor `--seq-len` 91 → 98 (`--threads` differed, verified output-irrelevant), and nothing was retuned after seeing a `pbmc4k` number. Scoring was identical, with the library's own detected-gene denominator built by the recorded recipe. Cross-library site concordance (each library's default calls against a strand-matched default call of the other within 25 and 100 bp, both directions, with genic-shuffle nulls) was declared before computation; a matched-call-count control accompanies any cross-library atlas-agreement-precision comparison.
 
-## Compute environment
+## 5.10 Compute environment
 
 All runs used one shared Linux server under `LC_ALL=C` (machine locale tr_TR), with wall time and peak resident set size (RSS) from `/usr/bin/time -v`; frozen worktrees and per-run manifests record the code commit of every run. Peak RSS is the production number, and wall times are quoted with their concurrency disclosed. On the `pbmc_10k_v3` BAM the v2 caller used 12.53 GB peak RSS at 34:37 wall (no-IP arm) and 11.12 GB at 32:59 (IP arm), measured with all four benchmark arms running concurrently (27:43 / 12.45 GB uncontended); the mouse arms used 3.07/3.65 GB at 14:10/16:00 (concurrent); the v1 PBMC figures were 293.7 GB / 3:45:53 before the PR #97 fix. The 17-library cohort run took 1:06:26 at 13.53 GB on v2 (9:06:26 / 13.63 GB on v1) at identical output scale (505,197 unified PAS on both codes). The `pbmc4k` run (8 threads, 15:41, 3.24 GB) is a run record, not a benchmark. Competitor wall times are their own runs on the same machine and carry their retry/skip caveats verbatim (Fig S8). Every figure is generated by a script that also writes its caption and an audit TSV of every plotted value.
 
@@ -254,6 +264,10 @@ The following tokens remain open in this draft. Each is also left in place at th
 Two further items are pending but are not PI decisions and carry no placeholder token: Supplementary Figs S5 and S6 are in preparation, each with a named blocker, and nothing in this draft cites either (if either is dropped at freeze, the downstream supplementary slots renumber in one pass); and Supplementary Table T7 (competitor tool versions, parameters, run commands and run-log caveats), referenced from Methods, is to be collated from the verified run registry and run logs before submission.
 
 Every remaining [[CITE]] token marks a reference to be inserted at typesetting and is left exactly where it stands.
+
+```{=openxml}
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>
+```
 
 # Figure legends
 
