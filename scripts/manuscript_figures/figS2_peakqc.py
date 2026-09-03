@@ -80,13 +80,20 @@ from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
-matplotlib.rcParams["pdf.fonttype"] = 42
-matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.5
-matplotlib.rcParams["axes.titlesize"] = 8
-matplotlib.rcParams["axes.labelsize"] = 7.5
-matplotlib.rcParams["legend.fontsize"] = 6.0
+import re
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+
+apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
+ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
+
+
+def sc_title(s):
+    """Sentence-case a panel title (directive 6) while keeping the lower-case
+    panel letter that prefixes it: 'a   the ...' -> 'a   The ...'."""
+    m = re.match(r"^([a-z])(\s+)(.*)$", s, flags=re.S)
+    return m.group(1) + m.group(2) + sentence_case(m.group(3)) if m else sentence_case(s)
 
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 BT = WD / "results/benchmark_tools"
@@ -372,7 +379,7 @@ disposition = pd.DataFrame([
 # keeps only the panel band (12.4 -> 10.0 in tall; 8.3 -> 7.9 in wide -- the
 # three dense bottom panels tolerate that much and no more at this type size).
 fig = plt.figure(figsize=(7.9, 10.0))
-gs = fig.add_gridspec(3, 6, left=0.105, right=0.975, top=0.963, bottom=0.058,
+gs = fig.add_gridspec(3, 6, left=0.118, right=0.972, top=0.963, bottom=0.058,
                       hspace=0.48, wspace=1.25)
 axA = fig.add_subplot(gs[0, 0:3])
 axB = fig.add_subplot(gs[0, 3:6])
@@ -388,7 +395,7 @@ def style(ax):
         ax.spines[s].set_visible(False)
     for s in ("left", "bottom"):
         ax.spines[s].set_color(GRID)
-    ax.tick_params(colors=MUTED, length=2.5, labelsize=6.6)
+    ax.tick_params(colors=MUTED, length=2.5, labelsize=TYPE["tick"])
     ax.grid(True, color=GRID, lw=0.5, alpha=0.7)
     ax.set_axisbelow(True)
 
@@ -403,28 +410,32 @@ for i, key in enumerate(order):
     for n, col in slices:
         axA.barh(y, n, left=left, height=0.62, color=col, edgecolor="white", lw=0.8, zorder=3)
         left += n
-    axA.text(left + 6000, y, f"{c['n_both']:,}", va="center", fontsize=6.0, color=INK)
+    axA.text(left + 6000, y, f"{c['n_both']:,}", va="center", fontsize=ANN, color=INK)
     # second line goes under the bar; the widest bar's line starts further left and
     # sits lower so it clears both the bar above and the axes edge on the right
     x2, y2 = (1.85e5, y - 0.46) if key == "pbmc_noip" else (left + 6000, y - 0.27)
     if a["default_scored"]:
         axA.text(x2, y2, f"default {c['n_def']:,}  (P@100 {c['P_def']:.3f})",
-                 va="center", fontsize=5.4, color=MUTED)
+                 va="center", fontsize=ANN, color=MUTED)
     else:
         axA.text(x2, y2, f">=2 mol {c['n_def']:,} (POSTHOC, not the default)",
-                 va="center", fontsize=5.4, color=MUTED)
+                 va="center", fontsize=ANN, color=MUTED)
 axA.set_yticks(range(len(order)))
-axA.set_yticklabels([ARMS[k]["short"] for k in reversed(order)], fontsize=6.4)
+axA.set_yticklabels([sentence_case(ARMS[k]["short"]) for k in reversed(order)],
+                    fontsize=TYPE["tick"])
+# floor lowered so the frameless key clears the bottom arm's per-arm data line
+# (they touched at the shared 6 pt annotation floor; design pass 2026-09-03)
+axA.set_ylim(-1.15, len(order) - 0.5)
 axA.set_xlim(0, 6.15e5)
 axA.set_xticks([0, 1e5, 2e5, 3e5, 4e5])
 axA.set_xticklabels(["0", "100k", "200k", "300k", "400k"])
-axA.set_xlabel("calls scored (score_tool.py n, cutoff 100 bp)")
-axA.set_title("a   Tier composition, all final v2 arms", loc="left", fontweight="bold")
+axA.set_xlabel(sentence_case("calls scored (score_tool.py n, cutoff 100 bp)"))
+axA.set_title(sc_title("a   tier composition, all final v2 arms"), loc="left", fontweight="bold")
 axA.legend([matplotlib.patches.Patch(facecolor=c, edgecolor="white") for c in (C_TIER2, C_SINGLE, C_DEFAULT)],
-           ["tier-2 (coverage-only)", "tier-1 single-molecule",
-            "tier-1 >=2 mol (default, IP arms)"],
+           [sentence_case(s) for s in ("tier-2 (coverage-only)", "tier-1 single-molecule",
+                                       "tier-1 >=2 mol (default, IP arms)")],
            loc="lower right", bbox_to_anchor=(1.0, 0.0), frameon=False,
-           handlelength=1.2, labelspacing=0.3, fontsize=5.6)
+           handlelength=1.2, labelspacing=0.3, fontsize=ANN)
 # (the single-molecule-share / arm-naming note moved to the caption Legend)
 style(axA)
 axA.grid(False, axis="y")
@@ -438,10 +449,10 @@ for k, key in enumerate(IP_ARMS):
     axB.bar(x + (k - 1) * 0.27, q.frac * 100, width=0.25, color=a["color"], zorder=3,
             label=f"{a['short'].splitlines()[0]} (median {q.median_width_bp.iloc[0]:.0f} bp)")
 axB.set_xticks(x)
-axB.set_xticklabels(WLAB, rotation=45, ha="right", fontsize=5.8)
-axB.set_xlabel("tier-2 call width (bp; run/pasbed.bed interval)")
-axB.set_ylabel("% of tier-2 calls")
-axB.set_title("b   Tier-2 call widths (IP arms)", loc="left", fontweight="bold")
+axB.set_xticklabels(WLAB, rotation=45, ha="right", fontsize=ANN)
+axB.set_xlabel(sentence_case("tier-2 call width (bp; run/pasbed.bed interval)"))
+axB.set_ylabel(sentence_case("% of tier-2 calls"))
+axB.set_title(sc_title("b   tier-2 call widths (IP arms)"), loc="left", fontweight="bold")
 axB.legend(loc="upper right", frameon=False, handlelength=1.2, labelspacing=0.3)
 # (the tier-1-width/tier-2-interval explanation moved to the caption Legend)
 style(axB)
@@ -458,9 +469,9 @@ for k, key in enumerate(IP_ARMS):
                    f"mean {q.mean_calls_per_gene.iloc[0]:.2f}"))
 axC.set_xticks(x)
 axC.set_xticklabels(GLAB)
-axC.set_xlabel("calls per gene, pre-registered precision default")
-axC.set_ylabel("% of genes with >=1 default call")
-axC.set_title("c   Calls per gene (precision default)", loc="left", fontweight="bold")
+axC.set_xlabel(sentence_case("calls per gene, pre-registered precision default"))
+axC.set_ylabel(sentence_case("% of genes with >=1 default call"))
+axC.set_title(sc_title("c   calls per gene (precision default)"), loc="left", fontweight="bold")
 axC.legend(loc="upper right", frameon=False, handlelength=1.2, labelspacing=0.3)
 style(axC)
 
@@ -473,14 +484,14 @@ for k, key in enumerate(IP_ARMS):
     axD.bar(x + (k - 1) * 0.27, q.frac * 100, width=0.25, color=a["color"], zorder=3,
             label=f"{a['short'].splitlines()[0]}: {q.frac_single_molecule.iloc[0]*100:.1f}% single-molecule")
 axD.axvline(0.5, color=INK, lw=0.9, ls=(0, (4, 2)), zorder=4)
-axD.text(0.56, axD.get_ylim()[1] * 0.02 + 66, ">=2 molecules kept\nby the default", fontsize=5.8,
+axD.text(0.56, axD.get_ylim()[1] * 0.02 + 66, ">=2 molecules kept\nby the default", fontsize=ANN,
          color=INK, ha="left", va="top")
 axD.set_xticks(x)
 axD.set_xticklabels(SLAB)
-axD.set_xlabel("distinct clip molecules per tier-1 call (BED score)")
-axD.set_ylabel("% of tier-1 calls")
+axD.set_xlabel(sentence_case("distinct clip molecules per tier-1 call (BED score)"))
+axD.set_ylabel(sentence_case("% of tier-1 calls"))
 axD.set_ylim(0, 78)
-axD.set_title("d   Tier-1 molecule support (IP arms)", loc="left", fontweight="bold")
+axD.set_title(sc_title("d   tier-1 molecule support (IP arms)"), loc="left", fontweight="bold")
 axD.legend(loc="upper right", frameon=False, handlelength=1.2, labelspacing=0.3,
            bbox_to_anchor=(1.0, 0.78))
 style(axD)
@@ -497,20 +508,22 @@ axE.plot(sw_m1_t2["shift"], norm(sw_m1_t2.atlas_P10), color=C_M1, lw=1.3, zorder
          label=f"mouse tier-2 vs atlas (max {sw_m1_t2.atlas_P10.max():.3f})")
 axE.plot(sw_pbmc_def["shift"], norm(sw_pbmc_def.atlas_P10), color=INK, lw=1.0, ls=(0, (1, 1.5)), zorder=4,
          label=f"control: tier-1 default (max {sw_pbmc_def.atlas_P10.max():.3f} at +0)")
-axE.axvline(95, color=MUTED, lw=0.8, zorder=2)
-axE.text(98, 0.16, "+95", ha="left", fontsize=6.0, color=MUTED)
+# reference line stops below the annotation band: drawn full-height it ran through
+# the legend entries and the --auto-cleavage-offset note (design pass 2026-09-03)
+axE.axvline(95, ymax=0.63, color=MUTED, lw=0.8, zorder=2)
+axE.text(98, 0.16, "+95", ha="left", fontsize=ANN, color=MUTED)
 for xo, lab in ((AUTO_PBMC, "auto 103 (PBMC)"), (AUTO_M1, "auto 87 (mouse)")):
     axE.plot([xo], [1.045], marker="v", ms=4, color=MUTED, zorder=6, clip_on=False)
-axE.text(0.0, 0.80, "--auto-cleavage-offset:\n87 (mouse), 103 (PBMC);\nA-crest 94",
-         transform=axE.transAxes, fontsize=5.2, color=MUTED, ha="left", va="top", linespacing=1.3)
+axE.text(0.0, 0.78, "--auto-cleavage-offset:\n87 (mouse), 103 (PBMC);\nA-crest 94",
+         transform=axE.transAxes, fontsize=ANN, color=MUTED, ha="left", va="top", linespacing=1.3)
 axE.set_xlim(0, 200)
 axE.set_ylim(0, 1.62)
 axE.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
-axE.set_xlabel("post-hoc 3' shift applied to calls (nt)")
-axE.set_ylabel("P@10, relative to each curve's max")
-axE.set_title("e   Offset census (slices)", loc="left", fontweight="bold")
+axE.set_xlabel(sentence_case("post-hoc 3' shift applied to calls (nt)"))
+axE.set_ylabel(sentence_case("P@10, relative to each curve's max"))
+axE.set_title(sc_title("e   offset census (slices)"), loc="left", fontweight="bold")
 axE.legend(loc="upper left", bbox_to_anchor=(-0.02, 1.02), frameon=False,
-           handlelength=1.3, labelspacing=0.3, fontsize=5.0)
+           handlelength=1.3, labelspacing=0.3, fontsize=ANN)
 style(axE)
 
 # ---- panel f: tier-2 signed distance before/after ------------------------
@@ -523,34 +536,38 @@ steps(axF, pb_after, C_PBMC, (0, (4, 2)), 1.1, "PBMC shifted +95 (mode 0..+10)")
 steps(axF, m1_before, C_M1, "-", 1.3, "mouse before (mode +100..+110)")
 steps(axF, m1_after, C_M1, (0, (4, 2)), 1.1, "mouse shifted +87 (mode +10..+20)")
 axF.axvspan(90, 105, color=GRID, alpha=0.55, zorder=1)
-axF.axvline(0, color=MUTED, lw=0.6, zorder=2)
+axF.axvline(0, ymax=0.73, color=MUTED, lw=0.6, zorder=2)   # stops below the legend band
 axF.set_xlim(-200, 300)
 axF.set_ylim(0, 7.0)
 axF.set_yticks([0, 1, 2, 3, 4, 5, 6])
-axF.set_xlabel("signed distance to nearest atlas site (bp)\nd = truth − call; + = truth downstream")
-axF.set_ylabel("% of tier-2 calls per 20-bp bin")
-axF.set_title("f   Tier-2 offset, before / after", loc="left", fontweight="bold")
-axF.legend(loc="upper left", frameon=False, handlelength=1.5, labelspacing=0.3, fontsize=5.2)
+axF.set_xlabel(sentence_case("signed distance to nearest atlas site (bp)\n"
+                             "d = truth − call; + = truth downstream"))
+axF.set_ylabel(sentence_case("% of tier-2 calls per 20-bp bin"))
+axF.set_title(sc_title("f   tier-2 offset, before / after"), loc="left", fontweight="bold")
+axF.legend(loc="upper left", frameon=False, handlelength=1.5, labelspacing=0.3, fontsize=ANN)
 # data annotations stay; the heavy-tails caveat sentence moved to the caption Legend
 axF.text(0.98, 0.73, "shaded: ~90–105 nt (07 §3)\nmedians +64 → +13 (PBMC),\n"
          "+89 → +13 (mouse); real\ncorrected runs: +3 / +16",
-         transform=axF.transAxes, fontsize=5.0, color=MUTED, ha="right", va="top", linespacing=1.3)
+         transform=axF.transAxes, fontsize=ANN, color=MUTED, ha="right", va="top", linespacing=1.3,
+         bbox=dict(facecolor="white", alpha=0.92, edgecolor="none", pad=1.0), zorder=6)
 style(axF)
 
 # ---- panel g: tier-1 control + disposition -------------------------------
 steps(axG, ct_before, C_DEFAULT, "-", 1.3, "tier-1 default arm, before: mode [0,+10), median +0")
 steps(axG, ct_after, MUTED, (0, (4, 2)), 1.1, "same calls shifted +95: mode [−100,−90)")
-axG.axvline(0, color=MUTED, lw=0.6, zorder=2)
+axG.axvline(0, ymax=0.86, color=MUTED, lw=0.6, zorder=2)   # stops below the legend band
 axG.set_xlim(-200, 300)
 axG.set_ylim(0, 50)
-axG.set_xlabel("signed distance to nearest atlas site (bp)")
-axG.set_ylabel("% of calls per 20-bp bin")
-axG.set_title("g   Tier-1 control: no offset", loc="left", fontweight="bold")
-axG.legend(loc="upper right", frameon=False, handlelength=1.5, labelspacing=0.3, fontsize=5.2)
+# two-line axis label: the single line overran the right canvas edge at the shared
+# type scale (design pass 2026-09-03)
+axG.set_xlabel(sentence_case("signed distance to nearest\natlas site (bp)"))
+axG.set_ylabel(sentence_case("% of calls per 20-bp bin"))
+axG.set_title(sc_title("g   tier-1 control: no offset"), loc="left", fontweight="bold")
+axG.legend(loc="upper right", frameon=False, handlelength=1.5, labelspacing=0.3, fontsize=ANN)
 # short data label stays; "the offset is tier-2-specific" moved to the caption Legend
 axG.text(0.97, 0.55,
          "clip-anchored tier-1\nsits at +0\n(|d|≤10: 63.2%)",
-         transform=axG.transAxes, fontsize=5.4, color=INK, ha="right", va="top", linespacing=1.35)
+         transform=axG.transAxes, fontsize=ANN, color=INK, ha="right", va="top", linespacing=1.35)
 # The boxed negative-disposition verdict is no longer drawn on the image
 # (surgery pass, 2026-09-02): its every sentence lives in the caption Legend's
 # "Negative disposition" paragraph, and its numbers in figS2_peakqc_disposition.tsv.
@@ -686,6 +703,18 @@ subsetted TrueType (fonttype 42, no Type 3). The working-phase render carried th
 boxed disposition verdict and several in-panel explanations on the image; at the 2026-09-02 surgery pass
 they moved into the Legend above, and the image keeps panel letters, short titles, axis labels, legends
 and data annotations only.
+"""
+cap_md += """
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure annotation,
+key entry and tick label now sits at or above the 6 pt floor. Axis labels, panel titles, key entries and prose
+tick labels are sentence-cased through `_pubstyle.sentence_case()`, canonical identifiers preserved and the
+lower-case panel letters kept. Four overlaps were fixed at that larger type: the +95 marker in **e** and the
+zero references in **f** and **g** now stop below their key bands instead of running through the key entries and
+the `--auto-cleavage-offset` note; **f**'s shaded-band note carries an opaque backing so the zero reference
+passes behind it; **a**'s floor was lowered so its key clears the bottom arm's data line; **g**'s axis label is
+set on two lines (one line overran the canvas edge); and the left margin was widened for the **a** arm labels.
+No panel, number or audit TSV changed; all seven TSVs regenerate byte-identical.
 """
 p = FIGDIR / f"{NAME}.caption.md"
 p.write_text(cap_md)

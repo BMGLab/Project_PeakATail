@@ -41,6 +41,7 @@ Run:  export LC_ALL=C OMP_NUM_THREADS=1; python3 scripts/manuscript_figures/figS
 """
 import json
 import os
+import sys
 import textwrap
 from pathlib import Path
 
@@ -54,10 +55,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-matplotlib.rcParams["pdf.fonttype"] = 42
-matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.5
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+
+apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
+ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
+
+
+def sc_title(s):
+    """Sentence-case a panel title (directive 6) while keeping the lower-case
+    panel letter that prefixes it: 'a   the ...' -> 'a   The ...'."""
+    import re
+    m = re.match(r"^([a-z])(\s+)(.*)$", s, flags=re.S)
+    return m.group(1) + m.group(2) + sentence_case(m.group(3)) if m else sentence_case(s)
 
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 OUTDIR = WD / "results/figures/manuscript"
@@ -192,8 +202,8 @@ axT = fig.add_subplot(gsT[0])
 axB = fig.add_subplot(gsB[0])
 
 axT.set_xlim(0, 1); axT.set_ylim(0, 1); axT.axis("off")
-axT.set_title("a   The libraries every headline number runs on", loc="left",
-              fontweight="bold", fontsize=8)
+axT.set_title(sc_title("a   the libraries every headline number runs on"), loc="left",
+              fontweight="bold", fontsize=TYPE["panel_title"])
 
 # column x-positions (left edges, axes fraction)
 colx = [0.000, 0.125, 0.255, 0.345, 0.480, 0.600, 0.745, 0.815]
@@ -204,7 +214,7 @@ row_h = (1.0 - header_h) / n_show_rows
 
 for j, cname in enumerate(COLS):
     axT.text(colx[j] + 0.004, 1.0 - header_h / 2, cname, ha="left", va="center",
-             fontsize=6.4, color="white", fontweight="bold", linespacing=1.15)
+             fontsize=ANN + 0.4, color="white", fontweight="bold", linespacing=1.15)
 axT.add_patch(matplotlib.patches.Rectangle((0, 1.0 - header_h), 1.0, header_h,
               facecolor="#3D5A6C", edgecolor="none", zorder=0))
 
@@ -219,7 +229,7 @@ for i, (lib, cells) in enumerate(rows):
     for j, c in enumerate(cells):
         is_dash = c["text"] == DASH
         axT.text(colx[j] + 0.004, y0 + row_h / 2, c["text"], ha="left", va="center",
-                 fontsize=5.7 if j else 6.1, color=MUTED if is_dash else INK,
+                 fontsize=ANN if j else ANN + 0.4, color=MUTED if is_dash else INK,
                  fontweight="bold" if j == 0 else "normal", linespacing=1.2, zorder=2)
         tsv_rows.append(dict(panel="a", library=lib, column=COLS[j].replace("\n", " "),
                              value=c["text"].replace("\n", " "), source=c["source"],
@@ -240,32 +250,35 @@ ys = np.arange(len(bars))[::-1] * 0.9
 for (lab, v, c, hatch, src), y in zip(bars, ys):
     axB.barh(y, v, height=0.55, color="white" if hatch else c, edgecolor=c,
              linewidth=1.0, hatch=hatch, zorder=3)
-    axB.text(v + 0.05, y, f"{v:.4f}%", va="center", fontsize=6.4, color=INK, zorder=4)
+    axB.text(v + 0.05, y, f"{v:.4f}%", va="center", fontsize=ANN + 0.4, color=INK, zorder=4)
     tsv_rows.append(dict(panel="b", library=lab.replace("\n", " "), column="clip_rate_pct",
                          value=f"{v:.4f}", source=src,
                          note="hatched = head-sample estimator (known ~4.2x head bias)" if hatch else
                               "genome-wide qualifying rate (the figure constant)"))
 axB.set_yticks(ys)
-axB.set_yticklabels([b[0] for b in bars], fontsize=6.2)
+axB.set_yticklabels([sentence_case(b[0]) for b in bars], fontsize=TYPE["tick"])
 axB.axvline(CLIP_WARN, color=INK, lw=0.8, ls=(0, (4, 2)), zorder=2)
-axB.text(CLIP_WARN, ys[0] + 0.62, "0.3% caller warn threshold (26)", fontsize=5.7,
+axB.text(CLIP_WARN, ys[0] + 0.62, "0.3% caller warn threshold (26)", fontsize=ANN,
          color=INK, ha="left", va="bottom")
 axB.axvline(CLIP_SUPERSEDED, color=ORANGE, lw=0.8, ls=(0, (1, 2)), zorder=2)
 # label sits in the free space right of the retired-constant line on the TOP bar
 # row (the genome-wide bar ends at 0.57, so nothing is drawn there) -- the old
 # placement ran the text straight through the pbmc4k bar
 axB.text(CLIP_SUPERSEDED + 0.06, ys[0], "1.152% -- SUPERSEDED docstring constant,\ndo not quote (05 standing correction)",
-         fontsize=5.7, color=ORANGE, ha="left", va="center")
+         fontsize=ANN, color=ORANGE, ha="left", va="center")
 axB.set_xlim(0, 4.4)
 axB.set_ylim(ys[-1] - 0.75, ys[0] + 1.05)
-axB.set_xlabel("qualifying poly(A) soft-clip rate (% of CB reads)", fontsize=7)
-axB.set_title("b   The evidence channel: poly(A) clip rate per BAM (where a verified value exists)",
-              loc="left", fontweight="bold", fontsize=8)
+axB.set_xlabel(sentence_case("qualifying poly(A) soft-clip rate (% of CB reads)"),
+               fontsize=TYPE["axis_label"])
+# panel-level descriptive qualifier '(where a verified value exists)' moved to the
+# Legend sidecar (DESIGN_DIRECTIVES.md item 2, no-loss: it is stated in '(b) ...' there)
+axB.set_title(sc_title("b   the evidence channel: poly(A) clip rate per BAM"),
+              loc="left", fontweight="bold", fontsize=TYPE["panel_title"])
 for s in ("top", "right"):
     axB.spines[s].set_visible(False)
 for s in ("left", "bottom"):
     axB.spines[s].set_color(GRID)
-axB.tick_params(colors=MUTED, length=2.5, labelsize=6.5)
+axB.tick_params(colors=MUTED, length=2.5, labelsize=TYPE["tick"])
 axB.grid(True, axis="x", color=GRID, lw=0.5, alpha=0.7)
 axB.set_axisbelow(True)
 
@@ -356,6 +369,13 @@ panel b: `figS1_datasets_cliprate.tsv`. Machine-read inputs: the four v2 `run_co
 (fonttype 42, no Type 3). The working-phase render carried the legend paragraph on the image; at the
 2026-09-02 surgery pass it moved here, and the image keeps the table, panel titles, axis labels and
 the two reference-line labels only.
+
+Design pass 2026-09-03 (`DESIGN_DIRECTIVES.md`, supplement light pass): type now comes from the shared
+`scripts/manuscript_figures/_pubstyle.py` scale (`apply_rc()`), every on-figure annotation sits at or above
+the 6 pt floor, axis label and panel titles are sentence-cased through `_pubstyle.sentence_case()`
+(canonical identifiers preserved), and panel b's descriptive qualifier *(where a verified value exists)*
+left the image for the Legend above (no-loss: it is the "(b) Clip rates where a verified value exists"
+sentence). Numbers, panels and audit TSVs are unchanged.
 """
 p = FIGDIR / f"{NAME}.caption.md"; p.write_text(cap_md); print("wrote", p)
 

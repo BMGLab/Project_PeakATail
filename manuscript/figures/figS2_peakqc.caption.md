@@ -58,3 +58,14 @@ subsetted TrueType (fonttype 42, no Type 3). The working-phase render carried th
 boxed disposition verdict and several in-panel explanations on the image; at the 2026-09-02 surgery pass
 they moved into the Legend above, and the image keeps panel letters, short titles, axis labels, legends
 and data annotations only.
+
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure annotation,
+key entry and tick label now sits at or above the 6 pt floor. Axis labels, panel titles, key entries and prose
+tick labels are sentence-cased through `_pubstyle.sentence_case()`, canonical identifiers preserved and the
+lower-case panel letters kept. Four overlaps were fixed at that larger type: the +95 marker in **e** and the
+zero references in **f** and **g** now stop below their key bands instead of running through the key entries and
+the `--auto-cleavage-offset` note; **f**'s shaded-band note carries an opaque backing so the zero reference
+passes behind it; **a**'s floor was lowered so its key clears the bottom arm's data line; **g**'s axis label is
+set on two lines (one line overran the canvas edge); and the left margin was widened for the **a** arm labels.
+No panel, number or audit TSV changed; all seven TSVs regenerate byte-identical.

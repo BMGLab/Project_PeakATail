@@ -80,13 +80,20 @@ from matplotlib.patches import Patch
 import numpy as np
 import pandas as pd
 
-matplotlib.rcParams["pdf.fonttype"] = 42
-matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.5
-matplotlib.rcParams["axes.titlesize"] = 8
-matplotlib.rcParams["axes.labelsize"] = 7.5
-matplotlib.rcParams["legend.fontsize"] = 6.2
+import re
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+
+apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
+ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
+
+
+def sc_title(s):
+    """Sentence-case a panel title (directive 6) while keeping the lower-case
+    panel letter that prefixes it: 'a   the ...' -> 'a   The ...'."""
+    m = re.match(r"^([a-z])(\s+)(.*)$", s, flags=re.S)
+    return m.group(1) + m.group(2) + sentence_case(m.group(3)) if m else sentence_case(s)
 
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 OUTDIR = WD / "results/figures/manuscript"
@@ -263,7 +270,10 @@ axF = fig.add_subplot(gsF[1])
 axG = fig.add_subplot(gs[3, 1])
 ref_lines = []
 TITLES = []
-SUB_FS = 6.1
+# Panel subtitles are no longer drawn (DESIGN_DIRECTIVES.md item 2).  Every one is
+# collected here verbatim and written into the caption sidecar's '## Legend' under
+# 'Panel notes' -- the no-loss rule: nothing is dropped, only relocated.
+SUBTITLES = []
 
 
 def style(ax, xgrid=True, ygrid=True):
@@ -271,7 +281,7 @@ def style(ax, xgrid=True, ygrid=True):
         ax.spines[s].set_visible(False)
     for s in ("left", "bottom"):
         ax.spines[s].set_color(GRID)
-    ax.tick_params(colors=MUTED, length=2.5, labelsize=6.8)
+    ax.tick_params(colors=MUTED, length=2.5, labelsize=TYPE["tick"])
     if ygrid:
         ax.grid(True, axis="y", color=GRID, lw=0.5, alpha=0.8)
     if xgrid:
@@ -280,26 +290,15 @@ def style(ax, xgrid=True, ygrid=True):
 
 
 def titled(ax, title, subtitle):
-    """Bold panel title above a subtitle wrapped to the axes' own width.
+    """Bold, sentence-cased panel title -- and nothing else on the image.
 
-    The subtitle is re-wrapped to however many characters fit across THIS axes
-    (0.60 em per character is a safe upper bound for DejaVu Sans), and the title
-    pad is then computed in points from the resulting line count -- so neither
-    block can overflow the panel sideways or collide with the other vertically,
-    whatever text is passed in.  An empty subtitle sets the title alone."""
-    if not subtitle:
-        ax.set_title(title, loc="left", fontweight="bold", pad=7.0)
-        TITLES.append((ax, title))
-        return
-    w_pt = ax.get_position().width * ax.figure.get_figwidth() * 72.0
-    ncols = max(20, int(w_pt / (SUB_FS * 0.60)))
-    sub = "\n".join(textwrap.fill(par, ncols) for par in subtitle.split("\n"))
-    n = sub.count("\n") + 1
-    ax.set_title(title, loc="left", fontweight="bold", pad=7.0 + n * SUB_FS * 1.42)
-    ax.annotate(sub, xy=(0, 1), xycoords="axes fraction", xytext=(0, 4),
-                textcoords="offset points", ha="left", va="bottom",
-                fontsize=SUB_FS, color=MUTED, annotation_clip=False)
+    Descriptive subtitles left the canvas in the 2026-09-03 design pass
+    (DESIGN_DIRECTIVES.md item 2); each one is recorded in SUBTITLES and written
+    verbatim into the caption sidecar's '## Legend' -> 'Panel notes'."""
+    ax.set_title(sc_title(title), loc="left", fontweight="bold", pad=7.0)
     TITLES.append((ax, title))
+    if subtitle:
+        SUBTITLES.append((title.strip().split()[0], title, subtitle))
 
 
 # ===========================================================================
@@ -326,9 +325,9 @@ def progression(ax, panel, arm, datasets, versions):
             ax.plot(X, Y, ls=ls, color=c, lw=1.3, zorder=4)
             ax.plot(X, Y, ls="none", marker=mk, ms=5.0, mfc=mfc, mec=c, mew=1.2, zorder=5)
     ax.set_xticks(range(len(versions)))
-    ax.set_xticklabels([VTICK[v] for v in versions], fontsize=6.3)
+    ax.set_xticklabels([VTICK[v] for v in versions], fontsize=TYPE["tick"])
     ax.set_xlim(-0.48, len(versions) - 1 + 0.62)
-    ax.set_ylabel("value @100 bp")
+    ax.set_ylabel(sentence_case("value @100 bp"))
     style(ax, xgrid=False)
 
 
@@ -343,7 +342,7 @@ for ds in DS_A:
         if have(ds, v, "full", "P@100"):
             y = val(ds, v, "full", "P@100")[0]
             axA.annotate(f"{y:.3f}", (VERSIONS.index(v), y), xytext=(dx, LAB_DY[ds]),
-                         textcoords="offset points", fontsize=5.5, color=DCOL[ds],
+                         textcoords="offset points", fontsize=ANN, color=DCOL[ds],
                          ha=ha, va="center")
 # the flag-matching explanation moved to the legend (sidecar); the metric
 # encoding is already carried by the in-panel legend
@@ -356,7 +355,7 @@ axA.legend([Line2D([], [], color=DCOL[d], lw=1.3, marker="o", ms=4.5, mfc=DCOL[d
            [DLABEL[d] for d in DS_A]
            + ["atlas-agreement precision", "detected-gene recall"],
            loc="upper left", bbox_to_anchor=(0.0, 1.0), frameon=False, ncol=2,
-           handlelength=1.9, labelspacing=0.28, columnspacing=0.9, fontsize=5.9)
+           handlelength=1.9, labelspacing=0.28, columnspacing=0.9, fontsize=ANN)
 
 # ---- panel b: the pre-registered precision default -------------------------
 progression(axB, "b", "precision_default", DS_A, VERSIONS)
@@ -364,8 +363,10 @@ axB.set_ylim(0, 1.02)
 axB.axvspan(-0.48, 0.5, color="#F5F2EF", zorder=0)
 axB.axvspan(2 - 0.13, 3 + 0.13, color="#EFF2F3", zorder=0)
 # full explanation (and the SCAPTURE parallel) moved to the legend (sidecar)
-axB.text(-0.42, 0.30, "shipped: no ranked\ndefault output\n(BED score column = 0)",
-         fontsize=5.7, color=MUTED, ha="left", va="center")
+# same words on four narrower lines: at the 6 pt floor the third line reached the
+# boxed v2-no-flag note on its right (design pass 2026-09-03)
+axB.text(-0.42, 0.30, "shipped: no ranked\ndefault output\n(BED score\ncolumn = 0)",
+         fontsize=ANN, color=MUTED, ha="left", va="center")
 # what a user gets by typing nothing: v2's flagless >=2-molecule output (PBMC only)
 p_nf = get("b", "pbmc10k", "v2_noIP", "ge2mol_noIP_POSTHOC", "P@100", note="v2 run with no behaviour flag")
 r_nf = get("b", "pbmc10k", "v2_noIP", "ge2mol_noIP_POSTHOC", "R_det@100", note="v2 run with no behaviour flag")
@@ -381,14 +382,14 @@ axB.text(0.62, 0.355, f"v2 with NO behaviour flag → prime\n"
          f"(PBMC 10k v3, ≥2 molecules):\n"
          f"P  {p_nf:.4f} → {p_pr:.4f}  ({(p_pr/p_nf-1)*100:+.1f} %)\n"
          f"R  {r_nf:.4f} → {r_pr:.4f}  ({(r_pr/r_nf-1)*100:+.1f} %)",
-         fontsize=5.8, color=VCOL["v2_noIP"], ha="left", va="center", zorder=8,
+         fontsize=ANN, color=VCOL["v2_noIP"], ha="left", va="center", zorder=8,
          bbox=dict(facecolor="white", edgecolor=VCOL["v2_noIP"], lw=0.5, pad=2.4, alpha=0.95))
 axB.text(2.5, 0.995, "prime = v2\nΔ = 0.000000", ha="center", va="top", fontsize=6.0,
          color=INK, zorder=6)
 _dP = {ds: val(ds, "v2", "precision_default", "P@100")[0] - val(ds, "v1", "precision_default", "P@100")[0]
        for ds in ("pbmc10k", "mouse1", "mouse2")}
 axB.axhline(GATE_P, color=INK, lw=0.9, ls=(0, (4, 2)), zorder=2)
-axB.text(3.58, GATE_P + 0.012, "pre-registered gate\nP@100 ≥ 0.50", fontsize=5.7,
+axB.text(3.58, GATE_P + 0.012, "pre-registered gate\nP@100 ≥ 0.50", fontsize=ANN,
          color=INK, ha="right", va="bottom")
 ref_lines.append(dict(panel="b", kind="gate", label="pre-registered gate (13 section 1)", value=GATE_P))
 # the hollow-marker explanation and the v1 -> v2 deltas moved to the legend
@@ -398,7 +399,7 @@ titled(axB, "b   Progression at the pre-registered default",
 axB.legend([Line2D([], [], color=VCOL["v2_noIP"], lw=0, marker="o", ms=5, mfc="white",
                    mec=VCOL["v2_noIP"], mew=1.5)],
            ["v2 as a user runs it (no behaviour flag)"], loc="lower right",
-           bbox_to_anchor=(1.0, 0.0), frameon=False, handlelength=1.4, fontsize=5.9)
+           bbox_to_anchor=(1.0, 0.0), frameon=False, handlelength=1.4, fontsize=ANN)
 
 
 # ===========================================================================
@@ -411,8 +412,11 @@ def f1_iso(ax, xmax):
             P = f * R / (2 * R - f)
         ok = (2 * R - f > 0) & (P <= 1.0) & (P >= 0)
         ax.plot(R[ok], P[ok], color="#C9D1D5", lw=0.7, zorder=1)
-        ax.text(R[ok][-1], P[ok][-1], f"F1 {f:.1f}", color="#9AA7AD", fontsize=5.6,
-                ha="right", va="bottom", zorder=1)
+        # offset off the contour's own end point: placed on it, the curve ran through
+        # the label (design pass 2026-09-03)
+        ax.annotate(f"F1 {f:.1f}", (R[ok][-1], P[ok][-1]), xytext=(-2.5, -3.0),
+                    textcoords="offset points", color="#9AA7AD", fontsize=ANN,
+                    ha="right", va="top", zorder=1)
         ref_lines.append(dict(panel=ax.get_label(), kind="F1_det isoline", label=f"F1 = {f}", value=f))
 
 
@@ -421,7 +425,7 @@ def plane(ax, panel, f2_dataset, ds_keys, xmax):
     f1_iso(ax, xmax)
     ax.axhline(GATE_P, color=INK, lw=0.9, ls=(0, (4, 2)), zorder=2)
     ax.text(xmax * 0.995, GATE_P + 0.009, "pre-registered gate P@100 ≥ 0.50",
-            ha="right", va="bottom", fontsize=5.8, color=INK)
+            ha="right", va="bottom", fontsize=ANN, color=INK)
     ref_lines.append(dict(panel=panel, kind="gate", label="pre-registered gate (13 section 1)", value=GATE_P))
     sub = F2[(F2.dataset == f2_dataset) & (F2.tool != "PeakATail")]
     hands = []
@@ -483,11 +487,11 @@ def plane(ax, panel, f2_dataset, ds_keys, xmax):
         # stranded arrowhead.  Panel b draws that move, with the numbers.
         ax.plot(r_nf, p_nf, marker="D", ms=7.4, mfc="white", mec=VCOL["v2_noIP"], mew=1.6, zorder=6)
         ax.annotate("v2, no flags", (r_nf, p_nf), xytext=(-7, 0), textcoords="offset points",
-                    fontsize=5.9, color=VCOL["v2_noIP"], ha="right", va="center", zorder=8)
+                    fontsize=ANN, color=VCOL["v2_noIP"], ha="right", va="center", zorder=8)
     ax.set_xlim(0, xmax)
     ax.set_ylim(0, 0.95)
-    ax.set_xlabel("detected-gene recall R_det @100 bp")
-    ax.set_ylabel("atlas-agreement precision @100 bp")
+    ax.set_xlabel(sentence_case("detected-gene recall R_det @100 bp"))
+    ax.set_ylabel(sentence_case("atlas-agreement precision @100 bp"))
     style(ax)
     return hands
 
@@ -579,10 +583,10 @@ for btitle, ranking, arms, vers in BLOCKS:
                     lw=0.6, zorder=3, hatch="////" if tie else None, alpha=0.55 if tie else 1.0)
             axE.plot(cursor + off, R, marker="D", ms=3.6, mfc="white", mec=INK, mew=0.9, zorder=5)
             axE.text(cursor + off, max(P, R) + 0.055, f"{P:.3f}", ha="center", va="bottom",
-                     fontsize=5.0, color=INK, rotation=90, zorder=5)
+                     fontsize=ANN, color=INK, rotation=90, zorder=5)
             if tie:
                 axE.text(cursor + off, 0.016, "tie-\nbreak", ha="center", va="bottom",
-                         fontsize=4.7, color="#7a4b00", zorder=6)
+                         fontsize=ANN, color="#7a4b00", zorder=6)
         xpos.append(cursor)
         xlab.append(f"{DLABEL[ds]}\nN = {int(arms[ds].split('_N')[1]):,}")
         cursor += 1.05
@@ -590,13 +594,14 @@ for btitle, ranking, arms, vers in BLOCKS:
     cursor += 0.80
 assert n_tie_flagged == 3, n_tie_flagged   # exactly the three v1 clip-molecule rows
 axE.set_xticks(xpos)
-axE.set_xticklabels(xlab, fontsize=6.0)
+axE.set_xticklabels([sentence_case(t) for t in xlab], fontsize=TYPE["tick"])
 axE.set_ylim(0, 1.22)
 axE.set_xlim(-0.66, cursor - 1.19)
-axE.set_ylabel("atlas-agreement precision\n@100 bp (bars)")
+axE.set_ylabel(sentence_case("atlas-agreement precision\n@100 bp (bars)"))
 for s0, s1, btitle in block_span:
     axE.plot([s0 - 0.50, s1 + 0.50], [1.13, 1.13], color=MUTED, lw=0.8)
-    axE.text((s0 + s1) / 2, 1.145, btitle, ha="center", va="bottom", fontsize=6.2, color=INK)
+    axE.text((s0 + s1) / 2, 1.145, sentence_case(btitle), ha="center", va="bottom",
+             fontsize=TYPE["tick"], color=INK)
 _pu = val("pbmc10k", "v2", "matched_umiref_N46544", "P@100")[0]
 _pm = val("pbmc10k", "v2", "matched_molref_N46544", "P@100")[0]
 # the two-key rationale, tie-break numbers and the clip-vs-UMI comparison moved
@@ -631,7 +636,7 @@ for i, ds in enumerate(DS_F):
         # --- peak RSS, the quotable figure: bars, value ABOVE the bar (the strip above
         #     carries the wall time now, so nothing can land on top of a bar any more)
         axF.bar(i + off, rss, width=bw * 0.9, color=VCOL[v], edgecolor="white", lw=0.6, zorder=3)
-        axF.text(i + off, rss * 1.10, f"{rss:,.1f}", ha="center", va="bottom", fontsize=5.0,
+        axF.text(i + off, rss * 1.10, f"{rss:,.1f}", ha="center", va="bottom", fontsize=ANN,
                  color=INK, rotation=90, zorder=5)
         # --- wall time, a run record only: lollipop in its own strip, drawn lighter
         wmin = wall / 60.0
@@ -642,15 +647,17 @@ for i, ds in enumerate(DS_F):
         # short is ~1 pt and the label lands on its own marker
         axFw.annotate(f"{wmin:,.0f}" if wmin >= 20 else f"{wmin:,.1f}", (i + off, wmin),
                       xytext=(0, 4.5), textcoords="offset points", ha="center", va="bottom",
-                      fontsize=4.7, color=MUTED, rotation=90, zorder=6)
+                      fontsize=ANN, color=MUTED, rotation=90, zorder=6)
         compute_rows.append(dict(dataset=ds, version=v, peak_rss_gb=rss, wall_seconds=wall,
                                  wall_minutes=wall / 60.0, cpu_percent=cpu, source_file=src))
 axF.set_yscale("log")
 axF.set_ylim(1.0, 2500)
 axF.set_xticks(range(len(DS_F)))
-axF.set_xticklabels([DLABEL[d] for d in DS_F], fontsize=6.3)
+axF.set_xticklabels([sentence_case(DLABEL[d]) for d in DS_F], fontsize=TYPE["tick"])
 axF.set_xlim(-0.5, len(DS_F) - 0.5)
-axF.set_ylabel("peak RSS (GB, log)", fontsize=6.8)
+# two lines: rotated, the one-line form is taller than this short sub-axes (the
+# script's own y-label guard below catches it) -- same words (design pass 2026-09-03)
+axF.set_ylabel(sentence_case("peak RSS\n(GB, log)"), fontsize=TYPE["axis_label"])
 axFw.set_yscale("log")
 axFw.set_ylim(WALL_FLOOR, 6000)
 axFw.set_xlim(-0.5, len(DS_F) - 0.5)
@@ -659,7 +666,7 @@ axFw.set_xticklabels([])
 axFw.tick_params(labelbottom=False)
 # the strip is short: a longer y-label overruns it and collides with the RSS label
 # below (asserted at the bottom of this script)
-axFw.set_ylabel("wall (min)", color=MUTED, fontsize=6.8)
+axFw.set_ylabel(sentence_case("wall (min)"), color=MUTED, fontsize=TYPE["axis_label"])
 _r1 = val("pbmc10k", "v1", "RUN", "peak_rss_gb", kind="measured")[0]
 _r2 = val("pbmc10k", "v2", "RUN", "peak_rss_gb", kind="measured")[0]
 _r1n = val("pbmc10k", "v1_noIP", "RUN", "peak_rss_gb", kind="measured")[0]
@@ -672,14 +679,14 @@ titled(axFw, "f   What each step cost — compute",
        "wall time (upper strip) is a run record, not a benchmark; both strips log")
 axF.text(0.985, 0.985, f"mouse 1 peak RSS moves {_m1v2:.2f} → {_m1pr:.2f} GB ({_m1pr/_m1v2:.2f}×)\n"
          "v2 → prime, inside the pre-registered 1.5× guard rail (24 §3.2)",
-         transform=axF.transAxes, fontsize=5.7, color=INK, ha="right", va="top")
+         transform=axF.transAxes, fontsize=ANN, color=INK, ha="right", va="top")
 style(axF, xgrid=False)
 style(axFw, xgrid=False)
 axFw.tick_params(axis="x", length=0)
 axFw.legend([Line2D([], [], color=VCOL[v], lw=0.9, marker="D", ms=3.6, mfc="white",
                     mec=VCOL[v], mew=1.0) for v in VERSIONS], VERSIONS,
             loc="upper right", bbox_to_anchor=(1.0, 1.04), frameon=False, ncol=4,
-            handlelength=1.3, columnspacing=1.0, fontsize=5.9)
+            handlelength=1.3, columnspacing=1.0, fontsize=ANN)
 
 
 # ===========================================================================
@@ -699,14 +706,14 @@ for i, (metric, mlab, lower_better) in enumerate(GMET):
         off = (k - 1.5) * bw
         axG.bar(i + off, y, width=bw * 0.9, color=VCOL[v], edgecolor="white", lw=0.6,
                 zorder=3, hatch="\\\\\\" if v == "prime" else None)
-        axG.text(i + off, y + 0.014, f"{y:.3f}", ha="center", va="bottom", fontsize=5.2,
+        axG.text(i + off, y + 0.014, f"{y:.3f}", ha="center", va="bottom", fontsize=ANN,
                  color=INK, rotation=90, zorder=5)
     if lower_better:
-        axG.text(i, 0.52, "lower is better ↓", ha="center", va="bottom", fontsize=5.9, color=INK)
+        axG.text(i, 0.52, "lower is better ↓", ha="center", va="bottom", fontsize=ANN, color=INK)
 axG.set_xticks(range(len(GMET)))
-axG.set_xticklabels([m[1] for m in GMET], fontsize=6.0)
+axG.set_xticklabels([sentence_case(m[1]) for m in GMET], fontsize=TYPE["tick"])
 axG.set_ylim(0, 1.35)
-axG.set_ylabel("fraction")
+axG.set_ylabel(sentence_case("fraction"))
 # the four bars are NOT at equal call count -- say so in the legend, because a
 # fraction-of-calls metric falls with n and the pink bar's set is 33 % larger
 _gn = {v: int(get("g", "pbmc10k", v, arm, "n_scored")) for v, arm in GVERS}
@@ -728,13 +735,13 @@ axG.legend([Patch(facecolor=VCOL["v1"], edgecolor="white"),
            ["v1 default", "v2 default = the manuscript", "prime default (= v2, hatched)",
             "v2 typed with no flags"],
            loc="upper left", bbox_to_anchor=(0.0, 1.0), frameon=False, ncol=1,
-           handlelength=1.5, labelspacing=0.32, fontsize=5.9)
+           handlelength=1.5, labelspacing=0.32, fontsize=ANN)
 _sh_t5 = get("g", "pbmc10k", "shipped", "full", "kinnex_t5_frac25",
              note="shipped has no >=2-molecule arm; its FULL call set is shown for scale only")
 # the scale numbers and the human-only note moved to the legend / subtitle; a
 # short absence label stays
 axG.text(0.995, 1.0, "shipped: no ≥2-molecule output",
-         transform=axG.transAxes, fontsize=5.7, color=MUTED, ha="right", va="top")
+         transform=axG.transAxes, fontsize=ANN, color=MUTED, ha="right", va="top")
 style(axG, xgrid=False)
 
 
@@ -998,6 +1005,25 @@ rendered at PNG 600 dpi / PDF fonttype 42.
 ### Paragraph for `manuscript/05_figure_index.md` (this script does NOT write it there)
 
 {index_para}
+"""
+# DESIGN_DIRECTIVES.md item 2, no-loss: the panel subtitles that used to sit under the
+# panel titles are written into the LEGEND section verbatim -- its only home is this
+# sidecar, and the no-loss rule puts a removed on-figure sentence in the Legend.
+_pn = ("**Panel notes** (each was a subtitle line on the image until the 2026-09-03 design "
+       "pass; reproduced verbatim, nothing dropped):\n\n")
+for _letter, _title, _sub in SUBTITLES:
+    _pn += f"- **{_title.strip()}** — {_sub}\n"
+assert "\n## Provenance\n" in cap_md, "caption template lost its Provenance heading"
+cap_md = cap_md.replace("\n## Provenance\n", "\n" + _pn + "\n## Provenance\n", 1)
+cap_md += """
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and all 19 on-figure
+annotation call sites that sat below the 6 pt floor — the smallest were 4.7 pt — were raised to it. Axis labels,
+panel titles and prose tick labels are sentence-cased through `_pubstyle.sentence_case()`, canonical identifiers
+preserved and the lower-case panel letters kept. Every panel subtitle left the image for the **Panel notes**
+list above (that is the whole of the no-loss move). The iso-F1 contour labels in **c** and **d** are offset off
+their own curves, which used to run through them. No panel, number or audit TSV changed; all four TSVs
+regenerate byte-identical.
 """
 p = FIGDIR / f"{NAME}.caption.md"; p.write_text(cap_md); print("wrote", p)
 

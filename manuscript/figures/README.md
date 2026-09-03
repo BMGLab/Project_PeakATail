@@ -22,14 +22,23 @@ must travel with each figure are in [`../05_figure_index.md`](../05_figure_index
 
 ## Main figures
 
+Redesigned 2026-09-02/03 under [`DESIGN_DIRECTIVES.md`](DESIGN_DIRECTIVES.md): one message per
+panel, development history off the mains, exactly one precision/recall plane across Figs 1–3
+(it is Fig 2), sentence-case labels, and the shared style module
+`scripts/manuscript_figures/_pubstyle.py` (palette, per-tool marker identity, type scale,
+`apply_rc()`, `sentence_case()`) so all six read as one system. Every main is laid out at the
+final print width — 7.09 in / 180 mm — saved at 600 dpi PNG + fonttype-42 vector PDF, and each
+script asserts a text-overlap, minimum-type-size (6 pt) and off-canvas audit plus the 8-pixel
+blank-edge check before it writes.
+
 | # | File | Shows |
 |---|---|---|
-| 1 | `fig1_overview` | Method overview on real data: the clip-evidence channel (0.573% genome-wide clip rate — supersedes 1.152%), the pre-registered default as a decision tree (167,565 → 46,524), one real locus |
-| 2 | `fig2_accuracy` | Final Stage-2 run vs competitors on PBMC and testis; precision default P@100 0.706/0.745/0.757 passes the pre-registered P ≥ 0.50 gate ×3; matched-N framing per 25 |
-| 3 | `fig3_tradeoff` | The reliability trade surface: molecule sweep P 0.706→0.941 vs R_det 0.175→0.083 (only ≥2 pre-registered), 10 bp window check, cross-mouse replicate agreement, compute 293.7 GB → 12.53 GB |
-| 4 | `fig4_calibration` | Only Fisher cells-mode without marker pre-selection controls FDR (3.0% null p<0.05, 0/20 null runs with hits); shipped defaults anti-conservative (20.3/13.0/24.7%) |
-| 5 | `fig5_spermatogenesis` | Testis control: per-gene monotone shortening above shuffle nulls in both mice (31.4% / 30.5% vs 17.4% / 21.0%); per-cell residual falls at every stage; 6.1–11.2k replicated PAS/pair, 0 in all 15 null pairings; negatives boxed. **v2 record (merged code 9dfdefb3, verified SOUND 2026-09-02; `SPERMATOGENESIS_VERSION=v1` reproduces the v1 render)** |
-| 6 | `fig6_cohort` | Tumour-cohort application: Stage-3 v2 replication funnel, 0 replicated in each of 10 patient-wise label-shuffle nulls, effect floor, genomic-context honesty panel |
+| 1 | `fig1_overview` | Four plain-language **schematic** panels for a reader who has never run a caller: some reads keep a piece of the poly(A) tail; tail-carrying read ends pile up at one position; the internal-priming look-alike and the genome check that removes it; trusted sites → per-cell counts → a calibrated cell-type comparison. Exactly two headline badges (~0.6% clip rate; the trusted set's rule). No panel plots a data series — every quantity they stand for is measured by the script, written to the audit TSVs and printed in the Legend. **The data-rich six-panel record stays reachable: `FIG1_STYLE=detailed` → `fig1_overview_detailed.{png,pdf,caption.md}`** (7.35 in canvas, working-phase design, deliberately not held to the design laws) |
+| 2 | `fig2_accuracy` | Where PeakATail sits against the field, and what it costs at a matched call budget. Panels a/b: the paper's **only** precision/recall plane (PBMC, testis) carrying the molecule-support operating curve with the two user-choosable points (≥2 precision default, ≥1 sensitivity arm) and the pre-registered P ≥ 0.50 gate — PASS ×3 (0.706/0.745/0.757). Panels c/d: precision at a matched call budget (25 §2). **No development history** — the shipped pre-fix caller and the no-IP intermediates are `plotted = False` rows and live in S12/S8 |
+| 3 | `fig3_tradeoff` | Robustness: matching-window resolution 10–100 bp, biological-replicate and pre-registered cross-donor agreement with its call-count ceiling, and compute for the **current** caller against the five competitors on the same box. The trade surface moved to Fig 2 (directive 5); the v1→v2 arrow moved to S8/S12. Stem retained for file identity |
+| 4 | `fig4_calibration` | Which `switch diff` configurations control the false-discovery rate: only Fisher · cells · markers off (3.0% null p<0.05, 0/20 null runs with a q<0.05 hit); **every configuration that keeps the default top-200 marker pre-selection is anti-conservative** (20.3 / 13.0 / 24.7%), as are Fisher reads and NB pairwise without it. Three panels on one shared configuration axis: false-positive rate, false calls per null run, cost in the real run |
+| 5 | `fig5_spermatogenesis` | Testis control, six one-message panels: per-gene monotone shortening above shuffle nulls in both mice (31.4% / 30.5% vs 17.4% / 21.0%); composition-controlled per-cell residual falls at every stage; cross-mouse PAS replication (6.1–11.2k per pair, 0 in all 15 null pairings) and per-gene effect; the two PI-endorsed negatives inside a dashed "not claim carriers" frame. **v2 record (merged code 9dfdefb3, verified SOUND 2026-09-02; `SPERMATOGENESIS_VERSION=v1` reproduces the v1 render)** |
+| 6 | `fig6_cohort` | Tumour-cohort application, four panels: the replication funnel real vs the label-shuffle null (nothing survives under the null), the top 12 of 47 multi-patient cell-type pairs with the K≥3 subset, patient support, and the genomic-context honesty panel — kept on the image because a caveat a reader must not miss cannot live only in a caption |
 
 ## Supplementary figures
 
@@ -90,7 +99,11 @@ Version switches (kept through the rename — they select runs, not stems; v1 re
 reproducible): `FINAL_BENCHMARK_VERSION=v1` (fig2_accuracy), `TRUSTED_NOVEL_VERSION=v1`
 (figS7_novelfunnel), `LAUGHNEY_SWITCHES_VERSION=v1_code` (fig6_cohort),
 `SPERMATOGENESIS_VERSION=v1` (fig5_spermatogenesis), `FIG3_WORKDIR`
-(fig3_tradeoff cache). Note: fig2, fig5 and fig6 write both versions' outputs over the same
+(fig3_tradeoff cache), and — added at the 2026-09-02 design pass — `FIG1_STYLE=detailed`
+(fig1_overview), which renders the retained data-rich six-panel record to its own
+`fig1_overview_detailed.*` stem. Both Fig 1 styles compute the same numbers and write the same
+five audit TSVs byte-identically; the style only chooses what is drawn, so it never needs a
+restore run. Note: fig2, fig5 and fig6 write both versions' outputs over the same
 file stems, so after a v1 render re-run the default to restore the v2 paper files.
 
 PDFs are vector throughout (no rasterized panels) with subsetted TrueType fonts embedded and

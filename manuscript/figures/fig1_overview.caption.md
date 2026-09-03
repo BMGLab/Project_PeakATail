@@ -2,9 +2,38 @@
 
 ## Legend
 
-Figure 1 | What PeakATail does, drawn on the data it was measured on (code 9dfdefb; PBMC 10k v3 arm run 2026-08-21 16:14-16:48). (a) A read is used when it is mapped, on the strand of the pass, carries a 16-nt CB tag and aligns over ≤ 91 nt; it enters the poly(A) channel when its 3′-side terminal soft clip is ≥ 6 nt and ≥ 80% A (+) / T (−) with a ≥ 6-nt run flush to the alignment edge — 0.573% of accepted CB reads genome-wide (3,195,067 / 557,564,408; 23 §2, superseding the 1.152% of 10 §R2). Support is distinct (CB, UB) molecules. (b) Real BAM records and real GRCh38 sequence; the cluster, its read-weighted mode and its molecule count are recomputed here from those records and reproduce column 5 of the caller’s BED. Beneath it, at the same scale, a real ≥2-molecule call the internal-priming filter removed. (c) Sizes and precisions from one scorer (19 §1/§2). (d) Profiles, trigger breakdown and the removed set’s precision are computed by this script; the same pipeline returns 0.7060 on the kept set, reproducing the scorer’s 0.7062. (e) Fig 3’s molecule sweep; only ≥2 was pre-registered. (f) Only the FDR-controlling configuration is used, and only replicated switches are reported. Caveats: atlas-agreement precision is agreement with a curated atlas, not ground truth; one donor, one chemistry, and pipelines that trim poly(A) before alignment destroy this evidence (10 §R2); the panel-b loci are examples chosen by stated criteria, not summaries; --polya-min-umis is 1 at the caller and ≥2 molecules is the pre-registered OUTPUT. 
+Figure 1 | How PeakATail finds the 3′ ends of transcripts in single cells, and what it gives you. All four panels are schematics drawn to explain the method; no panel plots a data series, and every quantity a panel stands for is measured by this script, printed below and written to `results/figures/manuscript/fig1_overview.tsv`. (a) A cell’s mRNAs end in a poly(A) tail that is added after cleavage and is not written in the genome. Sequencing reads mostly stop short of that end, but a small fraction run into the tail and keep a piece of it as a soft-clipped A-run; because that piece is not genomic, the read’s last aligned base is the transcript’s end at single-base resolution. Genome-wide 0.5730% of accepted cell-barcoded reads carry such a piece (3,195,067 / 557,564,408). (b) The last aligned bases of tail-carrying reads from many different molecules stack at one position; PeakATail joins them into a cluster and calls its read-weighted mode a site, with support counted as distinct (cell barcode, UMI) molecules. A coverage summit that no tail-carrying read claims is written to a separate, second-class file and is not in the default output: its atlas agreement is 0.0558 against 0.7062 for the default. (c) An A-rich stretch encoded by the genome is copied into the RNA and can capture the oligo-dT primer, giving a read whose clipped A-run is indistinguishable from a tail-carrying read’s (internal priming). The A-rich genome lies upstream of and at the called base, not downstream of it — the aligner runs into the tract and clips where it ends, so the run ends at or before the call in 91.7% of removals. The genome tells the two apart, so PeakATail reads the 40 nt of genome sequence around every called end (offsets -9…+30) and removes calls that sit on a run of genomic A. On PBMC 10k v3 that removes 15,588 of 62,132 ≥2-molecule calls and moves atlas agreement 0.5907 → 0.7062; it also costs recall, since 24.6% of what it removes does have an atlas site within 100 bp. (d) The kept sites are counted in every cell and compared between cell types with the one test configuration that holds its false-positive rate (3.0% of label-shuffled tests p < 0.05, 0/20 null runs with a q < 0.05 hit), reporting only switches that replicate across biological units. The two badges are the figure’s only headline numbers; the second names the paper’s pre-registered TRUSTED SET and not a shipped CLI default — `--polya-min-umis` is 1 at the caller and the genome check is the opt-in `--ip-filter`, run here in filtering mode. Code 9dfdefb; PBMC 10k v3 arm run 2026-08-21 16:14-16:48; the data-rich six-panel render of the same numbers is `FIG1_STYLE=detailed`.
 
-### Panel-by-panel
+### What each panel is, and what it stands for
+
+Panel a is a cartoon, not to scale: the real read-level
+evidence at a real locus — real BAM records, real soft-clipped sequence, real GRCh38 bases — is the
+detailed render's panel b and the `fig1_overview_reads.tsv` / `fig1_overview_sequence.tsv` companions. Panel b's pile is a
+schematic of the clustering rule; at the worked example locus the real cluster is 5 clip
+positions spanning 16 bp, joined by the 25 bp gap rule, carrying
+31 distinct molecules, and its read-weighted mode is the called base. Panel c's base
+squares are schematic, but their geometry is the measured one: the flagged genomic A-run **ends at or before
+the called base in 91.7% of removed calls** (median run-end offset
+0), which is why the run is drawn ending at the call and why the text says the
+filter reads the window **around** the called end rather than downstream of it — the caller's window is
+offsets -9…+30 from the called base, i.e. 40 nt spanning
+both sides, even though `ema/experimental/internal_priming.py` documents the rule as targeting a tract
+*downstream* of the cleavage site. As configured, a call is flagged by a run of ≥
+6 genomic A or an A-fraction ≥ 70% in that window;
+99.97% of removals are flagged by the run rule and only
+0.63% by the fraction rule. The measured A-fraction profile over all
+46,544 kept and 15,588 removed calls is `fig1_overview_ipprofile.tsv` (drawn in the detailed
+render's panel d). Panel d is icons only — no counts are drawn, and none of Fig 5's or Fig 6's yields
+appear on this figure.
+
+### The measured record behind the schematic
+
+Every quantity the four panels abstract is computed by this script on every run, whichever style is rendered,
+and is drawn panel by panel in the detailed render (`FIG1_STYLE=detailed`,
+`figures/fig1_overview_detailed.caption.md`). Nothing was dropped when the figure was simplified; it moved here.
+**The panel letters in this section are the detailed render's six panels a–f, not the four panels of the
+figure above**: a ingestion, b the worked locus, c the funnel, d the internal-priming filter measured,
+e the molecule trade surface (which the mains now show in exactly one place, item 5), f the downstream chain.
 
 **Panel a — ingestion.** The four acceptance conditions are `ema/countmatrix/read.py:read_check` as run
 (`strategy=clip_seeded`, `--seq-len 91`, `--barcode-tag CB`, `cb_len
@@ -121,6 +150,10 @@ Fig 5's and are being regenerated on the Stage-3 v2 chain.
 
 ### Caveats that travel with this figure
 
+Caveats 1–6 have travelled with this figure since the working phase; where one names a panel letter it means
+the **detailed** render's panels a–f (in the default render the method is stated in this Legend rather than on
+the image). Caveat 7 is new with the 2026-09-02 simplification.
+
 1. Atlas-agreement precision is agreement with a curated atlas, not ground truth: atlas-novel true sites count as
    false positives, and the recall denominator is the atlas restricted to genes detected in the dataset.
 2. The clip rate and every locus shown are CellRanger 3.0.0 / 10x 3′ v3 / 91 bp R2 on one PBMC donor. Any
@@ -133,11 +166,17 @@ Fig 5's and are being regenerated on the Stage-3 v2 chain.
    overlapping loci is under revision (`09` §5, issue #99), which is why no gene-level claim is made here. The
    panel-b labels name the nearest annotated **transcript** 3′ end and its distance, never "the gene's 3′ end":
    for the kept locus those differ by 7,021 bp.
-5. `--polya-min-umis` is 1 at the caller; the ≥2-molecule default is the pre-registered *output*, filtered from
-   the tier-1 file. Do not describe it as the caller's built-in default.
+5. Neither rule the second badge names is a shipped CLI default: `--polya-min-umis` is 1 at the caller and the
+   ≥2-molecule threshold is the pre-registered *output*, filtered from the tier-1 file, while the genome check is
+   the opt-in `--ip-filter` (`ip_filter` defaults to False in `ema/main.py`, and `internal_priming.py`'s own
+   default mode is `annotate`, which flags without dropping; the paper's arm runs it in filtering mode). The badge
+   therefore reads "Trusted set", not "Default": do not describe either rule as the caller's built-in default.
 6. Panel d's profile and trigger breakdown are computed by this script, not quoted from a verified document; the
    method is stated on the figure and in this caption, and the same pipeline reproduces the scorer's precision on
    the kept set as a control.
+7. The four panels of the default render are schematics: they illustrate the mechanism and must not be read
+   as data. The evidence for every claim they make is in Figs 2–3 (accuracy and the trade surface), Fig 4
+   (calibration), the audit TSVs listed under Provenance, and the detailed render of this same script.
 
 ## Provenance
 
@@ -150,28 +189,30 @@ Fig 5's and are being regenerated on the Stage-3 v2 chain.
 - Sources of truth: `19_final_gate_v2.md` §1/§2 (verifier verdict FIXED), `22_performance_roadmap.md` §6,
   `23_algorithm_roadmap.md` §2 + `results/algo_headroom/VERIFY` §5, `14_switch_calibration_v2.md` (SOUND),
   `20_stage3_replication.md` (rule only), and the run's own `run_config.json` / `pas_support.tsv`.
+- Styles: `FIG1_STYLE=simple` (default) writes `fig1_overview.{png,pdf,caption.md}`; `FIG1_STYLE=detailed` writes
+  `fig1_overview_detailed.{png,pdf,caption.md}`. Both styles compute the same numbers and write the same five audit
+  TSVs, byte-identically; the style only chooses what is drawn.
 
 ### Index paragraph (for `05_figure_index.md` — add by hand, this script does not edit it)
 
-**fig1_overview — Fig 1, what the method is, on real data (2026-08-21, built from verified artefacts
-plus quantities computed in-script, each with its method recorded in `fig1_overview.tsv`).** Six panels: (a) ingestion and the acceptance rules, with the corrected
-genome-wide poly(A)-clip rate 0.5730% (3,195,067 / 557,564,408 accepted CB reads; `23` §2 —
-this supersedes 1.152%); (b) one real PBMC locus drawn to scale — real reads, real soft clips, real GRCh38
-sequence, the single-linkage cluster (5 clip positions spanning 16 bp, joined by the
-25 bp gap rule) and its read-weighted mode, the hexamer at
--18, the internal-priming window — and beneath it a real ≥2-molecule call the filter removed;
-(c) the funnel 402,860 peaks → 68,855 internal-priming removals → tier 1
-167,629 / tier 2 166,376 → default 46,544, with P@100
-0.0558 / 0.3520 / 0.7062 against a
-0.0217 shuffled null; (d) the filter measured — A-fraction profiles of kept vs removed
-calls, 99.97% of removals triggered by the ≥6-A run rule, the run ending at or before
-the call in 92%, and removed-call precision 0.246 vs kept
-0.706; (e) the molecule trade surface with the single pre-registered point ringed and the
-F1 honesty note; (f) the downstream chain, calibrated test and replication rule, with no Fig 5 counts.
-**Caveats that travel with it:** atlas-agreement precision is not ground truth; single donor, single chemistry,
-and poly(A)-trimming pipelines destroy the evidence (`10` §R2); the panel-b loci are examples, not summaries;
-`--polya-min-umis` is 1 at the caller and ≥2 is the pre-registered *output*; panel d is computed in-script with
-its method stated and a control that reproduces the scorer. Full caption:
-`figures/fig1_overview.caption.md`; sources `19_final_gate_v2.md` §1/§2, `22_performance_roadmap.md` §6,
-`23_algorithm_roadmap.md` §2, `14_switch_calibration_v2.md`, `20_stage3_replication.md`, and the run's own
-`run_config.json` / `pas_support.tsv`.
+**fig1_overview — Fig 1, what the method is, for a reader who has never run a caller
+(2026-08-21; redesigned 2026-09-02 under `figures/DESIGN_DIRECTIVES.md` item 3).** Four plain-language
+schematic panels: (a) most reads stop short of the transcript end while a few run into the poly(A) tail and keep
+a non-genomic piece of it, which fixes the end to a single base — 0.5730% of accepted cell-barcoded
+reads genome-wide (3,195,067 / 557,564,408; `23` §2, superseding 1.152%); (b) the last aligned bases
+of tail-carrying reads from many molecules stack at one position and become a called site, while a coverage-only
+summit is second class (atlas agreement 0.0558 vs 0.7062); (c) the
+internal-priming look-alike and the genome check that removes it — the genomic A-run ends at or before the call
+in 91.7% of removals, the window read is 40 nt **around**
+the called end, and the filter removes 15,588 of 62,132 ≥2-molecule calls, moving P@100
+0.5907 → 0.7062 at a real recall cost (24.6% of the removals do
+have an atlas site within 100 bp); (d) the trusted list → per-cell counts → cell-type comparison with the one
+FDR-controlling configuration (3.0% of label-shuffled tests p < 0.05). Exactly two headline
+badges (0.6% of reads carry the tail; the trusted set keeps sites with ≥ 2
+tail-carrying molecules that pass the genome check — the paper's pre-registered output, not a CLI default); no trade curve (item 5 keeps it in exactly one place in the mains), no funnel
+table, no statistics block and no base-resolution locus track — those are the detailed render and Figs 2–4.
+**Caveats that travel with it:** the panels are schematics, not data; atlas-agreement precision is not ground
+truth; single donor, single chemistry, and poly(A)-trimming pipelines destroy the evidence (`10` §R2);
+`--polya-min-umis` is 1 at the caller, ≥ 2 is the pre-registered *output* and the genome check is
+the opt-in `--ip-filter` — the second badge is the paper's trusted set, not the shipped CLI default. Full caption:
+`figures/fig1_overview.caption.md`; the data-rich record: `figures/fig1_overview_detailed.caption.md`.

@@ -77,7 +77,9 @@ Cache: results/figures/manuscript/.cache_figS3_nulldesign/ (delete to force
        a full density recompute; <=1 thread throughout, bedtools+awk stream).
 """
 import os
+import re
 import subprocess
+import sys
 from pathlib import Path
 
 os.environ.setdefault("OMP_NUM_THREADS", "1")
@@ -92,13 +94,18 @@ from matplotlib.patches import Rectangle
 import numpy as np
 import pandas as pd
 
-matplotlib.rcParams["pdf.fonttype"] = 42
-matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.5
-matplotlib.rcParams["axes.titlesize"] = 8
-matplotlib.rcParams["axes.labelsize"] = 8
-matplotlib.rcParams["legend.fontsize"] = 6.3
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+
+apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
+ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
+
+
+def sc_title(s):
+    """Sentence-case a panel title (directive 6) while keeping the lower-case
+    panel letter that prefixes it: 'a   the ...' -> 'a   The ...'."""
+    m = re.match(r"^([a-z])(\s+)(.*)$", s, flags=re.S)
+    return m.group(1) + m.group(2) + sentence_case(m.group(3)) if m else sentence_case(s)
 
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 OUTDIR = WD / "results/figures/manuscript"
@@ -313,7 +320,7 @@ def style(ax):
         ax.spines[s].set_visible(False)
     for s in ("left", "bottom"):
         ax.spines[s].set_color(GRID)
-    ax.tick_params(colors=MUTED, length=2.5, labelsize=7)
+    ax.tick_params(colors=MUTED, length=2.5, labelsize=TYPE["tick"])
     ax.set_axisbelow(True)
 
 
@@ -338,10 +345,10 @@ axA.text(X_DUMP - BW / 2 - 0.06, 0.687,
          "\"null\" 0.62–0.75:\nmoves 0.14 with\narbitrary definition\nchoices (gap 7)",
          ha="right", va="center", fontsize=6.0, color=C_RETIRED, linespacing=1.3)
 axA.annotate("0.615", (X_DUMP + BW / 2, 0.615), xytext=(X_DUMP + BW / 2 + 0.05, 0.585),
-             fontsize=5.8, color=C_RETIRED, ha="left", va="center",
+             fontsize=ANN, color=C_RETIRED, ha="left", va="center",
              arrowprops=dict(arrowstyle="-", color=C_RETIRED, lw=0.5))
 axA.annotate("0.749 / 0.753", (X_DUMP + BW / 2, 0.751),
-             xytext=(X_DUMP + BW / 2 + 0.05, 0.79), fontsize=5.8, color=C_RETIRED,
+             xytext=(X_DUMP + BW / 2 + 0.05, 0.79), fontsize=ANN, color=C_RETIRED,
              ha="left", va="center",
              arrowprops=dict(arrowstyle="-", color=C_RETIRED, lw=0.5))
 # curated regime: five arms + 15 null seeds
@@ -355,7 +362,7 @@ for i, (x0, arm) in enumerate(zip(jit, arm_order)):
     axA.plot(X_CUR + x0, v, "o", ms=5.5, mfc=C_REAL, mec="white", mew=0.8, zorder=5)
     dy = 4.5 if i % 2 == 0 else 12.5   # stagger labels: the arms sit 0.02 apart
     axA.annotate(ARM_LAB[arm], (X_CUR + x0, v), xytext=(0, dy),
-                 textcoords="offset points", fontsize=5.6, color=C_REAL,
+                 textcoords="offset points", fontsize=ANN, color=C_REAL,
                  ha="center", va="bottom")
 axA.plot(X_CUR + rng.uniform(-0.16, 0.16, len(null_seeds_bc)), null_seeds_bc,
          "o", ms=3.6, mfc=C_NULL, mec="white", mew=0.6, alpha=0.9, zorder=5)
@@ -373,14 +380,14 @@ axA.text(X_CUR - 0.42, 0.062, "one reconciled null\n(3 seeds × 5 arms)\n0.020�
 axA.set_xlim(-1.05, 1.75)
 axA.set_ylim(0, 1.06)
 axA.set_xticks([X_DUMP, X_CUR])
-axA.set_xticklabels(["RETIRED regime:\n18.4M-entry dump,\nwhole-interval match",
-                     "curated PolyASite 2.0\npoints, strand-matched\n3′ base, one null"],
-                    fontsize=6.4)
+axA.set_xticklabels([sentence_case("RETIRED regime:\n18.4M-entry dump,\nwhole-interval match"),
+                     sentence_case("curated PolyASite 2.0\npoints, strand-matched\n3′ base, one null")],
+                    fontsize=TYPE["tick"])
 axA.get_xticklabels()[0].set_color(C_RETIRED)
 axA.get_xticklabels()[1].set_color(INK)
-axA.set_ylabel("atlas-agreement precision @100 bp")
-axA.set_title("a   The dump could not rank the strategies;\n"
-              "      the curated point reference can", loc="left", fontweight="bold")
+axA.set_ylabel(sentence_case("atlas-agreement precision @100 bp"))
+axA.set_title(sc_title("a   the dump could not rank the strategies;\n"
+                       "      the curated point reference can"), loc="left", fontweight="bold")
 style(axA)
 
 # ---- panel b: density recomputed on the curated reference ------------------
@@ -398,26 +405,28 @@ axB.set_yscale("log")
 axB.set_ylim(8e-4, 1.0)
 axB.set_xticks(Xd)
 axB.set_xticklabels([str(c) for c in CUTOFFS])
-axB.set_xlabel("distance to nearest same-strand curated site (bp)")
-axB.set_ylabel("fraction of bp within reach (log)")
-axB.set_title("b   Chance = local density of the curated reference\n"
-              "      (recomputed here; dump densities retired)",
+axB.set_xlabel(sentence_case("distance to nearest same-strand curated site (bp)"))
+axB.set_ylabel(sentence_case("fraction of bp within reach (log)"))
+# the parenthetical subtitle line '(recomputed here; dump densities retired)' moved
+# to the Legend sidecar (directive 2, no-loss: it is the '(b) Reference density
+# recomputed on the curated point reference (dump densities retired)' sentence)
+axB.set_title(sc_title("b   chance = local density of the curated reference"),
               loc="left", fontweight="bold")
 axB.annotate(f"@100 bp: {frac_gb[I100]:.4f} of gene-body bp\n"
              f"measured null mean {null_mean_bc:.4f}\n"
              f"(ratio {dens_ratio:.2f})",
              (Xd[I100], frac_gb[I100]), xytext=(Xd[I100] - 0.35, 0.125),
-             fontsize=6.0, color=C_NULL, ha="right", va="center", linespacing=1.35,
+             fontsize=ANN, color=C_NULL, ha="right", va="center", linespacing=1.35,
              arrowprops=dict(arrowstyle="-", color=C_NULL, lw=0.6))
 # short data label only; the scaffold-exclusion and retired-dump-count
 # sentences moved to the legend (2026-09-02 submission pass)
 axB.text(0.985, 0.04,
          f"{N_ON_GENOME:,} sites on the {GENOME_BP/1e9:.2f} Gb genome\n"
          f"— one per {BP_PER_SITE/1e3:.1f} kb",
-         transform=axB.transAxes, fontsize=5.8, color=MUTED, ha="right",
+         transform=axB.transAxes, fontsize=ANN, color=MUTED, ha="right",
          va="bottom", linespacing=1.4)
 axB.legend(loc="upper left", bbox_to_anchor=(0.0, 1.02), frameon=False,
-           fontsize=5.8, handletextpad=0.4, labelspacing=0.35)
+           fontsize=ANN, handletextpad=0.4, labelspacing=0.35)
 style(axB)
 
 # ---- panel c: the reconciled null across the verified chain ----------------
@@ -451,7 +460,7 @@ for block_lab, y0, y1 in block_bounds:
     axC.text(0.0115, y1 + 0.85, block_lab, fontsize=6.6, color=INK,
              fontweight="bold", ha="left", va="center")
 axC.set_yticks(yticks)
-axC.set_yticklabels(ylabs, fontsize=6.2)
+axC.set_yticklabels(ylabs, fontsize=TYPE["tick"])
 for t, c in zip(axC.get_yticklabels(), ycols):
     t.set_color(c)
 axC.set_xscale("log")
@@ -459,9 +468,9 @@ axC.set_xlim(0.009, 1.05)
 axC.set_xticks([0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0])
 axC.set_xticklabels(["0.01", "0.02", "0.05", "0.1", "0.2", "0.5", "1"])
 axC.set_ylim(y + 0.5, -0.9)   # inverted: first block on top; bottom pad for notes
-axC.set_xlabel("atlas-agreement precision @100 bp (log)")
-axC.set_title("c   One null everywhere: every verified score TSV\n"
-              "      carries score_tool.py's 3-seed genic shuffle",
+axC.set_xlabel(sentence_case("atlas-agreement precision @100 bp (log)"))
+axC.set_title(sc_title("c   one null everywhere: every verified score TSV\n"
+                       "      carries score_tool.py's 3-seed genic shuffle"),
               loc="left", fontweight="bold")
 axC.legend(handles=[
     Line2D([], [], marker="o", ls="", ms=4.2, mfc="white", mec=MUTED, mew=1.2,
@@ -470,7 +479,7 @@ axC.legend(handles=[
            label="real call set"),
     Line2D([], [], marker="o", ls="", ms=5.2, mfc="white", mec=MUTED, mew=1.4,
            label="catalog-based (not ranked)"),
-], loc="lower right", bbox_to_anchor=(1.0, -0.005), frameon=False, fontsize=5.8,
+], loc="lower right", bbox_to_anchor=(1.0, -0.005), frameon=False, fontsize=ANN,
     handletextpad=0.35, labelspacing=0.3)
 # (the multi-sentence null-definition note that sat here moved to the legend
 # in the 2026-09-02 submission pass; its content is in the caption below)
@@ -633,6 +642,15 @@ cap_md = f"""# Fig S3 — `figS3_nulldesign` caption (generated by `scripts/manu
 Sources: `{SRC_BC}`; `fig2_accuracy.tsv` (19 FIXED, v2 chain); density `{SRC_DENS}`;
 retired-regime constants `{SRC_07}` and `{SRC_05}`.
 Every plotted value: `results/figures/manuscript/figS3_nulldesign.tsv` and `figS3_nulldesign_density.tsv`.
+"""
+cap_md += """
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure annotation
+sits at or above the 6 pt floor. Axis labels, panel titles and prose tick labels are sentence-cased through
+`_pubstyle.sentence_case()` with canonical identifiers preserved and the lower-case panel letters kept. Panel b's
+parenthetical subtitle line *(recomputed here; dump densities retired)* left the image for the Legend above
+(no-loss: it is the \"(b) Reference density recomputed on the curated point reference (dump densities retired)\"
+sentence). No panel, number or audit TSV changed; both TSVs regenerate byte-identical.
 """
 p = FIGDIR / f"{NAME}.caption.md"
 p.write_text(cap_md)

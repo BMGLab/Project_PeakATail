@@ -59,10 +59,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-matplotlib.rcParams["pdf.fonttype"] = 42
-matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.5
+import re
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+
+apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
+ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
+
+
+def sc_title(s):
+    """Sentence-case a panel title (directive 6) while keeping the lower-case
+    panel letter that prefixes it: 'a   the ...' -> 'a   The ...'."""
+    m = re.match(r"^([a-z])(\s+)(.*)$", s, flags=re.S)
+    return m.group(1) + m.group(2) + sentence_case(m.group(3)) if m else sentence_case(s)
 
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 OUTDIR = WD / "results/figures/manuscript"
@@ -88,10 +98,20 @@ REG = OUTDIR / "fig3_tradeoff_compute.tsv"
 reg = pd.read_csv(REG, sep="\t")
 
 
+# Fig 3's compute registry renamed its current-version row 'PeakATail v2' -> 'PeakATail'
+# in the 2026-09-03 main-figure design pass (DESIGN_DIRECTIVES.md item 4: the mains carry
+# no v1->v2 history).  S8 IS the version-history supplement, so it still names v1 and v2:
+# resolve the renamed row here.  Same registry row, same numbers -- the EXPECT asserts
+# below still pin 34:37.49 / 12.53 GB, so a wrong row cannot pass silently.
+REG_ALIAS = {"PeakATail v2": ("PeakATail v2", "PeakATail")}
+
+
 def rrow(tool):
-    q = reg[reg.tool == tool]
-    assert len(q) == 1, (tool, len(q))
-    return q.iloc[0]
+    for name in REG_ALIAS.get(tool, (tool,)):
+        q = reg[reg.tool == name]
+        if len(q) == 1:
+            return q.iloc[0]
+    raise AssertionError((tool, "no unique row in", str(REG)))
 
 
 v1 = rrow("PeakATail v1")
@@ -173,7 +193,7 @@ def style(ax):
         ax.spines[s].set_visible(False)
     for s in ("left", "bottom"):
         ax.spines[s].set_color(GRID)
-    ax.tick_params(colors=MUTED, length=2.5, labelsize=6.6)
+    ax.tick_params(colors=MUTED, length=2.5, labelsize=TYPE["tick"])
     ax.set_axisbelow(True)
 
 
@@ -184,24 +204,25 @@ for (lab, row, tag, disclosure), y in zip(ARMS, ys):
     c = COLOR.get(tool, "#999999")
     face = bar_face(tag, c)
     axA.barh(y, float(row.wall_h), height=0.62, zorder=3, **face)
-    axA.text(float(row.wall_h) + 0.15, y, fmt_wall(row), va="center", fontsize=6.0, color=INK, zorder=4)
+    axA.text(float(row.wall_h) + 0.15, y, fmt_wall(row), va="center", fontsize=ANN, color=INK, zorder=4)
     axB.barh(y, float(row.peak_rss_gb), height=0.62, zorder=3, **face)
     axB.text(float(row.peak_rss_gb) * 1.18, y, f"{row.peak_rss_gb:.1f} GB"
-             + (" (v2 value)" if tag == "v2u" else ""), va="center", fontsize=6.0, color=INK, zorder=4)
+             + (" (v2 value)" if tag == "v2u" else ""), va="center", fontsize=ANN, color=INK, zorder=4,
+             bbox=dict(facecolor="white", alpha=0.92, edgecolor="none", pad=0.5))
     tsvAB.append(dict(panel="a,b", arm=lab.replace(" *", "").replace(" †", "").replace(" ‡", ""),
                       tool=tool, wall_h=float(row.wall_h), wall_str=row.wall_str if isinstance(row.wall_str, str) else "",
                       peak_rss_gb=float(row.peak_rss_gb), style_tag=tag,
                       disclosure=disclosure, registry_note_verbatim=row.note, source=row.source))
 
 axA.set_yticks(ys)
-axA.set_yticklabels([a[0] for a in ARMS], fontsize=6.4)
+axA.set_yticklabels([sentence_case(a[0]) for a in ARMS], fontsize=TYPE["tick"])
 axA.set_ylim(-0.7, len(ARMS) + 0.5)   # headroom shrunk with the moved notes
 axA.set_xlim(0, 13.8)
-axA.set_xlabel("wall time on the PBMC 10k v3 BAM (hours)", fontsize=6.9)
+axA.set_xlabel(sentence_case("wall time on the PBMC 10k v3 BAM (hours)"), fontsize=TYPE["axis_label"])
 # the concurrency disclosure and the †/‡ explanations moved to the legend
 # (2026-09-02 submission pass); the per-bar *, †, ‡ markers stay on the image
-axA.set_title("a   Wall time per arm",
-              loc="left", fontweight="bold", fontsize=7.6)
+axA.set_title(sc_title("a   wall time per arm"),
+              loc="left", fontweight="bold", fontsize=TYPE["panel_title"])
 style(axA)
 axA.grid(True, axis="x", color=GRID, lw=0.5, alpha=0.7)
 
@@ -212,13 +233,15 @@ axB.set_xscale("log")
 axB.set_xlim(2, 900)
 axB.set_xticks([3, 10, 30, 100, 300])
 axB.set_xticklabels(["3", "10", "30", "100", "300"])
-axB.set_xlabel("peak RSS (GB, log scale) — the production number", fontsize=6.9)
-axB.set_title("b   Peak memory per arm:\n293.7 GB → 12.53 GB (23.5×)",
-              loc="left", fontweight="bold", fontsize=7.6)
+axB.set_xlabel(sentence_case("peak RSS (GB, log scale) — the production number"),
+               fontsize=TYPE["axis_label"])
+axB.set_title(sc_title("b   peak memory per arm:\n293.7 GB → 12.53 GB (23.5×)"),
+              loc="left", fontweight="bold", fontsize=TYPE["panel_title"])
 axB.axvline(150, color=INK, lw=0.8, ls=(0, (4, 2)), zorder=2)
 # short line label; "(10 §5) — exceeded by v1, then profiled" moved to the legend
-axB.text(150, len(ARMS) - 0.1, "150 GB stop signal",
-         fontsize=5.8, color=INK, ha="center", va="bottom", linespacing=1.25)
+# label beside the reference line, not straddling it (design pass 2026-09-03)
+axB.text(150 * 1.07, len(ARMS) - 0.1, "150 GB stop signal",
+         fontsize=ANN, color=INK, ha="left", va="bottom", linespacing=1.25)
 style(axB)
 axB.grid(True, axis="x", color=GRID, lw=0.5, alpha=0.7)
 RSS_FOLD = v1.peak_rss_gb / v2.peak_rss_gb
@@ -254,18 +277,20 @@ for (lab, w1, w2, s1, s2, r1, r2, note, src), y in zip(confirm, yc):
              edgecolor=COLOR["PeakATail"], linewidth=0.8, zorder=3)
     axC.barh(y - bh / 2 - 0.015, w2, height=bh, color=COLOR["PeakATail"],
              edgecolor=COLOR["PeakATail"], linewidth=0.8, zorder=3)
-    axC.text(w1 + 0.12, y + bh / 2 + 0.015, f"{s1}   ({r1:.2f} GB)", va="center", fontsize=5.9, color=INK)
-    axC.text(w2 + 0.12, y - bh / 2 - 0.015, f"{s2}   ({r2:.2f} GB)", va="center", fontsize=5.9, color=INK)
+    axC.text(w1 + 0.12, y + bh / 2 + 0.015, f"{s1}   ({r1:.2f} GB)", va="center", fontsize=ANN, color=INK)
+    axC.text(w2 + 0.12, y - bh / 2 - 0.015, f"{s2}   ({r2:.2f} GB)", va="center", fontsize=ANN, color=INK)
 axC.text(confirm[0][1] / 2, yc[0] + bh + 0.30, "8.2× — identical output:\n505,197 unified PAS on both codes",
-         ha="center", va="bottom", fontsize=6.0, color=INK, linespacing=1.25)
+         ha="center", va="bottom", fontsize=ANN, color=INK, linespacing=1.25)
 axC.set_yticks(yc)
-axC.set_yticklabels([c0[0] for c0 in confirm], fontsize=6.2)
+axC.set_yticklabels([sentence_case(c0[0]) for c0 in confirm], fontsize=TYPE["tick"])
 axC.set_xlim(0, 10.6)
 axC.set_ylim(yc[-1] - 0.75, yc[0] + 1.30)
 # commit hashes moved to the legend sidecar's provenance; the key stays
-axC.set_xlabel("wall time (hours; light = v1, solid = v2)", fontsize=6.9)
-axC.set_title("c   The #97 fix confirmed at cohort and\nmouse scale (wall, with peak RSS)",
-              loc="left", fontweight="bold", fontsize=7.6)
+axC.set_xlabel(sentence_case("wall time (hours; light = v1, solid = v2)"), fontsize=TYPE["axis_label"])
+# the '(wall, with peak RSS)' qualifier moved to the Legend sidecar (directive 2, no-loss:
+# the '(c) ... fell 9:06:26 -> 1:06:26 (8.2x) ... with peak RSS ...' sentence carries it)
+axC.set_title(sc_title("c   the #97 fix confirmed at cohort\nand mouse scale"),
+              loc="left", fontweight="bold", fontsize=TYPE["panel_title"])
 style(axC)
 axC.grid(True, axis="x", color=GRID, lw=0.5, alpha=0.7)
 
@@ -283,14 +308,18 @@ mem = [
 yd = np.arange(len(mem))[::-1] * 1.0
 for (lab, v, c, a, src), y in zip(mem, yd):
     axD.barh(y, v, height=0.55, color=c, alpha=a, edgecolor=c, linewidth=0.8, zorder=3)
-    axD.text(v + 8, y, f"{v:.1f} GB", va="center", fontsize=6.2, color=INK)
+    axD.text(v + 8, y, f"{v:.1f} GB", va="center", fontsize=ANN, color=INK)
 axD.set_yticks(yd)
-axD.set_yticklabels([m[0] for m in mem], fontsize=6.0)
+axD.set_yticklabels([sentence_case(m[0]) for m in mem], fontsize=ANN)
 axD.set_xlim(0, 390)
 axD.set_ylim(yd[-1] - 0.7, yd[0] + 0.8)
-axD.set_xlabel("peak RSS (GB); 291 GB computed = 4 × 23,303 × 390,493 × 8 B", fontsize=6.6)
-axD.set_title("d   Where the memory went — profiling,\nnot peak calling (15 §5 addendum)",
-              loc="left", fontweight="bold", fontsize=7.6)
+# two-line axis label: the single line overran the right canvas edge at the shared
+# type scale (design pass 2026-09-03)
+axD.set_xlabel(sentence_case("peak RSS (GB)\n291 GB computed = 4 × 23,303 × 390,493 × 8 B"),
+               fontsize=TYPE["axis_label"])
+# the '(15 s5 addendum)' citation moved to the Legend/Provenance sidecar (directive 2)
+axD.set_title(sc_title("d   where the memory went — profiling,\nnot peak calling"),
+              loc="left", fontweight="bold", fontsize=TYPE["panel_title"])
 style(axD)
 axD.grid(True, axis="x", color=GRID, lw=0.5, alpha=0.7)
 
@@ -388,6 +417,23 @@ uncontended after the fix; mouse1 3.68 GB / 9m03s).
 
 Sources: every plotted value in `results/figures/manuscript/figS8_compute*.tsv` with a source column;
 panels a/b re-read `fig3_tradeoff_compute.tsv` (verified) rather than retyping it.
+"""
+cap_md += """
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure annotation
+sits at or above the 6 pt floor. Axis labels, panel titles and prose tick labels are sentence-cased through
+`_pubstyle.sentence_case()`, canonical identifiers preserved and the lower-case panel letters kept. Two title
+qualifiers left the image for the Legend above: panel c's *(wall, with peak RSS)* — no-loss, the \"(c) ... fell
+9:06:26 → 1:06:26 (8.2×) ... with peak RSS 23.1/22.4 → 3.07/3.65 GB\" sentence carries it — and panel d's
+*(15 §5 addendum)* citation, which is the panel-d source line in this Provenance. Overlaps fixed: panel b's
+150 GB stop-signal label now sits beside its reference line instead of straddling it, panel b's bar values
+carry an opaque backing so that line passes behind them, and panel d's axis label is set on two lines (one
+line overran the canvas edge). Panel d and the confirm TSV regenerate byte-identical; every plotted value in
+`figS8_compute.tsv` is unchanged — only its `registry_note_verbatim` column moved, because it travels verbatim
+from `fig3_tradeoff_compute.tsv`, which the main-figure pass re-noted on 2026-09-02. That same pass renamed the
+registry's current-version row `PeakATail v2` → `PeakATail` (directive 4: no v1→v2 history in the mains); this
+script resolves the renamed row through `REG_ALIAS`, and the unchanged EXPECT asserts (34:37.49 / 12.53 GB)
+still pin it.
 """
 p = FIGDIR / f"{NAME}.caption.md"; p.write_text(cap_md); print("wrote", p)
 

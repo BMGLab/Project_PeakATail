@@ -1,38 +1,59 @@
 #!/usr/bin/env python3
 """
-fig1_overview.py -- manuscript Fig 1 ("fig1_overview"): what PeakATail does,
-drawn on the real data it was measured on, and what its pre-registered default
-output is.
+fig1_overview.py -- manuscript Fig 1 ("fig1_overview"): what PeakATail does.
 
-WHY THIS SCRIPT EXISTS.  Fig 1 is the only main figure with no asset
-(21_paper_architecture.md gap 3) and it is the figure every reader looks at
-first.  It is therefore built the same way every other manuscript figure is
-built: from files, by a script, with every printed number either READ from a
-verified artefact or COMPUTED here by a method stated on the figure.  Nothing
-on this figure is drawn "for illustration".
+TWO RENDERS FROM ONE SCRIPT AND ONE SET OF NUMBERS (FIG1_STYLE)
+  simple    (DEFAULT, the submitted Fig 1; DESIGN_DIRECTIVES.md item 3, 2026-09-02)
+            Four plain-language panels for a reader who has never run a caller:
+            (a) reads that keep a piece of the poly(A) tail, (b) tail-carrying read
+            ends piling up into a called site, (c) the internal-priming look-alike
+            and the genome check that removes it, (d) the trusted site list feeding
+            cell-type comparisons.  Two headline badges, no trade curve (it lives in
+            Fig 2/3 only, item 5), no acceptance-rule table, no stats block and no
+            base-resolution locus panels.  The panels are SCHEMATICS: they carry no
+            plotted data series, and every quantity they stand for is printed in the
+            sidecar Legend and in the audit TSVs, which are written identically by
+            both styles.
+  detailed  The data-rich working-phase design (six panels a-f: ingestion, one real
+            locus at base resolution, the funnel, the measured internal-priming
+            profile, the molecule trade surface, the downstream chain).  It stays
+            fully reproducible -- FIG1_STYLE=detailed -- and writes its own
+            fig1_overview_detailed.{png,pdf,caption.md} so it never overwrites the
+            submitted figure.  It is the retained record of the working phase and is
+            deliberately NOT held to the 2026-09-02 design laws (its callout density
+            is the point of keeping it).
 
-WHAT IS REAL ON THIS FIGURE
-  * Panel b is one real locus of the PBMC 10k v3 BAM.  The reads are real BAM
-    records (CIGAR, soft-clipped sequence, CB/UB tags); the sequence is real
-    GRCh38 primary-assembly sequence; the clip positions, the cluster, the
-    read-weighted mode and the molecule count are recomputed here from those
-    records by a from-scratch re-implementation of ema/countmatrix/polya.py's
-    clip_site() + read.py's read_check(), and the molecule count it produces is
-    asserted equal to column 5 of the caller's own BED.
-  * The lower track of panel b is a real >=2-molecule call the internal-priming
+WHY THIS SCRIPT EXISTS.  Fig 1 is the figure every reader looks at first.  It is
+built the same way every other manuscript figure is built: from files, by a
+script, with every printed number either READ from a verified artefact or
+COMPUTED here by a method stated in the sidecar.  Nothing on this figure is drawn
+"for illustration" WITHOUT SAYING SO: the simple style's four panels are declared
+schematics in their Legend, and the numbers they abstract are computed here in
+full and asserted, whichever style is rendered.
+
+WHAT IS REAL (computed on every run, in both styles, and written to the TSVs)
+  * The panel-b locus of the detailed render is one real locus of the PBMC 10k v3
+    BAM.  The reads are real BAM records (CIGAR, soft-clipped sequence, CB/UB
+    tags); the sequence is real GRCh38 primary-assembly sequence; the clip
+    positions, the cluster, the read-weighted mode and the molecule count are
+    recomputed here from those records by a from-scratch re-implementation of
+    ema/countmatrix/polya.py's clip_site() + read.py's read_check(), and the
+    molecule count it produces is asserted equal to column 5 of the caller's own
+    BED.
+  * The lower track of that panel is a real >=2-molecule call the internal-priming
     filter REMOVED, drawn at the same scale and from the same kind of records.
-  * Panel d's A-fraction profile is computed here over every kept and every
-    removed call (46,544 and 15,588); the precision of the removed set is computed here with
-    an independent bedtools pipeline whose value on the kept set reproduces the
+  * The A-fraction profile is computed here over every kept and every removed call
+    (46,544 and 15,588); the precision of the removed set is computed here with an
+    independent bedtools pipeline whose value on the kept set reproduces the
     scorer's 0.7062 to 4 decimals (0.7060 -- the 20 off-genome peaks the scorer
     drops).
-  * Every P@100 / R_det / n on panels c and e is read from a score_tool.py TSV
-    (the single scoring path) or from the Fig 3 trade TSV.
+  * Every P@100 / R_det / n is read from a score_tool.py TSV (the single scoring
+    path) or from the Fig 3 trade TSV.
 
 SOURCES OF TRUTH (nothing numeric is typed by hand except where cited)
   19_final_gate_v2.md (FIXED)        pre-registered default 46,524 / 0.7062 /
                                      0.1754; tier-1 IP 0.3520 / 0.2685; nulls
-  results/benchmark_tools/.../score_*.tsv   every P, R_det, F1, n on c and e
+  results/benchmark_tools/.../score_*.tsv   every P, R_det, F1, n
   results/figures/manuscript/fig3_tradeoff.tsv  the molecule sweep (Fig 3, stem fig3_tradeoff)
   22_performance_roadmap.md          IP rule flags 68,855 / 402,860 peaks (17.09%)
                                      and lifts P 0.5907 -> 0.7062 (shipped rule
@@ -48,18 +69,26 @@ SOURCES OF TRUTH (nothing numeric is typed by hand except where cited)
   run_config.json                    every parameter printed on the figure
 
 OUTPUTS
-  manuscript/figures/fig1_overview.{png,pdf}      (PNG 600 dpi, PDF fonttype 42)
-  manuscript/figures/fig1_overview.caption.md     (sidecar: '## Legend' = the
+  manuscript/figures/fig1_overview.{png,pdf}          simple (default)
+  manuscript/figures/fig1_overview_detailed.{png,pdf} FIG1_STYLE=detailed
+  manuscript/figures/<stem>.caption.md            (sidecar: '## Legend' = the
                                                    journal legend, single source
                                                    of the caption; '## Provenance')
-  results/figures/manuscript/fig1_overview.tsv            every printed quantity
-  results/figures/manuscript/fig1_overview_reads.tsv      every drawn read
-  results/figures/manuscript/fig1_overview_sequence.tsv   every drawn base
-  results/figures/manuscript/fig1_overview_ipprofile.tsv  panel d profile
-  results/figures/manuscript/fig1_overview_trade.tsv      panel e points
+  results/figures/manuscript/fig1_overview.tsv            every computed quantity
+  results/figures/manuscript/fig1_overview_reads.tsv      every read of the locus tracks
+  results/figures/manuscript/fig1_overview_sequence.tsv   every base of the locus tracks
+  results/figures/manuscript/fig1_overview_ipprofile.tsv  the A-fraction profile
+  results/figures/manuscript/fig1_overview_trade.tsv      the molecule sweep
   results/figures/manuscript/fig1_overview_work/          cached intermediates
+  The five TSVs are STYLE-INDEPENDENT: they are computed and written before any
+  drawing and are byte-identical between the two styles.  The four of them whose
+  panels the simple style no longer plots keep their emission for the record (see
+  the '# not plotted since 2026-09-02' notes at their write sites), and the
+  values they hold are asserted into the generated sidecar instead of onto the
+  image (EXPECT_IN_SIDECAR, below).
 
 Run:  export LC_ALL=C; python3 scripts/manuscript_figures/fig1_overview.py
+      FIG1_STYLE=detailed reproduces the data-rich six-panel render.
       FIG1_REFRESH=1 forces the cached BAM / FASTA / bedtools work to be redone.
 """
 import os
@@ -68,25 +97,27 @@ import subprocess
 import textwrap
 from pathlib import Path
 
-os.environ.setdefault("OMP_NUM_THREADS", "4")
-os.environ.setdefault("OPENBLAS_NUM_THREADS", "4")
-os.environ.setdefault("MKL_NUM_THREADS", "4")
+os.environ.setdefault("OMP_NUM_THREADS", "3")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "3")
+os.environ.setdefault("MKL_NUM_THREADS", "3")
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, Rectangle, FancyArrowPatch, Circle
+from matplotlib.patches import (Circle, Ellipse, FancyArrowPatch, FancyBboxPatch,
+                                Rectangle)
 from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
-matplotlib.rcParams["pdf.fonttype"] = 42
-matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.0
-matplotlib.rcParams["axes.titlesize"] = 8
-matplotlib.rcParams["axes.labelsize"] = 7.2
-matplotlib.rcParams["legend.fontsize"] = 6.2
+# The one shared publication style for all six mains (DESIGN_DIRECTIVES.md item 1):
+# palette, tool identities, type scale, rcParams and the sentence-case rule.  No
+# local palette and no local type sizes are defined in this script any more.
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _pubstyle import PAL, TOOL_STYLE, TYPE, apply_rc, sentence_case
+
+apply_rc()                      # pdf.fonttype 42, DejaVu Sans, 600 dpi, type scale
 
 # ---------------------------------------------------------------------------
 # paths
@@ -108,20 +139,32 @@ for d in (OUTDIR, FIGDIR, WORK):
     d.mkdir(parents=True, exist_ok=True)
 REFRESH = os.environ.get("FIG1_REFRESH", "") == "1"
 
+# Which design: the submitted four-panel figure (DESIGN_DIRECTIVES.md item 3) or
+# the retained data-rich record.  The audit TSVs are written by both, identically.
+STYLE = os.environ.get("FIG1_STYLE", "simple").lower()
+assert STYLE in ("simple", "detailed"), f"FIG1_STYLE must be simple|detailed, got {STYLE!r}"
+SIMPLE = STYLE == "simple"
+STEM = NAME if SIMPLE else f"{NAME}_detailed"     # the TSV stem is always NAME
+
 CUTOFF = 100.0
+MIN_MOLECULES = 2         # the pre-registered OUTPUT threshold: >= 2 clip molecules
 CODE = "9dfdefb"          # frozen worktree tools/pa-polya-run-9dfdefb3; 19 header
 RUN_STAMP = "2026-08-21 16:14-16:48"
 PREREG = "default + gate committed 2026-08-21 01:18:59 (13 §1, commit 0e27b1a); arms 02:59:36; v2 re-run 16:14"
 
-# Okabe-Ito colourblind-safe palette (manuscript/figures/README.md convention).
-INK, MUTED, GRID, PAPER = "#1B2429", "#5A6B73", "#D8E0E3", "#F4F7F8"
-BLUE = "#0072B2"     # aligned read / tier 1 / PeakATail
-VERM = "#D55E00"     # non-templated poly(A) clip
-GREEN = "#009E73"    # kept / pre-registered default output
-PURPLE = "#CC79A7"   # internal priming / removed
-ORANGE = "#E69F00"   # hexamer
-SKY = "#56B4E9"      # tier 2 / coverage-only
-GREY = "#999999"
+# Every colour comes from the one shared publication palette (_pubstyle.PAL);
+# this script defines no palette and no type sizes of its own.  The role each
+# hue plays here (unchanged from the working phase, so the two styles and the
+# other five mains agree):
+INK, MUTED, GRID = PAL["ink"], PAL["muted"], PAL["grid"]
+PAPER = "#F4F7F8"         # a SURFACE (the trough of an in-node bar), not a palette hue
+BLUE = PAL["peakatail"]   # aligned read / tier 1 / PeakATail / the tool's own objects
+VERM = PAL["bad"]         # the non-templated poly(A) clip -- the tail evidence
+GREEN = PAL["good"]       # kept / the pre-registered default output
+PURPLE = PAL["alt"]       # internal priming / removed
+ORANGE = PAL["accent"]    # hexamer
+SKY = PAL["light"]        # tier 2 / coverage-only
+GREY = PAL["neutral"]     # nulls and reference bands -- never a data series
 
 # caller parameters, read from the run's own resolved config below and asserted
 PARAMS_EXPECTED = dict(seqlen=91, cb_len=16, barcode_tag="CB", strategy="clip_seeded",
@@ -233,11 +276,17 @@ for k, v in P_RUN.items():
 # ---------------------------------------------------------------------------
 TRADE_SRC = OUTDIR / "fig3_tradeoff.tsv"
 tr = pd.read_csv(TRADE_SRC, sep="\t")
-tr = tr[(tr.panel == "a") & (tr.cutoff_bp == 100)].copy()
+# Select the molecule sweep by WHAT IT IS, not by Fig 3's panel letter: at the
+# 2026-09-02 design pass the trade curve folded out of Fig 3a (DESIGN_DIRECTIVES.md
+# item 5) and Fig 3 now labels these rows 'not_plotted_moved_to_fig2'.  The rows
+# themselves are unchanged, so this file's record stays byte-identical.
+tr = tr[(tr.cutoff_bp == 100) & tr.min_molecules.notna()
+        & tr.arm.astype(str).str.contains("IP arm")].copy()
 tr["min_molecules"] = tr["min_molecules"].astype(int)
 trade = tr[["dataset", "min_molecules", "pre_registered", "n", "atlas_agreement_precision",
             "recall_detected_genes", "F1_detected_genes"]].sort_values(["dataset", "min_molecules"])
 assert set(trade.dataset) == {"pbmc", "mouse1", "mouse2"}
+assert len(trade) == 15 and sorted(set(trade.min_molecules)) == [1, 2, 3, 5, 10], len(trade)
 _p = trade[(trade.dataset == "pbmc") & (trade.min_molecules == 2)].iloc[0]
 assert (int(_p.n), round(_p.atlas_agreement_precision, 4)) == (46524, 0.7062)
 _p1 = trade[(trade.dataset == "pbmc") & (trade.min_molecules == 1)].iloc[0]
@@ -716,25 +765,69 @@ REM_RUN = (len(_m.group()), _m.start() - 9, _m.end() - 1 - 9)
 record("b", "removed locus: flagged A-run (length, start, end offsets)", str(REM_RUN),
        "computed here from GRCh38")
 
+
+# ---------------------------------------------------------------------------
+# 5c. the selections the audit TSVs record
+#
+# These lived inside the detailed panel-b drawing code until the 2026-09-02
+# design pass.  They are computed here, before any drawing, so that
+# fig1_overview_reads.tsv and fig1_overview_sequence.tsv are written from the
+# same rows in the same order whichever style is rendered: the TSVs are the
+# record and must stay byte-identical between the styles.
+# ---------------------------------------------------------------------------
+BX0, BX1 = -45.5, 32.5             # base-level window, offsets from the called base
+IP_LO = -P_RUN["ip_window_left"] + 1 - 0.5      # offsets -9 .. +30 (see a_profile docstring)
+IP_HI = P_RUN["ip_window_right"] + 0.5
+assert int(_p.min_molecules) == MIN_MOLECULES, _p.min_molecules
+
+cl = KEPT["clipped"].drop_duplicates(subset=["cb", "ub"]).sort_values(["clip_len", "start0"])
+sel = np.unique(np.linspace(0, len(cl) - 1, 6).round().astype(int))
+show = cl.iloc[sel].sort_values("clip_len", ascending=False)
+un = KEPT["reads"][KEPT["reads"].clip_site < 0].copy()
+un["end_off"] = un.start0 + un.span - 1 - KEPT["site0"]
+un = un[(un.end_off > BX0 + 8) & (un.end_off < -6)].sort_values("end_off")
+un_show = un.iloc[np.unique(np.linspace(0, len(un) - 1, 2).round().astype(int))]
+cl2 = REM["clipped"].drop_duplicates(subset=["cb", "ub"]).sort_values("clip_len", ascending=False)
+sel2 = np.unique(np.linspace(0, len(cl2) - 1, 4).round().astype(int))
+cl2 = cl2.iloc[sel2].sort_values("clip_len", ascending=False)
+
+drawn_reads = []
+for _, r in show.iterrows():
+    drawn_reads.append(dict(locus="kept", start_offset=int(r.start0 - KEPT["site0"]),
+                            aligned_span=int(r.span), clip_len=int(r.clip_len),
+                            clip_seq=r.clip_seq, cb=r.cb, ub=r.ub, cigar=r.cigar))
+for _, r in un_show.iterrows():
+    drawn_reads.append(dict(locus="kept", start_offset=int(r.start0 - KEPT["site0"]),
+                            aligned_span=int(r.span), clip_len=0, clip_seq="",
+                            cb=r.cb, ub=r.ub, cigar=r.cigar))
+for _, r in cl2.iterrows():
+    drawn_reads.append(dict(locus="removed", start_offset=int(r.start0 - REM["site0"]),
+                            aligned_span=int(r.span), clip_len=int(r.clip_len),
+                            clip_seq=r.clip_seq, cb=r.cb, ub=r.ub, cigar=r.cigar))
+# (no record() row for the selection itself: fig1_overview.tsv must regenerate
+#  byte-identical across the 2026-09-02 design pass, so nothing is added to it)
+assert len(drawn_reads) == len(show) + len(un_show) + len(cl2), len(drawn_reads)
+
+
 # ---------------------------------------------------------------------------
 # ---------------------------------------------------------------------------
 # 6. figure
 #
-# Page-realistic geometry: the canvas is 7.35 x 8.30 in (~the width the figure
-# occupies on a journal page), so the point sizes here are the point sizes in
-# print.  The former on-figure footer caption moved to the sidecar Legend at
-# the 2026-09-02 submission pass and the canvas height shrank by the freed
-# space (10.40 -> 8.30).  The width stays 7.35 in: panel a's box text and the
-# base-resolution sequence panels do not tolerate narrowing to 180 mm without
-# crowding.  Nothing is placed by eye: every panel is an
-# axes positioned in INCHES from the top-left corner, every stack of text is
-# spaced by lineh() (which turns a font size into axes-fraction for that
-# panel's own height), and every wrapped string is wrapped to chars(), which
-# turns the panel's own width into a character count.  Layout is therefore
-# stable when a number changes length.
+# Page-realistic geometry in BOTH styles: every panel is an axes positioned in
+# INCHES from the top-left corner of the canvas, so the point sizes written here
+# are the point sizes in print.
+#   simple    7.09 x 7.90 in -- the 180 mm print column that DESIGN_DIRECTIVES.md
+#             item 1 asks for; four stacked panels and two headline badges.
+#   detailed  7.35 x 8.30 in -- the working-phase canvas, unchanged: panel a's box
+#             text and the base-resolution sequence panels do not tolerate
+#             narrowing to 180 mm without crowding.
+# Nothing is placed by eye: stacks of text are spaced by lineh() (which turns a
+# font size into axes-fraction for that panel's own height) and every wrapped
+# string is wrapped by chars() / wrap_to(), which turn the panel's own width into
+# a character count.  Layout is therefore stable when a number changes length.
 # ---------------------------------------------------------------------------
-FIG_W, FIG_H = 7.35, 8.30
-ML, MR = 0.42, 0.14
+FIG_W, FIG_H = (7.09, 7.90) if SIMPLE else (7.35, 8.30)
+ML, MR = (0.30, 0.22) if SIMPLE else (0.42, 0.14)
 CW = FIG_W - ML - MR
 fig = plt.figure(figsize=(FIG_W, FIG_H))
 fig.patch.set_facecolor("white")
@@ -797,440 +890,768 @@ def arrow(ax, x0, y0, x1, y1, color=MUTED, lw=0.9, z=5, ms=5.0):
                                  linewidth=lw, color=color, zorder=z, shrinkA=0, shrinkB=0))
 
 
-# ===========================================================================
-# panel a -- ingestion: what makes a read usable, and the channel it seeds from
-# ===========================================================================
-axA = plain(axbox(ML, 0.24, CW, 0.82, "a"))
-panel_tag(axA, "a", "Read ingestion — what the caller accepts, and the small, highly specific channel it seeds from")
-LA = lineh(axA, 5.5)
-BOX_T, BOX_B = 0.95, 0.42
-stages = [
-    (0.000, 0.200, BLUE, "10x BAM",
-     ["PBMC 10k v3 · CellRanger 3.0.0", "3′ v3 · 91 bp R2 · CB + UB tags"], None),
-    (0.240, 0.240, BLUE, "usable read",
-     ["mapped · strand of this pass", f"CB present, {P_RUN['cb_len']} nt · span ≤ {SEQLEN} nt"],
-     f"{CB_READS_GW:,} accepted CB reads"),
-    (0.520, 0.265, VERM, "qualifying poly(A) clip",
-     [f"3′-side soft clip ≥ {P_RUN['polya_min_clip']} nt, ≥ {P_RUN['polya_min_purity']:.0%} A (+) / T (−)",
-      f"with a ≥ {P_RUN['polya_min_clip']}-nt run flush to the edge"],
-     f"{CLIP_READS_GW:,} = {CLIP_RATE_GW:.3%} of them  (23 §2)"),
-    (0.825, 0.175, GREEN, "cleavage site + support",
-     ["site = last aligned base", "support = distinct (CB, UB)"],
-     "duplicates share a key"),
-]
-for x, w, col, head, subs, note in stages:
-    rbox(axA, x, BOX_B, w, BOX_T - BOX_B, ec=col, lw=1.0)
-    axA.text(x + w / 2, BOX_T - 0.05 - LA * 0.5, head, ha="center", va="center",
-             fontsize=6.2, color=col, fontweight="bold")
-    for i, s in enumerate(subs):
-        axA.text(x + w / 2, BOX_T - 0.05 - LA * (1.95 + 1.15 * i), s, ha="center", va="center",
-                 fontsize=5.4, color=INK)
-    if note:
-        axA.text(x + w / 2, BOX_B - 0.05, note, ha="center", va="top", fontsize=5.4,
-                 color=VERM if col == VERM else MUTED)
-for x0, x1 in ((0.200, 0.240), (0.480, 0.520), (0.785, 0.825)):
-    arrow(axA, x0 + 0.004, (BOX_T + BOX_B) / 2, x1 - 0.004, (BOX_T + BOX_B) / 2, lw=1.0, ms=6)
-# (the coverage-channel / count-column note that stood here moved to the
-#  sidecar Legend, panel-a paragraph, at the 2026-09-02 submission pass)
+if not SIMPLE:
+    # The retained working-phase render keeps its own type sizes -- it is the
+    # record of that phase and is not held to the 2026-09-02 design laws.
+    matplotlib.rcParams.update({"font.size": 7.0, "axes.titlesize": 8,
+                                "axes.labelsize": 7.2, "legend.fontsize": 6.2})
+
+
+    # ===========================================================================
+    # panel a -- ingestion: what makes a read usable, and the channel it seeds from
+    # ===========================================================================
+    axA = plain(axbox(ML, 0.24, CW, 0.82, "a"))
+    panel_tag(axA, "a", "Read ingestion — what the caller accepts, and the small, highly specific channel it seeds from")
+    LA = lineh(axA, 5.5)
+    BOX_T, BOX_B = 0.95, 0.42
+    stages = [
+        (0.000, 0.200, BLUE, "10x BAM",
+         ["PBMC 10k v3 · CellRanger 3.0.0", "3′ v3 · 91 bp R2 · CB + UB tags"], None),
+        (0.240, 0.240, BLUE, "usable read",
+         ["mapped · strand of this pass", f"CB present, {P_RUN['cb_len']} nt · span ≤ {SEQLEN} nt"],
+         f"{CB_READS_GW:,} accepted CB reads"),
+        (0.520, 0.265, VERM, "qualifying poly(A) clip",
+         [f"3′-side soft clip ≥ {P_RUN['polya_min_clip']} nt, ≥ {P_RUN['polya_min_purity']:.0%} A (+) / T (−)",
+          f"with a ≥ {P_RUN['polya_min_clip']}-nt run flush to the edge"],
+         f"{CLIP_READS_GW:,} = {CLIP_RATE_GW:.3%} of them  (23 §2)"),
+        (0.825, 0.175, GREEN, "cleavage site + support",
+         ["site = last aligned base", "support = distinct (CB, UB)"],
+         "duplicates share a key"),
+    ]
+    for x, w, col, head, subs, note in stages:
+        rbox(axA, x, BOX_B, w, BOX_T - BOX_B, ec=col, lw=1.0)
+        axA.text(x + w / 2, BOX_T - 0.05 - LA * 0.5, head, ha="center", va="center",
+                 fontsize=6.2, color=col, fontweight="bold")
+        for i, s in enumerate(subs):
+            axA.text(x + w / 2, BOX_T - 0.05 - LA * (1.95 + 1.15 * i), s, ha="center", va="center",
+                     fontsize=5.4, color=INK)
+        if note:
+            axA.text(x + w / 2, BOX_B - 0.05, note, ha="center", va="top", fontsize=5.4,
+                     color=VERM if col == VERM else MUTED)
+    for x0, x1 in ((0.200, 0.240), (0.480, 0.520), (0.785, 0.825)):
+        arrow(axA, x0 + 0.004, (BOX_T + BOX_B) / 2, x1 - 0.004, (BOX_T + BOX_B) / 2, lw=1.0, ms=6)
+    # (the coverage-channel / count-column note that stood here moved to the
+    #  sidecar Legend, panel-a paragraph, at the 2026-09-02 submission pass)
+
+    # ===========================================================================
+    # panel b -- one real locus, to scale
+    # ===========================================================================
+
+    # ---- b0: context strip ----------------------------------------------------
+    axB0 = style(axbox(ML, 1.14, CW, 0.48, "b0"))
+    axB0.set_xlim(-300, 120)
+    axB0.fill_between(COV_X, 0, COV, color=SKY, alpha=0.30, lw=0, zorder=2)
+    axB0.plot(COV_X, COV, color=SKY, lw=0.7, zorder=3)
+    axB0.axvline(0, color=VERM, lw=0.9, ls=(0, (3, 2)), zorder=4)
+    axB0.set_ylim(0, COV.max() * 1.50)
+    axB0.set_yticks([0, 1000, 2000])
+    axB0.set_ylabel("Reads", fontsize=5.8, color=MUTED, labelpad=1)
+    axB0.set_xlabel("Nucleotides from the called cleavage site", fontsize=5.8, color=MUTED, labelpad=0.5)
+    panel_tag(axB0, "b", f"One real locus, drawn to scale — {KEPT['label']}", dy=0.22)
+    axB0.add_patch(Rectangle((BX0, 0), BX1 - BX0, COV.max() * 1.50, facecolor=ORANGE, alpha=0.13,
+                             edgecolor="none", zorder=1))
+    # (the transcript-3'-end / gene-body-end distances and the "a coverage summit
+    #  is not one" qualification moved to the sidecar Legend, panel-b paragraph)
+    axB0.text(-296, COV.max() * 1.47,
+              f"coverage of the {KEPT['n_usable']:,} accepted reads within ±300 bp, each extended to {SEQLEN} nt",
+              fontsize=5.3, color=MUTED, ha="left", va="top")
+    axB0.annotate(f"local maximum {int(COV.max()):,} reads at {COV_MAX_OFF:+d} bp",
+                  xy=(COV_MAX_OFF, COV.max()), xytext=(-105, COV.max() * 1.18),
+                  fontsize=5.3, color=MUTED, ha="left", va="center",
+                  arrowprops=dict(arrowstyle="-", lw=0.5, color=MUTED))
+    axB0.annotate(f"{int(_cov_site)} reads at the cleavage site",
+                  xy=(3, _cov_site), xytext=(10, COV.max() * 1.30),
+                  fontsize=5.3, color=INK, ha="left", va="top", linespacing=1.3,
+                  arrowprops=dict(arrowstyle="-", lw=0.5, color=MUTED))
+    axB0.text(BX1 - 1, COV.max() * 0.06, "zoom", fontsize=5.2, color=ORANGE, ha="right", va="bottom")
+
+    # ---- b1: base-level zoom of the kept call ---------------------------------
+    B1_TOP, B1_H = 1.84, 1.44
+    axB1 = plain(axbox(ML, B1_TOP, CW, B1_H, "b1"))
+    axB1.set_xlim(BX0, BX1)
+
+    # zoom connectors from the context strip (figure coordinates)
+    for xa, xb in ((BX0, 0.0), (BX1, 1.0)):
+        fig.add_artist(Line2D([(ML + CW * (xa + 300) / 420) / FIG_W, (ML + CW * xb) / FIG_W],
+                              [(FIG_H - 1.62) / FIG_H, (FIG_H - B1_TOP) / FIG_H],
+                              transform=fig.transFigure, color=ORANGE, lw=0.6, alpha=0.45, zorder=0))
+
+
+    def draw_sequence(ax, L, y, h, fs=5.2, lo=BX0, hi=BX1):
+        """Real GRCh38 sequence; the A's are picked out because the A's are the point."""
+        seq, s0 = L["seq"], L["seq_lo"]
+        for off in range(int(np.ceil(lo)), int(np.floor(hi)) + 1):
+            i = off - s0
+            if not (0 <= i < len(seq)):
+                continue
+            b = seq[i]
+            if b == "A":
+                ax.add_patch(Rectangle((off - 0.5, y), 1.0, h, facecolor=VERM, alpha=0.18,
+                                       edgecolor="none", zorder=2))
+            ax.text(off, y + h / 2, b, ha="center", va="center", fontsize=fs,
+                    family="DejaVu Sans Mono", color=VERM if b == "A" else MUTED, zorder=3)
+
+
+    def draw_ruler(ax, y, h, fs=5.0):
+        for off in range(-40, 31, 10):
+            ax.add_line(Line2D([off, off], [y + h, y], color=GRID, lw=0.6, zorder=2))
+            ax.text(off, y - 0.008, f"{off:+d}", ha="center", va="top", fontsize=fs, color=MUTED)
+
+
+    def draw_read(ax, x_start, x_end, clip_len, clip_seq, y, h, letters_from=12):
+        """One BAM record, to scale: aligned bases from its own start to its OWN last
+        aligned base (*x_end*, which is where clip_site() put this read's clip and is
+        NOT always the cluster's called base), then the soft clip."""
+        a = max(x_start, BX0)
+        edge = x_end + 0.5                          # right edge of this read's last aligned base
+        ax.add_patch(Rectangle((a - 0.5, y), edge - (a - 0.5), h, facecolor=BLUE, alpha=0.62,
+                               edgecolor="none", zorder=3))
+        cl = min(int(clip_len), int(BX1 - edge))
+        if cl > 0:
+            ax.add_patch(Rectangle((edge, y), cl, h, facecolor=VERM, edgecolor="none", alpha=0.92, zorder=4))
+            if clip_len >= letters_from:
+                ax.text(edge + cl / 2, y + h / 2, clip_seq[:cl], ha="center", va="center",
+                        fontsize=5.0, family="DejaVu Sans Mono", color="white", zorder=5)
+            if clip_len > cl:                       # clip runs past the drawn window
+                ax.text(edge + cl + 0.4, y + h / 2, "»", ha="left", va="center", fontsize=5.0,
+                        color=VERM, zorder=5)
+        if x_start < BX0:
+            ax.text(BX0 + 0.4, y + h / 2, "«", ha="left", va="center", fontsize=5.0, color="white", zorder=5)
+
+
+    # --- reads: the spread selected in section 5c, which also writes them to the TSV
+    axB1.text(BX0 + 0.5, 1.005, f"{len(show)} of the {len(KEPT['clipped'])} qualifying clip reads here "
+              f"({KEPT['molecules_recomputed']} distinct molecules)", fontsize=5.6, color=BLUE,
+              ha="left", va="top")
+    axB1.text(1.4, 1.005, "cleavage site", fontsize=5.6, color=VERM, ha="left", va="top")
+
+    Y_TOP, RH, PITCH = 0.905, 0.038, 0.054
+    y = Y_TOP
+    for _, r in show.iterrows():
+        a = r.start0 - KEPT["site0"]
+        draw_read(axB1, a, int(r.clip_site - KEPT["site0"]), int(r.clip_len), r.clip_seq, y, RH)
+        y -= PITCH
+    for j, (_, r) in enumerate(un_show.iterrows()):
+        a = r.start0 - KEPT["site0"]
+        axB1.add_patch(Rectangle((max(a, BX0) - 0.5, y), r.end_off - max(a, BX0) + 1, RH,
+                                 facecolor=GREY, alpha=0.40, edgecolor="none", zorder=3))
+        if a < BX0:
+            axB1.text(BX0 + 0.4, y + RH / 2, "«", ha="left", va="center", fontsize=5.0,
+                      color="white", zorder=5)
+        if j == len(un_show) - 1:                    # label inside the bar: no room beside it
+            axB1.text((BX0 + r.end_off) / 2, y + RH / 2, "no qualifying clip", ha="center",
+                      va="center", fontsize=5.0, color=INK, zorder=5)
+        y -= PITCH
+
+    # --- clip-site stems: the clustering input
+    Y_STEM = y - 0.032
+    STEM_MAX = 0.078
+    for off, k in clip_counts.items():
+        axB1.add_line(Line2D([off, off], [Y_STEM, Y_STEM + STEM_MAX * k / clip_counts.max()],
+                             color=VERM, lw=1.4, zorder=4, solid_capstyle="butt"))
+        axB1.text(off, Y_STEM + STEM_MAX * k / clip_counts.max() + 0.006, str(int(k)),
+                  ha="center", va="bottom", fontsize=5.0, color=VERM)
+    _b0 = clip_counts.index.min() - 0.5
+    _b1 = clip_counts.index.max() + 0.5      # the cluster's OWN extent: single linkage
+                                              # bounds the GAP between neighbours, not the span
+    axB1.add_line(Line2D([_b0, _b1], [Y_STEM - 0.022, Y_STEM - 0.022], color=INK, lw=0.8, zorder=4))
+    for xx in (_b0, _b1):
+        axB1.add_line(Line2D([xx, xx], [Y_STEM - 0.032, Y_STEM - 0.012], color=INK, lw=0.8, zorder=4))
+    axB1.text(BX1 - 0.5, Y_STEM + STEM_MAX * 0.45, "clip reads\nper position", fontsize=5.3,
+              color=VERM, ha="right", va="center", linespacing=1.3)
+    # (the single-linkage sentence moved to the sidecar Legend; a short label
+    #  naming the bracket stays on the image)
+    axB1.text(BX0 + 0.5, Y_STEM - 0.042,
+              f"cluster (single linkage, gap ≤ {P_RUN['polya_seed_window']} bp): "
+              f"{len(clip_counts)} positions over {SPAN_CLIP} bp — mode = the call",
+              ha="left", va="top", fontsize=5.3, color=INK, linespacing=1.35)
+
+    # --- sequence, hexamer, internal-priming window, ruler
+    Y_SEQ = Y_STEM - 0.305
+    H_SEQ = 0.062
+    axB1.add_patch(Rectangle((IP_LO, Y_SEQ - 0.070), IP_HI - IP_LO, Y_STEM - Y_SEQ + 0.185,
+                             facecolor=PURPLE, alpha=0.09, edgecolor=PURPLE, lw=0.6,
+                             ls=(0, (2, 2)), zorder=1))
+    axB1.text(IP_HI - 0.5, Y_STEM + 0.118, f"internal-priming window "
+              f"({IP_LO + 0.5:+.0f} … {IP_HI - 0.5:+.0f} nt from the call = {int(IP_HI - IP_LO)} nt of genomic sequence)",
+              ha="right", va="bottom", fontsize=5.3, color=PURPLE)
+    draw_sequence(axB1, KEPT, Y_SEQ, H_SEQ)
+    axB1.add_patch(Rectangle((HEX_OFF - 0.5, Y_SEQ - 0.008), 6, H_SEQ + 0.016, facecolor="none",
+                             edgecolor=ORANGE, lw=1.0, zorder=5))
+    axB1.text(HEX_OFF + 3, Y_SEQ + H_SEQ + 0.016, f"hexamer AATAAA ({HEX_OFF:+d})",
+              ha="center", va="bottom", fontsize=5.2, color=ORANGE)
+    draw_ruler(axB1, Y_SEQ - 0.040, 0.018)
+    axB1.axvline(0.5, color=VERM, lw=0.9, ls=(0, (3, 2)), zorder=6)
+    _kw = KEPT["seq"][80 - 9:80 + 31]
+    axB1.text(BX0 + 0.5, Y_SEQ - 0.098,
+              f"strand-matched atlas representative site {KEPT['atlas_bp']} bp away",
+              ha="left", va="top", fontsize=5.5, color=MUTED)
+    axB1.text(BX1 - 0.5, Y_SEQ - 0.098,
+              f"longest genomic A-run in the window "
+              f"{max(len(m.group()) for m in re.finditer('A+', _kw))} nt (flagged at ≥ {P_RUN['ip_a_stretch']}) · "
+              f"A-fraction {_kw.count('A') / 40:.0%} (flagged at ≥ {P_RUN['ip_a_fraction']:.0%})  →  IP-PASS, kept",
+              ha="right", va="top", fontsize=5.5, color=GREEN)
+
+    # ---- legend strip ---------------------------------------------------------
+    axLg = plain(axbox(ML, 3.34, CW, 0.12, "blegend"))
+    leg = [Line2D([], [], color=BLUE, lw=4, alpha=.62, label="aligned bases"),
+           Line2D([], [], color=VERM, lw=4, label="non-templated poly(A) soft clip"),
+           Line2D([], [], color=GREY, lw=4, alpha=.40, label="read with no qualifying clip"),
+           Line2D([], [], color=ORANGE, lw=1.1, label="canonical hexamer"),
+           Line2D([], [], color=PURPLE, lw=1.1, ls=(0, (2, 2)), label="internal-priming window"),
+           Line2D([], [], marker="s", color=VERM, alpha=0.35, lw=0, ms=4, label="genomic A")]
+    axLg.legend(handles=leg, loc="center", ncol=6, frameon=False, handlelength=1.4,
+                columnspacing=1.0, handletextpad=0.35, fontsize=5.3)
+
+    # ---- b2: the same geometry for a call the filter removed ------------------
+    axB2 = plain(axbox(ML, 3.58, CW, 0.96, "b2"))
+    axB2.set_xlim(BX0, BX1)
+    axB2.text(BX0 + 0.5, 1.10, REM["label"], fontsize=6.2, color=PURPLE, ha="left", va="top",
+              fontweight="bold")
+
+    # ("read-level evidence indistinguishable from the call above" moved to the
+    #  sidecar Legend, panel-b paragraph)
+    axB2.text(BX0 + 0.5, 0.985, f"{len(sel2)} of {len(REM['clipped'])} clip reads here",
+              fontsize=5.3, color=INK, ha="left", va="top")
+    Y2_TOP, RH2, PITCH2 = 0.855, 0.058, 0.076
+    y = Y2_TOP
+    for _, r in cl2.iterrows():
+        a = r.start0 - REM["site0"]
+        draw_read(axB2, a, int(r.clip_site - REM["site0"]), int(r.clip_len), r.clip_seq, y, RH2)
+        y -= PITCH2
+    Y_SEQ2 = y - 0.120
+    axB2.add_patch(Rectangle((IP_LO, Y_SEQ2 - 0.075), IP_HI - IP_LO, Y2_TOP - Y_SEQ2 + 0.155,
+                             facecolor=PURPLE, alpha=0.09, edgecolor=PURPLE, lw=0.6,
+                             ls=(0, (2, 2)), zorder=1))
+    axB2.axvline(0.5, color=VERM, lw=0.9, ls=(0, (3, 2)), zorder=6)
+    draw_sequence(axB2, REM, Y_SEQ2, 0.090)
+    axB2.add_patch(Rectangle((REM_RUN[1] - 0.5, Y_SEQ2 - 0.010), REM_RUN[0], 0.110, facecolor="none",
+                             edgecolor=PURPLE, lw=1.1, zorder=5))
+    axB2.text(REM_RUN[1] + REM_RUN[0] / 2, Y_SEQ2 + 0.105,
+              f"genomic A-run of {REM_RUN[0]} nt ending at the call — where oligo-dT primes",
+              ha="center", va="bottom", fontsize=5.3, color=PURPLE)
+    draw_ruler(axB2, Y_SEQ2 - 0.055, 0.024)
+    axB2.text(BX1 - 0.5, Y_SEQ2 - 0.130,
+              f"≥ {P_RUN['ip_a_stretch']} consecutive genomic A in the window  →  FLAGGED, removed; "
+              f"nearest strand-matched atlas site {REM['atlas_bp']:,} bp away, nearest {REM['gene']} "
+              f"transcript 3′ end {int(REM['tx3p']['distance']):,} bp",
+              ha="right", va="top", fontsize=5.5, color=PURPLE)
+
+    # ===========================================================================
+    # panel c -- the two tiers, the filter, the threshold
+    # ===========================================================================
+    CW_C = 3.50
+    axC = plain(axbox(ML, 4.72, CW_C, 1.62, "c"))
+    panel_tag(axC, "c", "From peaks to the pre-registered default (PBMC 10k v3)")
+    LC = lineh(axC, 6.0)
+    BH = 3.6 * LC
+
+
+    def node(x, w, ytop, col, title, n, P=None, note=None, big=7.6):
+        rbox(axC, x, ytop - BH, w, BH, ec=col, lw=1.0)
+        axC.text(x + w / 2, ytop - LC * 0.75, title, ha="center", va="center", fontsize=5.8,
+                 color=col, fontweight="bold")
+        axC.text(x + w / 2, ytop - LC * 1.80, n, ha="center", va="center", fontsize=big, color=INK)
+        if P is not None:                       # a to-scale precision bar inside the node
+            bw = w * 0.48
+            bx = x + 0.02
+            by = ytop - LC * 3.10
+            axC.add_patch(Rectangle((bx, by), bw, LC * 0.45, facecolor=PAPER, edgecolor=GRID, lw=0.4,
+                                    zorder=4))
+            axC.add_patch(Rectangle((bx, by), bw * P, LC * 0.45, facecolor=col, alpha=0.85,
+                                    edgecolor="none", zorder=5))
+            axC.add_line(Line2D([bx + bw * S["default"]["null_P"]] * 2, [by, by + LC * 0.45],
+                                color=MUTED, lw=0.7, zorder=6))
+            axC.text(bx + bw + 0.012, by + LC * 0.22, f"P@100 {P:.3f}", ha="left", va="center",
+                     fontsize=5.2, color=MUTED)
+        elif note:
+            axC.text(x + w / 2, ytop - LC * 2.85, note, ha="center", va="center", fontsize=5.3, color=MUTED)
+
+
+    node(0.02, 0.72, 1.00, MUTED, "peak candidates", f"{NB['peaks_noip']:,}",
+         note="clip clusters + coverage summits")
+    axC.text(0.245, 1.00 - BH - LC * 0.50, f"internal-priming filter: −{IP_FLAGGED_GW:,} "
+             f"({IP_FLAGGED_GW / IP_PEAKS_GW:.1%})", ha="left", va="center", fontsize=5.2, color=PURPLE)
+    Y2 = 1.00 - BH - LC * 1.00
+    node(0.02, 0.36, Y2, BLUE, "tier 1 · clip-supported", f"{NB['tier1_ip']:,}", P=S["tier1_ip"]["P"], big=7.2)
+    node(0.54, 0.36, Y2, SKY, "tier 2 · coverage-only", f"{NB['tier2_ip']:,}", P=S["tier2_ip"]["P"], big=7.2)
+    Y3 = Y2 - BH - LC * 1.00
+    node(0.02, 0.36, Y3, GREEN, "≥ 2 clip molecules", f"{NB['default']:,}", P=S["default"]["P"], big=7.2)
+    arrow(axC, 0.20, 1.00 - BH, 0.20, Y2 + 0.004, ms=5.5)
+    arrow(axC, 0.72, 1.00 - BH, 0.72, Y2 + 0.004, ms=5.5)
+    arrow(axC, 0.20, Y2 - BH, 0.20, Y3 + 0.004, ms=5.5)
+    axC.text(0.42, Y2 - BH - LC * 0.30, f"discards {NB['tier1_ip'] - NB['default']:,} single-molecule\n"
+             f"sites ({1 - NB['default'] / NB['tier1_ip']:.1%} of tier 1, IP arm)",
+             ha="left", va="top", fontsize=5.3, color=MUTED, linespacing=1.35)
+    YB = Y3 - BH - LC * 0.95
+    CC = chars(CW_C, 5.4)
+    # (the gate-PASS sentence, the null-ratio sentence, the tier-2-file note and
+    #  the BED-rows-vs-scored-n note moved to the sidecar Legend, panel-c
+    #  paragraph; the definition of the default and a short label for the grey
+    #  null tick stay on the image)
+    for i, (txt, col, fs, bold) in enumerate([
+            ("= the pre-registered default: tier 1 ∩ IP-pass ∩ ≥ 2 distinct clip molecules", GREEN, 5.6, True),
+            (f"grey tick = 3-seed gene-body-shuffled null P@100 ({S['default']['null_P']:.4f})", MUTED, 5.4, False)]):
+        axC.text(0.0, YB - LC * 1.10 * i, textwrap.fill(txt, CC), ha="left", va="top", fontsize=fs,
+                 color=col, fontweight="bold" if bold else "normal")
+
+    # ===========================================================================
+    # panel d -- the internal-priming filter, measured on the whole call set
+    # ===========================================================================
+    DX, DW = ML + 3.78, CW - 3.78
+    axD = style(axbox(DX, 4.88, DW, 0.95, "d"))
+    panel_tag(axD, "d", "What the filter removes, measured", dy=0.30)
+    axD.add_patch(Rectangle((IP_LO, 0), IP_HI - IP_LO, 1.05, facecolor=PURPLE, alpha=0.08,
+                            edgecolor="none", zorder=1))
+    axD.plot(OFF, PROF_KEPT, color=GREEN, lw=1.0, zorder=4, label=f"kept ({N_PROF_KEPT:,})")
+    axD.plot(OFF, PROF_REM, color=PURPLE, lw=1.0, zorder=4, label=f"removed ({N_PROF_REM:,})")
+    axD.axvline(0, color=VERM, lw=0.8, ls=(0, (3, 2)), zorder=3)
+    axD.set_xlim(-50, 50)
+    axD.set_ylim(0, 1.05)
+    axD.set_xticks([-50, -25, 0, 25, 50])
+    axD.set_yticks([0, 0.5, 1.0])
+    axD.set_xlabel("Nucleotides from the call", fontsize=5.8, color=MUTED, labelpad=0.5)
+    axD.set_ylabel("Genomic A-fraction", fontsize=5.8, color=MUTED, labelpad=1)
+    axD.grid(color=GRID, lw=0.5, alpha=0.7)
+    axD.legend(loc="upper left", frameon=False, fontsize=5.2, handlelength=1.1, borderpad=0.05,
+               labelspacing=0.2)
+    axD.annotate("hexamer", xy=(HEX_OFF + 3, PROF_KEPT[50 + HEX_OFF + 3]), xytext=(-47, 0.70),
+                 fontsize=5.2, color=ORANGE, ha="left",
+                 arrowprops=dict(arrowstyle="-", lw=0.5, color=ORANGE))
+    axD.annotate("genomic A-tract\nending at the call", xy=(-3, 0.95), xytext=(9, 1.02),
+                 fontsize=5.2, color=PURPLE, ha="left", va="top", linespacing=1.3,
+                 arrowprops=dict(arrowstyle="-", lw=0.5, color=PURPLE))
+
+    # (the three panel-d statistics sentences that stood in a text block below the
+    #  profile plot moved to the sidecar Legend, panel-d paragraph, verbatim in
+    #  substance: removed/kept counts and the P/R_det moves, the removed set's own
+    #  precision vs the kept set's, and the trigger breakdown)
+
+    # ===========================================================================
+    # panel e -- the molecule threshold is a trade surface; one point was gated
+    # ===========================================================================
+    axE = style(axbox(ML, 6.60, 2.48, 1.32, "e"))
+    panel_tag(axE, "e", "One point on a trade surface")
+    DS = [("pbmc", BLUE, "PBMC 10k v3"), ("mouse1", GREY, "testis mouse 1"), ("mouse2", GREY, "testis mouse 2")]
+    for ds, col, lab in DS:
+        q = trade[trade.dataset == ds].sort_values("min_molecules")
+        axE.plot(q.recall_detected_genes, q.atlas_agreement_precision, "-o", color=col, lw=0.9,
+                 ms=2.4, mfc="white", mew=0.9, alpha=1.0 if ds == "pbmc" else 0.55,
+                 zorder=4 if ds == "pbmc" else 3, label=lab)
+        if ds == "pbmc":
+            for _, r in q.iterrows():
+                dx, dy = (-17, 1) if int(r.min_molecules) == 2 else (4, 3.5)
+                axE.annotate(f"≥{int(r.min_molecules)}", (r.recall_detected_genes, r.atlas_agreement_precision),
+                             textcoords="offset points", xytext=(dx, dy), fontsize=5.0, color=MUTED)
+    _d = trade[(trade.dataset == "pbmc") & (trade.min_molecules == 2)].iloc[0]
+    axE.plot(_d.recall_detected_genes, _d.atlas_agreement_precision, "o", ms=8.0, mfc="none",
+             mec=GREEN, mew=1.3, zorder=5)
+    axE.annotate("the only pre-registered point", (_d.recall_detected_genes, _d.atlas_agreement_precision),
+                 textcoords="offset points", xytext=(8, -10), fontsize=5.4, color=GREEN,
+                 arrowprops=dict(arrowstyle="-", lw=0.5, color=GREEN))
+    axE.set_xlabel("Detected-gene recall R_det @100 bp", fontsize=5.8, color=MUTED, labelpad=0.5)
+    axE.set_ylabel("Atlas-agreement P @100 bp", fontsize=5.8, color=MUTED, labelpad=1)
+    axE.set_xlim(0.055, 0.325)
+    axE.set_ylim(0.30, 1.03)     # top headroom shrank with the F1 note's move to the legend
+    axE.set_yticks([0.4, 0.6, 0.8, 1.0])
+    axE.grid(color=GRID, lw=0.5, alpha=0.7)
+    axE.legend(loc="lower left", frameon=False, fontsize=5.2, handlelength=1.2, borderpad=0.05,
+               labelspacing=0.2)
+    # (the F1-honesty note — F1_det is higher at >=1 molecule than at the default,
+    #  a reliability choice, not the F1 optimum — moved to the sidecar Legend,
+    #  panel-e paragraph)
+
+    # ===========================================================================
+    # panel f -- what the default call set is used for
+    # ===========================================================================
+    FX, FW = ML + 2.88, CW - 2.88
+    axF = plain(axbox(FX, 6.60, FW, 1.32, "f"))
+    panel_tag(axF, "f", "What the paper does with the default call set")
+    LF = lineh(axF, 5.3)
+    CF = chars(FW * 0.94, 5.2)
+    STEPS = [
+        (BLUE, "PAS × cell count matrix",
+         [f"reads, not clips: the coverage peak this PAS claims, plus accepted read ends in",
+          f"[site − {SEQLEN}, site + 25] outside it, split at midpoints between neighbouring PAS"]),
+        (BLUE, "PAS usage per cell type",
+         ["within-gene proportions, per-cell-type PAS counts, 3′UTR length"]),
+        # (the "other five arms fail the pre-registered calibration rule" clause and
+        #  the "yields are Fig 5's numbers" note moved to the sidecar Legend,
+        #  panel-f paragraph)
+        (GREEN, "calibrated switch test (14)",
+         ["Fisher · --count-mode cells · marker pre-selection OFF",
+          f"{FDR_NULL_P05:.1%} of label-shuffled tests p < 0.05; 0/{FDR_NULL_RUNS} null runs with a "
+          f"q < 0.05 hit"]),
+        (GREEN, "replication across biological units (20)",
+         ["q < 0.05 in ≥ 2 patients, same direction, opposite-direction veto, |Δproportion| ≥ 0.1"]),
+    ]
+    yy = 1.0
+    for step_i, (col, head, subs) in enumerate(STEPS):
+        wrapped = [textwrap.fill(s, CF) for s in subs]
+        nlines = sum(w.count("\n") + 1 for w in wrapped)
+        h = LF * (1.15 + 1.05 * nlines)
+        rbox(axF, 0.01, yy - h, 0.98, h, ec=col, lw=0.9)
+        axF.text(0.026, yy - LF * 0.70, head, fontsize=5.8, color=col, fontweight="bold",
+                 ha="left", va="center")
+        yline = yy - LF * 1.20
+        for w in wrapped:
+            axF.text(0.026, yline, w, fontsize=5.2, color=INK, ha="left", va="top", linespacing=1.3)
+            yline -= LF * 1.05 * (w.count("\n") + 1)
+        yy -= h
+        if step_i < len(STEPS) - 1:          # arrows join boxes; none dangles after the last
+            arrow(axF, 0.06, yy, 0.06, yy - LF * 0.45, ms=5.0)
+            yy -= LF * 0.60
+
+
+else:
+    # =======================================================================
+    # THE SIMPLE STYLE (default): four plain-language panels, top to bottom.
+    #
+    # One message per panel, at most three short callouts on each, two headline
+    # badges in the whole figure, and every remaining word in the sidecar Legend
+    # (DESIGN_DIRECTIVES.md items 1-3, 5, 6).  The panels are schematics: no data
+    # series is plotted here.  What each schematic stands for is measured above,
+    # written to the audit TSVs and printed in the Legend -- including the two
+    # places where over-simplifying would create a false claim:
+    #   * the internal-priming A-run is drawn ENDING AT the called base, which is
+    #     where it really sits ({TRIG} run_ends_at_or_before_call, median offset 0),
+    #     not downstream of it as `internal_priming.py`'s docstring describes the
+    #     rule; and
+    #   * the genome check is described as reading the window AROUND the called end
+    #     (offsets IP_LO..IP_HI), never as "downstream sequence".
+    # =======================================================================
+    TAIL, PINK = VERM, PURPLE       # the same two PAL hues, named for what they carry here
+    # 8 % tints of the PAL hues, used as SURFACES (badge grounds, verdict pills,
+    # the cell body) -- surfaces, never a data colour, so the palette is unchanged.
+    TINT = {BLUE: "#E8F1F7", GREEN: "#E6F4F0", TAIL: "#FBEDE4", PINK: "#F7EDF2"}
+    AN, AN_S = TYPE["annotation"], TYPE["annotation_min"]
+
+    TOP_A, H_A = 0.36, 1.18         # panel tops/heights, inches from the canvas top
+    TOP_G1, H_G1 = 1.70, 0.30
+    TOP_B, H_B = 2.38, 1.28
+    TOP_C, H_C = 4.14, 1.90
+    TOP_G2, H_G2 = 6.20, 0.30
+    TOP_D, H_D = 6.82, 0.98
+
+    def sq(ax, dx):
+        """An x-extent expressed as the y-extent that renders square on this axes."""
+        return dx * ax._w_in / ax._h_in
+
+    def wrap_to(ax, text, frac, pt=AN):
+        """Wrap *text* to the characters that fit *frac* of this panel's width."""
+        return textwrap.fill(text, max(12, int(ax._w_in * frac * 72.0 / (pt * 0.545))))
+
+    def head(ax, letter, title, dy=0.055):
+        ax.text(0.0, 1 + dy, letter, transform=ax.transAxes, fontsize=TYPE["panel_letter"],
+                fontweight="bold", color=INK, ha="left", va="bottom")
+        ax.text(0.035, 1 + dy + 0.004, sentence_case(title), transform=ax.transAxes,
+                fontsize=TYPE["panel_title"], color=INK, ha="left", va="bottom")
+
+    def sbar(ax, x0, x1, y, h, color, alpha=1.0, z=3, r=0.004):
+        ax.add_patch(FancyBboxPatch((x0, y), x1 - x0, h,
+                                    boxstyle=f"round,pad=0,rounding_size={r}", linewidth=0,
+                                    facecolor=color, alpha=alpha, zorder=z, mutation_aspect=1,
+                                    gid="box"))
+
+    def spill(ax, x0, y0, w, h, fc, ec, lw=0.8, z=2, r=0.012):
+        ax.add_patch(FancyBboxPatch((x0, y0), w, h, boxstyle=f"round,pad=0,rounding_size={r}",
+                                    linewidth=lw, edgecolor=ec, facecolor=fc, zorder=z,
+                                    mutation_aspect=1, gid="box"))
+
+    def sarrow(ax, x0, y0, x1, y1, color=MUTED, lw=1.0, ms=7.0, z=6):
+        ax.add_patch(FancyArrowPatch((x0, y0), (x1, y1), arrowstyle="-|>", mutation_scale=ms,
+                                     linewidth=lw, color=color, zorder=z, shrinkA=0, shrinkB=0))
+
+    def skey(ax, x, y, color, text, frac, alpha=1.0):
+        """A colour chip and its sentence: identity without a leader line to collide."""
+        ax.add_patch(Rectangle((x, y - sq(ax, 0.009) / 2), 0.018, sq(ax, 0.009),
+                               facecolor=color, alpha=alpha, edgecolor="none", zorder=4))
+        ax.text(x + 0.028, y, wrap_to(ax, sentence_case(text), frac), fontsize=AN, color=INK,
+                ha="left", va="center", linespacing=1.45)
+
+    def sbadge(ax, text, color):
+        spill(ax, 0.0, 0.10, 1.0, 0.80, TINT[color], "none", lw=0)
+        ax.add_patch(Rectangle((0.0, 0.10), 0.0065, 0.80, facecolor=color, edgecolor="none",
+                               zorder=3))
+        ax.text(0.024, 0.50, text, fontsize=7.6, color=INK, ha="left", va="center",
+                fontweight="bold")
+
+    # The whole figure carries exactly two headline numbers/rules (item 3).
+    BADGES = [
+        # a leading "~0.6%" is already sentence case: sentence_case() would capitalise
+        # the "of" that follows it, so these two strings are written final.
+        (TAIL, f"~{CLIP_RATE_GW:.1%} of reads carry the tail — scarce, but highly specific"),
+        # NOT "Default:".  `--polya-min-umis` is 1 at the caller and `--ip-filter` is
+        # opt-in, so a bare "default" would claim something about the shipped CLI that
+        # is false -- exactly what caveat 5 of this sidecar forbids.  "Trusted set" is
+        # the figure's own word for it (panel d: "Trusted site list"), and the Legend
+        # names it as the paper's pre-registered output.
+        (GREEN, f"Trusted set: keep a site when ≥ {MIN_MOLECULES} tail-carrying molecules "
+                f"support it and it passes the genome check"),
+    ]
+    assert f"~{CLIP_RATE_GW:.1%}" == "~0.6%", CLIP_RATE_GW      # EXPECT: badge 1's number
+    # the badge must not be readable as a statement about the caller's built-in
+    # defaults (caveat 5); both switches it names are non-default at the CLI
+    assert not BADGES[1][1].lower().startswith("default"), BADGES[1][1]
+
+    # ------------------------------------------------------------- panel a -----
+    axA = plain(axbox(ML, TOP_A, CW, H_A, "a"))
+    head(axA, "a", "Some reads keep a piece of the poly(A) tail")
+
+    CELL_X, CELL_Y = 0.030, 0.80
+    axA.add_patch(Ellipse((CELL_X, CELL_Y), 0.052, sq(axA, 0.052), facecolor=TINT[BLUE],
+                          edgecolor=BLUE, lw=0.9, zorder=3))
+    axA.add_patch(Ellipse((CELL_X + 0.006, CELL_Y + 0.028), 0.020, sq(axA, 0.020),
+                          facecolor=BLUE, alpha=0.35, edgecolor="none", zorder=4))
+    axA.text(CELL_X, CELL_Y - sq(axA, 0.052) / 2 - 0.05, sentence_case("One cell"),
+             fontsize=AN, color=MUTED, ha="center", va="top")
+    sarrow(axA, CELL_X + 0.033, CELL_Y, 0.072, CELL_Y, color=MUTED, lw=0.9, ms=6)
+
+    END = 0.50                                  # the transcript's true 3' end
+    MRNA_Y, MRNA_H = 0.775, 0.075
+    sbar(axA, 0.085, END, MRNA_Y, MRNA_H, BLUE, alpha=0.85)
+    sbar(axA, END, END + 0.105, MRNA_Y, MRNA_H, TAIL)
+    axA.text(END + 0.0525, MRNA_Y + MRNA_H / 2, "AAAAAAAA", fontsize=AN_S, color="white",
+             family="DejaVu Sans Mono", ha="center", va="center", zorder=5)
+    axA.text(0.29, MRNA_Y + MRNA_H + 0.045, sentence_case("One mRNA molecule"), fontsize=AN,
+             color=MUTED, ha="center", va="bottom")
+    # "poly(A)" is canonical nomenclature and keeps its casing (item 6 exemption)
+    axA.text(END + 0.0525, MRNA_Y + MRNA_H + 0.045, "poly(A) tail", fontsize=AN, color=INK,
+             ha="center", va="bottom")
+    axA.add_line(Line2D([END, END], [0.125, MRNA_Y + MRNA_H + 0.025], color=INK, lw=0.8,
+                        ls=(0, (2.5, 2)), zorder=2))
+    axA.text(END, 0.085, sentence_case("The transcript’s true end"), fontsize=AN,
+             color=INK, ha="center", va="top")
+
+    READS = [(0.155, 0.335), (0.215, 0.415), (0.135, 0.455), (0.250, END), (0.185, 0.375),
+             (0.285, 0.470)]
+    _y = 0.640
+    for _x0, _x1 in READS:
+        sbar(axA, _x0, _x1, _y, 0.050, BLUE, alpha=0.55)
+        if _x1 == END:
+            sbar(axA, END, END + 0.045, _y, 0.050, TAIL)
+        _y -= 0.090
+
+    skey(axA, 0.625, 0.575, TAIL,
+         "A few reads run into the tail and keep a piece of it: the end is marked exactly", 0.36)
+    skey(axA, 0.625, 0.290, BLUE,
+         "Most reads stop short, so they cannot show where the transcript ends", 0.36, alpha=0.55)
+
+    axG1 = plain(axbox(ML, TOP_G1, CW, H_G1, "badge1"))
+    sbadge(axG1, BADGES[0][1], BADGES[0][0])
+
+    # ------------------------------------------------------------- panel b -----
+    axB = plain(axbox(ML, TOP_B, CW, H_B, "b"))
+    head(axB, "b", "Tail-carrying read ends pile up at one position")
+
+    BASE_Y = 0.255
+    axB.add_line(Line2D([0.02, 0.98], [BASE_Y, BASE_Y], color=GRID, lw=1.0, zorder=1))
+    axB.add_line(Line2D([0.525, 0.525], [0.06, 0.94], color=GRID, lw=0.8, zorder=1))
+
+    PILE_X, MW = 0.340, 0.010
+    PILE = [(-0.024, 1), (-0.012, 3), (0.0, 6), (0.012, 3), (0.024, 2)]
+    PILE_TOP = BASE_Y + 0.052 + 5 * (sq(axB, MW) + 0.020) + sq(axB, MW)
+    for _dx, _k in PILE:
+        for _j in range(_k):
+            axB.add_patch(Rectangle((PILE_X + _dx - MW / 2,
+                                     BASE_Y + 0.052 + _j * (sq(axB, MW) + 0.020)), MW,
+                                    sq(axB, MW), facecolor=TAIL, edgecolor="none", zorder=4))
+    axB.add_line(Line2D([PILE_X, PILE_X], [BASE_Y, BASE_Y + 0.045], color=BLUE, lw=0.8, zorder=3))
+    axB.plot([PILE_X], [BASE_Y], marker="D", ms=6.0, color=BLUE, zorder=6, clip_on=False)
+    axB.text(PILE_X, BASE_Y - 0.085, sentence_case("Called site"), fontsize=AN, color=INK,
+             ha="center", va="top", fontweight="bold")
+    axB.text(PILE_X, PILE_TOP + 0.045, sentence_case("Tail-carrying read ends"), fontsize=AN,
+             color=INK, ha="center", va="bottom")
+    axB.text(PILE_X + 0.070, (BASE_Y + PILE_TOP) / 2, sentence_case("One mark\n= one molecule"),
+             fontsize=AN_S, color=MUTED, ha="left", va="center", linespacing=1.45)
+    axB.text(0.02, 0.60, wrap_to(axB, sentence_case("Ends from many molecules stack at one "
+                                                    "position"), 0.19),
+             fontsize=AN, color=INK, ha="left", va="center", linespacing=1.45)
+
+    _xs = np.linspace(0.60, 0.90, 200)
+    _hill = 0.40 * np.exp(-((_xs - 0.75) / 0.055) ** 2)
+    axB.fill_between(_xs, BASE_Y, BASE_Y + _hill, color=GREY, alpha=0.30, lw=0, zorder=2)
+    axB.plot(_xs, BASE_Y + _hill, color=GREY, lw=1.0, zorder=3)
+    axB.text(0.75, BASE_Y + 0.50, sentence_case("Coverage-only bump — no tail evidence,\n"
+                                                "kept aside as second class"), fontsize=AN,
+             color=INK, ha="center", va="bottom", linespacing=1.45)
+    axB.text(0.98, BASE_Y - 0.10, sentence_case("Position along the gene"), fontsize=AN_S,
+             color=MUTED, ha="right", va="top")
+
+    # ------------------------------------------------------------- panel c -----
+    # The one panel where a simplification could become a false claim, so the
+    # geometry follows the measurement: the flagged genomic A-run ENDS AT the called
+    # base (median run-end offset 0; ends at or before the call in
+    # TRIG['run_ends_at_or_before_call'] of removals), and the window the caller
+    # reads spans BOTH sides of the call (IP_LO..IP_HI), which is why the figure says
+    # "around every called end" and never "downstream".
+    axC = plain(axbox(ML, TOP_C, CW, H_C, "c"))
+    head(axC, "c", "The genome can fake a tail; the filter removes it")
+
+    L0, L1, R0, R1 = 0.150, 0.480, 0.580, 0.910
+    for _y0, _y1 in ((0.14, 0.535), (0.675, 0.94)):
+        axC.add_line(Line2D([0.530, 0.530], [_y0, _y1], color=GRID, lw=0.8, zorder=1))
+    READ_Y, READ_H = 0.715, 0.068
+    GEN_Y, GEN_H = 0.450, 0.068
+    NB_BASES = 22
+    BW = (L1 - L0) / NB_BASES
+    axC.text(0.132, READ_Y + READ_H / 2, sentence_case("In the read"), fontsize=AN, color=MUTED,
+             ha="right", va="center")
+    axC.text(0.132, GEN_Y + GEN_H / 2, sentence_case("In the genome"), fontsize=AN, color=MUTED,
+             ha="right", va="center")
+
+    for (_x0, _x1, _kind, _title, _cap) in (
+            (L0, L1, "real", "Real transcript end", "No run of A’s in the genome here"),
+            (R0, R1, "fake", "Internal priming — a look-alike",
+             "A run of A’s in the genome, ending right at the call")):
+        _xm = _x0 + 13 * BW                       # the called base = the last aligned base
+        axC.text((_x0 + _x1) / 2, 0.925, sentence_case(_title), fontsize=7.4, color=INK,
+                 ha="center", va="bottom", fontweight="bold")
+        sbar(axC, _x0, _xm, READ_Y, READ_H, BLUE, alpha=0.85)
+        sbar(axC, _xm, _xm + 7 * BW, READ_Y, READ_H, TAIL)
+        axC.text(_xm + 3.5 * BW, READ_Y + READ_H / 2, "AAAAAAA", fontsize=AN_S, color="white",
+                 family="DejaVu Sans Mono", ha="center", va="center", zorder=5)
+        # the genome under the same window: scattered A's, or a run ending at the call
+        _a_at = {"real": {3, 9, 17}, "fake": set(range(4, 13))}[_kind]
+        for _i in range(NB_BASES):
+            axC.add_patch(Rectangle((_x0 + _i * BW + 0.0008, GEN_Y), BW - 0.0016, GEN_H,
+                                    facecolor=TAIL if _i in _a_at else GRID, edgecolor="none",
+                                    zorder=3))
+        axC.text((_x0 + _x1) / 2, GEN_Y - 0.055, sentence_case(_cap), fontsize=AN, color=INK,
+                 ha="center", va="top")
+        if _kind == "fake":
+            axC.add_line(Line2D([_xm, _xm], [GEN_Y + GEN_H + 0.014, READ_Y - 0.014], color=TAIL,
+                                lw=0.7, ls=(0, (1.6, 1.6)), zorder=2))
+        _ec, _tint, _glyph, _word = ((GREEN, TINT[GREEN], "✓", "Kept") if _kind == "real"
+                                     else (PINK, TINT[PINK], "✗", "Removed"))
+        spill(axC, (_x0 + _x1) / 2 - 0.072, 0.175, 0.144, 0.092, _tint, _ec, lw=0.9)
+        axC.text((_x0 + _x1) / 2, 0.221, f"{_glyph}  {_word}", fontsize=7.4, color=INK,
+                 ha="center", va="center", fontweight="bold")
+
+    # exactly true as written: what the caller triggers on -- the clipped A-run --
+    # is the same in both cases; the aligned bases before the call are not (in the
+    # look-alike they are the genomic A-run itself), which is the genome's business
+    # and is what the row below shows.
+    axC.text(0.50, 0.598, sentence_case("The tail-like end is identical in both reads — "
+                                        "the difference is in the genome"), fontsize=AN,
+             color=INK, ha="center", va="center")
+    axC.text(0.50, 0.020, sentence_case(
+        "The A’s a read carries can come from the tail, or from an A-rich stretch the RNA "
+        "copied from the genome;\nPeakATail reads the genome at every called end and removes "
+        "the sites that sit on such a stretch"),
+        fontsize=AN, color=INK, ha="center", va="bottom", linespacing=1.55)
+
+    axG2 = plain(axbox(ML, TOP_G2, CW, H_G2, "badge2"))
+    sbadge(axG2, BADGES[1][1], BADGES[1][0])
+
+    # ------------------------------------------------------------- panel d -----
+    axD = plain(axbox(ML, TOP_D, CW, H_D, "d"))
+    head(axD, "d", "From trusted sites to cell-type comparisons")
+
+    CARDS = [(0.005, 0.300, "Trusted site list", "One row per trusted transcript end"),
+             (0.352, 0.647, "Counts in every cell", "How much each cell uses each end"),
+             (0.700, 0.995, "Cell-type comparison",
+              "With a test whose error rate has been checked")]
+    for _i, (_x0, _x1, _title, _sub) in enumerate(CARDS):
+        spill(axD, _x0, 0.02, _x1 - _x0, 0.94, "white", GRID, lw=0.9, z=2, r=0.010)
+        _cx = (_x0 + _x1) / 2
+        if _i == 0:
+            for _j in range(4):
+                _yy = 0.79 - _j * 0.077
+                axD.add_patch(Rectangle((_x0 + 0.035, _yy), 0.150, 0.045, facecolor=GREEN,
+                                        alpha=0.30 + 0.16 * _j, edgecolor="none", zorder=4))
+                axD.add_patch(Rectangle((_x0 + 0.195, _yy), 0.065, 0.045, facecolor=GRID,
+                                        edgecolor="none", zorder=4))
+        elif _i == 1:
+            _rng = np.random.default_rng(4)          # icon only: a fixed seed, no data
+            for _r in range(4):
+                for _c in range(6):
+                    axD.add_patch(Rectangle((_x0 + 0.048 + _c * 0.037, 0.79 - _r * 0.077),
+                                            0.029, 0.048, facecolor=BLUE,
+                                            alpha=float(0.14 + 0.70 * _rng.random()),
+                                            edgecolor="none", zorder=4))
+        else:
+            for _bx, _split, _lab in ((0.085, 0.62, "Type 1"), (0.175, 0.34, "Type 2")):
+                axD.add_patch(Rectangle((_x0 + _bx, 0.605), 0.048, 0.235 * _split,
+                                        facecolor=BLUE, alpha=0.80, edgecolor="none", zorder=4))
+                axD.add_patch(Rectangle((_x0 + _bx, 0.605 + 0.235 * _split), 0.048,
+                                        0.235 * (1 - _split), facecolor=TAIL, alpha=0.80,
+                                        edgecolor="none", zorder=4))
+                axD.text(_x0 + _bx + 0.024, 0.590, sentence_case(_lab), fontsize=AN_S,
+                         color=MUTED, ha="center", va="top")
+        axD.text(_cx, 0.430, sentence_case(_title), fontsize=7.4, color=INK, ha="center",
+                 va="center", fontweight="bold")
+        axD.text(_cx, 0.318, wrap_to(axD, sentence_case(_sub), 0.26), fontsize=AN, color=MUTED,
+                 ha="center", va="top", linespacing=1.45)
+        if _i < 2:
+            sarrow(axD, _x1 + 0.014, 0.48, _x1 + 0.040, 0.48, color=MUTED, lw=1.0, ms=7)
 
 # ===========================================================================
-# panel b -- one real locus, to scale
+# legends (sidecar only -- the on-figure footer was retired at the 2026-09-02
+# submission pass; the sidecar '## Legend' is the single source of the caption).
+# Both styles are built here, unconditionally, from the same computed values:
+# the caption a style does not write is still the record of what its numbers are.
 # ===========================================================================
-BX0, BX1 = -45.5, 32.5              # base-level window, offsets from the called base
+CAPTION_SIMPLE = (
+    f"Figure 1 | How PeakATail finds the 3′ ends of transcripts in single cells, and what it gives you. "
+    f"All four panels are schematics drawn to explain the method; no panel plots a data series, and every "
+    f"quantity a panel stands for is measured by this script, printed below and written to "
+    f"`results/figures/manuscript/{NAME}.tsv`. "
+    f"(a) A cell’s mRNAs end in a poly(A) tail that is added after cleavage and is not written in the "
+    f"genome. Sequencing reads mostly stop short of that end, but a small fraction run into the tail and keep "
+    f"a piece of it as a soft-clipped A-run; because that piece is not genomic, the read’s last aligned "
+    f"base is the transcript’s end at single-base resolution. Genome-wide {CLIP_RATE_GW:.4%} of accepted "
+    f"cell-barcoded reads carry such a piece ({CLIP_READS_GW:,} / {CB_READS_GW:,}). "
+    f"(b) The last aligned bases of tail-carrying reads from many different molecules stack at one position; "
+    f"PeakATail joins them into a cluster and calls its read-weighted mode a site, with support counted as "
+    f"distinct (cell barcode, UMI) molecules. A coverage summit that no tail-carrying read claims is written "
+    f"to a separate, second-class file and is not in the default output: its atlas agreement is "
+    f"{S['tier2_ip']['P']:.4f} against {S['default']['P']:.4f} for the default. "
+    f"(c) An A-rich stretch encoded by the genome is copied into the RNA and can capture the oligo-dT primer, "
+    f"giving a read whose clipped A-run is indistinguishable from a tail-carrying read’s (internal priming). "
+    f"The A-rich genome lies upstream of and at the called base, not downstream of it — the aligner runs into "
+    f"the tract and clips where it ends, so the run ends at or before the call in "
+    f"{TRIG['run_ends_at_or_before_call']:.1%} of removals. The genome "
+    f"tells the two apart, so PeakATail reads the {int(IP_HI - IP_LO)} nt of genome sequence around every "
+    f"called end (offsets {IP_LO + 0.5:+.0f}…{IP_HI - 0.5:+.0f}) and removes calls that sit on a run of "
+    f"genomic A. On PBMC 10k v3 that removes {N_REMOVED:,} of {NB['ge2_noip']:,} ≥2-molecule calls and "
+    f"moves atlas agreement {S['ge2_noip']['P']:.4f} → {S['default']['P']:.4f}; it also costs recall, "
+    f"since {P_REMOVED:.1%} of what it removes does have an atlas site within 100 bp. "
+    f"(d) The kept sites are counted in every cell and compared between cell types with the one test "
+    f"configuration that holds its false-positive rate ({FDR_NULL_P05:.1%} of label-shuffled tests p < 0.05, "
+    f"0/{FDR_NULL_RUNS} null runs with a q < 0.05 hit), reporting only switches that replicate across "
+    f"biological units. "
+    f"The two badges are the figure’s only headline numbers; the second names the paper’s pre-registered "
+    f"TRUSTED SET and not a shipped CLI default — `--polya-min-umis` is 1 at the caller and the genome check is "
+    f"the opt-in `--ip-filter`, run here in filtering mode. Code {CODE}; PBMC 10k v3 arm run {RUN_STAMP}; "
+    f"the data-rich six-panel render of the same numbers is `FIG1_STYLE=detailed`."
+)
 
-# ---- b0: context strip ----------------------------------------------------
-axB0 = style(axbox(ML, 1.14, CW, 0.48, "b0"))
-axB0.set_xlim(-300, 120)
-axB0.fill_between(COV_X, 0, COV, color=SKY, alpha=0.30, lw=0, zorder=2)
-axB0.plot(COV_X, COV, color=SKY, lw=0.7, zorder=3)
-axB0.axvline(0, color=VERM, lw=0.9, ls=(0, (3, 2)), zorder=4)
-axB0.set_ylim(0, COV.max() * 1.50)
-axB0.set_yticks([0, 1000, 2000])
-axB0.set_ylabel("reads", fontsize=5.8, color=MUTED, labelpad=1)
-axB0.set_xlabel("nt from the called cleavage site", fontsize=5.8, color=MUTED, labelpad=0.5)
-panel_tag(axB0, "b", f"One real locus, drawn to scale — {KEPT['label']}", dy=0.22)
-axB0.add_patch(Rectangle((BX0, 0), BX1 - BX0, COV.max() * 1.50, facecolor=ORANGE, alpha=0.13,
-                         edgecolor="none", zorder=1))
-# (the transcript-3'-end / gene-body-end distances and the "a coverage summit
-#  is not one" qualification moved to the sidecar Legend, panel-b paragraph)
-axB0.text(-296, COV.max() * 1.47,
-          f"coverage of the {KEPT['n_usable']:,} accepted reads within ±300 bp, each extended to {SEQLEN} nt",
-          fontsize=5.3, color=MUTED, ha="left", va="top")
-axB0.annotate(f"local maximum {int(COV.max()):,} reads at {COV_MAX_OFF:+d} bp",
-              xy=(COV_MAX_OFF, COV.max()), xytext=(-105, COV.max() * 1.18),
-              fontsize=5.3, color=MUTED, ha="left", va="center",
-              arrowprops=dict(arrowstyle="-", lw=0.5, color=MUTED))
-axB0.annotate(f"{int(_cov_site)} reads at the cleavage site",
-              xy=(3, _cov_site), xytext=(10, COV.max() * 1.30),
-              fontsize=5.3, color=INK, ha="left", va="top", linespacing=1.3,
-              arrowprops=dict(arrowstyle="-", lw=0.5, color=MUTED))
-axB0.text(BX1 - 1, COV.max() * 0.06, "zoom", fontsize=5.2, color=ORANGE, ha="right", va="bottom")
+DRAWN_MD = f"""Panel a is a cartoon, not to scale: the real read-level
+evidence at a real locus — real BAM records, real soft-clipped sequence, real GRCh38 bases — is the
+detailed render's panel b and the `{NAME}_reads.tsv` / `{NAME}_sequence.tsv` companions. Panel b's pile is a
+schematic of the clustering rule; at the worked example locus the real cluster is {len(clip_counts)} clip
+positions spanning {SPAN_CLIP} bp, joined by the {P_RUN['polya_seed_window']} bp gap rule, carrying
+{KEPT['molecules_bed']} distinct molecules, and its read-weighted mode is the called base. Panel c's base
+squares are schematic, but their geometry is the measured one: the flagged genomic A-run **ends at or before
+the called base in {TRIG['run_ends_at_or_before_call']:.1%} of removed calls** (median run-end offset
+{TRIG['median_run_end_offset']:.0f}), which is why the run is drawn ending at the call and why the text says the
+filter reads the window **around** the called end rather than downstream of it — the caller's window is
+offsets {IP_LO + 0.5:+.0f}…{IP_HI - 0.5:+.0f} from the called base, i.e. {int(IP_HI - IP_LO)} nt spanning
+both sides, even though `ema/experimental/internal_priming.py` documents the rule as targeting a tract
+*downstream* of the cleavage site. As configured, a call is flagged by a run of ≥
+{P_RUN['ip_a_stretch']} genomic A or an A-fraction ≥ {P_RUN['ip_a_fraction']:.0%} in that window;
+{TRIG['a6_rule'] / TRIG['n']:.2%} of removals are flagged by the run rule and only
+{TRIG['a_fraction_rule'] / TRIG['n']:.2%} by the fraction rule. The measured A-fraction profile over all
+{N_PROF_KEPT:,} kept and {N_PROF_REM:,} removed calls is `{NAME}_ipprofile.tsv` (drawn in the detailed
+render's panel d). Panel d is icons only — no counts are drawn, and none of Fig 5's or Fig 6's yields
+appear on this figure."""
 
-# ---- b1: base-level zoom of the kept call ---------------------------------
-B1_TOP, B1_H = 1.84, 1.44
-axB1 = plain(axbox(ML, B1_TOP, CW, B1_H, "b1"))
-axB1.set_xlim(BX0, BX1)
+CAVEAT_SCHEMATIC = f"""7. The four panels of the default render are schematics: they illustrate the mechanism and must not be read
+   as data. The evidence for every claim they make is in Figs 2–3 (accuracy and the trade surface), Fig 4
+   (calibration), the audit TSVs listed under Provenance, and the detailed render of this same script."""
 
-# zoom connectors from the context strip (figure coordinates)
-for xa, xb in ((BX0, 0.0), (BX1, 1.0)):
-    fig.add_artist(Line2D([(ML + CW * (xa + 300) / 420) / FIG_W, (ML + CW * xb) / FIG_W],
-                          [(FIG_H - 1.62) / FIG_H, (FIG_H - B1_TOP) / FIG_H],
-                          transform=fig.transFigure, color=ORANGE, lw=0.6, alpha=0.45, zorder=0))
-
-
-def draw_sequence(ax, L, y, h, fs=5.2, lo=BX0, hi=BX1):
-    """Real GRCh38 sequence; the A's are picked out because the A's are the point."""
-    seq, s0 = L["seq"], L["seq_lo"]
-    for off in range(int(np.ceil(lo)), int(np.floor(hi)) + 1):
-        i = off - s0
-        if not (0 <= i < len(seq)):
-            continue
-        b = seq[i]
-        if b == "A":
-            ax.add_patch(Rectangle((off - 0.5, y), 1.0, h, facecolor=VERM, alpha=0.18,
-                                   edgecolor="none", zorder=2))
-        ax.text(off, y + h / 2, b, ha="center", va="center", fontsize=fs,
-                family="DejaVu Sans Mono", color=VERM if b == "A" else MUTED, zorder=3)
-
-
-def draw_ruler(ax, y, h, fs=5.0):
-    for off in range(-40, 31, 10):
-        ax.add_line(Line2D([off, off], [y + h, y], color=GRID, lw=0.6, zorder=2))
-        ax.text(off, y - 0.008, f"{off:+d}", ha="center", va="top", fontsize=fs, color=MUTED)
-
-
-def draw_read(ax, x_start, x_end, clip_len, clip_seq, y, h, letters_from=12):
-    """One BAM record, to scale: aligned bases from its own start to its OWN last
-    aligned base (*x_end*, which is where clip_site() put this read's clip and is
-    NOT always the cluster's called base), then the soft clip."""
-    a = max(x_start, BX0)
-    edge = x_end + 0.5                          # right edge of this read's last aligned base
-    ax.add_patch(Rectangle((a - 0.5, y), edge - (a - 0.5), h, facecolor=BLUE, alpha=0.62,
-                           edgecolor="none", zorder=3))
-    cl = min(int(clip_len), int(BX1 - edge))
-    if cl > 0:
-        ax.add_patch(Rectangle((edge, y), cl, h, facecolor=VERM, edgecolor="none", alpha=0.92, zorder=4))
-        if clip_len >= letters_from:
-            ax.text(edge + cl / 2, y + h / 2, clip_seq[:cl], ha="center", va="center",
-                    fontsize=5.0, family="DejaVu Sans Mono", color="white", zorder=5)
-        if clip_len > cl:                       # clip runs past the drawn window
-            ax.text(edge + cl + 0.4, y + h / 2, "»", ha="left", va="center", fontsize=5.0,
-                    color=VERM, zorder=5)
-    if x_start < BX0:
-        ax.text(BX0 + 0.4, y + h / 2, "«", ha="left", va="center", fontsize=5.0, color="white", zorder=5)
-
-
-IP_LO = -P_RUN["ip_window_left"] + 1 - 0.5      # offsets -9 .. +30 (see a_profile docstring)
-IP_HI = P_RUN["ip_window_right"] + 0.5
-
-# --- reads: a spread over the real clip lengths, plus reads with no clip
-cl = KEPT["clipped"].drop_duplicates(subset=["cb", "ub"]).sort_values(["clip_len", "start0"])
-sel = np.unique(np.linspace(0, len(cl) - 1, 6).round().astype(int))
-show = cl.iloc[sel].sort_values("clip_len", ascending=False)
-un = KEPT["reads"][KEPT["reads"].clip_site < 0].copy()
-un["end_off"] = un.start0 + un.span - 1 - KEPT["site0"]
-un = un[(un.end_off > BX0 + 8) & (un.end_off < -6)].sort_values("end_off")
-un_show = un.iloc[np.unique(np.linspace(0, len(un) - 1, 2).round().astype(int))]
-
-drawn_reads = []
-axB1.text(BX0 + 0.5, 1.005, f"{len(show)} of the {len(KEPT['clipped'])} qualifying clip reads here "
-          f"({KEPT['molecules_recomputed']} distinct molecules)", fontsize=5.6, color=BLUE,
-          ha="left", va="top")
-axB1.text(1.4, 1.005, "cleavage site", fontsize=5.6, color=VERM, ha="left", va="top")
-
-Y_TOP, RH, PITCH = 0.905, 0.038, 0.054
-y = Y_TOP
-for _, r in show.iterrows():
-    a = r.start0 - KEPT["site0"]
-    draw_read(axB1, a, int(r.clip_site - KEPT["site0"]), int(r.clip_len), r.clip_seq, y, RH)
-    drawn_reads.append(dict(locus="kept", start_offset=int(a), aligned_span=int(r.span),
-                            clip_len=int(r.clip_len), clip_seq=r.clip_seq, cb=r.cb, ub=r.ub,
-                            cigar=r.cigar))
-    y -= PITCH
-for j, (_, r) in enumerate(un_show.iterrows()):
-    a = r.start0 - KEPT["site0"]
-    axB1.add_patch(Rectangle((max(a, BX0) - 0.5, y), r.end_off - max(a, BX0) + 1, RH,
-                             facecolor=GREY, alpha=0.40, edgecolor="none", zorder=3))
-    if a < BX0:
-        axB1.text(BX0 + 0.4, y + RH / 2, "«", ha="left", va="center", fontsize=5.0,
-                  color="white", zorder=5)
-    if j == len(un_show) - 1:                    # label inside the bar: no room beside it
-        axB1.text((BX0 + r.end_off) / 2, y + RH / 2, "no qualifying clip", ha="center",
-                  va="center", fontsize=5.0, color=INK, zorder=5)
-    drawn_reads.append(dict(locus="kept", start_offset=int(a), aligned_span=int(r.span),
-                            clip_len=0, clip_seq="", cb=r.cb, ub=r.ub, cigar=r.cigar))
-    y -= PITCH
-
-# --- clip-site stems: the clustering input
-Y_STEM = y - 0.032
-STEM_MAX = 0.078
-for off, k in clip_counts.items():
-    axB1.add_line(Line2D([off, off], [Y_STEM, Y_STEM + STEM_MAX * k / clip_counts.max()],
-                         color=VERM, lw=1.4, zorder=4, solid_capstyle="butt"))
-    axB1.text(off, Y_STEM + STEM_MAX * k / clip_counts.max() + 0.006, str(int(k)),
-              ha="center", va="bottom", fontsize=5.0, color=VERM)
-_b0 = clip_counts.index.min() - 0.5
-_b1 = clip_counts.index.max() + 0.5      # the cluster's OWN extent: single linkage
-                                          # bounds the GAP between neighbours, not the span
-axB1.add_line(Line2D([_b0, _b1], [Y_STEM - 0.022, Y_STEM - 0.022], color=INK, lw=0.8, zorder=4))
-for xx in (_b0, _b1):
-    axB1.add_line(Line2D([xx, xx], [Y_STEM - 0.032, Y_STEM - 0.012], color=INK, lw=0.8, zorder=4))
-axB1.text(BX1 - 0.5, Y_STEM + STEM_MAX * 0.45, "clip reads\nper position", fontsize=5.3,
-          color=VERM, ha="right", va="center", linespacing=1.3)
-# (the single-linkage sentence moved to the sidecar Legend; a short label
-#  naming the bracket stays on the image)
-axB1.text(BX0 + 0.5, Y_STEM - 0.042,
-          f"cluster (single linkage, gap ≤ {P_RUN['polya_seed_window']} bp): "
-          f"{len(clip_counts)} positions over {SPAN_CLIP} bp — mode = the call",
-          ha="left", va="top", fontsize=5.3, color=INK, linespacing=1.35)
-
-# --- sequence, hexamer, internal-priming window, ruler
-Y_SEQ = Y_STEM - 0.305
-H_SEQ = 0.062
-axB1.add_patch(Rectangle((IP_LO, Y_SEQ - 0.070), IP_HI - IP_LO, Y_STEM - Y_SEQ + 0.185,
-                         facecolor=PURPLE, alpha=0.09, edgecolor=PURPLE, lw=0.6,
-                         ls=(0, (2, 2)), zorder=1))
-axB1.text(IP_HI - 0.5, Y_STEM + 0.118, f"internal-priming window "
-          f"({IP_LO + 0.5:+.0f} … {IP_HI - 0.5:+.0f} nt from the call = {int(IP_HI - IP_LO)} nt of genomic sequence)",
-          ha="right", va="bottom", fontsize=5.3, color=PURPLE)
-draw_sequence(axB1, KEPT, Y_SEQ, H_SEQ)
-axB1.add_patch(Rectangle((HEX_OFF - 0.5, Y_SEQ - 0.008), 6, H_SEQ + 0.016, facecolor="none",
-                         edgecolor=ORANGE, lw=1.0, zorder=5))
-axB1.text(HEX_OFF + 3, Y_SEQ + H_SEQ + 0.016, f"hexamer AATAAA ({HEX_OFF:+d})",
-          ha="center", va="bottom", fontsize=5.2, color=ORANGE)
-draw_ruler(axB1, Y_SEQ - 0.040, 0.018)
-axB1.axvline(0.5, color=VERM, lw=0.9, ls=(0, (3, 2)), zorder=6)
-_kw = KEPT["seq"][80 - 9:80 + 31]
-axB1.text(BX0 + 0.5, Y_SEQ - 0.098,
-          f"strand-matched atlas representative site {KEPT['atlas_bp']} bp away",
-          ha="left", va="top", fontsize=5.5, color=MUTED)
-axB1.text(BX1 - 0.5, Y_SEQ - 0.098,
-          f"longest genomic A-run in the window "
-          f"{max(len(m.group()) for m in re.finditer('A+', _kw))} nt (flagged at ≥ {P_RUN['ip_a_stretch']}) · "
-          f"A-fraction {_kw.count('A') / 40:.0%} (flagged at ≥ {P_RUN['ip_a_fraction']:.0%})  →  IP-PASS, kept",
-          ha="right", va="top", fontsize=5.5, color=GREEN)
-
-# ---- legend strip ---------------------------------------------------------
-axLg = plain(axbox(ML, 3.34, CW, 0.12, "blegend"))
-leg = [Line2D([], [], color=BLUE, lw=4, alpha=.62, label="aligned bases"),
-       Line2D([], [], color=VERM, lw=4, label="non-templated poly(A) soft clip"),
-       Line2D([], [], color=GREY, lw=4, alpha=.40, label="read with no qualifying clip"),
-       Line2D([], [], color=ORANGE, lw=1.1, label="canonical hexamer"),
-       Line2D([], [], color=PURPLE, lw=1.1, ls=(0, (2, 2)), label="internal-priming window"),
-       Line2D([], [], marker="s", color=VERM, alpha=0.35, lw=0, ms=4, label="genomic A")]
-axLg.legend(handles=leg, loc="center", ncol=6, frameon=False, handlelength=1.4,
-            columnspacing=1.0, handletextpad=0.35, fontsize=5.3)
-
-# ---- b2: the same geometry for a call the filter removed ------------------
-axB2 = plain(axbox(ML, 3.58, CW, 0.96, "b2"))
-axB2.set_xlim(BX0, BX1)
-axB2.text(BX0 + 0.5, 1.10, REM["label"], fontsize=6.2, color=PURPLE, ha="left", va="top",
-          fontweight="bold")
-
-cl2 = REM["clipped"].drop_duplicates(subset=["cb", "ub"]).sort_values("clip_len", ascending=False)
-sel2 = np.unique(np.linspace(0, len(cl2) - 1, 4).round().astype(int))
-cl2 = cl2.iloc[sel2].sort_values("clip_len", ascending=False)
-# ("read-level evidence indistinguishable from the call above" moved to the
-#  sidecar Legend, panel-b paragraph)
-axB2.text(BX0 + 0.5, 0.985, f"{len(sel2)} of {len(REM['clipped'])} clip reads here",
-          fontsize=5.3, color=INK, ha="left", va="top")
-Y2_TOP, RH2, PITCH2 = 0.855, 0.058, 0.076
-y = Y2_TOP
-for _, r in cl2.iterrows():
-    a = r.start0 - REM["site0"]
-    draw_read(axB2, a, int(r.clip_site - REM["site0"]), int(r.clip_len), r.clip_seq, y, RH2)
-    drawn_reads.append(dict(locus="removed", start_offset=int(a), aligned_span=int(r.span),
-                            clip_len=int(r.clip_len), clip_seq=r.clip_seq, cb=r.cb, ub=r.ub,
-                            cigar=r.cigar))
-    y -= PITCH2
-Y_SEQ2 = y - 0.120
-axB2.add_patch(Rectangle((IP_LO, Y_SEQ2 - 0.075), IP_HI - IP_LO, Y2_TOP - Y_SEQ2 + 0.155,
-                         facecolor=PURPLE, alpha=0.09, edgecolor=PURPLE, lw=0.6,
-                         ls=(0, (2, 2)), zorder=1))
-axB2.axvline(0.5, color=VERM, lw=0.9, ls=(0, (3, 2)), zorder=6)
-draw_sequence(axB2, REM, Y_SEQ2, 0.090)
-axB2.add_patch(Rectangle((REM_RUN[1] - 0.5, Y_SEQ2 - 0.010), REM_RUN[0], 0.110, facecolor="none",
-                         edgecolor=PURPLE, lw=1.1, zorder=5))
-axB2.text(REM_RUN[1] + REM_RUN[0] / 2, Y_SEQ2 + 0.105,
-          f"genomic A-run of {REM_RUN[0]} nt ending at the call — where oligo-dT primes",
-          ha="center", va="bottom", fontsize=5.3, color=PURPLE)
-draw_ruler(axB2, Y_SEQ2 - 0.055, 0.024)
-axB2.text(BX1 - 0.5, Y_SEQ2 - 0.130,
-          f"≥ {P_RUN['ip_a_stretch']} consecutive genomic A in the window  →  FLAGGED, removed; "
-          f"nearest strand-matched atlas site {REM['atlas_bp']:,} bp away, nearest {REM['gene']} "
-          f"transcript 3′ end {int(REM['tx3p']['distance']):,} bp",
-          ha="right", va="top", fontsize=5.5, color=PURPLE)
-
-# ===========================================================================
-# panel c -- the two tiers, the filter, the threshold
-# ===========================================================================
-CW_C = 3.50
-axC = plain(axbox(ML, 4.72, CW_C, 1.62, "c"))
-panel_tag(axC, "c", "From peaks to the pre-registered default (PBMC 10k v3)")
-LC = lineh(axC, 6.0)
-BH = 3.6 * LC
-
-
-def node(x, w, ytop, col, title, n, P=None, note=None, big=7.6):
-    rbox(axC, x, ytop - BH, w, BH, ec=col, lw=1.0)
-    axC.text(x + w / 2, ytop - LC * 0.75, title, ha="center", va="center", fontsize=5.8,
-             color=col, fontweight="bold")
-    axC.text(x + w / 2, ytop - LC * 1.80, n, ha="center", va="center", fontsize=big, color=INK)
-    if P is not None:                       # a to-scale precision bar inside the node
-        bw = w * 0.48
-        bx = x + 0.02
-        by = ytop - LC * 3.10
-        axC.add_patch(Rectangle((bx, by), bw, LC * 0.45, facecolor=PAPER, edgecolor=GRID, lw=0.4,
-                                zorder=4))
-        axC.add_patch(Rectangle((bx, by), bw * P, LC * 0.45, facecolor=col, alpha=0.85,
-                                edgecolor="none", zorder=5))
-        axC.add_line(Line2D([bx + bw * S["default"]["null_P"]] * 2, [by, by + LC * 0.45],
-                            color=MUTED, lw=0.7, zorder=6))
-        axC.text(bx + bw + 0.012, by + LC * 0.22, f"P@100 {P:.3f}", ha="left", va="center",
-                 fontsize=5.2, color=MUTED)
-    elif note:
-        axC.text(x + w / 2, ytop - LC * 2.85, note, ha="center", va="center", fontsize=5.3, color=MUTED)
-
-
-node(0.02, 0.72, 1.00, MUTED, "peak candidates", f"{NB['peaks_noip']:,}",
-     note="clip clusters + coverage summits")
-axC.text(0.245, 1.00 - BH - LC * 0.50, f"internal-priming filter: −{IP_FLAGGED_GW:,} "
-         f"({IP_FLAGGED_GW / IP_PEAKS_GW:.1%})", ha="left", va="center", fontsize=5.2, color=PURPLE)
-Y2 = 1.00 - BH - LC * 1.00
-node(0.02, 0.36, Y2, BLUE, "tier 1 · clip-supported", f"{NB['tier1_ip']:,}", P=S["tier1_ip"]["P"], big=7.2)
-node(0.54, 0.36, Y2, SKY, "tier 2 · coverage-only", f"{NB['tier2_ip']:,}", P=S["tier2_ip"]["P"], big=7.2)
-Y3 = Y2 - BH - LC * 1.00
-node(0.02, 0.36, Y3, GREEN, "≥ 2 clip molecules", f"{NB['default']:,}", P=S["default"]["P"], big=7.2)
-arrow(axC, 0.20, 1.00 - BH, 0.20, Y2 + 0.004, ms=5.5)
-arrow(axC, 0.72, 1.00 - BH, 0.72, Y2 + 0.004, ms=5.5)
-arrow(axC, 0.20, Y2 - BH, 0.20, Y3 + 0.004, ms=5.5)
-axC.text(0.42, Y2 - BH - LC * 0.30, f"discards {NB['tier1_ip'] - NB['default']:,} single-molecule\n"
-         f"sites ({1 - NB['default'] / NB['tier1_ip']:.1%} of tier 1, IP arm)",
-         ha="left", va="top", fontsize=5.3, color=MUTED, linespacing=1.35)
-YB = Y3 - BH - LC * 0.95
-CC = chars(CW_C, 5.4)
-# (the gate-PASS sentence, the null-ratio sentence, the tier-2-file note and
-#  the BED-rows-vs-scored-n note moved to the sidecar Legend, panel-c
-#  paragraph; the definition of the default and a short label for the grey
-#  null tick stay on the image)
-for i, (txt, col, fs, bold) in enumerate([
-        ("= the pre-registered default: tier 1 ∩ IP-pass ∩ ≥ 2 distinct clip molecules", GREEN, 5.6, True),
-        (f"grey tick = 3-seed gene-body-shuffled null P@100 ({S['default']['null_P']:.4f})", MUTED, 5.4, False)]):
-    axC.text(0.0, YB - LC * 1.10 * i, textwrap.fill(txt, CC), ha="left", va="top", fontsize=fs,
-             color=col, fontweight="bold" if bold else "normal")
-
-# ===========================================================================
-# panel d -- the internal-priming filter, measured on the whole call set
-# ===========================================================================
-DX, DW = ML + 3.78, CW - 3.78
-axD = style(axbox(DX, 4.88, DW, 0.95, "d"))
-panel_tag(axD, "d", "What the filter removes, measured", dy=0.30)
-axD.add_patch(Rectangle((IP_LO, 0), IP_HI - IP_LO, 1.05, facecolor=PURPLE, alpha=0.08,
-                        edgecolor="none", zorder=1))
-axD.plot(OFF, PROF_KEPT, color=GREEN, lw=1.0, zorder=4, label=f"kept ({N_PROF_KEPT:,})")
-axD.plot(OFF, PROF_REM, color=PURPLE, lw=1.0, zorder=4, label=f"removed ({N_PROF_REM:,})")
-axD.axvline(0, color=VERM, lw=0.8, ls=(0, (3, 2)), zorder=3)
-axD.set_xlim(-50, 50)
-axD.set_ylim(0, 1.05)
-axD.set_xticks([-50, -25, 0, 25, 50])
-axD.set_yticks([0, 0.5, 1.0])
-axD.set_xlabel("nt from the call", fontsize=5.8, color=MUTED, labelpad=0.5)
-axD.set_ylabel("genomic A-fraction", fontsize=5.8, color=MUTED, labelpad=1)
-axD.grid(color=GRID, lw=0.5, alpha=0.7)
-axD.legend(loc="upper left", frameon=False, fontsize=5.2, handlelength=1.1, borderpad=0.05,
-           labelspacing=0.2)
-axD.annotate("hexamer", xy=(HEX_OFF + 3, PROF_KEPT[50 + HEX_OFF + 3]), xytext=(-47, 0.70),
-             fontsize=5.2, color=ORANGE, ha="left",
-             arrowprops=dict(arrowstyle="-", lw=0.5, color=ORANGE))
-axD.annotate("genomic A-tract\nending at the call", xy=(-3, 0.95), xytext=(9, 1.02),
-             fontsize=5.2, color=PURPLE, ha="left", va="top", linespacing=1.3,
-             arrowprops=dict(arrowstyle="-", lw=0.5, color=PURPLE))
-
-# (the three panel-d statistics sentences that stood in a text block below the
-#  profile plot moved to the sidecar Legend, panel-d paragraph, verbatim in
-#  substance: removed/kept counts and the P/R_det moves, the removed set's own
-#  precision vs the kept set's, and the trigger breakdown)
-
-# ===========================================================================
-# panel e -- the molecule threshold is a trade surface; one point was gated
-# ===========================================================================
-axE = style(axbox(ML, 6.60, 2.48, 1.32, "e"))
-panel_tag(axE, "e", "One point on a trade surface")
-DS = [("pbmc", BLUE, "PBMC 10k v3"), ("mouse1", GREY, "testis mouse 1"), ("mouse2", GREY, "testis mouse 2")]
-for ds, col, lab in DS:
-    q = trade[trade.dataset == ds].sort_values("min_molecules")
-    axE.plot(q.recall_detected_genes, q.atlas_agreement_precision, "-o", color=col, lw=0.9,
-             ms=2.4, mfc="white", mew=0.9, alpha=1.0 if ds == "pbmc" else 0.55,
-             zorder=4 if ds == "pbmc" else 3, label=lab)
-    if ds == "pbmc":
-        for _, r in q.iterrows():
-            dx, dy = (-17, 1) if int(r.min_molecules) == 2 else (4, 3.5)
-            axE.annotate(f"≥{int(r.min_molecules)}", (r.recall_detected_genes, r.atlas_agreement_precision),
-                         textcoords="offset points", xytext=(dx, dy), fontsize=5.0, color=MUTED)
-_d = trade[(trade.dataset == "pbmc") & (trade.min_molecules == 2)].iloc[0]
-axE.plot(_d.recall_detected_genes, _d.atlas_agreement_precision, "o", ms=8.0, mfc="none",
-         mec=GREEN, mew=1.3, zorder=5)
-axE.annotate("the only pre-registered point", (_d.recall_detected_genes, _d.atlas_agreement_precision),
-             textcoords="offset points", xytext=(8, -10), fontsize=5.4, color=GREEN,
-             arrowprops=dict(arrowstyle="-", lw=0.5, color=GREEN))
-axE.set_xlabel("detected-gene recall R_det @100 bp", fontsize=5.8, color=MUTED, labelpad=0.5)
-axE.set_ylabel("atlas-agreement P @100 bp", fontsize=5.8, color=MUTED, labelpad=1)
-axE.set_xlim(0.055, 0.325)
-axE.set_ylim(0.30, 1.03)     # top headroom shrank with the F1 note's move to the legend
-axE.set_yticks([0.4, 0.6, 0.8, 1.0])
-axE.grid(color=GRID, lw=0.5, alpha=0.7)
-axE.legend(loc="lower left", frameon=False, fontsize=5.2, handlelength=1.2, borderpad=0.05,
-           labelspacing=0.2)
-# (the F1-honesty note — F1_det is higher at >=1 molecule than at the default,
-#  a reliability choice, not the F1 optimum — moved to the sidecar Legend,
-#  panel-e paragraph)
-
-# ===========================================================================
-# panel f -- what the default call set is used for
-# ===========================================================================
-FX, FW = ML + 2.88, CW - 2.88
-axF = plain(axbox(FX, 6.60, FW, 1.32, "f"))
-panel_tag(axF, "f", "What the paper does with the default call set")
-LF = lineh(axF, 5.3)
-CF = chars(FW * 0.94, 5.2)
-STEPS = [
-    (BLUE, "PAS × cell count matrix",
-     [f"reads, not clips: the coverage peak this PAS claims, plus accepted read ends in",
-      f"[site − {SEQLEN}, site + 25] outside it, split at midpoints between neighbouring PAS"]),
-    (BLUE, "PAS usage per cell type",
-     ["within-gene proportions, per-cell-type PAS counts, 3′UTR length"]),
-    # (the "other five arms fail the pre-registered calibration rule" clause and
-    #  the "yields are Fig 5's numbers" note moved to the sidecar Legend,
-    #  panel-f paragraph)
-    (GREEN, "calibrated switch test (14)",
-     ["Fisher · --count-mode cells · marker pre-selection OFF",
-      f"{FDR_NULL_P05:.1%} of label-shuffled tests p < 0.05; 0/{FDR_NULL_RUNS} null runs with a "
-      f"q < 0.05 hit"]),
-    (GREEN, "replication across biological units (20)",
-     ["q < 0.05 in ≥ 2 patients, same direction, opposite-direction veto, |Δproportion| ≥ 0.1"]),
-]
-yy = 1.0
-for step_i, (col, head, subs) in enumerate(STEPS):
-    wrapped = [textwrap.fill(s, CF) for s in subs]
-    nlines = sum(w.count("\n") + 1 for w in wrapped)
-    h = LF * (1.15 + 1.05 * nlines)
-    rbox(axF, 0.01, yy - h, 0.98, h, ec=col, lw=0.9)
-    axF.text(0.026, yy - LF * 0.70, head, fontsize=5.8, color=col, fontweight="bold",
-             ha="left", va="center")
-    yline = yy - LF * 1.20
-    for w in wrapped:
-        axF.text(0.026, yline, w, fontsize=5.2, color=INK, ha="left", va="top", linespacing=1.3)
-        yline -= LF * 1.05 * (w.count("\n") + 1)
-    yy -= h
-    if step_i < len(STEPS) - 1:          # arrows join boxes; none dangles after the last
-        arrow(axF, 0.06, yy, 0.06, yy - LF * 0.45, ms=5.0)
-        yy -= LF * 0.60
-
-# ===========================================================================
-# legend (sidecar only -- the on-figure footer was retired at the 2026-09-02
-# submission pass; the sidecar '## Legend' is the single source of the caption)
-# ===========================================================================
-caption = (
+CAPTION_DETAILED = (
     f"Figure 1 | What PeakATail does, drawn on the data it was measured on (code {CODE}; PBMC 10k v3 arm run "
     f"{RUN_STAMP}). "
     f"(a) A read is used when it is mapped, on the strand of the pass, carries a {P_RUN['cb_len']}-nt CB tag and "
@@ -1254,43 +1675,7 @@ caption = (
     f"and \u22652 molecules is the pre-registered OUTPUT. "
 )
 
-# ---------------------------------------------------------------------------
-# write
-# ---------------------------------------------------------------------------
-for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
-    p = FIGDIR / f"{NAME}.{ext}"
-    fig.savefig(p, **kw)
-    print("wrote", p)
-fig.savefig(OUTDIR / f"{NAME}.png", dpi=600)
-
-pd.DataFrame(rows_tsv).to_csv(OUTDIR / f"{NAME}.tsv", sep="\t", index=False)
-pd.DataFrame(drawn_reads).to_csv(OUTDIR / f"{NAME}_reads.tsv", sep="\t", index=False)
-seq_rows = []
-for key, L in LOCI.items():
-    for off in range(int(np.ceil(BX0)), int(np.floor(BX1)) + 1):
-        i = off - L["seq_lo"]
-        if 0 <= i < len(L["seq"]):
-            seq_rows.append(dict(locus=key, chrom=L["chrom"], offset=off,
-                                 pos_1based=L["site0"] + 1 + off, base=L["seq"][i]))
-pd.DataFrame(seq_rows).to_csv(OUTDIR / f"{NAME}_sequence.tsv", sep="\t", index=False)
-pd.DataFrame(dict(offset=OFF, A_fraction_kept=PROF_KEPT, A_fraction_removed=PROF_REM,
-                  n_kept=N_PROF_KEPT, n_removed=N_PROF_REM)).to_csv(
-    OUTDIR / f"{NAME}_ipprofile.tsv", sep="\t", index=False, float_format="%.6f")
-trade.to_csv(OUTDIR / f"{NAME}_trade.tsv", sep="\t", index=False, float_format="%.6f")
-print("wrote", OUTDIR / f"{NAME}.tsv", "and 4 companion TSVs")
-
-# ---------------------------------------------------------------------------
-# sidecar caption + index paragraph
-# ---------------------------------------------------------------------------
-cap_md = f"""# Fig 1 — `fig1_overview` caption (generated by `scripts/manuscript_figures/fig1_overview.py`)
-
-## Legend
-
-{caption}
-
-### Panel-by-panel
-
-**Panel a — ingestion.** The four acceptance conditions are `ema/countmatrix/read.py:read_check` as run
+PANELS_MD = f"""**Panel a — ingestion.** The four acceptance conditions are `ema/countmatrix/read.py:read_check` as run
 (`strategy={P_RUN['strategy']}`, `--seq-len {SEQLEN}`, `--barcode-tag {P_RUN['barcode_tag']}`, `cb_len
 {P_RUN['cb_len']}`); the clip test is `ema/countmatrix/polya.py:clip_site` with `--polya-min-clip
 {P_RUN['polya_min_clip']}` and `--polya-min-purity {P_RUN['polya_min_purity']}`, including the run-flush-to-the-boundary
@@ -1401,11 +1786,9 @@ and marker pre-selection off controls the false-discovery rate ({FDR_NULL_P05:.1
 p < 0.05, 0/{FDR_NULL_RUNS} null runs with any q < 0.05 hit, 0/{FDR_NULL_FAMILIES} BH families; `14`, SOUND);
 switches are reported only when they replicate in ≥2 patients in the same direction with an opposite-direction
 veto and |Δproportion| ≥ 0.1 (`20`). **No replication or switch count appears on this figure**: those numbers are
-Fig 5's and are being regenerated on the Stage-3 v2 chain.
+Fig 5's and are being regenerated on the Stage-3 v2 chain."""
 
-### Caveats that travel with this figure
-
-1. Atlas-agreement precision is agreement with a curated atlas, not ground truth: atlas-novel true sites count as
+CAVEATS_MD = f"""1. Atlas-agreement precision is agreement with a curated atlas, not ground truth: atlas-novel true sites count as
    false positives, and the recall denominator is the atlas restricted to genes detected in the dataset.
 2. The clip rate and every locus shown are CellRanger 3.0.0 / 10x 3′ v3 / 91 bp R2 on one PBMC donor. Any
    pipeline that trims poly(A) before alignment destroys this evidence channel entirely (`10` §R2), and the
@@ -1417,15 +1800,16 @@ Fig 5's and are being regenerated on the Stage-3 v2 chain.
    overlapping loci is under revision (`09` §5, issue #99), which is why no gene-level claim is made here. The
    panel-b labels name the nearest annotated **transcript** 3′ end and its distance, never "the gene's 3′ end":
    for the kept locus those differ by {abs(KEPT['gene_body_end'] - (KEPT['site0'] + 1)) - int(KEPT['tx3p']['distance']):,} bp.
-5. `--polya-min-umis` is 1 at the caller; the ≥2-molecule default is the pre-registered *output*, filtered from
-   the tier-1 file. Do not describe it as the caller's built-in default.
+5. Neither rule the second badge names is a shipped CLI default: `--polya-min-umis` is 1 at the caller and the
+   ≥2-molecule threshold is the pre-registered *output*, filtered from the tier-1 file, while the genome check is
+   the opt-in `--ip-filter` (`ip_filter` defaults to False in `ema/main.py`, and `internal_priming.py`'s own
+   default mode is `annotate`, which flags without dropping; the paper's arm runs it in filtering mode). The badge
+   therefore reads "Trusted set", not "Default": do not describe either rule as the caller's built-in default.
 6. Panel d's profile and trigger breakdown are computed by this script, not quoted from a verified document; the
    method is stated on the figure and in this caption, and the same pipeline reproduces the scorer's precision on
-   the kept set as a control.
+   the kept set as a control."""
 
-## Provenance
-
-- Script: `scripts/manuscript_figures/fig1_overview.py` (writes the figure, this sidecar and every audit TSV).
+PROVENANCE_MD = f"""- Script: `scripts/manuscript_figures/fig1_overview.py` (writes the figure, this sidecar and every audit TSV).
 - Caller code {CODE} (frozen worktree `tools/pa-polya-run-9dfdefb3`); PBMC 10k v3 arm run {RUN_STAMP};
   pre-registration: {PREREG}.
 - Every printed value, with its method and source: `results/figures/manuscript/{NAME}.tsv`, plus the
@@ -1433,11 +1817,9 @@ Fig 5's and are being regenerated on the Stage-3 v2 chain.
   cached intermediates in `results/figures/manuscript/{NAME}_work/`.
 - Sources of truth: `19_final_gate_v2.md` §1/§2 (verifier verdict FIXED), `22_performance_roadmap.md` §6,
   `23_algorithm_roadmap.md` §2 + `results/algo_headroom/VERIFY` §5, `14_switch_calibration_v2.md` (SOUND),
-  `20_stage3_replication.md` (rule only), and the run's own `run_config.json` / `pas_support.tsv`.
+  `20_stage3_replication.md` (rule only), and the run's own `run_config.json` / `pas_support.tsv`."""
 
-### Index paragraph (for `05_figure_index.md` — add by hand, this script does not edit it)
-
-**fig1_overview — Fig 1, what the method is, on real data ({RUN_STAMP[:10]}, built from verified artefacts
+INDEX_DETAILED_MD = f"""**fig1_overview — Fig 1, what the method is, on real data ({RUN_STAMP[:10]}, built from verified artefacts
 plus quantities computed in-script, each with its method recorded in `{NAME}.tsv`).** Six panels: (a) ingestion and the acceptance rules, with the corrected
 genome-wide poly(A)-clip rate {CLIP_RATE_GW:.4%} ({CLIP_READS_GW:,} / {CB_READS_GW:,} accepted CB reads; `23` §2 —
 this supersedes 1.152%); (b) one real PBMC locus drawn to scale — real reads, real soft clips, real GRCh38
@@ -1458,17 +1840,224 @@ and poly(A)-trimming pipelines destroy the evidence (`10` §R2); the panel-b loc
 its method stated and a control that reproduces the scorer. Full caption:
 `figures/fig1_overview.caption.md`; sources `19_final_gate_v2.md` §1/§2, `22_performance_roadmap.md` §6,
 `23_algorithm_roadmap.md` §2, `14_switch_calibration_v2.md`, `20_stage3_replication.md`, and the run's own
-`run_config.json` / `pas_support.tsv`.
+`run_config.json` / `pas_support.tsv`."""
+
+INDEX_SIMPLE_MD = f"""**fig1_overview — Fig 1, what the method is, for a reader who has never run a caller
+({RUN_STAMP[:10]}; redesigned 2026-09-02 under `figures/DESIGN_DIRECTIVES.md` item 3).** Four plain-language
+schematic panels: (a) most reads stop short of the transcript end while a few run into the poly(A) tail and keep
+a non-genomic piece of it, which fixes the end to a single base — {CLIP_RATE_GW:.4%} of accepted cell-barcoded
+reads genome-wide ({CLIP_READS_GW:,} / {CB_READS_GW:,}; `23` §2, superseding 1.152%); (b) the last aligned bases
+of tail-carrying reads from many molecules stack at one position and become a called site, while a coverage-only
+summit is second class (atlas agreement {S['tier2_ip']['P']:.4f} vs {S['default']['P']:.4f}); (c) the
+internal-priming look-alike and the genome check that removes it — the genomic A-run ends at or before the call
+in {TRIG['run_ends_at_or_before_call']:.1%} of removals, the window read is {int(IP_HI - IP_LO)} nt **around**
+the called end, and the filter removes {N_REMOVED:,} of {NB['ge2_noip']:,} ≥2-molecule calls, moving P@100
+{S['ge2_noip']['P']:.4f} → {S['default']['P']:.4f} at a real recall cost ({P_REMOVED:.1%} of the removals do
+have an atlas site within 100 bp); (d) the trusted list → per-cell counts → cell-type comparison with the one
+FDR-controlling configuration ({FDR_NULL_P05:.1%} of label-shuffled tests p < 0.05). Exactly two headline
+badges ({CLIP_RATE_GW:.1%} of reads carry the tail; the trusted set keeps sites with ≥ {MIN_MOLECULES}
+tail-carrying molecules that pass the genome check — the paper's pre-registered output, not a CLI default); no trade curve (item 5 keeps it in exactly one place in the mains), no funnel
+table, no statistics block and no base-resolution locus track — those are the detailed render and Figs 2–4.
+**Caveats that travel with it:** the panels are schematics, not data; atlas-agreement precision is not ground
+truth; single donor, single chemistry, and poly(A)-trimming pipelines destroy the evidence (`10` §R2);
+`--polya-min-umis` is 1 at the caller, ≥ {MIN_MOLECULES} is the pre-registered *output* and the genome check is
+the opt-in `--ip-filter` — the second badge is the paper's trusted set, not the shipped CLI default. Full caption:
+`figures/{NAME}.caption.md`; the data-rich record: `figures/{NAME}_detailed.caption.md`."""
+
+cap_md_detailed = f"""# Fig 1 — `{NAME}_detailed` caption (generated by `scripts/manuscript_figures/fig1_overview.py`, FIG1_STYLE=detailed)
+
+This is the data-rich working-phase render of Fig 1, kept fully reproducible as the record. The figure the
+manuscript submits is the four-panel default (`FIG1_STYLE=simple`, `figures/{NAME}.caption.md`). Since the
+2026-09-02 design pass it is drawn with the shared publication style module (`_pubstyle.py`): identical
+layout and identical numbers, with the shared ink/muted/grid tokens and hairline-thinner axis rules. It is
+deliberately NOT held to the design laws of that pass — its callout density is the reason it is kept.
+
+## Legend
+
+{CAPTION_DETAILED}
+
+### Panel-by-panel
+
+{PANELS_MD}
+
+### Caveats that travel with this figure
+
+{CAVEATS_MD}
+
+## Provenance
+
+{PROVENANCE_MD}
+
+### Index paragraph (for `05_figure_index.md` — add by hand, this script does not edit it)
+
+{INDEX_DETAILED_MD}
 """
-(FIGDIR / f"{NAME}.caption.md").write_text(cap_md)
-print("wrote", FIGDIR / f"{NAME}.caption.md")
+
+cap_md_simple = f"""# Fig 1 — `{NAME}` caption (generated by `scripts/manuscript_figures/fig1_overview.py`)
+
+## Legend
+
+{CAPTION_SIMPLE}
+
+### What each panel is, and what it stands for
+
+{DRAWN_MD}
+
+### The measured record behind the schematic
+
+Every quantity the four panels abstract is computed by this script on every run, whichever style is rendered,
+and is drawn panel by panel in the detailed render (`FIG1_STYLE=detailed`,
+`figures/{NAME}_detailed.caption.md`). Nothing was dropped when the figure was simplified; it moved here.
+**The panel letters in this section are the detailed render's six panels a–f, not the four panels of the
+figure above**: a ingestion, b the worked locus, c the funnel, d the internal-priming filter measured,
+e the molecule trade surface (which the mains now show in exactly one place, item 5), f the downstream chain.
+
+{PANELS_MD}
+
+### Caveats that travel with this figure
+
+Caveats 1–6 have travelled with this figure since the working phase; where one names a panel letter it means
+the **detailed** render's panels a–f (in the default render the method is stated in this Legend rather than on
+the image). Caveat 7 is new with the 2026-09-02 simplification.
+
+{CAVEATS_MD}
+{CAVEAT_SCHEMATIC}
+
+## Provenance
+
+{PROVENANCE_MD}
+- Styles: `FIG1_STYLE=simple` (default) writes `{NAME}.{{png,pdf,caption.md}}`; `FIG1_STYLE=detailed` writes
+  `{NAME}_detailed.{{png,pdf,caption.md}}`. Both styles compute the same numbers and write the same five audit
+  TSVs, byte-identically; the style only chooses what is drawn.
+
+### Index paragraph (for `05_figure_index.md` — add by hand, this script does not edit it)
+
+{INDEX_SIMPLE_MD}
+"""
+
+caption = CAPTION_SIMPLE if SIMPLE else CAPTION_DETAILED
+cap_md = cap_md_simple if SIMPLE else cap_md_detailed
+
+# ---------------------------------------------------------------------------
+# write: the figure (per style), the audit TSVs (identical in both styles) and
+# the sidecar caption.
+# ---------------------------------------------------------------------------
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
+    p = FIGDIR / f"{STEM}.{ext}"
+    fig.savefig(p, **kw)
+    print("wrote", p)
+fig.savefig(OUTDIR / f"{STEM}.png", dpi=600)
+
+pd.DataFrame(rows_tsv).to_csv(OUTDIR / f"{NAME}.tsv", sep="\t", index=False)
+# not plotted since 2026-09-02: the read-level track and the base-level sequence
+# track are the detailed render's panel b; the default render is a schematic.
+# The emissions stay, unchanged and byte-identical, for the record.
+pd.DataFrame(drawn_reads).to_csv(OUTDIR / f"{NAME}_reads.tsv", sep="\t", index=False)
+seq_rows = []
+for key, L in LOCI.items():
+    for off in range(int(np.ceil(BX0)), int(np.floor(BX1)) + 1):
+        i = off - L["seq_lo"]
+        if 0 <= i < len(L["seq"]):
+            seq_rows.append(dict(locus=key, chrom=L["chrom"], offset=off,
+                                 pos_1based=L["site0"] + 1 + off, base=L["seq"][i]))
+pd.DataFrame(seq_rows).to_csv(OUTDIR / f"{NAME}_sequence.tsv", sep="\t", index=False)
+# not plotted since 2026-09-02: the measured A-fraction profile is the detailed
+# render's panel d (the default render's panel c is the schematic of the rule).
+pd.DataFrame(dict(offset=OFF, A_fraction_kept=PROF_KEPT, A_fraction_removed=PROF_REM,
+                  n_kept=N_PROF_KEPT, n_removed=N_PROF_REM)).to_csv(
+    OUTDIR / f"{NAME}_ipprofile.tsv", sep="\t", index=False, float_format="%.6f")
+# not plotted since 2026-09-02: the molecule trade surface now appears in exactly
+# one place in the mains (DESIGN_DIRECTIVES.md item 5; the sweep rows themselves
+# are still read from Fig 3's TSV and re-emitted here for the record).
+trade.to_csv(OUTDIR / f"{NAME}_trade.tsv", sep="\t", index=False, float_format="%.6f")
+print("wrote", OUTDIR / f"{NAME}.tsv", "and 4 companion TSVs")
+
+(FIGDIR / f"{STEM}.caption.md").write_text(cap_md)
+print("wrote", FIGDIR / f"{STEM}.caption.md")
+
+# ---------------------------------------------------------------------------
+# EXPECT, part 2: every value the default render no longer prints on the image
+# is still pinned -- in the generated sidecar.  (Design pass 2026-09-02: an
+# assert for a value that left the image MOVES to a sidecar-generation check; it
+# is never deleted.  The value-asserts for the numbers themselves are unchanged
+# and sit with the code that computes them, above.)
+# ---------------------------------------------------------------------------
+EXPECT_IN_SIDECAR = {
+    "genome-wide qualifying-clip rate": f"{CLIP_RATE_GW:.4%}",
+    "clip reads / accepted CB reads": f"{CLIP_READS_GW:,} / {CB_READS_GW:,}",
+    "peak candidates": f"{NB['peaks_noip']:,}",
+    "internal-priming removals, genome-wide": f"{IP_FLAGGED_GW:,}",
+    "tier 1 (clip-supported)": f"tier 1 {NB['tier1_ip']:,}",
+    "tier 2 (coverage-only)": f"tier 2 {NB['tier2_ip']:,}",
+    "the pre-registered default call set": f"{NB['default']:,}",
+    "default P@100": f"{S['default']['P']:.4f}",
+    "tier-1 P@100": f"{S['tier1_ip']['P']:.4f}",
+    "tier-2 P@100": f"{S['tier2_ip']['P']:.4f}",
+    "gene-body-shuffled null P@100": f"{S['default']['null_P']:.4f}",
+    "calls the internal-priming filter removed": f"{N_REMOVED:,}",
+    "atlas agreement of the removed set": f"{P_REMOVED:.4f}",
+    "no-IP >=2-molecule P@100": f"{S['ge2_noip']['P']:.4f}",
+    "R_det of the default": f"{S['default']['R_det']:.4f}",
+    "F1_det at >=1 molecule (the honesty note)": f"{_p1.F1_detected_genes:.4f}",
+    "F1_det at the default": f"{_p.F1_detected_genes:.4f}",
+    "the drawn cluster's extent": f"{SPAN_CLIP} bp",
+    "the two loci's molecule counts": f"({KEPT['molecules_bed']} and {REM['molecules_bed']})",
+    "count column of the switch test": f"{WINDOW_READS:,} reads",
+    "null false-positive rate of the calibrated arm": f"{FDR_NULL_P05:.1%}",
+    "A-run rule share of removals": f"{TRIG['a6_rule'] / TRIG['n']:.2%}",
+    "A-run ends at or before the call": f"{TRIG['run_ends_at_or_before_call']:.1%}",
+    "selection denominators of the two example loci":
+        f"{SEL['kept_criteria_n']:,} of the\n{SEL['kept_denominator']:,}",
+}
+for _what, _token in EXPECT_IN_SIDECAR.items():
+    assert _token in cap_md, ("value not pinned in the sidecar", _what, _token)
+print(f"sidecar check: {len(EXPECT_IN_SIDECAR)} retired-from-image values pinned in "
+      f"{STEM}.caption.md")
+
+# ---------------------------------------------------------------------------
+# design-law checks (DESIGN_DIRECTIVES.md item 1), default render only: no text
+# collides with other text or is cut by a box, nothing leaves the canvas, and no
+# annotation is set below the minimum print size.  The detailed render is the
+# retained working-phase design and is deliberately not held to them.
+# ---------------------------------------------------------------------------
+if SIMPLE:
+    fig.canvas.draw()
+    _rend = fig.canvas.get_renderer()
+    _texts = [(t, t.get_window_extent(renderer=_rend)) for ax in fig.axes for t in ax.texts
+              if t.get_text().strip()]
+    _bad = []
+    for _i in range(len(_texts)):
+        for _j in range(_i + 1, len(_texts)):
+            if (_texts[_i][1].expanded(0.98, 0.90)).overlaps(_texts[_j][1].expanded(0.98, 0.90)):
+                _bad.append(f"text/text: {_texts[_i][0].get_text()[:30]!r} × "
+                            f"{_texts[_j][0].get_text()[:30]!r}")
+    for ax in fig.axes:                     # a label sits wholly inside a box, or outside it
+        for _pa in ax.patches:
+            if _pa.get_gid() != "box":
+                continue
+            _pb = _pa.get_window_extent(renderer=_rend)
+            for _t, _tb in _texts:
+                _b = _tb.expanded(0.96, 0.80)
+                if _pb.overlaps(_b) and not (_pb.x0 <= _b.x0 and _pb.x1 >= _b.x1
+                                             and _pb.y0 <= _b.y0 and _pb.y1 >= _b.y1):
+                    _bad.append(f"box cuts text: {_t.get_text()[:40]!r}")
+    _W, _H = FIG_W * fig.dpi, FIG_H * fig.dpi
+    _bad += [f"off canvas: {t.get_text()[:40]!r}" for t, b in _texts
+             if b.x0 < 4 or b.y0 < 4 or b.x1 > _W - 4 or b.y1 > _H - 4]
+    _small = [t.get_text()[:30] for t, _ in _texts if t.get_fontsize() < TYPE["annotation_min"]]
+    assert not _bad, _bad
+    assert not _small, ("annotation below the minimum print size", _small)
+    assert FIG_W <= 7.09, FIG_W                       # the 180 mm print column
+    assert len(BADGES) == 2, BADGES                   # at most two headline badges
+    print(f"design check: {len(_texts)} text objects, no collisions, none below "
+          f"{TYPE['annotation_min']} pt, canvas {FIG_W}x{FIG_H} in")
 
 # ---------------------------------------------------------------------------
 # edge check: nothing may be clipped; the outer 8 px of the PNG must be blank
 # ---------------------------------------------------------------------------
 try:
     from PIL import Image
-    im = np.asarray(Image.open(FIGDIR / f"{NAME}.png").convert("L"))
+    im = np.asarray(Image.open(FIGDIR / f"{STEM}.png").convert("L"))
     edge = 8
     border = np.concatenate([im[:edge, :].ravel(), im[-edge:, :].ravel(),
                              im[:, :edge].ravel(), im[:, -edge:].ravel()])
@@ -1478,6 +2067,6 @@ try:
 except ImportError:
     print("edge check skipped (no PIL)")
 
-print(f"fig1_overview: default n={S['default']['n']:,} P@100={S['default']['P']:.4f} "
+print(f"{STEM}: style={STYLE}; default n={S['default']['n']:,} P@100={S['default']['P']:.4f} "
       f"R_det={S['default']['R_det']:.4f}; clip rate {CLIP_RATE_GW:.4%}; "
       f"IP removes {N_REMOVED:,} at P {P_REMOVED:.3f}")

@@ -48,3 +48,13 @@ Sources: `manuscript/14_switch_calibration_v2.md` (SOUND); `results/figures/manu
 Every plotted value: `results/figures/manuscript/figS9_calibration_extended_*.tsv` (source column per row).
 Script: `scripts/manuscript_figures/figS9_calibration_extended.py` (env `FIGS9_REUSE_STRATA=1` reuses an existing strata TSV;
 EXPECT asserts run either way). Rendered at PNG 600 dpi / PDF fonttype 42.
+
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure
+annotation, key entry and tick label now sits at or above the 6 pt floor. Axis labels, panel titles and prose
+tick labels are sentence-cased through `_pubstyle.sentence_case()`, canonical identifiers preserved and the
+lower-case panel letters kept. The figure carried no on-image subtitle to move. Three collisions that the
+larger type exposed were fixed by geometry, never by dropping content: panel **d** gained row height and its
+per-arm bar spacing went 0.24 -> 0.30 so its three count labels clear each other; panel **a**'s no-marker arm
+labels are wrapped on three lines instead of two (same words); and the left margin was widened for panel d's
+arm labels. No panel, number or audit TSV changed; all six TSVs regenerate byte-identical.

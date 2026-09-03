@@ -2,101 +2,121 @@
 
 ## Legend
 
-Figure 3 | Operating-point trade surface, window sensitivity, replicate reproducibility and compute.
+Figure 3 | Robustness: matching-window resolution, replicate reproducibility and compute. (The file stem
+`fig3_tradeoff` is retained from the figure-rename pass for file identity; the trade curve itself moved to
+Fig 2 in the 2026-09-02 design pass — see "What this figure deliberately no longer shows".)
 
-**Panel a — trade surface.** Atlas-agreement precision @100 bp (y) against detected-gene recall
-R_det @100 bp (x) for the IP-filtered v2 arms as the molecule-support threshold sweeps ≥1, ≥2, ≥3, ≥5,
-≥10 distinct clip molecules, on PBMC 10k v3 and both GSE104556 testis mice. Marker area scales with
-the number of sites called (n 9,449–167,565). Thresholds are labelled on the PBMC path and at both ends of
-the mouse 1 path; all three paths carry the same five thresholds in the same order. Black rings mark the **pre-registered
-default (≥2 molecules, `13_reliability_positioning.md` §1)** — **only that point was pre-registered;
-≥1, ≥3, ≥5 and ≥10 are descriptive points computed for this figure and were never gated.** (The
-post-hoc sweep that informed the ≥2-molecule threshold is disclosed in 12 CORRECTION and is never
-cited as a result.) Dashed
-line: the pre-registered gate P ≥ 0.50. Dotted line: the original two-sided gate's precision side,
-P ≥ 0.38. Every point was recomputed with `scripts/benchmark_tools/score_tool.py` from `pas.bed`
-column 5 using the reference arguments of `scripts/benchmark_tools/stage2_final_launch.sh`; the ≥1 and
-≥2 points reproduce `19_final_gate_v2.md` §1 to 4 decimal places on all three arms (asserted in the
-script). Defaults: PBMC 0.7062 / 0.1754
-(n 46,524); mouse 1 0.7450 / 0.2048;
-mouse 2 0.7572 / 0.2080. Raising the threshold to
-≥10 molecules would reach P 0.941 / 0.885 /
-0.892 at R_det 0.083 / 0.098 /
-0.102 — reported as the shape of the surface, not as a proposal.
+**Panels a and b — matching-window sensitivity.** Atlas-agreement precision (a) and detected-gene recall (b) at
+10 / 25 / 50 / 100 bp for the ≥2-molecule precision default, the ≥1-molecule sensitivity arm and the five
+competitors on PBMC 10k v3, from the verified per-tool score TSVs (values at 200 bp and the mouse arms are in the
+audit TSV, marked `plotted = False`). The check the panels exist for: the de novo precision ordering does not
+change when the window is tightened to 10 bp, and the ratio P@10 / P@100 is 0.74 for the
+default and 0.77 for polyApipe against 0.46 (SCAPTURE), 0.33
+(Sierra) and 0.24 (scAPAtrap) — the precision lead is not an artefact of a loose window.
+Catalog-based scUTRquant* is above the default at every window (0.72) and is shown but not
+ranked with the de novo tools.
 
-**Panel b — matching-window sensitivity.** Atlas-agreement precision (top) and detected-gene recall
-(bottom) at 10 / 25 / 50 / 100 bp for the v2 default, the v2 ≥1-molecule sensitivity arm and the five
-competitors on PBMC, from the verified per-tool score TSVs (values at 200 bp and the mouse arms are in
-the audit TSV). The check the panel exists for: the de novo precision ordering does not change when the
-window is tightened to 10 bp, and the ratio P@10 / P@100 is 0.74 for the PeakATail default and
-0.77 for polyApipe against 0.46 (SCAPTURE), 0.33 (Sierra) and 0.24 (scAPAtrap) —
-the precision lead is not an artefact of a loose window. Catalog-based scUTRquant* is above the
-PeakATail default at every window (0.72) and is shown but not ranked with the de novo tools.
+**Panel c — replicate agreement.** The fraction of one replicate's call set with a strand-matched call in the
+other within 100 bp (`bedtools closest -s -d -t first`), both directions, with the ≤25 bp value as a diamond.
+*Biological replicates (top block):* the two GSE104556 testis mice, computed here for the default
+(0.776–0.779 at 100 bp, 0.729–0.737 at 25 bp; strand-aware Jaccard of the ±window site
+sets 0.551 at ±25 bp and 0.604 at ±100 bp) and for the ≥1-molecule arm (0.636–0.651) —
+the ≥2-molecule threshold buys 14.3 / 12.5 points of replicate agreement over the
+≥1-molecule arm. *Human donors (bottom block):* the pre-registered second-donor comparison (26 §5, verifier
+FIXED) — 84.2% of donor-2 default calls reproduce within 100 bp in donor 1
+(81.3% within 25 bp) against a genic-shuffle null of ≤0.0086; the
+≥1-molecule arm gives 57.6% / 23.9%.
+**The reverse direction is capped by call-count arithmetic, not by disagreement**: donor 1 has 46,524
+default calls against donor 2's 20,672, so its ceiling is 0.4443 and the observed
+0.3993 is 90% of it — that is what the "ceiling" tick marks. No competitor
+was run on the second donor, so the human block holds PeakATail arms only; **Fig S4 carries the full
+pre-registered second-donor protocol** (gate, per-direction nulls, ceiling arithmetic and the matched-call-count
+control that shows donor 2's higher headline precision is an operating-point effect, not an improvement).
+Competitor and shipped-caller mouse rows are the v1-era head-to-head run
+(`results/benchmark_tools/gse104556/depth_concordance.tsv`, verified in `05_figure_index.md`), so the mouse block
+compares a v2 PeakATail arm against v1-era competitor measurements. Chance ≤0.010 (each query set against the
+other replicate's three gene-body-shuffled nulls); the dotted line sits at 0.0095, just above the **highest**
+per-tool chance level, and the six mouse values span 0.0017–0.0094 in the audit TSV, because a denser call set has a
+higher chance of a nearby match — the default's own chance level is 0.0019 against scAPAtrap's 0.0094, so the
+raw ranking is the conservative reading of this panel. **Honest scope: the default is above polyApipe and above
+PeakATail's own shipped caller, but below Sierra (0.790 / 0.834) and scAPAtrap (0.884 / 0.793) in both
+directions — and scAPAtrap's lead is measured on a set its own `reducePeaks(min.cells=10, min.count=10)` step
+has already depth-cleaned.** Supporting replication evidence is `18_spermatogenesis_final.md`, whose **v2 (merged-code) section was
+re-run after #96/#97 and verified SOUND on 2026-09-02** — that is the record **Fig 5** draws: cross-mouse per-gene
+switch effects ρ = 0.641 (n = 923) and 11,219 / 6,070 / 9,480 same-direction replicated PAS for
+SPC→RS / RS→ES / SPC→ES, 0 in all 15 null pairings. The superseded v1-code (`4efeb125`) values of the same
+quantities — ρ = 0.655 (n = 917; null 0.001 ± 0.032) and 6,049 / 9,469 / 11,263 — are kept here because earlier
+drafts of this legend quoted them; 18 §"v1 → v2" tabulates both sides digit for digit. (Corrected 2026-09-03: this
+legend previously said the v2 re-run "has not happened", which contradicted Fig 5 and the Fig 5 manifest row.)
 
-**Panel c — biological-replicate reproducibility.** The two testis mice as biological replicates:
-the fraction of one mouse's call set with a strand-matched call in the other within 100 bp
-(`bedtools closest -s -d -t first`), both directions, with the ≤25 bp value as a diamond. Computed
-here for the v2 default (0.776–0.779 at 100 bp, 0.729–0.737 at 25 bp;
-strand-aware Jaccard of ±window site sets 0.551 at ±25 bp and 0.604 at ±100 bp) and for the v2
-≥1-molecule arm (0.636–0.651) — the ≥2-molecule threshold buys 14.3 / 12.5 points of replicate
-agreement over the ≥1-molecule arm.
-Competitor and shipped-caller rows are the v1-era head-to-head run
-(`results/benchmark_tools/gse104556/depth_concordance.tsv`, verified in `05_figure_index.md`), so this
-panel compares a v2 PeakATail arm against v1-era competitor measurements. Chance ≤0.010 (each query set
-against the other replicate's three gene-body-shuffled nulls). The dotted line sits at 0.0095, just above
-the **highest** per-tool chance level; the six values span 0.0017–0.0094 and are in the audit TSV, because a
-denser call set has a higher chance of a nearby match — the PeakATail default's own chance level is
-0.0019 against scAPAtrap's 0.0094, so the raw ranking is the conservative reading of this panel.
-**Honest scope: the v2 default is above
-polyApipe and above PeakATail's own shipped caller, but below Sierra (0.790 / 0.834) and scAPAtrap
-(0.884 / 0.793) in both directions — and scAPAtrap's lead is measured on a set its own
-`reducePeaks(min.cells=10, min.count=10)` step has already depth-cleaned.** Supporting replication evidence from
-`18_spermatogenesis_final.md` (**still the `4efeb125` record — its v2 re-run after #96/#97 has not
-happened**): cross-mouse per-gene switch effects ρ = 0.655 (n = 917; null
-0.001 ± 0.032) and 6,049 / 9,469 / 11,263 same-direction replicated PAS per stage pair, 0 in all 15 null
-pairings. **PBMC is a single donor and a single CellRanger BAM, so no human biological replicate exists
-in this benchmark.**
-
-**Panel d — compute.** Wall time against peak RSS on the PBMC 10k v3 BAM, log–log. The arrow is the
-resolved Stage-1d item: PeakATail v1 (3:45:53, 293.7 GB, code 4efeb125) → v2
-(34:37.49, 12.53 GB, code 9dfdefb) — 23.5× less peak RSS, so the ≥300 GB node
-requirement is gone. **Both ends of that arrow are the clip-seeded arm run *without* `--ip-filter`** —
-the like-for-like pair, and the pair `15` §5 and `19` §3 quote. The IP-filtered default arm whose call
-sets panels a–c show was cheaper on both codes (3:44:37 / 239.5 GB →
-32:59.38 / 11.12 GB, read here from the arms' own `runtime_mem.txt`); those two
-measurements are audit rows in `fig3_tradeoff_compute.tsv` and are not plotted. The Stage-1d fixes cut peak RSS
-294 → 12.5 GB on the PBMC BAM — no ≥300 GB node is needed.
-The open circle is the uncontended single-run wall time (27:43, `19` §3); the
-filled v2 point was measured with all four arms running concurrently, so peak RSS is the production
-number and the wall time must be quoted with the concurrency disclosed (~28–35 min). Competitor and
-shipped-caller resources are their own verified runs on the same box
-(`results/figures/manuscript/benchmark_headtohead.tsv`, verified in `05_figure_index.md`), and each
-competitor row carries that run's retry / skipped-stage caveat in the compute TSV's `note` column —
+**Panel d — compute.** Wall time against peak RSS on the PBMC 10k v3 BAM, log–log, for the **current** caller
+(code 9dfdefb: 34:37.49, 12.53 GB) beside the five competitors' own verified runs on the same
+box (`results/figures/manuscript/benchmark_headtohead.tsv`, verified in `05_figure_index.md`). The plotted
+PeakATail point is the clip-seeded arm run *without* `--ip-filter` (the pair `19` §3 quotes); the IP-filtered
+default arm whose call sets panels a–c show was cheaper (32:59.38 / 11.12 GB, read here
+from that arm's own `runtime_mem.txt`) and is an audit row in `fig3_tradeoff_compute.tsv`, not a plotted point.
+That wall time was measured with all four arms running concurrently, so peak RSS is the production number and the
+wall time must be quoted with the concurrency disclosed (~28–35 min; the uncontended single run was 27:43,
+`19` §3). Each competitor row carries its run's retry / skipped-stage caveat in the compute TSV's `note` column —
 scAPAtrap's 4.07 h is a resumed run that skipped three completed stages and so understates a
-from-scratch run (12:58:50 of total machine time across both attempts). Peak RSS is
-GNU `time -v` maximum resident set size reported as kbytes/1e6, the convention of `19` §3 and `15` §5.
+from-scratch run (12:58:50 of total machine time across both attempts). Peak RSS is GNU `time -v` maximum
+resident set size reported as kbytes/1e6, the convention of `19` §3 and `15` §5.
+
+**What this figure deliberately no longer shows** (2026-09-02 publication design pass,
+`manuscript/figures/DESIGN_DIRECTIVES.md` items 4 and 5; every number below is still computed, still asserted
+and still written to this figure's audit TSVs).
+*The trade surface* — the molecule-support sweep that was panel a is now **Fig 2 panels a/b**, so the paper
+holds exactly one precision/recall plane. It is still recomputed by this script through the shared module
+`scripts/manuscript_figures/_molsweep.py` and written to `fig3_tradeoff.tsv` with `plotted = False`, and the
+assert that its ≥1 and ≥2 points reproduce `19_final_gate_v2.md` §1 to 4 dp on all three arms still runs here.
+For the record: raising the threshold from the ≥2-molecule default to ≥10 molecules moves atlas-agreement precision @100 bp
+0.706 → 0.941 (PBMC),
+0.745 → 0.885 and
+0.757 → 0.892 (mice) while R_det falls
+0.175 → 0.083 /
+0.205 → 0.098 /
+0.208 → 0.102 — the shape of the surface, never a proposal.
+The pre-registered ≥2-molecule defaults themselves are PBMC 0.7062 / 0.1754
+(n 46,524); mouse 1 0.7450 / 0.2048; mouse 2
+0.7572 / 0.2080.
+The old panel also encoded the call count in marker area (n 9,449–167,565); that axis is now Fig 2 panels c/d, and
+every n is a column of `fig3_tradeoff.tsv`. Its 3-seed gene-body-shuffled null P@100 at the default was
+0.0217 (PBMC) and 0.0139 / 0.0138 (mice), against the plotted
+0.706 / 0.745 / 0.757.
+*Version history* — panel d used to carry a v1 point and a v1 → v2 arrow, and panel c a shipped-caller row. End
+users choose a caller, not a release: the improvement is **Fig S8** (compute) and **Fig S12** (versions), with one
+Results sentence pointing there. The values keep their rows: v1 3:45:53 / 293.7 GB → current
+34:37.49 / 12.53 GB, i.e. 23.5× less peak RSS on the same
+no-IP arm (`fig3_tradeoff_compute.tsv`, `kind = not_plotted_history`), so no ≥300 GB node is needed — and on the
+IP-filtered arm the same pair is 3:44:37 / 239.5 GB → 32:59.38 / 11.12 GB
+(`kind = audit_only`, matching 15 §5); the shipped
+coverage-only caller reproduced 0.734–0.746 across the two mice
+(`fig3_tradeoff_reproducibility.tsv`).
+*The concurrency circle* — panel d's open "uncontended" marker is gone; the caveat it carried is the sentence in
+the panel-d paragraph above, and the measurement (27:43) is the `not_plotted_caveat` row of the compute TSV.
+*The gate lines* — P ≥ 0.50 and the superseded P ≥ 0.38 belong to the precision/recall plane and are drawn once,
+in Fig 2.
 
 **Definitions, pre-registration and scope** (the former on-figure footer, verbatim — it travels with the
-legend): Code 9dfdefb (PRs #93/#96/#97 merged); every PeakATail v2 value is from the v2 run recorded in manuscript/19_final_gate_v2.md and results/benchmark_tools/final_v2_verify/VERIFIED_v2.md (verifier verdict FIXED). PeakATail points labelled v1 or 'shipped' (c and d) are the 4efeb125 records (15 §5, 05). DEFINITIONS — atlas-agreement precision @W = fraction of called sites whose nearest same-strand curated PolyASite 2.0 representative site lies ≤W bp away (bedtools closest -s -d -t first, point mode); detected-gene recall R_det@W = fraction of the detected-gene-restricted atlas (285,136 human / 126,686 mouse sites) with a called site ≤W bp on the same strand; full-atlas recall (569,005 / 301,006 sites) is in the audit TSV. Molecule support = distinct UMI-deduplicated poly(A)-clip molecules at a site (pas.bed column 5). PRE-REGISTERED vs DESCRIPTIVE — in panel a only the ≥2-molecule point and its P ≥ 0.50 gate were pre-registered (13 §1, committed 01:18:59 on 2026-08-21, before the arms started at 02:59:36); ≥1, ≥3, ≥5 and ≥10 molecules are descriptive points computed for this figure and were never gated. Every panel-a point and both v2 rows of panel c were computed here with score_tool.py / bedtools using the reference arguments of scripts/benchmark_tools/stage2_final_launch.sh; the ≥1 and ≥2 points reproduce 19 §1 to 4 dp on all three arms (asserted in the script). REPLICATION (panel c) — cross-mouse per-gene switch effects ρ = 0.655 (n = 917; null 0.001 ± 0.032) and 6,049 / 9,469 / 11,263 same-direction replicated PAS per stage pair with 0 in all 15 null pairings come from 18 (testis record on the v1 code). COMPETITORS — competitor precision, recall, reproducibility and compute are from their own verified runs (15 §3, 09, 05 and results/benchmark_tools/gse104556/depth_concordance.tsv); they were not re-run for v2, so panels c and d compare v2 PeakATail against v1-era competitor measurements. scUTRquant* is catalog-based: shown, not ranked with the de novo tools. scTail is absent (unrunnable on this BAM, R1 = 28 bp); SCAPTURE: mouse 1 plotted (its mouse-2 site-level run completed and scored 0.672 — 15 §3; only the per-cell PASquant step failed, so it has no cross-mouse reproducibility row in c). SCOPE — PBMC 10k v3 is one donor and one CellRanger BAM; the two mice are one study and one chemistry. Peak RSS is GNU time -v maximum resident set size as kbytes/1e6, the convention of 19 §3 and 15 §5; the v2 wall time was measured with all four arms running concurrently. PANEL-d ARM — both ends of the v1→v2 arrow are the arm run WITHOUT --ip-filter (like for like, the pair 15 §5 / 19 §3 quote); the IP-filtered default arm of panels a–c was cheaper on both codes (3:44:37 / 239.5 GB → 32:59.38 / 11.12 GB, own logs, audit rows in the compute TSV), which also carries each competitor run's retry/skipped-stage caveats. Every plotted value: results/figures/manuscript/fig3_tradeoff{,_reproducibility,_compute}.tsv.
+legend): Code 9dfdefb (PRs #93/#96/#97 merged); every PeakATail value is from the v2 run recorded in manuscript/19_final_gate_v2.md and results/benchmark_tools/final_v2_verify/VERIFIED_v2.md (verifier verdict FIXED). DEFINITIONS — atlas-agreement precision @W = fraction of called sites whose nearest same-strand curated PolyASite 2.0 representative site lies ≤W bp away (bedtools closest -s -d -t first, point mode); detected-gene recall R_det@W = fraction of the detected-gene-restricted atlas (285,136 human / 126,686 mouse sites) with a called site ≤W bp on the same strand; full-atlas recall (569,005 / 301,006 sites) is in the audit TSV. Molecule support = distinct UMI-deduplicated poly(A)-clip molecules at a site (pas.bed column 5); the ≥2-molecule default and its P ≥ 0.50 gate were pre-registered (13 §1, committed 01:18:59 on 2026-08-21, before the arms started at 02:59:36) and the operating curve those thresholds sweep is **Fig 2**. REPLICATION (panel c) — the cross-mouse testis evidence is 18. Its v2 (merged-code) section, verified SOUND 2026-09-02, is what Fig 5 draws: per-gene effects ρ = 0.641 (n = 923) and 11,219 / 6,070 / 9,480 same-direction replicated PAS for SPC→RS / RS→ES / SPC→ES, 0 in all 15 null pairings. The superseded v1-code (4efeb125) record of the same quantities is ρ = 0.655 (n = 917; null 0.001 ± 0.032) and 6,049 / 9,469 / 11,263; 18 §v1→v2 tabulates both sides. COMPETITORS — competitor precision, recall, reproducibility and compute are from their own verified runs (15 §3, 09, 05 and results/benchmark_tools/gse104556/depth_concordance.tsv); they were not re-run for v2, so panels c and d compare the v2 caller against v1-era competitor measurements, and no competitor was run on the second donor. scUTRquant* is catalog-based: shown, not ranked with the de novo tools. scTail is absent (unrunnable on this BAM, R1 = 28 bp); SCAPTURE: mouse 1 only (its mouse-2 site-level run completed and scored 0.672 — 15 §3; only the per-cell PASquant step failed, so it has no cross-mouse reproducibility row in c). SCOPE — PBMC 10k v3 is one donor and one CellRanger BAM; the second donor (pbmc4k) is a different chemistry and depth; the two mice are one study and one chemistry. Peak RSS is GNU time -v maximum resident set size as kbytes/1e6, the convention of 19 §3 and 15 §5; the plotted wall time was measured with all four arms running concurrently. Every plotted value: results/figures/manuscript/fig3_tradeoff{,_reproducibility,_compute}.tsv.
 
 ## Provenance
 
-**Index paragraph.** `fig3_tradeoff` — Fig 3: the reliability trade surface, its window
-sensitivity, replicate reproducibility and compute. Sweeping the molecule-support threshold on the
-IP-filtered v2 arms moves atlas-agreement precision @100 bp from
-0.706 to 0.941 (PBMC) while detected-gene
-recall falls 0.175 → 0.083; only the pre-registered
-≥2-molecule point is a claim. The de novo precision ordering is unchanged at a 10 bp matching window,
-the two testis mice agree on 0.776–0.779 of default sites at 100 bp against a ≤0.010 chance level, and
-the Stage-1d fixes cut peak RSS 294 → 12.5 GB on the PBMC BAM.
+**Index paragraph.** `fig3_tradeoff` — Fig 3: the robustness of the shipping caller. The de novo precision
+ordering is unchanged at a 10 bp matching window (P@10 / P@100 0.74 for the default against
+0.24 for scAPAtrap), the two testis mice agree on 0.776–0.779 of default sites at 100 bp and the two
+human donors on 0.842 (donor 2 → donor 1) against a ≤0.010 chance level, and the caller runs the PBMC BAM in
+34:37.49 at 12.53 GB peak RSS — the cheapest wall time of any de novo tool benchmarked here.
 
-**Not drawn — what Fig 3 still lacks.** The long-read re-ranking panel (Spearman ρ between atlas and
-Kinnex precision orderings, 0.90 at 7 of 8 arms) is quarantined and was not regenerated for v2, so it is
-not in this figure; the fairness table (≥95% gene-proximal for every tool) is a table, not a panel; and no
-competitor was re-run on the v2 code, so no v2-vs-v2 reproducibility or compute comparison exists.
+**Not drawn — what Fig 3 still lacks.** The long-read re-ranking panel (Spearman ρ between atlas and Kinnex
+precision orderings, 0.90 at 7 of 8 arms) is quarantined and was not regenerated for v2, so it is not in this
+figure; the fairness table (≥95% gene-proximal for every tool) is a table, not a panel; and no competitor was
+re-run on the v2 code or on the second donor, so no v2-vs-v2 reproducibility or compute comparison exists.
 
 Sources: `manuscript/19_final_gate_v2.md` + `results/benchmark_tools/final_v2_verify/VERIFIED_v2.md`
-(FIXED), `manuscript/18_spermatogenesis_final.md`, `manuscript/15_final_gate.md` §3/§5,
-`manuscript/09_headtohead_results.md`, `manuscript/05_figure_index.md`, and the per-file `source`
-columns of `results/figures/manuscript/fig3_tradeoff.tsv`,
-`fig3_tradeoff_reproducibility.tsv` and `fig3_tradeoff_compute.tsv`.
+(FIXED), `manuscript/26_second_donor_preregistration.md` + `results/benchmark_tools/pbmc4k_donor2/concordance.txt`,
+`manuscript/18_spermatogenesis_final.md`, `manuscript/15_final_gate.md` §3/§5,
+`manuscript/09_headtohead_results.md`, `manuscript/05_figure_index.md`, the shared sweep module
+`scripts/manuscript_figures/_molsweep.py`, and the per-file `source` columns of
+`results/figures/manuscript/fig3_tradeoff.tsv`, `fig3_tradeoff_reproducibility.tsv` and
+`fig3_tradeoff_compute.tsv`.

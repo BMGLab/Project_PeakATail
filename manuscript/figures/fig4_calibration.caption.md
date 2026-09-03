@@ -2,30 +2,47 @@
 
 ## Legend
 
-Figure 4 | `switch diff` calibration on a correctly keyed count matrix — valid FDR control: fisher cells no-mk (conservative); anti-conservative: fisher reads / fisher cells / nb pairwise / fisher reads no-mk / nb pairwise no-mk.
-**Only fisher cells, no marker pre-sel. gives valid FDR control under the label-permutation null (conservative: 3.0% null p<0.05, 0.00% null q<0.05); every arm that keeps the default top-200 marker pre-selection is anti-conservative (fisher reads 20% null p<0.05, fisher cells 13% null p<0.05, nb pairwise 25% null p<0.05), as is fisher reads no-mk, nb pairwise no-mk without pre-selection; permutation-calibrated q is NOT required for the calibrated arm but IS required whenever marker pre-selection or an anti-conservative test is used.** Testis mouse1
-clip-seeded v2, 1,230 STARsolo cells (SPC 370 / RS 504 / ES 356),
-76,711 PAS, 3 stage pairs per run, 20 label permutations shared identically across all arms, the full
-`switch diff` pipeline re-run per permutation.
+Figure 4 | **Which `switch diff` test configurations control the false-discovery rate.** Each row of the figure is one
+configuration a user chooses on the command line — statistical test × count unit (`--count-mode reads|cells`) ×
+marker pre-selection (`--marker-top-n 200`, the default, or `0`). Configurations are scored against a
+label-permutation null run through the identical pipeline, so the score is a property of the configuration, not of
+any one dataset. **Only fisher cells, no marker pre-sel. gives valid FDR control under the label-permutation null (conservative: 3.0% null p<0.05, 0.00% null q<0.05); every arm that keeps the default top-200 marker pre-selection is anti-conservative (fisher reads 20% null p<0.05, fisher cells 13% null p<0.05, nb pairwise 25% null p<0.05), as is fisher reads no-mk, nb pairwise no-mk without pre-selection; permutation-calibrated q is NOT required for the calibrated arm but IS required whenever marker pre-selection or an anti-conservative test is used.**
+Testis mouse1 clip-seeded v2, 1,230 STARsolo cells
+(SPC 370 / RS 504 / ES 356),
+76,711 PAS, 3 stage pairs per run, 20 label permutations shared identically across all
+configurations, the full `switch diff` pipeline re-run per permutation. Green = controls the FDR under the
+pre-registered rule; vermilion = anti-conservative. Verdict in short form: valid FDR control: fisher cells no-mk (conservative); anti-conservative: fisher reads / fisher cells / nb pairwise / fisher reads no-mk / nb pairwise no-mk.
 
-**Panel a** — null p-value distribution per arm (density; uniform = 1), with each arm's share of null p < 0.05.
-**Panel b** — QQ vs uniform on −log10 p with the 95% pointwise band (min null p:
-fisher reads 3e-15, fisher cells 5e-06, nb pairwise 6e-37).
-**Panel c** — q < 0.05 hits per null run
-(dots) vs the TRUE run (diamond), log scale; bottom text = null runs with ≥1 hit / mean hits per null run.
-**Panel d** — share of TRUE nominal q < 0.05 hits surviving permutation-calibrated q (counts on bars), and additionally the
-pre-registered effect floor (|Δproportion| ≥ 0.1 for fisher; |log2FC| ≥ 1 for nb). Dashed/hollow =
-marker pre-selection off (--marker-top-n 0).
+**Panel a** — share of null tests reaching p < 0.05 in each configuration, against the 5% an honest
+null produces (vertical rule); the stem runs from that reference to the observed rate, so its length and side are the
+size and sign of the miscalibration. **Panel b** — false calls made by a *single* null run: one dot per label
+permutation (20 per configuration), bar = median, symmetric-log axis so exact zeros are drawn at 0.
+**Panel c** — the cost in the real (unpermuted) comparison: the share of that configuration's nominal q < 0.05
+calls that survive permutation-calibrated q (bar; label = surviving count / all real-run calls), with the diamond
+marking the share that also clears the pre-registered effect floor (|Δproportion| ≥ 0.1 for Fisher;
+|log2FC| ≥ 1 for NB).
 
-**Per-arm result** (rule for "calibrated": calibrated iff null p<0.05 rate <= 7% AND null p<0.01 rate <= 1.5% AND null q<0.05 rate <= 5% AND <= 25% of null runs carry any q<0.05 hit (anti-conservative checks only; KS reported, not gated)):
-- **fisher, count-mode reads** (marker pre-selection top-200 wilcoxon): 20.3% null p<0.05, 7.66% null q<0.05, 20/20 null runs with a q<0.05 hit (mean 25 hits/null run); TRUE run 307 nominal hits, 186 after permutation-calibrated q, 85 after the effect floor -- ANTI-CONSERVATIVE
-- **fisher, count-mode cells** (marker pre-selection top-200 wilcoxon): 13.0% null p<0.05, 0.96% null q<0.05, 19/20 null runs with a q<0.05 hit (mean 3 hits/null run); TRUE run 668 nominal hits, 640 after permutation-calibrated q, 572 after the effect floor -- ANTI-CONSERVATIVE
-- **nb_pairwise** (marker pre-selection top-200 wilcoxon): 24.7% null p<0.05, 1.27% null q<0.05, 19/20 null runs with a q<0.05 hit (mean 23 hits/null run); TRUE run 1,754 nominal hits, 1,733 after permutation-calibrated q, 1,588 after the effect floor -- ANTI-CONSERVATIVE
-- **fisher reads, no marker pre-sel.** (marker pre-selection off): 9.6% null p<0.05, 0.69% null q<0.05, 20/20 null runs with a q<0.05 hit (mean 1487 hits/null run); TRUE run 49,923 nominal hits, 33,325 after permutation-calibrated q, 16,983 after the effect floor -- ANTI-CONSERVATIVE
-- **fisher cells, no marker pre-sel.** (marker pre-selection off): 3.0% null p<0.05, 0.00% null q<0.05, 0/20 null runs with a q<0.05 hit (mean 0 hits/null run); TRUE run 60,332 nominal hits, 66,630 after permutation-calibrated q, 46,230 after the effect floor -- CALIBRATED (conservative)
-- **nb_pairwise, no marker pre-sel.** (marker pre-selection off): 5.1% null p<0.05, 0.13% null q<0.05, 20/20 null runs with a q<0.05 hit (mean 139 hits/null run); TRUE run 43,127 nominal hits, 42,974 after permutation-calibrated q, 33,067 after the effect floor -- ANTI-CONSERVATIVE
+**Moved off the image at the 2026-09-02 design pass (no-loss rule), with the numbers kept here and in the audit
+TSVs.** The per-configuration *null p-value distribution* is no longer drawn: its leading-bin density (0 ≤ p < 0.05,
+uniform = 1) is Fisher/cells markers off 0.61, NB pairwise/cells markers off 1.02, Fisher/reads markers off 1.91, Fisher/cells markers top-200 2.60, Fisher/reads markers top-200 4.05, NB pairwise/cells markers top-200 4.94, and the full 20-bin histogram is
+`fig4_calibration_hist.tsv`. The *QQ-vs-uniform* panel is likewise gone: the smallest null p-value per configuration is
+Fisher/cells markers off 2e-06, NB pairwise/cells markers off 4e-182, Fisher/reads markers off 2e-191, Fisher/cells markers top-200 5e-06, Fisher/reads markers top-200 3e-15, NB pairwise/cells markers top-200 6e-37; the number of null p-values at or below
+the 1e-16 plotting floor was Fisher/cells markers off 0, NB pairwise/cells markers off 486, Fisher/reads markers off 2,256, Fisher/cells markers top-200 0, Fisher/reads markers top-200 0, NB pairwise/cells markers top-200 2; and the
+Kolmogorov–Smirnov statistic against uniform is
+Fisher/cells markers off D = 0.248, NB pairwise/cells markers off D = 0.007, Fisher/reads markers off D = 0.175, Fisher/cells markers top-200 D = 0.113, Fisher/reads markers top-200 D = 0.181, NB pairwise/cells markers top-200 D = 0.340 — KS rejects for every configuration
+because Fisher p-values are discrete, which is why it is reported and never gated. Per-configuration diagnostic
+depth (per-stage-pair rates, expression strata, count-mode contrast, the NB dispersion floor, permutation-calibrated
+vs nominal q) lives in **figS9**, and is not duplicated here.
 
-Input: Stage-1b acceptance run clusters.h5ad (verified keying, layers['counts'], Stage 0c); labels = STARsolo-GEX marker-argmax stage (step4_stage.py, orthogonal to the PAS matrix), restricted to the 1,294 STARsolo cells, SPG dropped (n=64, fragile; manuscript/11) -> 1,230 cells (SPC 370, RS 504, ES 356), 76,711 PAS; 3-stage agreement with PAS-derived labels 98.8%. Null = obs['stage'] permuted across cells (label counts kept; numpy seeds 1-20, the SAME permutations for every arm), full `switch diff` re-run per permutation; main arms include the default top-200 wilcoxon marker pre-selection on .X (label double-dip deliberately inside the null), diagnostic arms (dashed/hollow) switch it off (--marker-top-n 0; fisher reads, no marker pre-sel. 20/20 perms; fisher cells, no marker pre-sel. 20/20 perms; nb_pairwise, no marker pre-sel. 20/20 perms); BH families are per stage pair. fisher, count-mode reads: 20.3% null p<0.05, 7.66% null q<0.05, 20/20 null runs with hits; fisher, count-mode cells: 13.0% null p<0.05, 0.96% null q<0.05, 19/20 null runs with hits; nb_pairwise: 24.7% null p<0.05, 1.27% null q<0.05, 19/20 null runs with hits; fisher reads, no marker pre-sel.: 9.6% null p<0.05, 0.69% null q<0.05, 20/20 null runs with hits; fisher cells, no marker pre-sel.: 3.0% null p<0.05, 0.00% null q<0.05, 0/20 null runs with hits; nb_pairwise, no marker pre-sel.: 5.1% null p<0.05, 0.13% null q<0.05, 20/20 null runs with hits. TRUE vs null hit COUNTS are not directly comparable (permuted labels change the marker set / the >=10-cells filter); per-test null rates are the calibrated quantities. Permutation-calibrated q: empirical p of each TRUE test = rank within the pooled null p-values of the same pair (global-null reference, resolution 1/(N_null+1)), BH per pair; effect floor |delta proportion| >= 0.1 (fisher) or |log2FC| >= 1 (nb). Rule for 'calibrated': calibrated iff null p<0.05 rate <= 7% AND null p<0.01 rate <= 1.5% AND null q<0.05 rate <= 5% AND <= 25% of null runs carry any q<0.05 hit (anti-conservative checks only; KS reported, not gated). Caveats: one mouse, one tissue with very large true stage effects (TRUE hit counts are upper bounds, not precision); label permutation tests exchangeability under the global null of no stage effect -- it does not model within-stage heterogeneity; nb_pairwise dispersion is a per-PAS plug-in clipped to [1e-4, 10] without shrinkage -- nb pairwise: 0.8% of null tests but 13% of null q<0.05 hits sit at the floor; nb pairwise no-mk: 8.5% of null tests but 67% of null q<0.05 hits sit at the floor; fisher p-values are discrete (mass at p=1). Palette six-checks validated 2026-08-19.
+**Per-configuration result** (rule for "controls the FDR": calibrated iff null p<0.05 rate <= 7% AND null p<0.01 rate <= 1.5% AND null q<0.05 rate <= 5% AND <= 25% of null runs carry any q<0.05 hit (anti-conservative checks only; KS reported, not gated)):
+- **Fisher on cells, marker pre-selection off** (`fisher cells, no marker pre-sel.`): 3.0% null p<0.05, 0.00% null q<0.05, 0/20 null runs with a q<0.05 hit (mean 0 hits/null run); TRUE run 60,332 nominal hits, 66,630 after permutation-calibrated q, 46,230 after the effect floor -- CALIBRATED (conservative)
+- **NB pairwise on cells, marker pre-selection off** (`nb_pairwise, no marker pre-sel.`): 5.1% null p<0.05, 0.13% null q<0.05, 20/20 null runs with a q<0.05 hit (mean 139 hits/null run); TRUE run 43,127 nominal hits, 42,974 after permutation-calibrated q, 33,067 after the effect floor -- ANTI-CONSERVATIVE
+- **Fisher on reads, marker pre-selection off** (`fisher reads, no marker pre-sel.`): 9.6% null p<0.05, 0.69% null q<0.05, 20/20 null runs with a q<0.05 hit (mean 1487 hits/null run); TRUE run 49,923 nominal hits, 33,325 after permutation-calibrated q, 16,983 after the effect floor -- ANTI-CONSERVATIVE
+- **Fisher on cells, marker pre-selection top-200 wilcoxon** (`fisher, count-mode cells`): 13.0% null p<0.05, 0.96% null q<0.05, 19/20 null runs with a q<0.05 hit (mean 3 hits/null run); TRUE run 668 nominal hits, 640 after permutation-calibrated q, 572 after the effect floor -- ANTI-CONSERVATIVE
+- **Fisher on reads, marker pre-selection top-200 wilcoxon** (`fisher, count-mode reads`): 20.3% null p<0.05, 7.66% null q<0.05, 20/20 null runs with a q<0.05 hit (mean 25 hits/null run); TRUE run 307 nominal hits, 186 after permutation-calibrated q, 85 after the effect floor -- ANTI-CONSERVATIVE
+- **NB pairwise on cells, marker pre-selection top-200 wilcoxon** (`nb_pairwise`): 24.7% null p<0.05, 1.27% null q<0.05, 19/20 null runs with a q<0.05 hit (mean 23 hits/null run); TRUE run 1,754 nominal hits, 1,733 after permutation-calibrated q, 1,588 after the effect floor -- ANTI-CONSERVATIVE
+
+Input: Stage-1b acceptance run clusters.h5ad (verified keying, layers['counts'], Stage 0c); labels = STARsolo-GEX marker-argmax stage (step4_stage.py, orthogonal to the PAS matrix), restricted to the 1,294 STARsolo cells, SPG dropped (n=64, fragile; manuscript/11) -> 1,230 cells (SPC 370, RS 504, ES 356), 76,711 PAS; 3-stage agreement with PAS-derived labels 98.8%. Null = obs['stage'] permuted across cells (label counts kept; numpy seeds 1-20, the SAME permutations for every arm), full `switch diff` re-run per permutation; main arms include the default top-200 wilcoxon marker pre-selection on .X (label double-dip deliberately inside the null), the configurations with marker pre-selection off switch it off (--marker-top-n 0; fisher reads, no marker pre-sel. 20/20 perms; fisher cells, no marker pre-sel. 20/20 perms; nb_pairwise, no marker pre-sel. 20/20 perms); BH families are per stage pair. fisher, count-mode reads: 20.3% null p<0.05, 7.66% null q<0.05, 20/20 null runs with hits; fisher, count-mode cells: 13.0% null p<0.05, 0.96% null q<0.05, 19/20 null runs with hits; nb_pairwise: 24.7% null p<0.05, 1.27% null q<0.05, 19/20 null runs with hits; fisher reads, no marker pre-sel.: 9.6% null p<0.05, 0.69% null q<0.05, 20/20 null runs with hits; fisher cells, no marker pre-sel.: 3.0% null p<0.05, 0.00% null q<0.05, 0/20 null runs with hits; nb_pairwise, no marker pre-sel.: 5.1% null p<0.05, 0.13% null q<0.05, 20/20 null runs with hits. TRUE vs null hit COUNTS are not directly comparable (permuted labels change the marker set / the >=10-cells filter); per-test null rates are the calibrated quantities. Permutation-calibrated q: empirical p of each TRUE test = rank within the pooled null p-values of the same pair (global-null reference, resolution 1/(N_null+1)), BH per pair; effect floor |delta proportion| >= 0.1 (fisher) or |log2FC| >= 1 (nb). Rule for 'calibrated': calibrated iff null p<0.05 rate <= 7% AND null p<0.01 rate <= 1.5% AND null q<0.05 rate <= 5% AND <= 25% of null runs carry any q<0.05 hit (anti-conservative checks only; KS reported, not gated). Caveats: one mouse, one tissue with very large true stage effects (TRUE hit counts are upper bounds, not precision); label permutation tests exchangeability under the global null of no stage effect -- it does not model within-stage heterogeneity; nb_pairwise dispersion is a per-PAS plug-in clipped to [1e-4, 10] without shrinkage -- nb pairwise: 0.8% of null tests but 13% of null q<0.05 hits sit at the floor; nb pairwise no-mk: 8.5% of null tests but 67% of null q<0.05 hits sit at the floor; fisher p-values are discrete (mass at p=1). Palette six-checks re-validated 2026-09-02.
 
 **Caveats that travel with it (05_figure_index / 14, verified SOUND):** marker mode also changes the Fisher
 gene denominator (restricted matrix), so marker-on vs marker-off are different tests, not subsets; single
@@ -36,4 +53,17 @@ the global null only; KS rejects for every arm (discrete Fisher) and is not gate
 
 Sources: `manuscript/14_switch_calibration_v2.md` (verified SOUND) + `results/fdr_calibration_v2/report.json`.
 Every plotted value: `results/figures/manuscript/fig4_calibration.tsv` (per-run summary), `fig4_calibration_stats.tsv` (headline
-stats per arm), `fig4_calibration_per_pair.tsv`, `fig4_calibration_null_pvalues.tsv`, `fig4_calibration_hist.tsv`, `fig4_calibration_true_permcal.tsv`.
+stats per configuration), `fig4_calibration_per_pair.tsv`, `fig4_calibration_null_pvalues.tsv`, `fig4_calibration_true_permcal.tsv`.
+Still written, **not plotted since 2026-09-02**: `fig4_calibration_hist.tsv` (the retired null p-value histogram); its
+values, and the retired QQ panel's min-null-p / KS statistics, are asserted in the script's
+sidecar-generation check and quoted in the Legend above.
+
+Design: shared publication style `scripts/manuscript_figures/_pubstyle.py` (PAL / TYPE / `apply_rc()` /
+`sentence_case()`), so Fig 1–6 read as one system. Colour follows the calibration STATUS
+(`PAL['good']` = controls the FDR, `PAL['bad']` = anti-conservative) and every configuration is named in full on
+its own row, so nothing depends on hue alone; six-checks re-validated 2026-09-02 (`validate_palette.js`, light
+mode): lightness band PASS, chroma floor PASS, CVD separation ΔE 11.0 deutan / 31.4 tritan PASS, normal-vision
+floor 25.8 PASS, contrast ≥ 3:1 PASS. Canvas 7.09 in (180 mm) at final print width; PNG 600 dpi, PDF vector with
+subsetted TrueType (fonttype 42, no Type 3); the render passes an automated text-overlap, minimum-type-size
+(6 pt floor) and off-canvas audit plus the 8-px edge check, and is saved at that fixed
+canvas (no tight bounding box), so an overflowing artist fails the audit instead of quietly widening the figure.

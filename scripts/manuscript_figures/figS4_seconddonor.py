@@ -62,10 +62,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-matplotlib.rcParams["pdf.fonttype"] = 42
-matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.5
+import re
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+
+apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
+ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
+
+
+def sc_title(s):
+    """Sentence-case a panel title (directive 6) while keeping the lower-case
+    panel letter that prefixes it: 'a   the ...' -> 'a   The ...'."""
+    m = re.match(r"^([a-z])(\s+)(.*)$", s, flags=re.S)
+    return m.group(1) + m.group(2) + sentence_case(m.group(3)) if m else sentence_case(s)
 
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 OUTDIR = WD / "results/figures/manuscript"
@@ -232,7 +242,7 @@ for r in matched.itertuples():
 # prose footer moved.
 fig = plt.figure(figsize=(8.3, 7.2))
 gs = fig.add_gridspec(2, 2, height_ratios=[0.80, 1.0],
-                      left=0.105, right=0.975, top=0.958, bottom=0.076,
+                      left=0.118, right=0.975, top=0.958, bottom=0.076,
                       hspace=0.42, wspace=0.34)
 axA = fig.add_subplot(gs[0, :])
 axB = fig.add_subplot(gs[1, 0])
@@ -244,7 +254,7 @@ def style(ax):
         ax.spines[s].set_visible(False)
     for s in ("left", "bottom"):
         ax.spines[s].set_color(GRID)
-    ax.tick_params(colors=MUTED, length=2.5, labelsize=6.8)
+    ax.tick_params(colors=MUTED, length=2.5, labelsize=TYPE["tick"])
     ax.grid(True, color=GRID, lw=0.5, alpha=0.7)
     ax.set_axisbelow(True)
 
@@ -268,9 +278,9 @@ for x, (lab, c, dflt, t1, src) in zip(xs, LIBS):
     axA.bar(x + bw / 2 + 0.02, t1["P100"], width=bw, color="white", edgecolor=c,
             hatch="////", linewidth=1.0, zorder=3)
     axA.text(x - bw / 2 - 0.02, dflt["P100"] + 0.012, f"{dflt['P100']:.4f}\nn={dflt['n']:,}",
-             ha="center", va="bottom", fontsize=5.9, color=INK, linespacing=1.15)
+             ha="center", va="bottom", fontsize=ANN, color=INK, linespacing=1.15)
     axA.text(x + bw / 2 + 0.02, t1["P100"] + 0.012, f"{t1['P100']:.4f}\nn={t1['n']:,}",
-             ha="center", va="bottom", fontsize=5.9, color=MUTED, linespacing=1.15)
+             ha="center", va="bottom", fontsize=ANN, color=MUTED, linespacing=1.15)
     for dx, arm_name, d in ((-bw / 2 - 0.02, "pre-registered default (tier-1, IP, >=2 mol)", dflt),
                             (+bw / 2 + 0.02, ">=1 molecule arm (tier-1, IP; not gated)", t1)):
         axA.plot([x + dx - bw * 0.4, x + dx + bw * 0.4], [d["null_P_mean"]] * 2,
@@ -288,22 +298,24 @@ axA.axhline(GATE_P, color=INK, lw=0.9, ls=(0, (4, 2)), zorder=2)
 # the legend sidecar (2026-09-02 submission pass).  Three narrow lines so the
 # label fits the inter-group gap without its white box nicking a bar.
 axA.text(1.44, GATE_P + 0.018, "pre-registered\ngate\nP@100 ≥ 0.50",
-         ha="center", va="bottom", fontsize=5.7, color=INK, linespacing=1.2,
+         ha="center", va="bottom", fontsize=ANN, color=INK, linespacing=1.2,
          bbox=dict(facecolor="white", edgecolor="none", pad=0.6))
+# leader now lands on the bar's top-RIGHT corner: aimed at the bar centre it ran
+# straight through this bar's own value label (design pass 2026-09-03)
 axA.annotate("PASS on a 4th library --\nbut a more conservative\noperating point (see c)",
-             xy=(xs[0] - bw / 2 - 0.02, d2_def["P100"]), xytext=(xs[0] + 0.32, 0.985),
-             fontsize=6.0, color=C_D2, ha="left", va="top",
+             xy=(xs[0] - 0.02, d2_def["P100"]), xytext=(xs[0] + 0.32, 0.985),
+             fontsize=ANN, color=C_D2, ha="left", va="top",
              arrowprops=dict(arrowstyle="-", color=C_D2, lw=0.7))
 axA.text(0.995, 0.985, "solid = pre-registered default (gated)   hatched = ≥1-molecule arm (not gated)\n"
          "— = 3-seed genic-shuffle null mean", transform=axA.transAxes,
-         ha="right", va="top", fontsize=5.8, color=MUTED, linespacing=1.35)
+         ha="right", va="top", fontsize=ANN, color=MUTED, linespacing=1.35)
 axA.set_xticks(xs)
-axA.set_xticklabels([l[0].replace("\n", "\n") for l in LIBS], fontsize=6.6)
+axA.set_xticklabels([sentence_case(l[0]) for l in LIBS], fontsize=TYPE["tick"])
 axA.set_xlim(-0.62, xs[-1] + 0.62)
 axA.set_ylim(0, 1.0)
-axA.set_ylabel("atlas-agreement precision @100 bp")
-axA.set_title("a   The unchanged gate P@100 ≥ 0.50, now on four libraries",
-              loc="left", fontweight="bold", fontsize=7.6)
+axA.set_ylabel(sentence_case("atlas-agreement precision @100 bp"))
+axA.set_title(sc_title("a   the unchanged gate P@100 ≥ 0.50, now on four libraries"),
+              loc="left", fontweight="bold", fontsize=TYPE["panel_title"])
 style(axA)
 
 # ---- panel b: cross-donor concordance, both directions ---------------------
@@ -317,29 +329,32 @@ ys = np.arange(len(bars))[::-1] * 0.9
 for (lab, v, c, nl, nq), y in zip(bars, ys):
     axB.barh(y, v, height=0.52, color=c, edgecolor=c, zorder=3,
              alpha=1.0 if "100" in lab else 0.55)
-    axB.text(v + 0.015, y, f"{v * 100:.1f}%", va="center", fontsize=6.4, color=INK, zorder=5)
+    axB.text(v + 0.015, y, f"{v * 100:.1f}%", va="center", fontsize=ANN + 0.4, color=INK, zorder=5)
     axB.plot([nl] * 2, [y - 0.30, y + 0.30], color=INK, lw=1.2, zorder=4)
 axB.set_yticks(ys)
-axB.set_yticklabels([b[0] for b in bars], fontsize=6.3)
+axB.set_yticklabels([b[0] for b in bars], fontsize=TYPE["tick"])
 # the reverse direction's arithmetic ceiling, drawn only across its two bars
 axB.plot([CEIL] * 2, [ys[2] - 0.45, ys[3] + 0.45], color=C_D1, lw=1.0, ls=(0, (4, 2)), zorder=4)
 # data label for the dashed ceiling line; the interpreting sentence
 # ("asymmetry is call-count arithmetic, not disagreement") moved to the legend
 axB.text(CEIL + 0.015, (ys[2] + ys[3]) / 2, "arithmetic ceiling 44.4%\n(20,672 / 46,524):\n"
          "39.9% = 90% of it",
-         fontsize=5.8, color=C_D1, va="center", ha="left", linespacing=1.25)
+         fontsize=ANN, color=C_D1, va="center", ha="left", linespacing=1.25)
 axB.annotate(f"{FOLD:.0f}× the genic-\nshuffle null (|)",
              xy=(fwd_null100, ys[0] + 0.26), xytext=(0.22, ys[0] + 0.33),
-             fontsize=5.9, color=INK, va="bottom",
+             fontsize=ANN, color=INK, va="bottom",
              arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6))
 axB.set_xlim(0, 1.0)
 axB.set_ylim(ys[-1] - 0.62, ys[0] + 0.75)
-axB.set_xlabel("fraction of default calls reproduced in the other donor\n(strand-matched, 26 §5 protocol)",
-               fontsize=6.8)
+axB.set_xlabel(sentence_case("fraction of default calls reproduced in the other donor\n"
+                             "(strand-matched, 26 §5 protocol)"),
+               fontsize=TYPE["axis_label"])
 axB.text(0.985, 0.03, "d1 = donor 1 (PBMC 10k v3, n 46,524)\nd2 = donor 2 (pbmc4k, n 20,672)",
-         transform=axB.transAxes, ha="right", va="bottom", fontsize=5.8, color=MUTED, linespacing=1.25)
-axB.set_title("b   Cross-donor concordance,\nboth directions (pre-registered)",
-              loc="left", fontweight="bold", fontsize=7.6)
+         transform=axB.transAxes, ha="right", va="bottom", fontsize=ANN, color=MUTED, linespacing=1.25)
+# the '(pre-registered)' qualifier moved to the Legend sidecar (directive 2, no-loss:
+# it is the '(b) Cross-donor concordance per the pre-registered 26 s5 protocol' sentence)
+axB.set_title(sc_title("b   cross-donor concordance,\nboth directions"),
+              loc="left", fontweight="bold", fontsize=TYPE["panel_title"])
 style(axB)
 axB.grid(True, axis="x", color=GRID, lw=0.5, alpha=0.7)
 axB.grid(False, axis="y")
@@ -349,18 +364,18 @@ axB.grid(False, axis="y")
 axC.add_patch(matplotlib.patches.Rectangle((d2_def["R_det"], d2_def["P100"]),
               0.20 - d2_def["R_det"], 1.0 - d2_def["P100"],
               facecolor="#DCE9F2", edgecolor="none", zorder=0))
-axC.text(0.1975, 0.845, "region that dominates\ndonor 2 on both axes", fontsize=5.9, color=C_D1,
+axC.text(0.1975, 0.845, "region that dominates\ndonor 2 on both axes", fontsize=ANN, color=C_D1,
          ha="right", va="bottom", style="italic")
 # donor 1 full default, for context; one arrow to its matched-N reductions
 axC.plot(d1_def["R_det"], d1_def["P100"], marker="D", ms=7, mfc="white", mec=C_D1,
          mew=1.4, ls="none", zorder=6)
 axC.annotate("donor 1 default\n(n = 46,524)", (d1_def["R_det"], d1_def["P100"]),
              xytext=(2, 10), textcoords="offset points", ha="left", va="bottom",
-             fontsize=6.1, color=C_D1)
+             fontsize=ANN + 0.1, color=C_D1)
 axC.annotate("", xy=(0.1205, 0.893), xytext=(d1_def["R_det"], d1_def["P100"]),
              arrowprops=dict(arrowstyle="-|>", color=C_D1, lw=1.0, alpha=0.7,
                              shrinkA=8, shrinkB=10), zorder=2)
-axC.text(0.153, 0.790, "same rule, cut to\ndonor 2's call count\n(4 routes)", fontsize=5.9,
+axC.text(0.153, 0.790, "same rule, cut to\ndonor 2's call count\n(4 routes)", fontsize=ANN,
          color=C_D1, ha="left", va="top", linespacing=1.25)
 mk = dict(marker="o", ms=6, mfc=C_D1, mec=C_D1, ls="none", zorder=6)
 lab_off = {">=4 molecules": (7, -1, "left", "center"),
@@ -375,17 +390,17 @@ for r in matched.itertuples():
     axC.plot(r.R_det, r.P100, **mk)
     dx, dy, ha, va = lab_off[r.reduction]
     axC.annotate(short_lab[r.reduction], (r.R_det, r.P100), xytext=(dx, dy),
-                 textcoords="offset points", fontsize=5.8, color=C_D1, ha=ha, va=va)
+                 textcoords="offset points", fontsize=ANN, color=C_D1, ha=ha, va=va)
 axC.plot(d2_def["R_det"], d2_def["P100"], marker="D", ms=8, mfc=C_D2, mec=C_D2, ls="none", zorder=7)
 axC.annotate("donor 2 default\n(n = 20,672)\nheadline 0.8279", (d2_def["R_det"], d2_def["P100"]),
              xytext=(-8, -10), textcoords="offset points", ha="left", va="top",
-             fontsize=6.1, color=C_D2, fontweight="bold", linespacing=1.25)
+             fontsize=ANN + 0.1, color=C_D2, fontweight="bold", linespacing=1.25)
 axC.set_xlim(0.10, 0.20)
 axC.set_ylim(0.68, 0.95)
-axC.set_xlabel("detected-gene recall R_det @100 bp", fontsize=6.8)
-axC.set_ylabel("atlas-agreement precision @100 bp")
-axC.set_title("c   The matched-N caveat: donor 2's\nheadline is an operating-point effect",
-              loc="left", fontweight="bold", fontsize=7.6)
+axC.set_xlabel(sentence_case("detected-gene recall R_det @100 bp"), fontsize=TYPE["axis_label"])
+axC.set_ylabel(sentence_case("atlas-agreement precision @100 bp"))
+axC.set_title(sc_title("c   the matched-N caveat: donor 2's\nheadline is an operating-point effect"),
+              loc="left", fontweight="bold", fontsize=TYPE["panel_title"])
 # (the provenance note that sat here — "matched-call-count control: 26
 # (verifier, 2026-08-22); every route lands up-and-right" — moved to the
 # legend sidecar in the 2026-09-02 submission pass)
@@ -503,6 +518,17 @@ Sources: `manuscript/26_second_donor_preregistration.md` (FIXED) — panel a pbm
 `score_tool.py` TSVs (`results/benchmark_tools/pbmc4k_donor2/run_ipfilt/`), the other three libraries from the
 verified `fig2_accuracy.tsv` (19 FIXED); panel b from `pbmc4k_donor2/concordance.txt`; every plotted value in
 `results/figures/manuscript/figS4_seconddonor*.tsv` with a source column.
+"""
+cap_md += """
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure annotation
+sits at or above the 6 pt floor. Axis labels, panel titles and prose tick labels are sentence-cased through
+`_pubstyle.sentence_case()`, canonical identifiers preserved and the lower-case panel letters kept. Panel b's
+title qualifier *(pre-registered)* left the image for the Legend above (no-loss: it is the \"(b) Cross-donor
+concordance per the pre-registered 26 §5 protocol\" sentence). Two overlaps were fixed: panel a's PASS leader
+now lands on the top-right corner of donor 2's default bar instead of running through that bar's own value
+label, and the left margin was widened so panel b's y labels clear the canvas edge. No panel, number or audit
+TSV changed; all three TSVs regenerate byte-identical.
 """
 p = FIGDIR / f"{NAME}.caption.md"; p.write_text(cap_md); print("wrote", p)
 

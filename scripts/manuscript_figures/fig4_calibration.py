@@ -49,17 +49,22 @@ calibration run, not the figure stem, and is not renamed).
 
 Run:  export LC_ALL=C; python3 scripts/manuscript_figures/fig4_calibration.py
 """
-import glob, json, os, re, textwrap
+import glob, json, os, re, sys, textwrap
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
+from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
+from matplotlib.transforms import offset_copy
 import numpy as np
 import pandas as pd
 from scipy.stats import beta as beta_dist, kstest, false_discovery_control
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
 
 mpl.rcParams["pdf.fonttype"] = 42
 mpl.rcParams["ps.fonttype"] = 42
@@ -74,20 +79,31 @@ FDR = 0.05
 N_PERMS_PLANNED = 20
 EFFECT_FLOOR = 0.10     # |delta_proportion| floor (manuscript/13 sec.2); nb: |log2FC| >= 1
 
-# validated palette (task-mandated; six-checks validated 2026-08-19: worst
-# adjacent-pair CVD deltaE 11.0 deutan / 8.6 tritan, normal-vision floor 18.7,
-# contrast on white >= 3:1 -- PASS).  Colour follows the TEST (entity), fixed
-# order; "marker pre-selection off" is a secondary encoding (dashed / hollow).
-BLUE, GREEN, VERM = "#0072B2", "#009E73", "#D55E00"
+# 2026-09-02 design pass (DESIGN_DIRECTIVES.md item 4, recorded exception).  The
+# figure is a property of TEST CONFIGURATIONS a user chooses -- test x count unit x
+# marker pre-selection -- not a development story.  Colour therefore follows the
+# STATUS the panel is about (PAL['good'] = controls the FDR under the label-
+# permutation null, PAL['bad'] = anti-conservative), which is the one legitimate
+# use of the reserved status tokens; every configuration is also named in full on
+# its own row, so nothing depends on hue alone.  Six-checks (validate_palette.js,
+# 2026-09-02): good/bad adjacent CVD deltaE 11.0 deutan / 31.4 tritan,
+# normal-vision 25.8, contrast on the surface >= 3:1 -- ALL PASS.
+BLUE, GREEN, VERM = PAL["peakatail"], PAL["good"], PAL["bad"]
 ARMS = {  # arm dir -> meta ; main arms first, diagnostics after
-    "A_fisher_reads": dict(label="fisher, count-mode reads", short="fisher\nreads", prefix="fisher", color=BLUE, markers=True),
-    "B_fisher_cells": dict(label="fisher, count-mode cells", short="fisher\ncells", prefix="fisher", color=GREEN, markers=True),
-    "C_nb_pairwise": dict(label="nb_pairwise", short="nb\npairwise", prefix="nb_pairwise", color=VERM, markers=True),
-    "A0_fisher_reads_nomarker": dict(label="fisher reads, no marker pre-sel.", short="fisher\nreads\nno-mk", prefix="fisher", color=BLUE, markers=False),
-    "B0_fisher_cells_nomarker": dict(label="fisher cells, no marker pre-sel.", short="fisher\ncells\nno-mk", prefix="fisher", color=GREEN, markers=False),
-    "C0_nb_pairwise_nomarker": dict(label="nb_pairwise, no marker pre-sel.", short="nb\npairwise\nno-mk", prefix="nb_pairwise", color=VERM, markers=False),
+    "A_fisher_reads": dict(label="fisher, count-mode reads", short="fisher\nreads", prefix="fisher", color=BLUE, markers=True,
+                           test="Fisher", unit="reads"),
+    "B_fisher_cells": dict(label="fisher, count-mode cells", short="fisher\ncells", prefix="fisher", color=GREEN, markers=True,
+                           test="Fisher", unit="cells"),
+    "C_nb_pairwise": dict(label="nb_pairwise", short="nb\npairwise", prefix="nb_pairwise", color=VERM, markers=True,
+                          test="NB pairwise", unit="cells"),
+    "A0_fisher_reads_nomarker": dict(label="fisher reads, no marker pre-sel.", short="fisher\nreads\nno-mk", prefix="fisher", color=BLUE, markers=False,
+                                     test="Fisher", unit="reads"),
+    "B0_fisher_cells_nomarker": dict(label="fisher cells, no marker pre-sel.", short="fisher\ncells\nno-mk", prefix="fisher", color=GREEN, markers=False,
+                                     test="Fisher", unit="cells"),
+    "C0_nb_pairwise_nomarker": dict(label="nb_pairwise, no marker pre-sel.", short="nb\npairwise\nno-mk", prefix="nb_pairwise", color=VERM, markers=False,
+                                    test="NB pairwise", unit="cells"),
 }
-INK, MUTED, GRID, SURFACE = "#1B2429", "#5A6B73", "#D8E0E3", "#FFFFFF"
+INK, MUTED, GRID, SURFACE = PAL["ink"], PAL["muted"], PAL["grid"], "#FFFFFF"
 
 # ----------------------------------------------------------------------------
 # 1. harvest
@@ -286,135 +302,140 @@ stat_tab = pd.DataFrame(stats.values())
 stat_tab.to_csv(f"{TSVDIR}/{NAME}_stats.tsv", sep="\t", index=False)
 
 # ----------------------------------------------------------------------------
-# 5. figure (2 x 2, double-column width)
+# 5. NOT PLOTTED SINCE 2026-09-02 -- the null p-value histogram and the QQ-vs-
+#    uniform arrays.  The design pass (DESIGN_DIRECTIVES.md items 1 + 4) cut the
+#    figure to the three panels that carry the message; the per-arm distribution
+#    shape is figS9's job.  The TSV is still written for the record and every
+#    value it used to plot is asserted in the sidecar-generation check below.
 # ----------------------------------------------------------------------------
-plt.rcParams.update({
-    "font.size": 7.6, "axes.labelsize": 7.4, "axes.titlesize": 8.0,
-    "xtick.labelsize": 6.6, "ytick.labelsize": 6.6, "legend.fontsize": 6.1,
-    "text.color": INK, "axes.labelcolor": INK, "axes.edgecolor": MUTED,
-    "xtick.color": MUTED, "ytick.color": MUTED, "figure.facecolor": SURFACE,
-    "axes.facecolor": SURFACE, "savefig.facecolor": SURFACE,
-    "axes.titlelocation": "left", "axes.titlepad": 5, "axes.linewidth": 0.7,
-    "font.family": "DejaVu Sans", "hatch.linewidth": 0.6,
-})
-# 2026-09-02 submission pass: the suptitle and the bottom caveat block moved to
-# the sidecar Legend, and the canvas narrowed to the double-column norm
-# (7.5 -> 7.09 in = 180 mm); bbox_inches="tight" reclaims the freed bands.
-fig, axes = plt.subplots(2, 2, figsize=(7.09, 6.6))
-ax_a, ax_b, ax_c, ax_d = axes.ravel()
-def style(ax):
-    ax.set_axisbelow(True); ax.grid(True, axis="y", color=GRID, lw=0.5)
-    for s in ("top", "right"): ax.spines[s].set_visible(False)
-def ls_for(d):  # secondary encoding: marker pre-selection off = dashed/hollow
-    return "-" if d["markers"] else (0, (2.2, 1.4))
-short1 = lambda d: d["short"].replace("\n", " ")
-
-# --- a: null p histograms ---------------------------------------------------
 nbins = 20; hist_rows = []
 for arm, d in data.items():
     p = d["null_df"]["pvalue"].values
     cnt, edges = np.histogram(p, bins=nbins, range=(0, 1))
     dens = cnt / len(p) * nbins
-    ax_a.stairs(dens, edges, color=d["color"], lw=1.3 if d["markers"] else 1.0, ls=ls_for(d), zorder=4,
-                label=f"{d['label']}: {stats[arm]['frac_null_p_lt_05']:.1%}")
-    if d["markers"]:
-        ax_a.stairs(dens, edges, fill=True, alpha=0.10, color=d["color"], zorder=3)
     for lo, hi, c, dv in zip(edges[:-1], edges[1:], cnt, dens):
         hist_rows.append(dict(arm=arm, bin_lo=lo, bin_hi=hi, count=int(c), density=dv))
-pd.DataFrame(hist_rows).to_csv(f"{TSVDIR}/{NAME}_hist.tsv", sep="\t", index=False)
-ax_a.axhline(1.0, color=INK, lw=0.9, ls=(0, (3, 2)), zorder=5, label="uniform (honest null): 5.0%")
-style(ax_a); ax_a.set_xlim(0, 1)
-ymax_a = max(np.histogram(d["null_df"]["pvalue"].values, bins=nbins, range=(0, 1))[0].max() / len(d["null_df"]) * nbins for d in data.values())
-ax_a.set_ylim(0, ymax_a * 1.55)
-ax_a.set_xlabel("null p-value"); ax_a.set_ylabel("density (uniform = 1)")
-ax_a.legend(loc="upper right", frameon=False, handlelength=1.8, title="share of null p < 0.05", title_fontsize=6.2, alignment="left")
-ax_a.set_title("a  Null p-value distribution (label permutations)")
+HIST = pd.DataFrame(hist_rows)
+HIST.to_csv(f"{TSVDIR}/{NAME}_hist.tsv", sep="\t", index=False)   # not plotted since 2026-09-02
+QQ_FLOOR = 1e-16
+QQ_CLIPPED = {arm: int((d["null_df"]["pvalue"].values < QQ_FLOOR).sum()) for arm, d in data.items()}
 
-# --- b: QQ vs uniform -------------------------------------------------------
-FLOOR = 1e-16
-def qq_arrays(p):
-    ps = np.sort(p); n = len(ps)
-    obs = -np.log10(np.maximum(ps, FLOOR)); ii = np.arange(1, n + 1)
-    exp = -np.log10((ii - 0.5) / n)
-    lo = -np.log10(beta_dist.ppf(0.975, ii, n - ii + 1)); hi = -np.log10(beta_dist.ppf(0.025, ii, n - ii + 1))
-    keep = np.unique(np.r_[np.arange(min(600, n)), np.linspace(0, n - 1, 1200).astype(int)])
-    idx = np.sort((n - 1) - keep)
-    return exp[idx], obs[idx], lo[idx], hi[idx], int((ps < FLOOR).sum())
-lim = 0.0; clip_notes = []
-for arm, d in data.items():
-    exp, obs, lo, hi, n_clip = qq_arrays(d["null_df"]["pvalue"].values)
-    ax_b.fill_between(exp, lo, hi, color=GRID, alpha=0.5, lw=0, zorder=2)
-    if d["markers"]:
-        ax_b.plot(exp, obs, ".", ms=2.6, color=d["color"], zorder=4, label=d["label"])
-    else:
-        ax_b.plot(exp, obs, "o", ms=2.6, mfc="none", mec=d["color"], mew=0.6, zorder=4, label=d["label"])
-    lim = max(lim, exp.max())
-    if n_clip:
-        clip_notes.append(f"{n_clip} {short1(d)} p<1e-16 at top")
-lim *= 1.05
-ax_b.plot([0, lim], [0, lim], color=INK, lw=0.9, ls=(0, (3, 2)), zorder=3, label="y = x")
-ax_b.legend(loc="upper left", frameon=False, handletextpad=0.5)
-ax_b.text(0.98, 0.03, "gray: 95% pointwise uniform band" + ("\n" + "\n".join(clip_notes) if clip_notes else ""),
-          transform=ax_b.transAxes, ha="right", va="bottom", fontsize=5.6, color=MUTED, linespacing=1.3)
-style(ax_b); ax_b.set_xlim(0, lim)
-ax_b.set_xlabel(r"expected $-\log_{10}p$ (uniform)"); ax_b.set_ylabel(r"observed null $-\log_{10}p$")
-# (the per-arm min-null-p listing moved from this title to the sidecar Legend,
-#  panel-b line -- at 180 mm the long parenthetical overflowed the canvas)
-ax_b.set_title("b  QQ vs uniform")
+# ----------------------------------------------------------------------------
+# 6. figure -- "which test configurations control the FDR"
+#    Three panels on ONE shared row axis of the six test configurations
+#    (test x count unit x marker pre-selection).  One message per panel:
+#      a  the test-level false-positive rate, against the honest-null 5%
+#      b  how many false calls a single null run produces
+#      c  what that costs in the real comparison
+# ----------------------------------------------------------------------------
+apply_rc()
+plt.rcParams.update({
+    "text.color": INK, "axes.labelcolor": INK, "axes.edgecolor": MUTED,
+    "xtick.color": MUTED, "ytick.color": MUTED, "figure.facecolor": SURFACE,
+    "axes.facecolor": SURFACE, "savefig.facecolor": SURFACE,
+    "axes.titlelocation": "left", "axes.titlepad": 6,
+})
+ANN, ANN_MIN = TYPE["annotation"], TYPE["annotation_min"]
+short1 = lambda d: d["short"].replace("\n", " ")
 
-# --- c: q<0.05 hits per null run vs TRUE ------------------------------------
+# rows: worst-controlled at the bottom, so the eye runs down the failure gradient
+ROWS = sorted(data, key=lambda a: stats[a]["frac_null_p_lt_05"])
+NROW = len(ROWS)
+YS = {a: NROW - 1 - i for i, a in enumerate(ROWS)}          # top row = best controlled
+CTRL = {a: bool(stats[a]["calibrated_by_prereg_rule"]) for a in ROWS}
+COL = {a: (GREEN if CTRL[a] else VERM) for a in ROWS}
+ROWLAB = [sentence_case(f"{data[a]['test']} · {data[a]['unit']}") + "\n"
+          + sentence_case("markers: off" if not data[a]["markers"] else "markers: top-200")
+          for a in ROWS]
+
+fig = plt.figure(figsize=(7.09, 3.32))
+gs = fig.add_gridspec(1, 3, width_ratios=[1.00, 1.12, 1.00], wspace=0.26,
+                      left=0.160, right=0.985, top=0.855, bottom=0.150)
+ax_a = fig.add_subplot(gs[0, 0])
+ax_b = fig.add_subplot(gs[0, 1], sharey=ax_a)
+ax_c = fig.add_subplot(gs[0, 2], sharey=ax_a)
+
+def panel_tag(ax, letter, text, dy=1.035):
+    """House panel tag (shared with Fig 2/3/5/6): a bold panel letter at
+    TYPE['panel_letter'] and, offset a fixed 13 pt to its right so the gap does
+    not scale with panel width, the sentence-cased title at TYPE['panel_title']."""
+    ax.text(0.0, dy, letter, transform=ax.transAxes, fontsize=TYPE["panel_letter"],
+            fontweight="bold", va="bottom", ha="left", color=INK)
+    ax.text(0.0, dy, sentence_case(text), va="bottom", ha="left", color=INK,
+            fontsize=TYPE["panel_title"],
+            transform=offset_copy(ax.transAxes, fig=ax.figure, x=13.0, y=0.0, units="points"))
+
+
+def style(ax, first=False):
+    ax.set_axisbelow(True); ax.grid(True, axis="x", color=GRID, lw=0.5)
+    for s in ("top", "right", "left"): ax.spines[s].set_visible(False)
+    ax.spines["bottom"].set_color(GRID)
+    ax.tick_params(axis="y", length=0, pad=3)
+    ax.tick_params(axis="x", length=2.5, pad=2)
+    if not first:
+        plt.setp(ax.get_yticklabels(), visible=False)
+
+# --- a: test-level false-positive rate -------------------------------------
+ax_a.axvline(100 * FDR, color=INK, lw=0.8, zorder=2)
+for a in ROWS:
+    y, v = YS[a], 100 * stats[a]["frac_null_p_lt_05"]
+    ax_a.plot([100 * FDR, v], [y, y], color=COL[a], lw=1.4, solid_capstyle="butt", zorder=3)
+    ax_a.plot([v], [y], "o", ms=5.0, color=COL[a], mec=SURFACE, mew=0.8, zorder=4)
+    if v >= 100 * FDR:                       # label outside the stem end
+        ax_a.text(v + 1.0, y, f"{v:.1f}%", ha="left", va="center", fontsize=ANN, color=COL[a], zorder=5)
+    else:                                    # below the reference: label sits over the dot
+        ax_a.text(v, y + 0.24, f"{v:.1f}%", ha="center", va="bottom", fontsize=ANN, color=COL[a], zorder=5)
+ax_a.set_xlim(0, 29.5); ax_a.set_xticks([0, 5, 10, 15, 20, 25])
+ax_a.set_ylim(-0.72, NROW + 0.60)
+ax_a.set_yticks(range(NROW)); ax_a.set_yticklabels(ROWLAB[::-1], linespacing=1.35)
+ax_a.set_xlabel(sentence_case(f"null tests with p < {FDR:g}  (%)"))
+ax_a.set_ylabel(sentence_case("test configuration"), labelpad=6)
+style(ax_a, first=True)
+ax_a.text(100 * FDR + 0.7, NROW + 0.48, f"{100 * FDR:.0f}% expected under\nan honest null",
+          ha="left", va="top", fontsize=ANN, color=INK, linespacing=1.3, zorder=5)
+ax_a.legend(handles=[Line2D([], [], ls="none", marker="o", ms=5.0, color=GREEN, label=sentence_case("controls the FDR")),
+                     Line2D([], [], ls="none", marker="o", ms=5.0, color=VERM, label=sentence_case("anti-conservative"))],
+            loc="lower right", bbox_to_anchor=(1.02, -0.035), frameon=False,
+            handletextpad=0.35, labelspacing=0.28, borderaxespad=0.0)
+panel_tag(ax_a, "a", "False-positive rate")
+
+# --- b: false calls per null run -------------------------------------------
 rng = np.random.default_rng(0)
-arm_order = list(data.keys())
-for xi, arm in enumerate(arm_order):
-    d, st = data[arm], stats[arm]
-    nt = run_tab[(run_tab.arm == arm) & (run_tab.run != "true")]
-    xs = xi + rng.uniform(-0.16, 0.16, len(nt))
-    if d["markers"]:
-        ax_c.plot(xs, nt["n_q_lt_fdr"] + 0.5, "o", ms=3.6, mew=0.6, mec=SURFACE, color=d["color"], alpha=0.9, zorder=3, ls="none")
-    else:
-        ax_c.plot(xs, nt["n_q_lt_fdr"] + 0.5, "o", ms=3.6, mfc="none", mec=d["color"], mew=0.8, zorder=3, ls="none")
-    ax_c.plot([xi - 0.3, xi + 0.3], [st["true_q_hits"] + 0.5] * 2, color=INK, lw=1.1, zorder=4)
-    ax_c.plot(xi, st["true_q_hits"] + 0.5, "D", ms=4.2, color=INK, mec=SURFACE, mew=0.6, zorder=5)
-    ax_c.text(xi, (st["true_q_hits"] + 0.5) * (1.9 if xi % 2 == 0 else 5.5), f"TRUE {st['true_q_hits']:,}", ha="center", va="bottom", fontsize=5.9, color=INK)
-    tr = mtransforms.blended_transform_factory(ax_c.transData, ax_c.transAxes)
-    ax_c.text(xi, 0.015, f"{st['n_runs_with_q_hit']}/{st['n_perms']} runs\nmean {st['mean_hits_per_null_run']:.0f}",
-              transform=tr, ha="center", va="bottom", fontsize=5.5, color=INK)
-ax_c.set_yscale("log"); ax_c.set_ylim(0.09, 8e6)
-ax_c.set_yticks([0.5, 1.5, 10.5, 100.5, 1000.5, 10000.5]); ax_c.set_yticklabels(["0", "1", "10", "100", "1,000", "10,000"])
-ax_c.set_xlim(-0.6, len(arm_order) - 0.4); ax_c.set_xticks(range(len(arm_order)))
-ax_c.set_xticklabels([data[a]["short"] for a in arm_order])
-style(ax_c); ax_c.set_ylabel(f"PAS with q < {FDR} per run (log; 0 at floor)")
-ax_c.text(0.99, 0.015, "bottom text: null runs with >=1 hit / mean hits per null run", transform=ax_c.transAxes,
-          ha="right", va="bottom", fontsize=5.2, color=MUTED) if False else None
-h = [plt.Line2D([], [], marker="o", ls="none", ms=3.6, color=MUTED),
-     plt.Line2D([], [], marker="o", ls="none", ms=3.6, mfc="none", mec=MUTED),
-     plt.Line2D([], [], marker="D", ls="none", ms=4.2, color=INK)]
-ax_c.legend(h, ["null run (arm colour)", "null run, no marker pre-sel.", "TRUE labels"], frameon=False,
-            loc="upper left", ncol=2, columnspacing=0.8, handletextpad=0.4, borderaxespad=0.1)
-ax_c.set_title(f"c  q<{FDR} hits per null run vs TRUE run")
+bmax = max(int(run_tab[(run_tab.arm == a) & (run_tab.run != "true")]["n_q_lt_fdr"].max()) for a in ROWS)
+for a in ROWS:
+    y = YS[a]
+    nt = run_tab[(run_tab.arm == a) & (run_tab.run != "true")]["n_q_lt_fdr"].to_numpy()
+    ax_b.plot(nt, y + rng.uniform(-0.17, 0.17, nt.size), "o", ms=3.4, ls="none",
+              color=COL[a], mec=SURFACE, mew=0.5, alpha=0.85, zorder=3)
+    ax_b.plot([np.median(nt)] * 2, [y - 0.30, y + 0.30], color=INK, lw=1.0, zorder=4)
+ax_b.set_xscale("symlog", linthresh=1.0, linscale=0.45)
+ax_b.set_xlim(-0.35, bmax * 4.0)
+ax_b.set_xticks([0, 1, 10, 100, 1000]); ax_b.set_xticklabels(["0", "1", "10", "100", "1,000"])
+ax_b.set_xlabel(sentence_case(f"PAS called q < {FDR:g} in one null run"))
+style(ax_b)
+_best = ROWS[0]
+ax_b.annotate(sentence_case(f"no false call in any of the {stats[_best]['n_perms']} runs"),
+              xy=(0, YS[_best]), xytext=(1.6, YS[_best] + 0.62), fontsize=ANN, color=GREEN,
+              ha="left", va="bottom", zorder=6,
+              arrowprops=dict(arrowstyle="-", color=GREEN, lw=0.7, shrinkA=0, shrinkB=3))
+panel_tag(ax_b, "b", "False calls per null run")
 
-# --- d: share of TRUE nominal hits surviving permutation calibration ---------
-w = 0.36
-for xi, arm in enumerate(arm_order):
-    d, st = data[arm], stats[arm]
+# --- c: consequence for the real comparison ---------------------------------
+for a in ROWS:
+    y, st = YS[a], stats[a]
     n0 = max(st["true_q_hits"], 1)
     v1 = 100.0 * st["true_nominal_hits_surviving_perm_q"] / n0
     v2 = 100.0 * st["true_perm_q_hits_with_effect_floor"] / n0
-    kw = dict(color=d["color"], lw=0) if d["markers"] else dict(facecolor="none", edgecolor=d["color"], lw=1.0)
-    ax_d.bar(xi - w / 2, v1, width=w * 0.92, zorder=3, **kw)
-    ax_d.bar(xi + w / 2, v2, width=w * 0.92, zorder=3, hatch="////", **({**kw, "edgecolor": SURFACE} if d["markers"] else kw))
-    ax_d.text(xi - w / 2, v1 + 1.5, f"{st['true_nominal_hits_surviving_perm_q']:,}", ha="center", va="bottom", fontsize=5.7, color=INK, rotation=90)
-    ax_d.text(xi + w / 2, v2 + 1.5, f"{st['true_perm_q_hits_with_effect_floor']:,}", ha="center", va="bottom", fontsize=5.7, color=INK, rotation=90)
-ax_d.set_xticks(range(len(arm_order)))
-ax_d.set_xticklabels([f"{data[a]['short']}\n({stats[a]['true_q_hits']:,})" for a in arm_order])
-style(ax_d); ax_d.set_ylim(0, 148); ax_d.set_yticks([0, 25, 50, 75, 100])
-ax_d.set_ylabel(f"% of TRUE nominal q<{FDR} hits retained")
-hd = [Patch(facecolor=MUTED, lw=0), Patch(facecolor=MUTED, hatch="////", edgecolor=SURFACE, lw=0),
-      Patch(facecolor="none", edgecolor=MUTED, lw=1.0)]
-ax_d.legend(hd, [f"permutation-calibrated q<{FDR}", f"+ effect floor (|dprop|>={EFFECT_FLOOR}; nb |log2FC|>=1)", "no marker pre-selection"],
-            frameon=False, loc="upper left", ncol=1, handletextpad=0.4, borderaxespad=0.1)
-ax_d.set_title("d  TRUE hits surviving permutation calibration")
-ax_d.set_xlabel("test arm (nominal q<0.05 hits in TRUE run)")
+    ax_c.barh(y, v1, height=0.50, color=COL[a], edgecolor="none", zorder=3)
+    ax_c.plot([v2], [y], marker="D", ms=4.2, mfc=SURFACE, mec=INK, mew=0.9, zorder=5)
+    ax_c.text(v1 + 2.5, y, "100%" if v1 >= 99.95 else f"{v1:.1f}%",
+              ha="left", va="center", fontsize=ANN, color=COL[a], zorder=6)
+ax_c.set_xlim(0, 120); ax_c.set_xticks([0, 25, 50, 75, 100])
+ax_c.set_xlabel(sentence_case(f"real-run q < {FDR:g} calls kept after\npermutation calibration  (%)"))
+style(ax_c)
+ax_c.text(0.0, NROW + 0.50, "◇ " + sentence_case("also clears the effect floor"),
+          ha="left", va="top", fontsize=ANN, color=INK, zorder=6)
+panel_tag(ax_c, "c", "Cost in the real run")
 
 # --- title + caveats --------------------------------------------------------
 calib = [a for a in stats if stats[a]["calibrated_by_prereg_rule"]]
@@ -425,7 +446,9 @@ else:
     verdict = ("valid FDR control: " + " / ".join(short1(data[a]) + (" (conservative)" if stats[a]["conservative"] else " (calibrated)") for a in calib)
                + "; anti-conservative: " + " / ".join(short1(data[a]) for a in notcal))
 verdict_sentence = (
-    ("No test is FDR-calibrated under the label-permutation null; permutation-calibrated q-values are required for any shipped switch call."
+    # (unreachable while any configuration passes the rule; kept so the figure can
+    #  still state the all-fail case without dev-history framing -- directive 4)
+    ("No test configuration is FDR-calibrated under the label-permutation null; permutation-calibrated q-values are required for any switch call a user reports."
      if not calib else
      "Only " + " and ".join(data[a]["label"] for a in calib) + " gives valid FDR control under the label-permutation null"
      + (" (conservative: " + ", ".join(f"{stats[a]['frac_null_p_lt_05']:.1%} null p<0.05, {stats[a]['frac_null_q_lt_fdr']:.2%} null q<0.05" for a in calib) + ")")
@@ -445,7 +468,7 @@ caveat = (
     f"{info['n_pas']:,} PAS; 3-stage agreement with PAS-derived labels {info['agreement_with_pas_labels_3stage']:.1%}. "
     f"Null = obs['stage'] permuted across cells (label counts kept; numpy seeds 1-{N_PERMS_PLANNED}, the SAME permutations for every arm), full `switch diff` "
     f"re-run per permutation; main arms include the default top-200 wilcoxon marker pre-selection on .X (label double-dip deliberately inside the null), "
-    f"diagnostic arms (dashed/hollow) switch it off (--marker-top-n 0; {diag_note}); BH families are per stage pair. "
+    f"the configurations with marker pre-selection off switch it off (--marker-top-n 0; {diag_note}); BH families are per stage pair. "
     + "; ".join(f"{data[a]['label']}: {stats[a]['frac_null_p_lt_05']:.1%} null p<0.05, {stats[a]['frac_null_q_lt_fdr']:.2%} null q<{FDR}, "
                 f"{stats[a]['n_runs_with_q_hit']}/{stats[a]['n_perms']} null runs with hits" for a in stats) + f"{prelim}. "
     f"TRUE vs null hit COUNTS are not directly comparable (permuted labels change the marker set / the >=10-cells filter); per-test null rates are the calibrated quantities. "
@@ -456,53 +479,154 @@ caveat = (
     f"clipped to [1e-4, 10] without shrinkage -- "
     + "; ".join(f"{short1(data[a])}: {stats[a]['null_share_dispersion_floor']:.1%} of null tests but {stats[a]['null_hits_share_dispersion_floor']:.0%} of null q<{FDR} hits sit at the floor"
                 for a in stats if not np.isnan(stats[a].get("null_share_dispersion_floor", np.nan)))
-    + "; fisher p-values are discrete (mass at p=1). Palette six-checks validated 2026-08-19."
+    + "; fisher p-values are discrete (mass at p=1). Palette six-checks re-validated 2026-09-02."
 )
 # (the caveat block that hung below the panels moved to the sidecar Legend,
 #  verbatim -- the `caveat` string is written there; nothing is drawn here)
-fig.tight_layout(rect=(0, 0.0, 1, 1.0), h_pad=1.8, w_pad=1.4)
-fig.savefig(f"{TSVDIR}/{NAME}.png", dpi=600, bbox_inches="tight")
-for ext in ("png", "pdf"):
-    p = f"{FIGDIR}/{NAME}.{ext}"
-    fig.savefig(p, bbox_inches="tight", **({"dpi": 600} if ext == "png" else {}))
-    print("wrote", p)
 
 # ----------------------------------------------------------------------------
-# 5b. sidecar caption (added at the 2026-09-02 rename pass -- the figure
+# 6b. bounding-box discipline -- no text may overlap another text artist, no
+# annotation may fall below the minimum print size, and nothing may run off the
+# canvas (DESIGN_DIRECTIVES.md item 1).  The audit runs BEFORE the save, and the
+# save is deliberately NOT `bbox_inches="tight"`: the canvas is laid out at the
+# final print width (7.09 in / 180 mm) and must stay there, so an artist that
+# overflows has to be fixed rather than silently grow the page.
+# ----------------------------------------------------------------------------
+def bbox_audit(figure, min_pt=ANN_MIN, name=NAME, margin=1.5):
+    figure.canvas.draw()
+    rend = figure.canvas.get_renderer()
+    items, small = [], []
+
+    def in_view(ax_, axis):
+        """Tick labels for ticks outside the current view are laid out but never
+        drawn; keep only the ones the reader actually sees."""
+        lo, hi = (ax_.get_xlim() if axis == "x" else ax_.get_ylim())
+        lo, hi = min(lo, hi), max(lo, hi)
+        locs = ax_.get_xticks() if axis == "x" else ax_.get_yticks()
+        labs = ax_.get_xticklabels() if axis == "x" else ax_.get_yticklabels()
+        return [t for loc, t in zip(locs, labs) if lo - 1e-9 <= loc <= hi + 1e-9]
+
+    for ax in figure.axes:
+        arts = list(ax.texts) + in_view(ax, "x") + in_view(ax, "y")
+        arts += [ax.xaxis.label, ax.yaxis.label, ax.title]
+        lg = ax.get_legend()
+        if lg is not None:
+            arts += list(lg.get_texts())
+        for t in arts:
+            if not t.get_visible() or not t.get_text().strip():
+                continue
+            if t.get_fontsize() < min_pt - 1e-9:
+                small.append((t.get_text()[:34], t.get_fontsize()))
+            items.append((t.get_text()[:34], t.get_window_extent(rend)))
+    for t in figure.texts:
+        if t.get_visible() and t.get_text().strip():
+            if t.get_fontsize() < min_pt - 1e-9:
+                small.append((t.get_text()[:34], t.get_fontsize()))
+            items.append((t.get_text()[:34], t.get_window_extent(rend)))
+    assert not small, f"{name}: annotation below {min_pt} pt -- {small}"
+    bad = []
+    for i in range(len(items)):
+        for j in range(i + 1, len(items)):
+            a, b = items[i][1], items[j][1]
+            ov_w = min(a.x1, b.x1) - max(a.x0, b.x0)
+            ov_h = min(a.y1, b.y1) - max(a.y0, b.y0)
+            if ov_w > 1.0 and ov_h > 1.0:
+                bad.append((items[i][0], items[j][0], round(ov_w, 1), round(ov_h, 1)))
+    assert not bad, f"{name}: overlapping text -- {bad}"
+    fb = figure.bbox
+    out = [(t, [round(v, 1) for v in (bb.x0, bb.y0, bb.x1, bb.y1)]) for t, bb in items
+           if bb.x0 < fb.x0 + margin or bb.y0 < fb.y0 + margin
+           or bb.x1 > fb.x1 - margin or bb.y1 > fb.y1 - margin]
+    assert not out, (f"{name}: text runs off the {fb.x1 / figure.dpi:.2f} x "
+                     f"{fb.y1 / figure.dpi:.2f} in canvas -- {out}")
+    print(f"bbox audit: {len(items)} text artists, no overlap, none below {min_pt} pt, "
+          f"none off-canvas")
+
+bbox_audit(fig)
+
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
+    p = f"{FIGDIR}/{NAME}.{ext}"
+    fig.savefig(p, **kw)
+    print("wrote", p)
+fig.savefig(f"{TSVDIR}/{NAME}.png", dpi=600)
+
+# ----------------------------------------------------------------------------
+# 6c. SIDECAR-GENERATION CHECKS -- the value-asserts for everything the design
+# pass took OFF the image.  The numbers must stay pinned somewhere reproducible,
+# so they are asserted here and then written into the Legend below.
+# ----------------------------------------------------------------------------
+assert len(HIST) == len(data) * nbins, (len(HIST), len(data), nbins)      # ex-panel a
+for arm in data:
+    _h = HIST[HIST.arm == arm]
+    assert abs(_h["density"].mean() - 1.0) < 1e-9, arm                    # density normalisation
+    assert int(_h["count"].sum()) == len(data[arm]["null_df"]), arm
+    _first = float(_h.iloc[0]["density"])
+    assert np.isfinite(_first) and _first > 0, arm
+    assert np.isfinite(stats[arm]["ks_stat"]) and np.isfinite(stats[arm]["ks_p"]), arm   # ex-panel b
+    assert 0 < stats[arm]["min_null_p"] <= 1, arm
+    assert QQ_CLIPPED[arm] >= 0
+HIST_LEAD = {a: float(HIST[(HIST.arm == a) & (HIST.bin_lo == 0.0)]["density"].iloc[0]) for a in data}
+print("sidecar checks: hist density normalised, KS + min-null-p finite for all",
+      len(data), "configurations")
+
+# ----------------------------------------------------------------------------
+# 6d. sidecar caption (added at the 2026-09-02 rename pass -- the figure
 # convention requires the script, never a hand edit, to write the caption;
 # this was the one asset without a sidecar).  Every number below is a live
 # value computed above from the run TSVs, or a cited fact from the verified
 # write-up manuscript/14_switch_calibration_v2.md (verdict SOUND).
 # ----------------------------------------------------------------------------
+_cfg_name = {a: f"{data[a]['test']} on {data[a]['unit']}, marker pre-selection "
+                f"{'top-200 wilcoxon' if data[a]['markers'] else 'off'}" for a in data}
+# compact form for the value lists below, where the full name would drown the numbers
+_cfg_short = {a: f"{data[a]['test']}/{data[a]['unit']} markers "
+                 f"{'top-200' if data[a]['markers'] else 'off'}" for a in data}
 _arm_lines = "\n".join(
-    f"- **{data[a]['label']}** (marker pre-selection {stats[a]['marker_preselection']}): "
+    f"- **{_cfg_name[a]}** (`{data[a]['label']}`): "
     f"{stats[a]['frac_null_p_lt_05']:.1%} null p<0.05, {stats[a]['frac_null_q_lt_fdr']:.2%} null q<{FDR}, "
     f"{stats[a]['n_runs_with_q_hit']}/{stats[a]['n_perms']} null runs with a q<{FDR} hit "
     f"(mean {stats[a]['mean_hits_per_null_run']:.0f} hits/null run); TRUE run {stats[a]['true_q_hits']:,} nominal hits, "
     f"{stats[a]['true_perm_q_hits']:,} after permutation-calibrated q, "
     f"{stats[a]['true_perm_q_hits_with_effect_floor']:,} after the effect floor -- "
     f"{'CALIBRATED' + (' (conservative)' if stats[a]['conservative'] else '') if stats[a]['calibrated_by_prereg_rule'] else 'ANTI-CONSERVATIVE'}"
-    for a in stats)
+    for a in ROWS)
 cap_md = f"""# Fig 4 — `fig4_calibration` caption (generated by `scripts/manuscript_figures/fig4_calibration.py`; renamed 2026-09-02, see FIGURE_MAP.tsv)
 
 ## Legend
 
-Figure 4 | `switch diff` calibration on a correctly keyed count matrix — {verdict}.
-**{verdict_sentence}** Testis mouse1
-clip-seeded v2, {info['n_cells']:,} STARsolo cells (SPC {info['stage_counts']['SPC']} / RS {info['stage_counts']['RS']} / ES {info['stage_counts']['ES']}),
-{info['n_pas']:,} PAS, 3 stage pairs per run, {N_PERMS_PLANNED} label permutations shared identically across all arms, the full
-`switch diff` pipeline re-run per permutation.
+Figure 4 | **Which `switch diff` test configurations control the false-discovery rate.** Each row of the figure is one
+configuration a user chooses on the command line — statistical test × count unit (`--count-mode reads|cells`) ×
+marker pre-selection (`--marker-top-n 200`, the default, or `0`). Configurations are scored against a
+label-permutation null run through the identical pipeline, so the score is a property of the configuration, not of
+any one dataset. **{sentence_case(verdict_sentence.rstrip("."))}.**
+Testis mouse1 clip-seeded v2, {info['n_cells']:,} STARsolo cells
+(SPC {info['stage_counts']['SPC']} / RS {info['stage_counts']['RS']} / ES {info['stage_counts']['ES']}),
+{info['n_pas']:,} PAS, 3 stage pairs per run, {N_PERMS_PLANNED} label permutations shared identically across all
+configurations, the full `switch diff` pipeline re-run per permutation. Green = controls the FDR under the
+pre-registered rule; vermilion = anti-conservative. Verdict in short form: {verdict}.
 
-**Panel a** — null p-value distribution per arm (density; uniform = 1), with each arm's share of null p < 0.05.
-**Panel b** — QQ vs uniform on −log10 p with the 95% pointwise band (min null p:
-{", ".join(f"{short1(d)} {stats[a]['min_null_p']:.0e}" for a, d in data.items() if d["markers"])}).
-**Panel c** — q < {FDR} hits per null run
-(dots) vs the TRUE run (diamond), log scale; bottom text = null runs with ≥1 hit / mean hits per null run.
-**Panel d** — share of TRUE nominal q < {FDR} hits surviving permutation-calibrated q (counts on bars), and additionally the
-pre-registered effect floor (|Δproportion| ≥ {EFFECT_FLOOR} for fisher; |log2FC| ≥ 1 for nb). Dashed/hollow =
-marker pre-selection off (--marker-top-n 0).
+**Panel a** — share of null tests reaching p < {FDR:g} in each configuration, against the {100 * FDR:.0f}% an honest
+null produces (vertical rule); the stem runs from that reference to the observed rate, so its length and side are the
+size and sign of the miscalibration. **Panel b** — false calls made by a *single* null run: one dot per label
+permutation ({N_PERMS_PLANNED} per configuration), bar = median, symmetric-log axis so exact zeros are drawn at 0.
+**Panel c** — the cost in the real (unpermuted) comparison: the share of that configuration's nominal q < {FDR:g}
+calls that survive permutation-calibrated q (bar; label = surviving count / all real-run calls), with the diamond
+marking the share that also clears the pre-registered effect floor (|Δproportion| ≥ {EFFECT_FLOOR} for Fisher;
+|log2FC| ≥ 1 for NB).
 
-**Per-arm result** (rule for "calibrated": {PREREG_RULE}):
+**Moved off the image at the 2026-09-02 design pass (no-loss rule), with the numbers kept here and in the audit
+TSVs.** The per-configuration *null p-value distribution* is no longer drawn: its leading-bin density (0 ≤ p < 0.05,
+uniform = 1) is {", ".join(f"{_cfg_short[a]} {HIST_LEAD[a]:.2f}" for a in ROWS)}, and the full 20-bin histogram is
+`{NAME}_hist.tsv`. The *QQ-vs-uniform* panel is likewise gone: the smallest null p-value per configuration is
+{", ".join(f"{_cfg_short[a]} {stats[a]['min_null_p']:.0e}" for a in ROWS)}; the number of null p-values at or below
+the 1e-16 plotting floor was {", ".join(f"{_cfg_short[a]} {QQ_CLIPPED[a]:,}" for a in ROWS)}; and the
+Kolmogorov–Smirnov statistic against uniform is
+{", ".join(f"{_cfg_short[a]} D = {stats[a]['ks_stat']:.3f}" for a in ROWS)} — KS rejects for every configuration
+because Fisher p-values are discrete, which is why it is reported and never gated. Per-configuration diagnostic
+depth (per-stage-pair rates, expression strata, count-mode contrast, the NB dispersion floor, permutation-calibrated
+vs nominal q) lives in **figS9**, and is not duplicated here.
+
+**Per-configuration result** (rule for "controls the FDR": {PREREG_RULE}):
 {_arm_lines}
 
 {caveat}
@@ -516,7 +640,20 @@ the global null only; KS rejects for every arm (discrete Fisher) and is not gate
 
 Sources: `manuscript/14_switch_calibration_v2.md` (verified SOUND) + `results/fdr_calibration_v2/report.json`.
 Every plotted value: `results/figures/manuscript/{NAME}.tsv` (per-run summary), `{NAME}_stats.tsv` (headline
-stats per arm), `{NAME}_per_pair.tsv`, `{NAME}_null_pvalues.tsv`, `{NAME}_hist.tsv`, `{NAME}_true_permcal.tsv`.
+stats per configuration), `{NAME}_per_pair.tsv`, `{NAME}_null_pvalues.tsv`, `{NAME}_true_permcal.tsv`.
+Still written, **not plotted since 2026-09-02**: `{NAME}_hist.tsv` (the retired null p-value histogram); its
+values, and the retired QQ panel's min-null-p / KS statistics, are asserted in the script's
+sidecar-generation check and quoted in the Legend above.
+
+Design: shared publication style `scripts/manuscript_figures/_pubstyle.py` (PAL / TYPE / `apply_rc()` /
+`sentence_case()`), so Fig 1–6 read as one system. Colour follows the calibration STATUS
+(`PAL['good']` = controls the FDR, `PAL['bad']` = anti-conservative) and every configuration is named in full on
+its own row, so nothing depends on hue alone; six-checks re-validated 2026-09-02 (`validate_palette.js`, light
+mode): lightness band PASS, chroma floor PASS, CVD separation ΔE 11.0 deutan / 31.4 tritan PASS, normal-vision
+floor 25.8 PASS, contrast ≥ 3:1 PASS. Canvas 7.09 in (180 mm) at final print width; PNG 600 dpi, PDF vector with
+subsetted TrueType (fonttype 42, no Type 3); the render passes an automated text-overlap, minimum-type-size
+({TYPE['annotation_min']:.0f} pt floor) and off-canvas audit plus the 8-px edge check, and is saved at that fixed
+canvas (no tight bounding box), so an overflowing artist fails the audit instead of quietly widening the figure.
 """
 with open(f"{FIGDIR}/{NAME}.caption.md", "w") as fh:
     fh.write(cap_md)
@@ -532,6 +669,8 @@ try:
     ink = int((border < 250).sum())
     print(f"edge check: {im.shape[1]}x{im.shape[0]} px, ink pixels in the outer {edge} px = {ink}")
     assert ink == 0, "INK IN THE OUTER 8 PX -- something is clipped"
+    assert im.shape[1] <= 600 * 7.10, (
+        f"canvas {im.shape[1] / 600:.2f} in wide -- past the 180 mm (7.09 in) print target")
 except ImportError:
     print("edge check skipped (no PIL)")
 

@@ -47,3 +47,13 @@ Sources: `manuscript/26_second_donor_preregistration.md` (FIXED) — panel a pbm
 `score_tool.py` TSVs (`results/benchmark_tools/pbmc4k_donor2/run_ipfilt/`), the other three libraries from the
 verified `fig2_accuracy.tsv` (19 FIXED); panel b from `pbmc4k_donor2/concordance.txt`; every plotted value in
 `results/figures/manuscript/figS4_seconddonor*.tsv` with a source column.
+
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure annotation
+sits at or above the 6 pt floor. Axis labels, panel titles and prose tick labels are sentence-cased through
+`_pubstyle.sentence_case()`, canonical identifiers preserved and the lower-case panel letters kept. Panel b's
+title qualifier *(pre-registered)* left the image for the Legend above (no-loss: it is the "(b) Cross-donor
+concordance per the pre-registered 26 §5 protocol" sentence). Two overlaps were fixed: panel a's PASS leader
+now lands on the top-right corner of donor 2's default bar instead of running through that bar's own value
+label, and the left margin was widened so panel b's y labels clear the canvas edge. No panel, number or audit
+TSV changed; all three TSVs regenerate byte-identical.

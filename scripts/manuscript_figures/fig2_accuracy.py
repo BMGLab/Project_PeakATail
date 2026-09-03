@@ -1,8 +1,35 @@
 #!/usr/bin/env python3
 """
-fig2_accuracy.py -- manuscript Fig 2 ("fig2_accuracy"; stem final_benchmark
-until the 2026-09-02 rename pass): the final Stage-2 run head-to-head against
-the competitor panel.
+fig2_accuracy.py -- manuscript Fig 2 ("fig2_accuracy"): where the shipping tool
+sits against the competitor panel, and what it costs at a matched call budget.
+
+2026-09-02 PUBLICATION DESIGN PASS (manuscript/figures/DESIGN_DIRECTIVES.md).
+What changed, and why:
+  * DIRECTIVE 4 -- development history is OFF the main figures.  The "shipped
+    (pre-fix)" point, the two no-IP intermediate points and the arrowed
+    development path are NOT PLOTTED any more.  Their rows are still read,
+    still asserted and still written to the audit TSV (`plotted = False`); the
+    story they told lives in Fig S12 (version history) and Fig S8 (compute),
+    with one pointer sentence in the Legend.
+  * DIRECTIVE 5 -- exactly ONE precision/recall plane in the paper.  Fig 3's
+    trade surface (the molecule-support sweep) FOLDED IN HERE: PeakATail is now
+    drawn as its current *operating curve* (support >=1 ... >=10) with exactly
+    two named, user-choosable points emphasised -- the pre-registered precision
+    default (>=2 molecules) and the >=1-molecule sensitivity arm.  This is the
+    same mark the old development path occupied, so the plane did not get
+    busier; it got honest.  Fig 3 sharpened to pure robustness.
+  * The matched-call-count head-to-head, previously buried in the caption, is
+    now panels c/d -- it is the honest comparison and it belongs on the page.
+  * The tier-decomposition panel is GONE from Fig 2: Fig S2 panel a already is
+    the tier composition of every v2 arm, so keeping it here was a pairwise
+    redundancy (directive 5).  Its numbers stay in the Legend and in
+    `fig2_accuracy_tiers.tsv`, which is still written for the record.
+  * F1 isolines, the superseded two-sided gate and the per-call-set null ticks
+    left the plotted plane (crowding; all three are recorded in
+    `fig2_accuracy_reference_lines.tsv` and quantified in the Legend).  The
+    pre-registered gate line stays, with a short label.
+  * All type comes from `_pubstyle` (shared palette / markers / type scale);
+    every prose label goes through `sentence_case()` (directive 6).
 
 VERSION SWITCH -- env var FINAL_BENCHMARK_VERSION picks which PeakATail run is
 plotted.  The competitor / catalog arms are the same TSVs in both versions.
@@ -12,39 +39,38 @@ plotted.  The competitor / catalog arms are the same TSVs in both versions.
       results/benchmark_tools/final_v2_verify/VERIFIED_v2.md (verifier: FIXED).
   v1  (FINAL_BENCHMARK_VERSION=v1; kept selectable for the record)
       code 4efeb125, manuscript/15_final_gate.md (verified SOUND).
+  The operating CURVE (the >=1/2/3/5/10 sweep) exists only for the v2 arms, so
+  under v1 the two named operating points are drawn without the connecting
+  curve and the figure says so.  Panels c/d are the D3 matched-N record
+  (manuscript/25), which is a v2 analysis in both modes -- stated in the Legend.
 
 SOURCE OF TRUTH -- every plotted value is READ from a score TSV written by the
 single scoring path scripts/benchmark_tools/score_tool.py (100 bp cutoff,
 strand-matched point mode, curated PolyASite 2.0 representative sites,
-per-dataset detected-gene recall denominator).  Nothing numeric is typed by
-hand except the facts that exist only in the gate write-up (pre-registration
-timestamps, code commit, compute, the IP-filter precision/recall trade) --
-those are cited to 19 (v2) / 15 (v1) on the figure.  A consistency assert
-below checks the headline ones against the verified gate table.
+per-dataset detected-gene recall denominator), from the shared molecule-sweep
+module `_molsweep.py` (same scorer), or from the verified matched-N tables of
+results/perf_gap/D3_head_to_head/ (manuscript/25, verifier FIXED).  Nothing
+numeric is typed by hand except the facts that exist only in the gate write-up
+(pre-registration timestamps, code commit, compute) -- those are cited to
+19 (v2) / 15 (v1) in the Legend.
 
 PANELS
   a  PBMC 10k v3: atlas-agreement precision@100 (y) vs detected-gene recall@100
-     (x), every tool; scUTRquant hollow (catalog-based, not ranked); scTail
-     absent (not runnable: R1 = 28 bp); PeakATail as a connected path of
-     operating points shipped -> both tiers (no IP) -> tier-1 >=1 mol (no IP)
-     -> tier-1 >=1 mol (IP) -> precision default (tier-1, IP, >=2 molecules).
-     F1 isolines 0.1..0.4; pre-registered gate P >= 0.50 (13 section 1);
-     original two-sided gate P >= 0.38 & F1_det > 0.261 (10 section 5);
-     3-seed genic-shuffle null (mean) as small markers at the bottom.
-  b  Same for GSE104556 testis, two mice as mean +- range (both mice in TSV).
-     The mouse arms all ran with the IP filter, so the path has no "no IP" step.
-  c  n sites per call set, log scale, same tools / outputs, both datasets.
-  d  PeakATail tier decomposition on the PBMC IP arm: tier-2 / tier-1
-     single-molecule / tier-1 >=2 molecules (= default), with each output's
-     P@100.  72.2 % of tier-1 sites are single-molecule on v2 (derived from the
-     two score-TSV n's: 1 - 46,524 / 167,565; 72.5 % on the v1 IP arm).
-     DEFINITION NIT (19 section 4): the same ratio on the *no-IP* arm is
-     72.1 % (1 - 62,110 / 222,955) -- that is the verifier's recount and the
-     value manuscript/01 quotes.  Always name the arm with the number.
+     (x).  Competitors at their own operating points (one marker/colour per
+     tool, `_pubstyle.TOOL_STYLE`); scUTRquant hollow (catalog-based, not
+     ranked); scTail absent (not runnable: R1 = 28 bp).  PeakATail as its
+     molecule-support operating curve with the precision default (>=2 mol) and
+     the sensitivity arm (>=1 mol) named.  Pre-registered gate P >= 0.50.
+  b  Same for GSE104556 testis; competitors mean +- range over the two mice,
+     PeakATail curve = mean of the two mice, range bars on the two named points.
+  c  PBMC 10k v3 at MATCHED CALL BUDGET: atlas-agreement precision@100 as each
+     tool is truncated to a common number of calls (D3 rank sweep); the filled
+     marker on each line is that tool's own budget.
+  d  Same for testis mouse 1.
 
 NAMING RULES (manuscript/01 number policy)
   * "atlas-agreement precision (100 bp)", never bare "precision".
-  * recall shown = detected-gene recall R_det; full-atlas recall in caption.
+  * recall shown = detected-gene recall R_det; full-atlas recall in the Legend.
   * .../peakatail_clipseeded_final_v2/pas_tier1_ge2mol_noIP_POSTHOC.bed is NOT
     the pre-registered default and is not plotted.
 
@@ -53,8 +79,12 @@ OUTPUTS
   manuscript/figures/fig2_accuracy.caption.md  (sidecar: '## Legend' = the journal
                                                 legend, single source of the
                                                 caption; '## Provenance')
-  results/figures/manuscript/fig2_accuracy.tsv            (every point, a/b/c)
-  results/figures/manuscript/fig2_accuracy_tiers.tsv      (panel d)
+  results/figures/manuscript/fig2_accuracy.tsv            (every arm; `plotted` flag)
+  results/figures/manuscript/fig2_accuracy_sweep.tsv      (the operating curve, a/b)
+  results/figures/manuscript/fig2_accuracy_matchedN.tsv   (panels c/d)
+  results/figures/manuscript/fig2_accuracy_tiers.tsv      (NOT PLOTTED since
+                                                           2026-09-02; kept for
+                                                           the record, see Fig S2)
   results/figures/manuscript/fig2_accuracy_reference_lines.tsv (gates, isolines, nulls)
 
 Run:  export LC_ALL=C; python3 scripts/manuscript_figures/fig2_accuracy.py
@@ -64,12 +94,13 @@ Run:  export LC_ALL=C; python3 scripts/manuscript_figures/fig2_accuracy.py
        15/19 use it)
 """
 import os
-import textwrap
+import sys
 from pathlib import Path
 
-os.environ.setdefault("OMP_NUM_THREADS", "4")
-os.environ.setdefault("OPENBLAS_NUM_THREADS", "4")
-os.environ.setdefault("MKL_NUM_THREADS", "4")
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("LC_ALL", "C")
 
 import matplotlib
 matplotlib.use("Agg")
@@ -78,16 +109,15 @@ from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
-matplotlib.rcParams["pdf.fonttype"] = 42
-matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.5
-matplotlib.rcParams["axes.titlesize"] = 8
-matplotlib.rcParams["axes.labelsize"] = 8
-matplotlib.rcParams["legend.fontsize"] = 6.3
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _pubstyle import PAL, TOOL_STYLE, TYPE, apply_rc, sentence_case   # noqa: E402
+from _molsweep import molecule_sweep, PREREG_K, SENSITIVITY_K          # noqa: E402
+
+apply_rc()
 
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 BT = WD / "results/benchmark_tools"
+D3 = WD / "results/perf_gap/D3_head_to_head/tsv"
 OUTDIR = WD / "results/figures/manuscript"
 FIGDIR = WD / "manuscript/figures"
 NAME = "fig2_accuracy"
@@ -95,18 +125,9 @@ OUTDIR.mkdir(parents=True, exist_ok=True)
 FIGDIR.mkdir(parents=True, exist_ok=True)
 
 CUTOFF = 100.0
-INK, MUTED, GRID = "#1B2429", "#5A6B73", "#D8E0E3"
-
-# Okabe-Ito colourblind-safe palette (figures/README.md convention).
-COLOR = {
-    "PeakATail":  "#0072B2",
-    "polyApipe":  "#D55E00",
-    "SCAPTURE":   "#009E73",
-    "Sierra":     "#CC79A7",
-    "scAPAtrap":  "#E69F00",
-    "scUTRquant": "#56B4E9",
-}
+INK, MUTED, GRID = PAL["ink"], PAL["muted"], PAL["grid"]
 HUMAN, MOUSE = "pbmc_10k_v3", "gse104556"
+TOOL_ORDER = ["PeakATail", "polyApipe", "scAPAtrap", "SCAPTURE", "Sierra", "scUTRquant"]
 
 # ---------------------------------------------------------------------------
 # Which PeakATail run: v2 (default, the paper numbers) or v1 (kept for the record).
@@ -127,15 +148,16 @@ VERSIONS = {
         verified_short="final_v2_verify/VERIFIED_v2.md (FIXED)",
         prereg="gate 01:19, original arms 02:59, v2 re-run 16:14, all 2026-08-21",
         compute="12.5 GB / ~28-35 min on PBMC (was 294 GB / 3:46 h)",
-        ip_trade="the IP filter buys +5.3 pp atlas-agreement precision for \u22121.2 pp R_det (mouse 1)",
+        ip_trade="the IP filter buys +5.3 pp atlas-agreement precision for −1.2 pp R_det (mouse 1)",
         prev=dict(label="v1 run (code 4efeb125, 15)", P=(0.7167, 0.7414, 0.7554)),
         expect_h=(46524, 0.7062, 0.1754), expect_m1=(26255, 0.7450), expect_m2=(26526, 0.7572),
         expect_frac_single=72.2,
         # definition nit, 19 section 4: the same ratio computed on the no-IP arm is 72.1 %
         # (1 - 62,110 / 222,955), which is the verifier recount the manuscript text quotes.
-        single_mol_note=("this ratio is 1 \u2212 n(default) / n(tier-1) **on the IP arm shown here**; the same ratio on the "
-                         "no-IP arm is 72.1% (1 \u2212 62,110 / 222,955) \u2014 the verifier's recount and the value the "
-                         "manuscript text quotes (19 \u00a74), superseding 15 \u00a74's 72.5% (the v1 IP arm)"),
+        single_mol_note=("this ratio is 1 − n(default) / n(tier-1) **on the IP arm**; the same ratio on the "
+                         "no-IP arm is 72.1% (1 − 62,110 / 222,955) — the verifier's recount and the value the "
+                         "manuscript text quotes (19 §4), superseding 15 §4's 72.5% (the v1 IP arm)"),
+        sweep=True,
     ),
     "v1": dict(
         h_dir="peakatail_clipseeded_final", h_pfx="pbmc_final",
@@ -148,12 +170,14 @@ VERSIONS = {
         verified_short="15_final_gate.md (SOUND)",
         prereg="gate committed 01:19, arms started 02:59 (2026-08-21)",
         compute="294 GB / 3:46 h on PBMC",
-        ip_trade="the IP filter buys +4.9 pp atlas-agreement precision for \u22121.4 pp R_det (mouse 1)",
+        ip_trade="the IP filter buys +4.9 pp atlas-agreement precision for −1.4 pp R_det (mouse 1)",
         prev=None,
         expect_h=(44394, 0.7167, 0.1707), expect_m1=(25991, 0.7414), expect_m2=(26164, 0.7554),
         expect_frac_single=72.5,
-        single_mol_note=("this ratio is 1 \u2212 n(default) / n(tier-1) **on the v1 IP arm shown here** (15 \u00a74); the "
-                         "same ratio on the no-IP arm is 72.1% (1 \u2212 62,110 / 222,955), the verifier's recount (19 \u00a74)"),
+        single_mol_note=("this ratio is 1 − n(default) / n(tier-1) **on the v1 IP arm** (15 §4); the "
+                         "same ratio on the no-IP arm is 72.1% (1 − 62,110 / 222,955), the verifier's recount (19 §4)"),
+        # the molecule-support sweep was only ever computed on the v2 arms
+        sweep=False,
     ),
 }[VERSION]
 H_DIR, H_PFX = VERSIONS["h_dir"], VERSIONS["h_pfx"]
@@ -166,6 +190,12 @@ GATE_DOC = VERSIONS["gate_doc"]
 # ---------------------------------------------------------------------------
 # Arm registry: (dataset, tool, call_set label, short label, replicate, tsv, role)
 # role: competitor | catalog | path (PeakATail operating point, in path order)
+#
+# 2026-09-02: role names path0..path4 are kept so the audit TSV keeps its
+# vocabulary, but they are no longer a *path* on the figure -- directive 4
+# retired the development arrows.  Only path3 (>=1-molecule sensitivity arm)
+# and path4 (precision default) are plotted; path0/1/2 and the "extra" outputs
+# are read, asserted and written to the TSV with plotted = False.
 # ---------------------------------------------------------------------------
 H = BT / HUMAN
 M = BT / MOUSE
@@ -176,19 +206,21 @@ ARMS = [
     (HUMAN, "polyApipe",  "polyApipe", "polyApipe", "", H / "polyapipe/score_polyapipe.tsv", "competitor"),
     (HUMAN, "Sierra",     "Sierra",    "Sierra",    "", H / "sierra/score_sierra.tsv",       "competitor"),
     (HUMAN, "scAPAtrap",  "scAPAtrap", "scAPAtrap", "", H / "scapatrap/score_scapatrap.tsv", "competitor"),
-    # ---- PBMC PeakATail path (order matters) --------------------------------
+    # ---- PBMC PeakATail outputs --------------------------------------------
+    # NOT PLOTTED since 2026-09-02 (directive 4: development history); kept for the record.
     (HUMAN, "PeakATail", "PeakATail shipped (pre-fix caller)", "shipped", "",
      H / "peakatail/score_peakatail.tsv", "path0"),
     (HUMAN, "PeakATail", "PeakATail both tiers, no IP filter", "both tiers\n(no IP)", "",
      H / H_DIR / f"score_{H_PFX}.tsv", "path1"),
     (HUMAN, "PeakATail", "PeakATail tier-1 >=1 molecule, no IP filter", "tier-1 >=1 mol\n(no IP)", "",
      H / H_DIR / f"score_{H_PFX}__tier1.tsv", "path2"),
+    # PLOTTED: the two named, user-choosable operating points
     (HUMAN, "PeakATail", "PeakATail tier-1 >=1 molecule, IP filter", "tier-1 >=1 mol (IP)", "",
      H / H_IP_DIR / f"score_{H_IP_PFX}__tier1.tsv", "path3"),
     (HUMAN, "PeakATail", "PeakATail precision default (tier-1, IP, >=2 molecules; pre-registered)",
      "precision default\n(tier-1, IP, >=2 mol)", "",
      H / H_IP_DIR / f"score_{H_IP_PFX}__PRESPEC_precision_default.tsv", "path4"),
-    # ---- PBMC extra PeakATail outputs (panel c/d only, not on the path) -----
+    # ---- PBMC extra PeakATail outputs (record only; tier TSV) ---------------
     (HUMAN, "PeakATail", "PeakATail both tiers, IP filter", "both tiers (IP)", "",
      H / H_IP_DIR / f"score_{H_IP_PFX}.tsv", "extra"),
     (HUMAN, "PeakATail", "PeakATail tier-2 (coverage-only), IP filter", "tier-2 (IP)", "",
@@ -219,11 +251,12 @@ for rep in ("mouse1", "mouse2"):
 # (gse104556/scapture/DONE.mouse2.ok: 24,076 points, P@100 0.672, scored in
 # mouse2/score_scapture_mouse2.tsv; 15 §3 reports both mice 0.694 / 0.672);
 # only the per-cell PASquant step failed, which site-level benchmarking does
-# not use. The panel keeps the single-mouse point (rename pass changes no
-# plotted numbers); the earlier "run truncated / invalid" wording was stale
-# (21 §11 unresolved item, fixed at the 2026-09-02 rename).
+# not use.  The panel keeps the single-mouse point; never describe the mouse-2
+# run as invalid (21 §11 stale-caption fix, 2026-09-02).
 ARMS.append((MOUSE, "SCAPTURE", "SCAPTURE", "SCAPTURE", "mouse1",
              M / "scapture/mouse1/score_scapture_mouse1.tsv", "competitor"))
+
+PLOTTED_ROLES = ("competitor", "catalog", "path3", "path4")
 
 
 def read_arm(tsv: Path) -> dict:
@@ -273,19 +306,113 @@ def pick(ds, role, rep="single"):
     assert len(q) == 1
     return q.iloc[0]
 
+
 _d = pick(HUMAN, "path4");  assert (_d.n, round(_d.P, 4), round(_d.R_det, 4)) == VERSIONS["expect_h"], _d
 _m1 = pick(MOUSE, "path4", "mouse1"); assert (_m1.n, round(_m1.P, 4)) == VERSIONS["expect_m1"], _m1
 _m2 = pick(MOUSE, "path4", "mouse2"); assert (_m2.n, round(_m2.P, 4)) == VERSIONS["expect_m2"], _m2
 assert _d.R_det_denominator == 285136 and _m1.R_det_denominator == 126686
-GATE_P = 0.50          # 13 section 1, pre-registered precision-first gate
-ORIG_P, ORIG_F1 = 0.38, 0.261   # 10 section 5 original two-sided gate (PBMC)
+GATE_P = 0.50          # 13 section 1, pre-registered precision-first gate -- PLOTTED
+ORIG_P, ORIG_F1 = 0.38, 0.261   # 10 section 5 original two-sided gate -- NOT PLOTTED since 2026-09-02
+F1_ISO = [0.1, 0.2, 0.3, 0.4]   # NOT PLOTTED since 2026-09-02 (kept in the reference-line TSV)
 for r in pts[pts.role == "path4"].itertuples():
     assert r.P >= GATE_P, r
+# SIDECAR-GENERATION CHECK (the value left the plot on 2026-09-02; the assert did not):
+# the Legend sentence "no >=1-molecule output clears the original P >= 0.38 floor" is
+# guarded here, not by a drawn line.
 for r in pts[(pts.dataset == HUMAN) & (pts.role.isin(["path1", "path2", "path3"]))].itertuples():
-    assert r.P < ORIG_P, r   # "no >=1-molecule output clears the 0.38 floor"
+    assert r.P < ORIG_P, r
+# SIDECAR-GENERATION CHECK: the per-call-set genic-shuffle nulls used to be drawn as
+# tick marks under each point; they are now a Legend sentence bounded by this assert.
+NULL_MAX = float(pts.null_P_mean.max())
+assert NULL_MAX < 0.030, NULL_MAX
 
 # ---------------------------------------------------------------------------
-# panel d: tier decomposition on the PBMC IP arm (all n from the score TSVs)
+# the operating curve (DIRECTIVE 5: Fig 3's trade surface folds in here)
+# ---------------------------------------------------------------------------
+if VERSIONS["sweep"]:
+    sweep = molecule_sweep()
+    # the curve's two named points must BE the two plotted arms, to 4 dp
+    _sw_h2 = sweep[(sweep.dataset == "pbmc") & (sweep.min_molecules == PREREG_K)].iloc[0]
+    _sw_h1 = sweep[(sweep.dataset == "pbmc") & (sweep.min_molecules == SENSITIVITY_K)].iloc[0]
+    _h1 = pick(HUMAN, "path3")
+    assert (int(_sw_h2.n), round(_sw_h2.atlas_agreement_precision, 4)) == (int(_d.n), round(_d.P, 4))
+    assert (int(_sw_h1.n), round(_sw_h1.atlas_agreement_precision, 4)) == (int(_h1.n), round(_h1.P, 4))
+else:
+    sweep = None
+    print("VERSION=v1: the molecule-support sweep exists only for the v2 arms -- "
+          "the two named operating points are drawn without the connecting curve")
+
+# ---------------------------------------------------------------------------
+# panels c/d: matched call budget (D3 rank sweep, manuscript/25, verifier FIXED)
+# ---------------------------------------------------------------------------
+MN_COL = {"PeakATail": "PeakATail", "polyApipe": "polyApipe", "scAPAtrap": "scAPAtrap",
+          "Sierra": "Sierra", "SCAPTURE": "SCAPTURE*", "scUTRquant": "scUTRquant(catalog)"}
+MN_SRC = {HUMAN: D3 / "01d_matched_n_headline_pbmc.tsv",
+          MOUSE: D3 / "01e_matched_n_headline_mouse1.tsv"}
+mn_rows = []
+for ds, src in MN_SRC.items():
+    assert src.exists(), src
+    t = pd.read_csv(src, sep="\t")
+    for tool in TOOL_ORDER:
+        c = MN_COL[tool]
+        for i in t.index:
+            v = t.at[i, c + "_P100"]
+            if pd.isna(v):
+                continue
+            mn_rows.append(dict(panel="c" if ds == HUMAN else "d", dataset=ds, tool=tool,
+                                N=int(t.at[i, "N"]),
+                                atlas_agreement_precision_100bp=float(v),
+                                recall_detected_genes_100bp=float(t.at[i, c + "_Rdet"]),
+                                F1_detected_genes_100bp=float(t.at[i, c + "_F1"]),
+                                plotted=True, source=str(src.relative_to(WD))))
+mn = pd.DataFrame(mn_rows)
+
+# each tool's OWN call budget (the filled marker on its line).  The D3 rank sweep is a
+# v2 analysis (manuscript/25) in BOTH render modes, so PeakATail's budget here is the v2
+# arm's, not the selected VERSION's -- stated in the Legend.
+D3_PA_NATIVE = {HUMAN: 46524, MOUSE: 26255}
+NATIVE_N = {}
+for ds in (HUMAN, MOUSE):
+    for tool in TOOL_ORDER:
+        if tool == "PeakATail":
+            NATIVE_N[(ds, tool)] = D3_PA_NATIVE[ds]
+        else:
+            q = pts[(pts.dataset == ds) & (pts.tool == tool)]
+            if ds == MOUSE:
+                q = q[q.replicate == "mouse1"]
+            NATIVE_N[(ds, tool)] = int(q.n.iloc[0]) if len(q) else None
+mn["is_native_budget"] = [NATIVE_N[(r.dataset, r.tool)] == r.N for r in mn.itertuples()]
+
+# EXPECT asserts on the plotted matched-N values (manuscript/25 §2, verified)
+def _mn(ds, tool, N):
+    q = mn[(mn.dataset == ds) & (mn.tool == tool) & (mn.N == N)]
+    assert len(q) == 1, (ds, tool, N)
+    return round(float(q.atlas_agreement_precision_100bp.iloc[0]), 4)
+
+
+assert _mn(HUMAN, "PeakATail", 120916) == 0.4036 and _mn(HUMAN, "polyApipe", 120916) == 0.3800
+assert _mn(HUMAN, "PeakATail", 46524) == 0.7062 and _mn(HUMAN, "polyApipe", 46524) == 0.6049
+assert _mn(HUMAN, "PeakATail", 9456) == 0.9527 and _mn(HUMAN, "polyApipe", 9456) == 0.9671
+assert _mn(MOUSE, "PeakATail", 71983) == 0.4488 and _mn(MOUSE, "polyApipe", 71983) == 0.4353
+if VERSION == "v2":
+    # the D3 native row IS the score-TSV default (one number, two independent pipelines)
+    assert D3_PA_NATIVE[HUMAN] == int(_d.n) and D3_PA_NATIVE[MOUSE] == int(_m1.n)
+    assert _mn(HUMAN, "PeakATail", int(_d.n)) == round(_d.P, 4)
+    assert _mn(MOUSE, "PeakATail", int(_m1.n)) == round(_m1.P, 4)
+# SIDECAR-GENERATION CHECK: the recall half of the matched-N claim is a Legend
+# sentence, not a plotted series, so its bound is asserted here.
+_mnr = mn[(mn.dataset == HUMAN) & (mn.tool.isin(["PeakATail", "polyApipe"]))]
+for N in sorted(set(_mnr[_mnr.tool == "polyApipe"].N) & set(_mnr[_mnr.tool == "PeakATail"].N)):
+    a = float(_mnr[(_mnr.tool == "PeakATail") & (_mnr.N == N)].recall_detected_genes_100bp.iloc[0])
+    b = float(_mnr[(_mnr.tool == "polyApipe") & (_mnr.N == N)].recall_detected_genes_100bp.iloc[0])
+    assert a > b, (N, a, b)   # "recall at every matched N tested", 25 §2
+
+# ---------------------------------------------------------------------------
+# tier decomposition -- NOT PLOTTED since 2026-09-02.
+# DIRECTIVE 5 (pairwise redundancy): Fig S2 panel a already shows the tier
+# composition of every final v2 arm, so the Fig 2 panel duplicated a supplement.
+# The table is still computed, still asserted and still written to
+# fig2_accuracy_tiers.tsv; its numbers travel in the Legend.
 # ---------------------------------------------------------------------------
 t2 = pts[(pts.dataset == HUMAN) & (pts.short == "tier-2 (IP)")].iloc[0]
 t1 = pick(HUMAN, "path3")           # tier-1 >=1 mol, IP
@@ -294,6 +421,7 @@ both = pts[(pts.dataset == HUMAN) & (pts.short == "both tiers (IP)")].iloc[0]
 assert t2.n + t1.n == both.n, (t2.n, t1.n, both.n)
 n_single = int(t1.n - dflt.n)
 frac_single = n_single / t1.n        # v2 0.7223 -> "72.2 %"; v1 0.7253 -> "72.5 %"
+# SIDECAR-GENERATION CHECK (the panel went to Fig S2; the assert stayed here)
 assert round(frac_single * 100, 1) == VERSIONS["expect_frac_single"], frac_single
 m_single = {}
 for rep in ("mouse1", "mouse2"):
@@ -311,29 +439,27 @@ tiers = pd.DataFrame([
 ])
 tiers["dataset"] = HUMAN
 tiers["arm"] = H_IP_DIR
+tiers["plotted"] = False        # not plotted since 2026-09-02 -- see Fig S2 panel a
 tiers["frac_of_tier1_single_molecule"] = frac_single
 tiers["mouse1_frac_tier1_single_molecule"] = m_single["mouse1"][1]
 tiers["mouse2_frac_tier1_single_molecule"] = m_single["mouse2"][1]
 
-# ---------------------------------------------------------------------------
-# figure
-# ---------------------------------------------------------------------------
-# 2026-09-02 submission pass: the footer caption moved to the sidecar Legend,
-# so the canvas height shrank by the freed band (10.4 -> 9.0 in; the bottom
-# margin now holds only the panel c/d x labels) and the width narrowed toward
-# the double-column norm (8.3 -> 7.5 in; the right-anchored path labels of
-# panels a/b do not tolerate 180 mm).
-fig = plt.figure(figsize=(7.5, 9.0))
-gs = fig.add_gridspec(2, 2, height_ratios=[1.0, 0.82], width_ratios=[1, 1],
-                      left=0.166, right=0.975, top=0.960, bottom=0.052,
-                      hspace=0.38, wspace=0.30)
-axA = fig.add_subplot(gs[0, 0])
-axB = fig.add_subplot(gs[0, 1])
-axC = fig.add_subplot(gs[1, 0])
-axD = fig.add_subplot(gs[1, 1])
-
-F1_ISO = [0.1, 0.2, 0.3, 0.4]
+# ===========================================================================
+# FIGURE
+# ===========================================================================
+# Canvas at final print width: 180 mm = 7.09 in double column.  Two square-ish
+# rows of two panels with a single shared tool key between them -- the key that
+# used to be repeated per panel now serves all four.
+FIG_W, FIG_H = 7.09, 6.45
+fig = plt.figure(figsize=(FIG_W, FIG_H))
+gs_top = fig.add_gridspec(1, 2, left=0.086, right=0.988, top=0.9535, bottom=0.6124, wspace=0.215)
+gs_bot = fig.add_gridspec(1, 2, left=0.086, right=0.988, top=0.4200, bottom=0.0790, wspace=0.215)
+axA = fig.add_subplot(gs_top[0, 0])
+axB = fig.add_subplot(gs_top[0, 1])
+axC = fig.add_subplot(gs_bot[0, 0])
+axD = fig.add_subplot(gs_bot[0, 1])
 ref_lines = []
+callouts = {"a": 0, "b": 0, "c": 0, "d": 0}   # design law: <= 3 short callouts per panel
 
 
 def style(ax):
@@ -341,337 +467,288 @@ def style(ax):
         ax.spines[s].set_visible(False)
     for s in ("left", "bottom"):
         ax.spines[s].set_color(GRID)
-    ax.tick_params(colors=MUTED, length=2.5, labelsize=7)
-    ax.grid(True, color=GRID, lw=0.5, alpha=0.7)
+    ax.tick_params(colors=MUTED, length=2.4, width=0.7, labelsize=TYPE["tick"])
+    ax.grid(True, color=GRID, lw=0.5, alpha=0.85)
     ax.set_axisbelow(True)
 
 
-def f1_iso(ax, xmax):
-    R = np.linspace(0.005, xmax, 400)
-    for f in F1_ISO:
-        with np.errstate(divide="ignore", invalid="ignore"):
-            P = f * R / (2 * R - f)
-        ok = (2 * R - f > 0) & (P <= 1.0) & (P >= 0)
-        ax.plot(R[ok], P[ok], color="#C9D1D5", lw=0.7, zorder=1)
-        # label where the isoline meets the right edge or the top
-        xr = R[ok][-1]; yr = P[ok][-1]
-        ax.text(xr, yr, f"F1 {f:.1f}", color="#9AA7AD", fontsize=5.8,
-                ha="right", va="bottom", zorder=1)
+def panel_tag(ax, letter, title):
+    ax.text(-0.005, 1.035, letter, transform=ax.transAxes, fontsize=TYPE["panel_letter"],
+            fontweight="bold", va="bottom", ha="left", color=INK)
+    ax.text(0.058, 1.038, sentence_case(title), transform=ax.transAxes,
+            fontsize=TYPE["panel_title"], va="bottom", ha="left", color=INK)
 
 
-def gates(ax, xmax, original=True, original_note=""):
+OBSTACLES = {}          # panel key -> [(x, y, pad_pt), ...] everything already drawn
+
+
+def occupy(key, x, y, pad=4.0):
+    OBSTACLES.setdefault(key, []).append((float(x), float(y), pad))
+
+
+# candidate label slots, in preference order: (dx pt, dy pt, ha, va)
+SLOTS = [(-7, -7, "right", "top"), (8, 8, "left", "bottom"), (8, -7, "left", "top"),
+         (-7, 8, "right", "bottom"), (0, -10, "center", "top"), (0, 10, "center", "bottom"),
+         (11, 0, "left", "center"), (-11, 0, "right", "center")]
+
+
+def callout(ax, key, s, xy, color=INK, weight="normal", slots=SLOTS, literal=False):
+    """A short on-image note, auto-placed into the first slot that touches nothing.
+
+    Bounding-box discipline (DESIGN_DIRECTIVES.md item 1): the text box is tested
+    against every marker and curve sample already drawn in this panel and against
+    every text already placed, so no label can land on a mark or on another label.
+    """
+    callouts[key] += 1
+    fig.canvas.draw()
+    rend = fig.canvas.get_renderer()
+    boxes = []
+    for (ox, oy, pad) in OBSTACLES.get(key, []):
+        px, py = ax.transData.transform((ox, oy))
+        r = pad * fig.dpi / 72.0
+        boxes.append(matplotlib.transforms.Bbox.from_extents(px - r, py - r, px + r, py + r))
+    for t in ax.texts:
+        boxes.append(t.get_window_extent(renderer=rend).expanded(1.06, 1.14))
+    # `literal` labels start with a relational operator, not prose: directive 6's
+    # initial-capital rule does not apply to them ("≥2 mol", never "≥2 Mol").
+    txt = s if literal else sentence_case(s)
+    for dx, dy, ha, va in slots:
+        a = ax.annotate(txt, xy=xy, xytext=(dx, dy), textcoords="offset points",
+                        fontsize=TYPE["annotation"], color=color, ha=ha, va=va,
+                        fontweight=weight, zorder=9)
+        bb = a.get_window_extent(renderer=rend).expanded(1.08, 1.16)
+        ax_bb = ax.get_window_extent(renderer=rend)
+        if any(bb.overlaps(b) for b in boxes) or not ax_bb.fully_contains(bb.x0, bb.y0) \
+                or not ax_bb.fully_contains(bb.x1, bb.y1):
+            a.remove()
+            continue
+        return a
+    raise AssertionError(f"panel {key}: no free slot for label {s!r}")
+
+
+def gate_line(ax, key):
     ax.axhline(GATE_P, color=INK, lw=0.9, ls=(0, (4, 2)), zorder=2)
-    ax.text(xmax * 0.995, GATE_P + 0.008, "pre-registered gate P ≥ 0.50 (13 §1)",
-            ha="right", va="bottom", fontsize=5.9, color=INK)
-    ref_lines.append(dict(panel=ax.get_label(), kind="gate", label="pre-registered gate (13 section 1)",
-                          P=GATE_P, F1=""))
-    if original:
-        ax.axhline(ORIG_P, color=MUTED, lw=0.8, ls=(0, (1, 2)), zorder=2)
-        R = np.linspace(ORIG_F1 / 2 + 0.002, xmax, 400)
-        P = ORIG_F1 * R / (2 * R - ORIG_F1)
-        ok = (P <= 1.0)
-        ax.plot(R[ok], P[ok], color=MUTED, lw=0.8, ls=(0, (1, 2)), zorder=2)
-        ax.text(0.004, ORIG_P - 0.012,
-                "original gate P ≥ 0.38 & F1 > 0.261 (10 §5)" + original_note,
-                ha="left", va="top", fontsize=5.8, color=MUTED)
-        ref_lines.append(dict(panel=ax.get_label(), kind="gate", label="original two-sided gate (10 section 5)",
-                              P=ORIG_P, F1=ORIG_F1))
-    for f in F1_ISO:
-        ref_lines.append(dict(panel=ax.get_label(), kind="F1 isoline", label=f"F1 = {f}", P="", F1=f))
-
-
-PATH_ROLES_H = ["path0", "path1", "path2", "path3", "path4"]
-PATH_ROLES_M = ["path0", "path1", "path3", "path4"]
+    ax.text(0.012, GATE_P - 0.018, sentence_case("pre-registered gate P ≥ 0.50"),
+            ha="left", va="top", fontsize=TYPE["annotation"], color=INK, zorder=9)
+    callouts[key] += 1
+    ref_lines.append(dict(panel=key, kind="gate", label="pre-registered gate (13 section 1)",
+                          P=GATE_P, F1="", plotted=True))
 
 
 def draw_competitors(ax, sub, paired):
-    """sub: rows of one dataset, competitor+catalog roles.  paired: mouse."""
-    handles = []
+    """One marker/colour identity per tool (_pubstyle.TOOL_STYLE); mouse = mean +- range."""
     for tool in ["scUTRquant", "SCAPTURE", "polyApipe", "Sierra", "scAPAtrap"]:
         q = sub[sub.tool == tool]
         if q.empty:
             continue
-        c = COLOR[tool]
-        hollow = tool == "scUTRquant"
-        mk = dict(marker="o", ms=6.5, mec=c, mew=1.3, mfc="white" if hollow else c,
-                  ls="none", zorder=5)
+        st = TOOL_STYLE[tool]
+        mk = dict(marker=st["marker"], ms=6.0, mec=st["color"], mew=1.2,
+                  mfc=st.get("mfc", st["color"]), ls="none", zorder=6)
         if paired and len(q) == 2:
             x, y = q.R_det.mean(), q.P.mean()
             ax.errorbar(x, y, xerr=[[x - q.R_det.min()], [q.R_det.max() - x]],
                         yerr=[[y - q.P.min()], [q.P.max() - y]],
-                        color=c, lw=0.8, capsize=1.5, zorder=4, ls="none")
-            h, = ax.plot(x, y, **mk)
+                        color=st["color"], lw=0.7, capsize=1.4, zorder=5, ls="none")
         else:
             x, y = q.R_det.iloc[0], q.P.iloc[0]
-            h, = ax.plot(x, y, **mk)
-        nm = "scUTRquant* (catalog)" if hollow else tool
-        if paired and len(q) == 1:
-            nm += " (m1 only)"
-        handles.append((h, nm))
-        # null markers at the bottom, same x
-        ax.plot(x, q.null_P_mean.mean(), marker="|", ms=5, mec=c, mew=1.0, ls="none", zorder=3)
+        # a surface ring keeps overlapping markers legible
+        ax.plot(x, y, mfc="none", mec="white", mew=2.4, marker=st["marker"], ms=6.0,
+                ls="none", zorder=5)
+        ax.plot(x, y, **mk)
+        occupy(ax.get_label(), x, y, pad=8.5)   # a label must not sit beside a competitor marker (judge pass)
         ref_lines.append(dict(panel=ax.get_label(), kind="null_genic mean (3 seeds)", label=tool,
-                              P=q.null_P_mean.mean(), F1=""))
-    return handles
+                              P=q.null_P_mean.mean(), F1="", plotted=False))
 
 
-def draw_path(ax, sub, roles, paired, labels):
-    c = COLOR["PeakATail"]
-    xs, ys = [], []
-    for i, role in enumerate(roles):
+def draw_operating_curve(ax, ds_keys, sub, paired):
+    """PeakATail's CURRENT operating curve + the two named, user-choosable points."""
+    c = TOOL_STYLE["PeakATail"]["color"]
+    key = ax.get_label()
+    if sweep is not None:
+        s = sweep[sweep.dataset.isin(ds_keys)].groupby("min_molecules").agg(
+            P=("atlas_agreement_precision", "mean"), R=("recall_detected_genes", "mean")
+        ).sort_index()
+        ax.plot(s.R.to_numpy(), s.P.to_numpy(), "-", color=c, lw=1.1, alpha=0.55, zorder=4)
+        mid = s.drop(index=[k for k in (SENSITIVITY_K, PREREG_K) if k in s.index])
+        ax.plot(mid.R.to_numpy(), mid.P.to_numpy(), ls="none", marker="o", ms=3.6,
+                mfc=c, mec="white", mew=0.8, alpha=0.85, zorder=5)
+        # the whole curve is an obstacle, not just its vertices
+        for i in range(len(s) - 1):
+            for f in np.linspace(0, 1, 9):
+                occupy(key, s.R.iloc[i] + f * (s.R.iloc[i + 1] - s.R.iloc[i]),
+                       s.P.iloc[i] + f * (s.P.iloc[i + 1] - s.P.iloc[i]), pad=2.6)
+    named = []
+    for role, k, filled in (("path4", PREREG_K, True), ("path3", SENSITIVITY_K, False)):
         q = sub[sub.role == role]
         if paired:
             x, y = q.R_det.mean(), q.P.mean()
             ax.errorbar(x, y, xerr=[[x - q.R_det.min()], [q.R_det.max() - x]],
                         yerr=[[y - q.P.min()], [q.P.max() - y]],
-                        color=c, lw=0.8, capsize=1.5, zorder=6, ls="none")
+                        color=c, lw=0.7, capsize=1.4, zorder=6, ls="none")
         else:
             x, y = q.R_det.iloc[0], q.P.iloc[0]
-        xs.append(x); ys.append(y)
-        last = role == "path4"
-        first = role == "path0"
-        ax.plot(x, y, marker="D" if last else "o", ms=8 if last else 5.5,
-                mfc=c if last else ("white" if first else c),
-                mec=c, mew=1.3, ls="none", zorder=7)
-        ax.plot(x, q.null_P_mean.mean(), marker="|", ms=5, mec=c, mew=1.0, ls="none", zorder=3)
+        ax.plot(x, y, mfc="none", mec="white", mew=2.6, marker="D",
+                ms=8.0 if filled else 7.0, ls="none", zorder=6)
+        ax.plot(x, y, marker="D", ms=8.0 if filled else 7.0, mfc=c if filled else "white",
+                mec=c, mew=1.4, ls="none", zorder=7)
+        occupy(key, x, y, pad=6.5)
+        named.append((x, y))
         ref_lines.append(dict(panel=ax.get_label(), kind="null_genic mean (3 seeds)",
-                              label=f"PeakATail {q.short.iloc[0]}".replace("\n", " "),
-                              P=q.null_P_mean.mean(), F1=""))
-        lab, dx, dy, ha, va = labels[role]
-        ax.annotate(lab, (x, y), xytext=(dx, dy), textcoords="offset points",
-                    fontsize=6.2, color=c, ha=ha, va=va, zorder=8,
-                    fontweight="bold" if last else "normal")
-    ax.plot(xs, ys, color=c, lw=1.1, alpha=0.75, zorder=6)
-    # arrow heads along the path
-    for (x0, y0), (x1, y1) in zip(zip(xs[:-1], ys[:-1]), zip(xs[1:], ys[1:])):
-        ax.annotate("", xy=(x1, y1), xytext=(x0, y0),
-                    arrowprops=dict(arrowstyle="-|>", color=c, lw=0.9, alpha=0.75,
-                                    shrinkA=4, shrinkB=5), zorder=6)
+                              label=f"PeakATail >={k} molecules", P=q.null_P_mean.mean(),
+                              F1="", plotted=False))
+    return named
 
 
-# ---- panel a -------------------------------------------------------------
-axA.set_label("a")
+# ---- panels a / b: the one precision/recall plane -------------------------
+XLIM, YLIM = (0.0, 0.345), (0.0, 1.0)
 subH = pts[pts.dataset == HUMAN]
-XMAX_H = 0.42
-f1_iso(axA, XMAX_H)
-gates(axA, XMAX_H)
-hH = draw_competitors(axA, subH[subH.role.isin(["competitor", "catalog"])], paired=False)
-labels_H = {
-    "path0": ("shipped\n(pre-fix)", -4, 7, "right", "bottom"),
-    "path1": ("both tiers (no IP)", 0, -8, "center", "top"),
-    "path2": ("tier-1 ≥1 mol\n(no IP)", 6, 0, "left", "center"),
-    # at the 7.5 in canvas the old above-right slot (7, 13) hits the "F1 0.4"
-    # isoline tag and the left slot hits the original-gate label; level-right clears both
-    "path3": ("tier-1 ≥1 mol (IP)", 7, -1, "left", "center"),
-    "path4": ("precision default\n(tier-1, IP, ≥2 mol)", 9, 0, "left", "center"),
-}
-draw_path(axA, subH, PATH_ROLES_H, paired=False, labels=labels_H)
-axA.set_xlim(0, XMAX_H); axA.set_ylim(0, 0.9)
-axA.set_xlabel("detected-gene recall R_det @100 bp (n = 285,136 atlas sites)")
-axA.set_ylabel("atlas-agreement precision @100 bp")
-axA.set_title("a   PBMC 10k v3 (human, single donor)", loc="left", fontweight="bold")
-# right-anchored at 0.90 (not 0.985) and lifted to y=0.040 so the line clears BOTH
-# the right-edge "F1 0.1" isoline label and the PBMC null ticks (drawn at P ~ 0.022).
-# (the "scTail: not runnable" note moved to the sidecar Legend, panel-a paragraph;
-#  the null-tick key stays: it labels a drawn mark)
-axA.text(0.900, 0.040, "| = 3-seed genic-shuffle null (mean) per call set",
-         transform=axA.transAxes, ha="right", va="bottom", fontsize=5.8, color=MUTED)
-hH.append((Line2D([], [], marker="o", ms=5.5, color=COLOR["PeakATail"], mec=COLOR["PeakATail"], lw=1.1),
-           "PeakATail operating points (final run, arrows = filter steps)"))
-hH.append((Line2D([], [], marker="D", ms=7, color="none", mfc=COLOR["PeakATail"], mec=COLOR["PeakATail"]),
-           "PeakATail pre-registered precision default"))
-style(axA)
-
-# ---- panel b -------------------------------------------------------------
-axB.set_label("b")
 subM = pts[pts.dataset == MOUSE]
-XMAX_M = 0.42
-f1_iso(axB, XMAX_M)
-gates(axB, XMAX_M, original=True, original_note=" — PBMC reference")
-hM = draw_competitors(axB, subM[subM.role.isin(["competitor", "catalog"])], paired=True)
-labels_M = {
-    "path0": ("shipped (pre-fix)", 8, -13, "left", "top"),
-    "path1": ("both tiers (IP)", 7, -2, "left", "top"),
-    "path3": ("tier-1 ≥1 mol (IP)", 7, 0, "left", "center"),
-    "path4": ("precision default\n(tier-1, IP, ≥2 mol)", 9, 0, "left", "center"),
-}
-draw_path(axB, subM, PATH_ROLES_M, paired=True, labels=labels_M)
-axB.set_xlim(0, XMAX_M); axB.set_ylim(0, 0.9)
-axB.set_xlabel("detected-gene recall R_det @100 bp (n = 126,686)")
-axB.set_ylabel("atlas-agreement precision @100 bp")
-axB.set_title("b   GSE104556 testis (2 mice, mean ± range)", loc="left", fontweight="bold",
-              fontsize=7.5)   # 8 pt overruns the right margin at the 7.5 in canvas
-# right-anchored at 0.90 (not 0.985) so the block clears the right-edge "F1 0.1" isoline label.
-# (the "all mouse arms ran with the IP filter" and SCAPTURE mouse-2 notes moved to
-#  the sidecar Legend, panel-b paragraph; the null-tick key stays)
-axB.text(0.900, 0.02, "| = 3-seed genic-shuffle null (mean) per call set",
-         transform=axB.transAxes, ha="right", va="bottom", fontsize=5.8, color=MUTED)
-style(axB)
-fig.legend([h for h, _ in hH], [n for _, n in hH], loc="center", bbox_to_anchor=(0.55, 0.455),
-           ncol=3, frameon=False, handletextpad=0.4, columnspacing=1.4, labelspacing=0.4)
 
-# ---- panel c: n sites per call set (log) ---------------------------------
-axC.set_label("c")
-order = [  # (tool, short label in pts) top -> bottom
-    ("scUTRquant", "scUTRquant*"), ("SCAPTURE", "SCAPTURE"), ("polyApipe", "polyApipe"),
-    ("Sierra", "Sierra"), ("scAPAtrap", "scAPAtrap"),
-    ("PeakATail", "shipped"), ("PeakATail", "both tiers\n(no IP)"), ("PeakATail", "tier-1 >=1 mol\n(no IP)"),
-    ("PeakATail", "both tiers (IP)"), ("PeakATail", "tier-1 >=1 mol (IP)"), ("PeakATail", "tier-2 (IP)"),
-    ("PeakATail", "precision default\n(tier-1, IP, >=2 mol)"),
+for ax, key, sub, ds_keys, paired, title in (
+        (axA, "a", subH, ["pbmc"], False, "PBMC 10k v3"),
+        (axB, "b", subM, ["mouse1", "mouse2"], True, "GSE104556 testis")):
+    ax.set_label(key)
+    ax.set_xlim(*XLIM); ax.set_ylim(*YLIM)
+    ax.set_xticks([0.0, 0.1, 0.2, 0.3])
+    draw_competitors(ax, sub[sub.role.isin(["competitor", "catalog"])], paired=paired)
+    (p_default, p_sens) = draw_operating_curve(ax, ds_keys, sub, paired=paired)
+    gate_line(ax, key)
+    # the two named, user-choosable operating points; the key below spells them out
+    callout(ax, key, "≥2 mol", p_default, color=TOOL_STYLE["PeakATail"]["color"],
+            weight="bold", literal=True)
+    callout(ax, key, "≥1 mol", p_sens, color=TOOL_STYLE["PeakATail"]["color"], literal=True)
+    ax.set_xlabel(sentence_case("detected-gene recall R$_{det}$ @100 bp"))
+    ax.set_ylabel(sentence_case("atlas-agreement precision @100 bp"))
+    panel_tag(ax, key, title)
+    style(ax)
+
+# ---- panels c / d: matched call budget ------------------------------------
+for ax, ds, key, title in ((axC, HUMAN, "c", "PBMC 10k v3"),
+                           (axD, MOUSE, "d", "GSE104556 testis, mouse 1")):
+    ax.set_label(key)
+    sub = mn[mn.dataset == ds]
+    for tool in TOOL_ORDER:
+        q = sub[sub.tool == tool].sort_values("N")
+        if q.empty:
+            continue
+        st = TOOL_STYLE[tool]
+        lead = tool == "PeakATail"
+        if len(q) > 1:
+            ax.plot(q.N.to_numpy(), q.atlas_agreement_precision_100bp.to_numpy(),
+                    ls=(0, (3, 1.6)) if tool == "scUTRquant" else "-",
+                    color=st["color"], lw=1.6 if lead else 1.0,
+                    alpha=1.0 if lead else 0.9, zorder=6 if lead else 4)
+        nat = q[q.is_native_budget]
+        if len(nat):
+            x, y = float(nat.N.iloc[0]), float(nat.atlas_agreement_precision_100bp.iloc[0])
+            ax.plot(x, y, marker=st["marker"], ms=7.0, mfc="none", mec="white", mew=2.4,
+                    ls="none", zorder=6)
+            ax.plot(x, y, marker=st["marker"], ms=7.0 if lead else 5.8,
+                    mfc=st.get("mfc", st["color"]), mec=st["color"], mew=1.3,
+                    ls="none", zorder=7)
+        elif len(q) == 1:   # SCAPTURE has no non-circular ranking column: points only
+            ax.plot(q.N, q.atlas_agreement_precision_100bp, marker=st["marker"], ms=5.0,
+                    mfc=st["color"], mec="white", mew=0.8, ls="none", alpha=0.9, zorder=5)
+    ax.set_xscale("log")
+    ax.set_ylim(0.0, 1.0)
+    ax.set_xlabel(sentence_case("calls kept per tool (matched budget, log)"))
+    ax.set_ylabel(sentence_case("atlas-agreement precision @100 bp"))
+    panel_tag(ax, key, title)
+    style(ax)
+axC.set_xlim(7.5e3, 1.05e6)
+axC.set_xticks([1e4, 1e5, 1e6])
+axC.set_xticklabels(["10k", "100k", "1M"])
+axD.set_xlim(1.8e4, 1.8e5)
+axD.set_xticks([2e4, 5e4, 1e5])
+axD.set_xticklabels(["20k", "50k", "100k"])
+for ax in (axC, axD):
+    ax.minorticks_off()
+
+# ---- one shared key for all four panels: our operating points, then the field
+PA = TOOL_STYLE["PeakATail"]["color"]
+row1 = [   # labels open with a relational operator, so directive 6's capital does not apply
+    Line2D([], [], ls="none", marker="D", ms=6.4, mfc=PA, mec=PA, mew=1.4,
+           label="≥2 molecules — precision default"),
+    Line2D([], [], ls="none", marker="D", ms=5.8, mfc="white", mec=PA, mew=1.4,
+           label="≥1 molecule — sensitivity arm"),
+    Line2D([], [], color=PA, lw=1.1, alpha=0.6, marker="o", ms=3.6, mfc=PA, mec="white",
+           label=sentence_case("PeakATail operating curve")),
 ]
-ylabels = {  # PT = PeakATail (final run)
-    "scUTRquant*": "scUTRquant* (catalog)", "shipped": "PT shipped (pre-fix)",
-    "both tiers\n(no IP)": "PT both tiers (no IP)", "tier-1 >=1 mol\n(no IP)": "PT tier-1 ≥1 mol (no IP)",
-    "both tiers (IP)": "PT both tiers (IP)", "tier-1 >=1 mol (IP)": "PT tier-1 ≥1 mol (IP)",
-    "tier-2 (IP)": "PT tier-2 only (IP)",
-    "precision default\n(tier-1, IP, >=2 mol)": "PT precision default",
-}
-bh = 0.26
-yt, ytl = [], []
-for i, (tool, short) in enumerate(order):
-    y = len(order) - 1 - i
-    c = COLOR[tool]
-    qh = pts[(pts.dataset == HUMAN) & (pts.tool == tool) & (pts.short == short)]
-    q1 = pts[(pts.dataset == MOUSE) & (pts.tool == tool) & (pts.short == short) & (pts.replicate == "mouse1")]
-    q2 = pts[(pts.dataset == MOUSE) & (pts.tool == tool) & (pts.short == short) & (pts.replicate == "mouse2")]
-    hollow = tool == "scUTRquant"
-    kw = dict(height=bh, edgecolor=c, linewidth=0.8, zorder=3)
-    if not qh.empty:
-        axC.barh(y + bh, qh.n.iloc[0], color="white" if hollow else c, **kw)
-        axC.text(qh.n.iloc[0] * 1.12, y + bh, f"{int(qh.n.iloc[0]):,}", va="center", fontsize=5.3, color=INK)
-    if not q1.empty:
-        axC.barh(y, q1.n.iloc[0], color="white" if hollow else c, alpha=1 if hollow else 0.55, hatch="////", **kw)
-        axC.text(q1.n.iloc[0] * 1.12, y, f"{int(q1.n.iloc[0]):,}", va="center", fontsize=5.3, color=INK)
-    if not q2.empty:
-        axC.barh(y - bh, q2.n.iloc[0], color="white" if hollow else c, alpha=1 if hollow else 0.3, hatch="....", **kw)
-        axC.text(q2.n.iloc[0] * 1.12, y - bh, f"{int(q2.n.iloc[0]):,}", va="center", fontsize=5.3, color=INK)
-    elif not q1.empty:
-        # SCAPTURE's mouse-2 SITE-LEVEL run completed and was scored (P@100
-        # 0.672, panel b; 15 §3) — only its per-cell PASquant step failed,
-        # which site-level benchmarking does not use.  Never describe the run
-        # as invalid (21 §11 stale-caption fix, 2026-09-02); the bar stays
-        # unplotted because the rename pass changes no plotted numbers.
-        m2label = ("m2: scored, not plotted (panel b)" if tool == "SCAPTURE"
-                   else "m2: not run")
-        axC.text(1.2e4, y - bh, m2label, va="center", fontsize=5.3, color=MUTED)
-    elif qh.empty is False and q1.empty:
-        axC.text(1.2e4, y, "not run on mouse", va="center", fontsize=5.3, color=MUTED)
-    yt.append(y); ytl.append(ylabels.get(short, short))
-axC.set_yticks(yt); axC.set_yticklabels(ytl, fontsize=5.9)
-axC.set_xscale("log"); axC.set_xlim(1e4, 6e6)
-axC.set_xlabel("n sites scored per call set (log scale)")
-axC.set_title("c   Call-set size", loc="left", fontweight="bold")
-axC.legend([matplotlib.patches.Patch(facecolor="#888888", edgecolor="#888888"),
-            matplotlib.patches.Patch(facecolor="#888888", alpha=0.55, hatch="////", edgecolor="#888888"),
-            matplotlib.patches.Patch(facecolor="#888888", alpha=0.3, hatch="....", edgecolor="#888888")],
-           ["PBMC 10k v3", "testis mouse 1", "testis mouse 2"], loc="lower right", frameon=False,
-           handlelength=1.4, labelspacing=0.3, fontsize=6.0)
-style(axC)
-axC.grid(True, axis="x", color=GRID, lw=0.5); axC.grid(False, axis="y")
-axC.set_ylim(-0.6, len(order) - 0.4)
+row2 = []
+for tool in ["polyApipe", "scAPAtrap", "SCAPTURE", "Sierra", "scUTRquant"]:
+    st = TOOL_STYLE[tool]
+    row2.append(Line2D([], [], ls="none", color=st["color"], marker=st["marker"], ms=5.6,
+                       mfc=st.get("mfc", st["color"]), mec=st["color"], mew=1.2,
+                       label="scUTRquant (catalog)" if tool == "scUTRquant" else tool))
+lg1 = fig.legend(handles=row1, loc="center", bbox_to_anchor=(0.537, 0.531), ncol=3, frameon=False,
+                 handletextpad=0.4, columnspacing=1.7, borderpad=0.0, fontsize=TYPE["annotation"])
+fig.add_artist(lg1)
+fig.legend(handles=row2, loc="center", bbox_to_anchor=(0.537, 0.4985), ncol=5, frameon=False,
+           handletextpad=0.4, columnspacing=1.7, borderpad=0.0, fontsize=TYPE["annotation"])
 
-# ---- panel d: tier decomposition -----------------------------------------
-axD.set_label("d")
-c = COLOR["PeakATail"]
-slices = [
-    ("tier-2\n(coverage-only)", int(t2.n), "#C9D1D5", t2.P, "tier-2 only"),
-    ("tier-1\nsingle-molecule", n_single, "#8FBBDD", t1.P, "tier-1 ≥1 mol (all)"),
-    ("tier-1 ≥2 molecules\n= precision default", int(dflt.n), c, dflt.P, "default"),
-]
-left = 0
-for k, (lab, n, col, P, _) in enumerate(slices):
-    axD.barh(1.0, n, left=left, height=0.55, color=col, edgecolor="white", linewidth=1.0, zorder=3)
-    if k < 2:
-        axD.text(left + n / 2, 1.0, f"{lab}\nn = {n:,}", ha="center", va="center", fontsize=5.7,
-                 color=INK, zorder=4)
-    else:  # too narrow for an in-bar label: put it above the slice, right-aligned
-        axD.annotate(f"{lab}\nn = {n:,}", xy=(left + n / 2, 1.28), xytext=(left + n, 1.42),
-                     ha="right", va="bottom", fontsize=5.7, color=col, zorder=4,
-                     arrowprops=dict(arrowstyle="-", color=col, lw=0.6))
-    left += n
-axD.text(0, 1.36, f"PBMC IP arm, all calls scored:\nn = {int(both.n):,}  (P@100 {both.P:.3f})",
-         ha="left", va="bottom", fontsize=6.0, color=MUTED)
-# precision of each scored output, as a dot strip below
-outs = [
-    ("tier-2 only", t2.P, t2.n, "#C9D1D5"),
-    ("tier-1 ≥1 mol\n(singletons + ≥2 mol)", t1.P, t1.n, "#8FBBDD"),
-    ("precision default\n(tier-1 ≥2 mol)", dflt.P, dflt.n, c),
-]
-x_scale = both.n  # map P in [0,1] onto the bar width so the two rows share an x axis
-for k, (lab, P, n, col) in enumerate(outs):
-    yk = 0.30 - 0.22 * k
-    axD.plot([0, P * x_scale], [yk, yk], color=col, lw=3.2, solid_capstyle="butt", zorder=3)
-    axD.text(P * x_scale + x_scale * 0.012, yk, f"{P:.3f}  {lab.split(chr(10))[0]}",
-             va="center", ha="left", fontsize=5.8, color=INK, zorder=5,
-             bbox=dict(facecolor="white", edgecolor="none", pad=0.6))
-axD.plot([GATE_P * x_scale] * 2, [-0.28, 0.42], color=INK, lw=0.8, ls=(0, (4, 2)), zorder=2)
-axD.text(GATE_P * x_scale, 0.44, "gate 0.50", ha="center", va="bottom", fontsize=5.6, color=INK)
-axD.text(0, -0.46, "atlas-agreement precision @100 bp of each scored output\n"
-         "(x axis: 0 → 1 spans the width of the top bar)",
-         fontsize=5.7, color=MUTED, va="top")
-# (the single-molecule-share sentence moved to the sidecar Legend, panel-d
-#  paragraph; the freed headroom is taken out of the y range)
-axD.set_xlim(0, both.n * 1.30); axD.set_ylim(-0.80, 2.05)
-axD.set_yticks([]); axD.set_xticks([0, 1e5, 2e5, 3e5])
-axD.set_xticklabels(["0", "100k", "200k", "300k"])
-axD.set_xlabel("n sites (top bar)")
-axD.set_title("d   Tier decomposition, PBMC IP arm", loc="left", fontweight="bold")
-# ("PeakATail" dropped from the on-figure title for the 7.5 in canvas — only
-#  PeakATail has tiers, and the legend names the panel in full)
-for s in ("top", "right", "left"):
-    axD.spines[s].set_visible(False)
-axD.spines["bottom"].set_color(GRID)
-axD.tick_params(colors=MUTED, length=2.5, labelsize=7)
+for k, v in callouts.items():
+    assert v <= 3, f"panel {k}: {v} callouts (design law: at most 3)"
 
-# ---- legend (sidecar only -- the on-figure footer was retired at the
-# 2026-09-02 submission pass; the sidecar '## Legend' is the single source of
-# the caption) ---------------------------------------------------------------
-pA_pp = pick(MOUSE, "path4", "mouse1")
-poly_h = subH[subH.tool == "polyApipe"].iloc[0]
-poly_m = subM[subM.tool == "polyApipe"]
-rel_h = (dflt.R_det / poly_h.R_det - 1) * 100
-rel_m = (subM[subM.role == "path4"].R_det.mean() / poly_m.R_det.mean() - 1) * 100
-dF1_h = dflt.F1_det - poly_h.F1_det
-dF1_m = subM[subM.role == "path4"].F1_det.mean() - poly_m.F1_det.mean()
-m_full = subM[subM.role == "path4"].sort_values("replicate").R_full.tolist()
+# ---------------------------------------------------------------------------
+# bounding-box discipline: no two pieces of text may overlap
+# ---------------------------------------------------------------------------
+def text_overlaps(fig):
+    fig.canvas.draw()
+    rend = fig.canvas.get_renderer()
+    items = []
+    for ax in fig.axes:
+        for t in ax.texts:
+            items.append((ax.get_label(), t))
+        for t in (ax.xaxis.label, ax.yaxis.label, ax.title):
+            if t.get_text():
+                items.append((ax.get_label(), t))
+        for t in (ax.get_xaxis().get_ticklabels() + ax.get_yaxis().get_ticklabels()):
+            if t.get_text():
+                items.append((ax.get_label(), t))
+        if ax.get_legend() is not None:
+            items += [(ax.get_label(), t) for t in ax.get_legend().get_texts()]
+    items += [("fig", t) for t in fig.texts]
+    for lg in fig.legends:
+        items += [("fig", t) for t in lg.get_texts()]
+    bad = []
+    for i in range(len(items)):
+        for j in range(i + 1, len(items)):
+            a, b = items[i][1], items[j][1]
+            if not (a.get_visible() and b.get_visible()):
+                continue
+            ba = a.get_window_extent(renderer=rend).expanded(1.02, 1.06)
+            bb = b.get_window_extent(renderer=rend).expanded(1.02, 1.06)
+            if ba.overlaps(bb):
+                bad.append((items[i][0], repr(a.get_text())[:34], items[j][0],
+                            repr(b.get_text())[:34]))
+    return bad
 
-_prev = VERSIONS["prev"]
-prev_note = "" if not _prev else (
-    f"The {_prev['label']} gave {_prev['P'][0]:.3f} / {_prev['P'][1]:.3f} / {_prev['P'][2]:.3f}; the "
-    f"\u22121.1 pp PBMC move is the corrected minus-strand IP window (#96), reconstructed key-for-key. ")
-_ip = VERSIONS["ip_trade"]
-ip_note = _ip[0].upper() + _ip[1:]
 
-caption = (
-    "Figure 2 | Trustworthy PAS detection: the final Stage-2 run (PeakATail code "
-    f"{CODE_COMMIT}, {VERSIONS['commit_note']}) against the competitor panel. "
-    "Definitions: atlas-agreement precision = fraction of calls within 100 bp (point, strand-matched) of a "
-    "PolyASite 2.0 representative site; it is agreement with a curated atlas, not ground truth (atlas-novel "
-    f"true sites count as false positives). R_det denominator = atlas sites in genes detected in the dataset "
-    f"({int(dflt.R_det_denominator):,} human / {int(_m1.R_det_denominator):,} mouse); full-atlas recall of the "
-    f"default {dflt.R_full:.3f} (PBMC; {int(dflt.R_full_denominator):,}) and {m_full[0]:.3f} / {m_full[1]:.3f} "
-    f"(mice; {int(_m1.R_full_denominator):,}). One scorer (score_tool.py), same denominators for every tool; "
-    "3-seed gene-body-shuffled nulls. scUTRquant is catalog-based (hollow, not ranked). "
-    f"Pre-registration: the precision-first default and its P@100 ≥ 0.50 gate were committed before the "
-    f"ORIGINAL run and are unchanged here ({PREREG}; 13 §1, {GATE_DOC}); the ≥2-molecule threshold was "
-    "pre-registered before that run (12 CORRECTION). "
-    f"Gate: PASS on all three ({dflt.P:.3f} / {_m1.P:.3f} / {_m2.P:.3f}); no ≥1-molecule output clears the "
-    "original P ≥ 0.38 floor. "
-    + prev_note +
-    f"{ip_note}; compute {VERSIONS['compute']}; {GATE_DOC} §1/§3. "
-    # CORRECTED 2026-08-21 (verifier pass): the pre-correction clause ("recall at or below polyApipe's ...
-    # the F1_det lead is not a meaningful margin") stated a real limitation but compared 46,524 of our calls
-    # with 120,916 of polyApipe's. The builder's first replacement dropped the limitation entirely and kept
-    # only the favourable half; both halves must be here. So: the single-point deltas STAY (rel_h / rel_m /
-    # dF1_h / dF1_m, data-driven), and the matched-N context is added and bounded to a specific N.
-    # Verified source: manuscript/25_competitive_position.md §2, §8.1. (This caption is now the sidecar
-    # Legend, not an on-figure footer, so the old 12-line cap no longer applies; the full framing follows
-    # in `framing_md`, in the same Legend section.)
-    f"Caveats: single PBMC donor / BAM; the two mice are one study and chemistry; the default's recall is below polyApipe's "
-    f"({rel_h:+.0f}% / {rel_m:+.0f}%), F1_det lead {dF1_h:+.3f} / {dF1_m:+.3f} — at 2.6x fewer calls; at polyApipe's own N of 120,916 "
-    f"PeakATail leads on both axes, 0.4036 / 0.2336 vs 0.3800 / 0.1988 (25 §2). "
-    "The non-IP PBMC ≥2-molecule file (pas_tier1_ge2mol_noIP_POSTHOC) is not the default and is not shown."
-)
+_bad = text_overlaps(fig)
+for row in _bad:
+    print("TEXT OVERLAP:", row)
+assert not _bad, f"{len(_bad)} text/text overlaps -- fix before shipping"
+
+# design law (DESIGN_DIRECTIVES.md item 1, added at the 2026-09-03 no-loss audit):
+# no annotation may be set below the minimum print size.  The overlap assert above
+# and the 8-px edge assert below already cover collisions and clipping; this closes
+# the third law so all six mains carry the same three checks.
+_small = sorted({(round(float(t.get_fontsize()), 2), t.get_text()[:34])
+                 for ax in fig.axes
+                 for t in (list(ax.texts) + [ax.xaxis.label, ax.yaxis.label, ax.title]
+                           + list(ax.get_xaxis().get_ticklabels())
+                           + list(ax.get_yaxis().get_ticklabels())
+                           + (list(ax.get_legend().get_texts()) if ax.get_legend() else []))
+                 if t.get_text().strip() and t.get_visible()
+                 and float(t.get_fontsize()) < TYPE["annotation_min"]}
+                | {(round(float(t.get_fontsize()), 2), t.get_text()[:34]) for t in fig.texts
+                   if t.get_text().strip() and float(t.get_fontsize()) < TYPE["annotation_min"]}
+                | {(round(float(t.get_fontsize()), 2), t.get_text()[:34])
+                   for lg in fig.legends for t in lg.get_texts()
+                   if t.get_text().strip() and float(t.get_fontsize()) < TYPE["annotation_min"]})
+assert not _small, ("annotation below the minimum print size", _small)
+print(f"design check: no text overlaps, no text below {TYPE['annotation_min']} pt")
+
 
 for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
@@ -681,73 +758,235 @@ p = OUTDIR / f"{NAME}.png"
 fig.savefig(p, dpi=600); print("wrote", p)
 
 # ---------------------------------------------------------------------------
-# TSVs: every plotted value
+# TSVs: every value, plotted or kept for the record
 # ---------------------------------------------------------------------------
+PANEL_OF = {"competitor": {HUMAN: "a", MOUSE: "b"}, "catalog": {HUMAN: "a", MOUSE: "b"},
+            "path3": {HUMAN: "a", MOUSE: "b"}, "path4": {HUMAN: "a", MOUSE: "b"}}
 pts_out = pts.copy()
 pts_out["short"] = pts_out["short"].str.replace("\n", " ")
-pts_out["panel"] = pts_out.apply(
-    lambda r: ("a" if r.dataset == HUMAN else "b") + ",c" if r.role != "extra" else "c" + (",d" if r.dataset == HUMAN else ""),
-    axis=1)
-cols = ["panel", "dataset", "tool", "call_set", "short", "replicate", "role", "cutoff_bp", "n", "n_matched",
-        "P", "R_det", "R_det_denominator", "R_full", "R_full_denominator", "F1_det",
+pts_out["plotted"] = pts_out.role.isin(PLOTTED_ROLES)
+pts_out["panel"] = [PANEL_OF.get(r.role, {}).get(r.dataset, "") for r in pts_out.itertuples()]
+cols = ["panel", "plotted", "dataset", "tool", "call_set", "short", "replicate", "role", "cutoff_bp",
+        "n", "n_matched", "P", "R_det", "R_det_denominator", "R_full", "R_full_denominator", "F1_det",
         "null_P_seed1", "null_P_seed2", "null_P_seed3", "null_P_mean", "source"]
 pts_out = pts_out[cols].rename(columns={"P": "atlas_agreement_precision_100bp",
                                         "R_det": "recall_detected_genes_100bp",
                                         "R_full": "recall_full_atlas_100bp",
                                         "F1_det": "F1_detected_genes_100bp"})
 p = OUTDIR / f"{NAME}.tsv"; pts_out.to_csv(p, sep="\t", index=False, float_format="%.6f"); print("wrote", p)
+
+if sweep is not None:
+    sw = sweep.copy()
+    sw.insert(0, "panel", ["a" if d == "pbmc" else "b" for d in sw.dataset])
+    sw.insert(1, "plotted", True)
+    sw.insert(2, "tool", "PeakATail v2 (IP arm)")
+    p = OUTDIR / f"{NAME}_sweep.tsv"
+    sw.to_csv(p, sep="\t", index=False, float_format="%.6f"); print("wrote", p)
+
+p = OUTDIR / f"{NAME}_matchedN.tsv"
+mn.to_csv(p, sep="\t", index=False, float_format="%.6f"); print("wrote", p)
+
+# NOT PLOTTED since 2026-09-02 -- the tier panel moved to Fig S2 (directive 5);
+# the table is still emitted so the numbers stay pinned to a reproducible file.
 p = OUTDIR / f"{NAME}_tiers.tsv"; tiers.to_csv(p, sep="\t", index=False, float_format="%.6f"); print("wrote", p)
+
+# NOT PLOTTED since 2026-09-02 (except the pre-registered gate): the F1 isolines,
+# the superseded two-sided gate and the per-call-set nulls keep their rows here.
+#
+# NO-LOSS (2026-09-03 audit): the loop above records a null row only for the call
+# sets the redesigned plane still draws.  The arms the design pass retired --
+# "shipped (pre-fix)", the no-IP intermediates, both-tiers and tier-2 -- had a
+# per-call-set null row in the pre-redesign file, and the Legend's bound
+# (NULL_MAX) and its PBMC/mouse ranges are read from THOSE rows.  They are
+# re-emitted here with plotted=False so this file stays the complete per-call-set
+# null record the Legend points at, and nothing that was in it was dropped.
+# (matched on the null value, not the label: a drawn row is labelled by tool or by
+#  operating point, a retired row by its call-set short name, but both are the mean
+#  over the panel's replicates, so the value is the identity of the call set here.)
+_have = {(r["panel"], round(float(r["P"]), 9)) for r in ref_lines
+         if r["kind"].startswith("null_genic")}
+for _ds, _panel in ((HUMAN, "a"), (MOUSE, "b")):
+    for _short, _q in pts[pts.dataset == _ds].groupby("short", sort=False):
+        _v = float(_q.null_P_mean.mean())
+        if (_panel, round(_v, 9)) in _have:
+            continue
+        ref_lines.append(dict(panel=_panel, kind="null_genic mean (3 seeds)",
+                              label=" ".join(str(_short).split()),   # no newline in a TSV cell
+                              P=_v, F1="", plotted=False))
+        _have.add((_panel, round(_v, 9)))
+ref_lines.append(dict(panel="a,b", kind="gate", label="original two-sided gate (10 section 5)",
+                      P=ORIG_P, F1=ORIG_F1, plotted=False))
+for f in F1_ISO:
+    ref_lines.append(dict(panel="a,b", kind="F1 isoline", label=f"F1 = {f}", P="", F1=f, plotted=False))
 p = OUTDIR / f"{NAME}_reference_lines.tsv"
-pd.DataFrame(ref_lines).to_csv(p, sep="\t", index=False, float_format="%.6f"); print("wrote", p)
+_rl = pd.DataFrame(ref_lines)
+_rl.to_csv(p, sep="\t", index=False, float_format="%.6f"); print("wrote", p)
+
+# SIDECAR-GENERATION CHECK: the Legend sentence "every call set's 3-seed
+# gene-body-shuffled null P@100 is at most NULL_MAX ... per-call-set values are in
+# fig2_accuracy_reference_lines.tsv" is only true while that file really holds one
+# row per scored call set and its extremes are the ones quoted.
+_nl = _rl[_rl.kind.str.startswith("null_genic")]
+_want = pts[pts.dataset == HUMAN].short.nunique() + pts[pts.dataset == MOUSE].short.nunique()
+assert len(_nl) == _want, \
+    ("per-call-set null rows missing from the reference-lines record", len(_nl), _want)
+assert round(float(_nl.P.astype(float).max()), 4) == round(NULL_MAX, 4), \
+    (float(_nl.P.astype(float).max()), NULL_MAX)
+assert round(float(_nl[_nl.panel == "a"].P.astype(float).max()), 4) == \
+    round(float(subH.null_P_mean.max()), 4)                       # the quoted PBMC top
 
 # ---------------------------------------------------------------------------
-# sidecar caption
+# sidecar caption -- the single source of the journal legend.  Everything the
+# 2026-09-02 design pass took off the image lands here (no-loss rule).
 # ---------------------------------------------------------------------------
-# ---------------------------------------------------------------------------
-# competitive framing for the sidecar caption (NOT in the figure — no room)
-# Source of every number: manuscript/25_competitive_position.md (verified from
-# results/perf_gap/D3_head_to_head/ tsv/01d,01e; D2_rule_sweep/D2_arm_sweep.tsv;
-# D1_recall_decomposition/tables/; verifier verdict FIXED).
-# ---------------------------------------------------------------------------
-framing_md = f"""**Competitive framing (corrected 2026-08-21 — `manuscript/25_competitive_position.md`).** At the plotted
-default the tool's recall is below polyApipe's ({rel_h:+.0f}% PBMC, {rel_m:+.0f}% mouse) and its F1_det lead is small
-({dF1_h:+.3f} / {dF1_m:+.3f}). **Do not quote either number alone:** that comparison sets 46,524 of our calls against
-120,916 of polyApipe's, and both axes move with call budget. At **matched call count** PeakATail leads polyApipe on
-recall at every N tested and on precision at every N from 20,320 upward, on both datasets — at polyApipe's own N = 120,916, 0.4036 / 0.2336 vs 0.3800 / 0.1988; at our
-own N = 46,524, 0.7062 / 0.1754 vs 0.6049 / 0.1375; mouse 1 at N = 71,983, 0.4488 / 0.3034 vs 0.4353 / 0.2231 — and on
-**both** mice the ≥1-molecule arm plotted here beats polyApipe on precision, recall **and** F1 simultaneously
-(0.5686 / 0.2806 / 0.3758 and 0.5880 / 0.2826 / 0.3818 vs 0.4005 / 0.2499 / 0.3078 and 0.4119 / 0.2508 / 0.3118). The
-≥2-molecule default is also **not** the F1 optimum (≥1-molecule arm 0.3046 / 0.3758 / 0.3818 vs the default's
-0.2811 / 0.3213 / 0.3264) — a deliberate reliability choice, not a ceiling. Qualifiers: the claim holds among **de
-novo** tools only (catalog-based scUTRquant is above PeakATail on both axes at several matched N), the precision half
-is not established for 20,320 ≤ N ≤ 35,759 because of competitor-side ties and is false below N ≈ 15,000 where polyApipe
-is higher (0.9671 vs 0.9527 at N = 9,456) while the recall half holds at every N, "PeakATail at scAPAtrap's N" is not
-reachable (787,138 > our maximum 333,920), and SCAPTURE has no non-circular ranking column so it cannot be truncated.
-Full grid, tie-break brackets and provenance: `manuscript/25_competitive_position.md` §2, §6, §8."""
+poly_h = subH[subH.tool == "polyApipe"].iloc[0]
+poly_m = subM[subM.tool == "polyApipe"]
+rel_h = (dflt.R_det / poly_h.R_det - 1) * 100
+rel_m = (subM[subM.role == "path4"].R_det.mean() / poly_m.R_det.mean() - 1) * 100
+dF1_h = dflt.F1_det - poly_h.F1_det
+dF1_m = subM[subM.role == "path4"].F1_det.mean() - poly_m.F1_det.mean()
+m_full = subM[subM.role == "path4"].sort_values("replicate").R_full.tolist()
+h1 = pick(HUMAN, "path3")
+m1_1 = pick(MOUSE, "path3", "mouse1")
+m2_1 = pick(MOUSE, "path3", "mouse2")
 
-cap_md = f"""# Fig 2 — `fig2_accuracy` caption (generated by `scripts/manuscript_figures/fig2_accuracy.py`; renamed 2026-09-02, see FIGURE_MAP.tsv)
+_prev = VERSIONS["prev"]
+prev_note = "" if not _prev else (
+    f"The {_prev['label']} gave {_prev['P'][0]:.3f} / {_prev['P'][1]:.3f} / {_prev['P'][2]:.3f}; the "
+    f"−1.1 pp PBMC move is the corrected minus-strand IP window (#96), reconstructed key-for-key. ")
+_ip = VERSIONS["ip_trade"]
+ip_note = _ip[0].upper() + _ip[1:]
+
+if sweep is not None:
+    _sw = sweep.copy()
+    _swh = _sw[_sw.dataset == "pbmc"].set_index("min_molecules")
+    _swm = _sw[_sw.dataset != "pbmc"].groupby("min_molecules").agg(
+        P=("atlas_agreement_precision", "mean"), R=("recall_detected_genes", "mean"),
+        n=("n", "mean"))
+    curve_md = (
+        f"The light line is the tool's molecule-support operating curve on the IP-filtered arms: "
+        f"≥1 / ≥2 / ≥3 / ≥5 / ≥10 distinct clip molecules give P@100 "
+        f"{_swh.loc[1].atlas_agreement_precision:.3f} / {_swh.loc[2].atlas_agreement_precision:.3f} / "
+        f"{_swh.loc[3].atlas_agreement_precision:.3f} / {_swh.loc[5].atlas_agreement_precision:.3f} / "
+        f"{_swh.loc[10].atlas_agreement_precision:.3f} at R_det "
+        f"{_swh.loc[1].recall_detected_genes:.3f} / {_swh.loc[2].recall_detected_genes:.3f} / "
+        f"{_swh.loc[3].recall_detected_genes:.3f} / {_swh.loc[5].recall_detected_genes:.3f} / "
+        f"{_swh.loc[10].recall_detected_genes:.3f} on PBMC (n {int(_swh.loc[1].n):,} → "
+        f"{int(_swh.loc[10].n):,}), and P@100 {_swm.loc[1].P:.3f} → {_swm.loc[10].P:.3f} at R_det "
+        f"{_swm.loc[1].R:.3f} → {_swm.loc[10].R:.3f} as the two-mouse mean. **Only the ≥2-molecule "
+        f"point was pre-registered** (13 §1); ≥1 is the shipped sensitivity arm and ≥3/≥5/≥10 "
+        f"are descriptive points, never gated, drawn small and unlabelled for that reason. (The post-hoc sweep "
+        f"that informed the ≥2 threshold is disclosed in 12 CORRECTION and is never cited as a result.) "
+        f"Every curve point was recomputed by `score_tool.py` from `pas.bed` column 5 with the reference "
+        f"arguments of `scripts/benchmark_tools/stage2_final_launch.sh`; the ≥1 and ≥2 points reproduce "
+        f"{GATE_DOC} §1 to 4 dp on all three arms (asserted). ")
+else:
+    curve_md = ("The molecule-support operating curve was computed only on the v2 arms, so this v1 render "
+                "draws the two named operating points without the connecting curve. ")
+
+caption = (
+    "Figure 2 | Where PeakATail sits against the field, and what it costs at a matched call budget "
+    f"(PeakATail code {CODE_COMMIT}, {VERSIONS['commit_note']}). "
+    "Definitions: atlas-agreement precision = fraction of calls within 100 bp (point, strand-matched) of a "
+    "PolyASite 2.0 representative site; it is agreement with a curated atlas, not ground truth (atlas-novel "
+    "true sites count as false positives). R_det denominator = atlas sites in genes detected in the dataset "
+    f"({int(dflt.R_det_denominator):,} human / {int(_m1.R_det_denominator):,} mouse); full-atlas recall of the "
+    f"default {dflt.R_full:.3f} (PBMC; {int(dflt.R_full_denominator):,}) and {m_full[0]:.3f} / {m_full[1]:.3f} "
+    f"(mice; {int(_m1.R_full_denominator):,}). One scorer (score_tool.py), same denominators for every tool; "
+    "3-seed gene-body-shuffled nulls. scUTRquant is catalog-based (hollow marker, dashed line): shown, not "
+    "ranked with the de novo tools. "
+    f"Pre-registration: the precision-first default and its P@100 ≥ 0.50 gate were committed before the "
+    f"ORIGINAL run and are unchanged here ({PREREG}; 13 §1, {GATE_DOC}); the ≥2-molecule threshold was "
+    "pre-registered before that run (12 CORRECTION). "
+    f"Gate: PASS on all three ({dflt.P:.3f} / {_m1.P:.3f} / {_m2.P:.3f}); no ≥1-molecule output clears the "
+    "superseded original P ≥ 0.38 floor (10 §5), which is why that line is recorded in "
+    "`fig2_accuracy_reference_lines.tsv` rather than drawn. "
+    + prev_note +
+    f"{ip_note}; compute {VERSIONS['compute']}; {GATE_DOC} §1/§3. "
+    # CORRECTED 2026-08-21 (verifier pass): the pre-correction clause ("recall at or below polyApipe's ...
+    # the F1_det lead is not a meaningful margin") stated a real limitation but compared 46,524 of our calls
+    # with 120,916 of polyApipe's. The builder's first replacement dropped the limitation entirely and kept
+    # only the favourable half; both halves must be here. So: the single-point deltas STAY (rel_h / rel_m /
+    # dF1_h / dF1_m, data-driven), and the matched-N context is added and bounded to a specific N.
+    # Verified source: manuscript/25_competitive_position.md §2, §8.1.
+    f"Caveats: single PBMC donor / BAM; the two mice are one study and chemistry; at its own default the tool's "
+    f"recall is below polyApipe's ({rel_h:+.0f}% / {rel_m:+.0f}%), F1_det lead {dF1_h:+.3f} / {dF1_m:+.3f} — "
+    f"at 2.6x fewer calls, which is exactly the confound panels c/d remove. "
+    "The non-IP PBMC ≥2-molecule file (pas_tier1_ge2mol_noIP_POSTHOC) is not the default and is not shown."
+)
+
+removed_md = f"""**What this figure deliberately does not show** (2026-09-02 publication design pass,
+`manuscript/figures/DESIGN_DIRECTIVES.md` items 4 and 5; nothing was deleted, everything below is still
+computed, asserted and written to the audit TSVs).
+*Development history* — the "shipped (pre-fix)" caller and the two no-IP intermediate outputs are no longer
+drawn: end users choose between shipping operating points, not between our development stages. Their values are
+in `fig2_accuracy.tsv` with `plotted = False` (PBMC shipped P@100 {pick(HUMAN, 'path0').P:.3f} at
+R_det {pick(HUMAN, 'path0').R_det:.3f}, n {int(pick(HUMAN, 'path0').n):,}; both tiers no IP
+{pick(HUMAN, 'path1').P:.3f} / {pick(HUMAN, 'path1').R_det:.3f}; tier-1 ≥1 mol no IP
+{pick(HUMAN, 'path2').P:.3f} / {pick(HUMAN, 'path2').R_det:.3f}), and the version-to-version story is **Fig S12**
+(caller versions) and **Fig S8** (compute).
+*Tier decomposition* — the former panel d duplicated **Fig S2 panel a**, which is the tier composition of every
+final v2 arm. On the PBMC IP arm all calls scored are n = {int(both.n):,} (P@100 {both.P:.3f}), splitting
+tier-2 {int(t2.n):,} (P@100 {t2.P:.3f}) /
+tier-1 single-molecule {n_single:,} / tier-1 ≥2 molecules {int(dflt.n):,} (P@100 {dflt.P:.3f}), i.e.
+{frac_single*100:.1f}% of tier-1 sites are single-molecule and are dropped by the default
+(mouse {m_single['mouse1'][1]*100:.1f}% / {m_single['mouse2'][1]*100:.1f}%); the ≥1-molecule arm scores
+{t1.P:.3f}. Definition matters here: {VERSIONS['single_mol_note']}. Table: `fig2_accuracy_tiers.tsv`.
+*F1 isolines and the superseded gate* — F1_det isolines 0.1–0.4 and the original two-sided gate
+(P ≥ 0.38 & F1_det > 0.261, 10 §5) were chrome on a plane that now carries an operating curve; both are
+rows in `fig2_accuracy_reference_lines.tsv`.
+*Genic-shuffle nulls* — the per-call-set null ticks are gone from the plane; every call set's 3-seed
+gene-body-shuffled null P@100 is at most {NULL_MAX:.4f} (PBMC call sets {float(subH.null_P_mean.min()):.4f}–{float(subH.null_P_mean.max()):.4f},
+mouse {float(subM.null_P_mean.min()):.4f}–{float(subM.null_P_mean.max()):.4f}); per-call-set values are in
+`fig2_accuracy_reference_lines.tsv` and the null design is **Fig S3**."""
+
+framing_md = f"""**Competitive framing (`manuscript/25_competitive_position.md`, corrected 2026-08-21).** Panels c/d
+are the drawn form of this: at **matched call count** PeakATail leads polyApipe on recall at every N tested and on
+precision at every N from 20,320 upward, on both datasets — at polyApipe's own N = 120,916, 0.4036 / 0.2336 vs
+0.3800 / 0.1988; at our own N = 46,524, 0.7062 / 0.1754 vs 0.6049 / 0.1375; mouse 1 at N = 71,983,
+0.4488 / 0.3034 vs 0.4353 / 0.2231 — and on **both** mice the ≥1-molecule arm beats polyApipe on precision,
+recall **and** F1 simultaneously ({m1_1.P:.4f} / {m1_1.R_det:.4f} / {m1_1.F1_det:.4f} and {m2_1.P:.4f} /
+{m2_1.R_det:.4f} / {m2_1.F1_det:.4f} vs 0.4005 / 0.2499 / 0.3078 and 0.4119 / 0.2508 / 0.3118). The
+≥2-molecule default is also **not** the F1 optimum ({h1.F1_det:.4f} / {m1_1.F1_det:.4f} / {m2_1.F1_det:.4f}
+for the ≥1-molecule arm vs the default's {dflt.F1_det:.4f} / {_m1.F1_det:.4f} / {_m2.F1_det:.4f}) — a
+deliberate reliability choice, not a ceiling. Qualifiers that travel with panels c/d: the claim holds among
+**de novo** tools only (catalog-based scUTRquant is above PeakATail on both axes at several matched N — visible
+as the dashed line above the blue one at small budgets), the precision half is not established for
+20,320 ≤ N ≤ 35,759 because of competitor-side ties and is **false below N ≈ 15,000, where polyApipe is
+higher (0.9671 vs 0.9527 at N = 9,456)** while the recall half holds at every N, "PeakATail at scAPAtrap's N" is
+not reachable (787,138 > our maximum 333,920, so the blue line stops), and SCAPTURE has no non-circular ranking
+column so it cannot be truncated and appears as isolated markers. Full grid, tie-break brackets and provenance:
+`manuscript/25_competitive_position.md` §2, §6, §8; every plotted point:
+`results/figures/manuscript/fig2_accuracy_matchedN.tsv`."""
+
+cap_md = f"""# Fig 2 — `fig2_accuracy` caption (generated by `scripts/manuscript_figures/fig2_accuracy.py`)
 
 ## Legend
 
 {caption}
 
-**Panel a** — PBMC 10k v3: atlas-agreement precision @100 bp (y) vs detected-gene recall R_det @100 bp (x) for
-every tool; PeakATail as a connected path of operating points (shipped → both tiers, no IP → tier-1 ≥1 mol, no IP
-→ tier-1 ≥1 mol, IP → precision default = tier-1 ∩ IP-pass ∩ ≥2 distinct clip molecules). Light-grey F1_det
-isolines 0.1–0.4; dashed line = pre-registered gate P ≥ 0.50 (13 §1); dotted line + dotted isoline = original
-two-sided gate P ≥ 0.38 & F1_det > 0.261 (10 §5). Small ticks at the bottom = mean of the 3-seed gene-body-shuffled
-null for each call set. scTail is absent: not runnable on this BAM (R1 = 28 bp).
-**Panel b** — GSE104556 testis, two mice as mean ± range (both mice in the TSV); all mouse arms ran with the IP
-filter so the path has no "no IP" step. SCAPTURE is plotted for mouse 1 only, but its mouse-2 site-level run
-COMPLETED (24,076 points, P@100 0.672 — `gse104556/scapture/mouse2/score_scapture_mouse2.tsv`; 15 §3 reports
-both mice, 0.694 / 0.672); only the per-cell PASquant step failed, which site-level benchmarking does not use —
-never describe the mouse-2 run as invalid (21 §11 stale-caption fix, 2026-09-02). **Panel c** — n sites scored per call set, log
-scale. **Panel d** — PeakATail tier decomposition on the PBMC IP arm: tier-2 / tier-1 single-molecule / tier-1 ≥2
-molecules (= default), with the atlas-agreement precision @100 bp of each scored output (tier-2 {t2.P:.3f},
-tier-1 ≥1 mol {t1.P:.3f}, default {dflt.P:.3f}); {frac_single*100:.1f}% of tier-1 sites are single-molecule
-({n_single:,} / {int(t1.n):,}) and are dropped by the default (mouse {m_single['mouse1'][1]*100:.1f}% /
-{m_single['mouse2'][1]*100:.1f}%).
-Definition matters here: {VERSIONS['single_mol_note']}.
+**Panel a** — PBMC 10k v3: atlas-agreement precision @100 bp (y) against detected-gene recall R_det @100 bp (x).
+Competitors sit at their own operating points, one marker and colour per tool throughout the paper
+(`scripts/manuscript_figures/_pubstyle.py`). {curve_md}Two points are named because they are the two the user
+chooses between: the filled diamond is the **pre-registered precision default** (tier-1 ∩ IP-pass ∩ ≥2
+distinct clip molecules) and the open diamond the **≥1-molecule sensitivity arm**. Dashed line: the
+pre-registered gate P@100 ≥ 0.50 (13 §1). scTail is absent: not runnable on this BAM (R1 = 28 bp).
+**Panel b** — GSE104556 testis; competitor markers and the two named points are the mean of the two mice with
+range bars, and the curve is the two-mouse mean (per-mouse values in the audit TSVs). All mouse arms ran with the
+IP filter. SCAPTURE is plotted for mouse 1 only, but its mouse-2 site-level run COMPLETED (24,076 points, P@100
+0.672 — `gse104556/scapture/mouse2/score_scapture_mouse2.tsv`; 15 §3 reports both mice, 0.694 / 0.672); only
+the per-cell PASquant step failed, which site-level benchmarking does not use — never describe the mouse-2 run as
+invalid (21 §11 stale-caption fix, 2026-09-02).
+**Panels c and d** — the same tools compared at a **matched call budget**: each ranked call set is truncated to a
+common number of calls and re-scored (D3 rank sweep, `results/perf_gap/D3_head_to_head/`), so precision is read at
+equal N rather than at each tool's own N. The filled marker on each line is that tool's own shipped budget
+(PeakATail {D3_PA_NATIVE[HUMAN]:,} human / {D3_PA_NATIVE[MOUSE]:,} mouse 1; polyApipe {NATIVE_N[(HUMAN, 'polyApipe')]:,} /
+{NATIVE_N[(MOUSE, 'polyApipe')]:,}; scAPAtrap {NATIVE_N[(HUMAN, 'scAPAtrap')]:,} /
+{NATIVE_N[(MOUSE, 'scAPAtrap')]:,}). This is the honest head-to-head: the recall gap at each tool's own default
+(see Caveats above) is a call-budget effect, and it reverses when the budget is equalised. Panels c/d are the
+manuscript/25 record, which is a v2 analysis in both render modes of this script.
+
+{framing_md}
 
 **Atlas-independent corroboration (C2; 16 §v2, verified FIXED).** The same precision default is corroborated by
 truth that owes nothing to the atlas: 0.7647 [Wilson 95% CI 0.7608–0.7685] of its 46,524 sites (35,575) lie within
@@ -758,15 +997,21 @@ alignment-record count that was never de-duplicated, so the support thresholds a
 Fig S7 (the pre-registered trusted-novel NEGATIVE result lives there); every value:
 `results/figures/manuscript/figS7_novelfunnel_concordance.tsv` (set CAL_default_output_all).
 
-{framing_md}
+{removed_md}
 
 ## Provenance
 
-Verified: {VERSIONS['verified_short']}. Every plotted value: `results/figures/manuscript/fig2_accuracy*.tsv`.
-Sources: `{VERSIONS["gate_doc_path"]}` + `{VERSIONS["verified_table"]}` ({VERSIONS["verdict"]}) and the score TSVs listed in the `source` column of
-`results/figures/manuscript/fig2_accuracy.tsv`. Reference lines: `fig2_accuracy_reference_lines.tsv`;
-panel d: `fig2_accuracy_tiers.tsv`. Script: `scripts/manuscript_figures/fig2_accuracy.py`
-(env switch `FINAL_BENCHMARK_VERSION={VERSION}` selected this run).
+Verified: {VERSIONS['verified_short']}. Every plotted value: `results/figures/manuscript/fig2_accuracy*.tsv`
+(`fig2_accuracy.tsv` = the per-arm points with a `plotted` flag;
+{'`_sweep.tsv` = the operating curve; ' if sweep is not None else '`_sweep.tsv` is NOT written by this v1 render — the operating curve exists only for the v2 arms; '}
+`_matchedN.tsv` = panels c/d; `_tiers.tsv` = the tier table, not plotted since 2026-09-02;
+`_reference_lines.tsv` = gates, F1 isolines and per-call-set nulls, with a `plotted` flag).
+Sources: `{VERSIONS["gate_doc_path"]}` + `{VERSIONS["verified_table"]}` ({VERSIONS["verdict"]}), the score TSVs
+listed in the `source` column of `fig2_accuracy.tsv`, the shared sweep module
+`scripts/manuscript_figures/_molsweep.py`, and `results/perf_gap/D3_head_to_head/tsv/01d,01e`
+(`manuscript/25_competitive_position.md`). Script: `scripts/manuscript_figures/fig2_accuracy.py`
+(env switch `FINAL_BENCHMARK_VERSION={VERSION}` selected this run; the data-rich pre-2026-09-02 layout is
+reachable from git history — this pass changed the design, not a number).
 """
 p = FIGDIR / f"{NAME}.caption.md"; p.write_text(cap_md); print("wrote", p)
 
@@ -787,4 +1032,5 @@ except ImportError:
 
 print(f"VERSION={VERSION} code={CODE_COMMIT}: precision default P@100 "
       f"{_d.P:.4f} / {_m1.P:.4f} / {_m2.P:.4f} (n {int(_d.n):,} / {int(_m1.n):,} / {int(_m2.n):,}); "
-      f"tier-1 single-molecule {frac_single*100:.1f}%")
+      f"sensitivity arm {h1.P:.4f} / {m1_1.P:.4f} / {m2_1.P:.4f}; "
+      f"callouts per panel {callouts}")

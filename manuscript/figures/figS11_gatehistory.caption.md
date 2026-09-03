@@ -35,3 +35,20 @@ programmatic reads of the v1 score TSVs, the verified `fig2_accuracy.tsv` (v2) a
 TSV, EXPECT-asserted against 15 §1-2, 19 §1-2 and 26 R2; Stage-2 values are cited from 12.
 Every event and row: `results/figures/manuscript/figS11_gatehistory.tsv` / `figS11_gatehistory_gates.tsv`.
 Script: `scripts/manuscript_figures/figS11_gatehistory.py`; rendered at PNG 600 dpi / PDF fonttype 42.
+
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure label —
+timeline event boxes, hour ticks, key, and all three table columns — now sits at or above the 6 pt floor
+(the hour ticks were 4.8 pt). Panel titles and the prose parts of the table's arm column are sentence-cased
+through `_pubstyle.sentence_case()`, canonical identifiers preserved and the lower-case panel letters kept.
+Panel b's *(table T3 drawn)* aside left the image for the Legend above (no-loss: it is the "(b) Table T3 drawn:
+every pre-registered gate ..." sentence). Two overlaps were fixed: each verdict glyph now sits on the side of
+its marker away from its label box, where its own leader line used to run through it; and the gate group
+headers are wrapped for drawing only — the PRIME header reached the canvas edge at the larger type — while the
+audit TSV keeps each header as one unwrapped string. No panel, number or audit TSV changed; both TSVs
+regenerate byte-identical.
+
+*Flagged for the PI, not changed here (it would re-encode the verdict colours):* the PENDING neutral
+`#999999` gives low contrast twice — the `?` glyph over the light day band, and white pill text on the grey.
+The other verdict pills (PASS, FAIL, identity) use the same white-on-colour treatment, so a change would have
+to be made to the set, not to one member.

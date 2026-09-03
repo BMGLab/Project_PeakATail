@@ -76,13 +76,20 @@ from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
-matplotlib.rcParams["pdf.fonttype"] = 42
-matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.5
-matplotlib.rcParams["axes.titlesize"] = 8
-matplotlib.rcParams["axes.labelsize"] = 7.5
-matplotlib.rcParams["legend.fontsize"] = 6.0
+import re
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+
+apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
+ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
+
+
+def sc_title(s):
+    """Sentence-case a panel title (directive 6) while keeping the lower-case
+    panel letter that prefixes it: 'a   the ...' -> 'a   The ...'."""
+    m = re.match(r"^([a-z])(\s+)(.*)$", s, flags=re.S)
+    return m.group(1) + m.group(2) + sentence_case(m.group(3)) if m else sentence_case(s)
 
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 TSVDIR = WD / "results/figures/manuscript"
@@ -98,10 +105,13 @@ ARMS = {
     "A_fisher_reads": dict(label="A  fisher, count-mode reads, top-200 markers", short="fisher\nreads", color=BLUE, markers=True),
     "B_fisher_cells": dict(label="B  fisher, count-mode cells, top-200 markers", short="fisher\ncells", color=GREEN, markers=True),
     "C_nb_pairwise": dict(label="C  nb_pairwise, top-200 markers", short="nb\npairwise", color=VERM, markers=True),
-    "A0_fisher_reads_nomarker": dict(label="A0  fisher reads, no marker pre-sel.", short="fisher reads\nno marker", color=BLUE, markers=False),
-    "B0_fisher_cells_nomarker": dict(label="B0  fisher cells, no marker pre-sel. (SHIPS)", short="fisher cells\nno marker", color=GREEN, markers=False),
-    "C0_nb_pairwise_nomarker": dict(label="C0  nb_pairwise, no marker pre-sel.", short="nb pairwise\nno marker", color=VERM, markers=False),
+    "A0_fisher_reads_nomarker": dict(label="A0  fisher reads, no marker pre-sel.", short="fisher\nreads\nno marker", color=BLUE, markers=False),
+    "B0_fisher_cells_nomarker": dict(label="B0  fisher cells, no marker pre-sel. (SHIPS)", short="fisher\ncells\nno marker", color=GREEN, markers=False),
+    "C0_nb_pairwise_nomarker": dict(label="C0  nb_pairwise, no marker pre-sel.", short="nb\npairwise\nno marker", color=VERM, markers=False),
 }
+# 'short' is used only for panel a's x tick labels; the no-marker arms were re-wrapped
+# from two lines to three in the 2026-09-03 design pass so that adjacent labels clear
+# each other at the shared 6 pt floor (same words, no content dropped).
 ORDER = list(ARMS)
 PAIRS = ["ES_vs_RS", "ES_vs_SPC", "RS_vs_SPC"]
 PAIR_MARK = {"ES_vs_RS": "o", "ES_vs_SPC": "s", "RS_vs_SPC": "^"}
@@ -259,9 +269,11 @@ rt = pd.DataFrame(rt_rows)
 # ---------------------------------------------------------------------------
 # canvas: the old footer band (bottom=0.235 of a 10.6 in canvas) is gone -- the
 # legend lives in the sidecar; height shrinks by the freed space, axes keep size
-fig = plt.figure(figsize=(8.3, 8.75))
-gs = fig.add_gridspec(3, 2, left=0.115, right=0.965, top=0.958, bottom=0.064,
-                      hspace=0.56, wspace=0.30)
+# panel d grew (extra row height + wider bar spacing below): at the shared 6 pt
+# annotation floor its three per-arm count labels collided (design pass 2026-09-03)
+fig = plt.figure(figsize=(8.3, 9.0))
+gs = fig.add_gridspec(3, 2, left=0.138, right=0.965, top=0.958, bottom=0.064,
+                      height_ratios=[1.0, 1.0, 1.2], hspace=0.56, wspace=0.30)
 axA = fig.add_subplot(gs[0, 0])
 axB = fig.add_subplot(gs[0, 1])
 axC = fig.add_subplot(gs[1, 0])
@@ -274,7 +286,7 @@ def style(ax):
         ax.spines[sp].set_visible(False)
     for sp in ("left", "bottom"):
         ax.spines[sp].set_color(GRID)
-    ax.tick_params(colors=MUTED, length=2.5, labelsize=6.4)
+    ax.tick_params(colors=MUTED, length=2.5, labelsize=TYPE["tick"])
     ax.grid(True, color=GRID, lw=0.5, alpha=0.7)
     ax.set_axisbelow(True)
 
@@ -294,21 +306,21 @@ for xi, arm in enumerate(ORDER):
         kw = dict(color=d["color"]) if d["markers"] else dict(mfc="none", mec=d["color"], mew=0.9)
         axA.plot([xi + (k - 1) * 0.20], [v], PAIR_MARK[pair], ms=4.2, zorder=4, **kw)
 rate_lines(axA)
-axA.text(-0.45, 5.35, "5% nominal", fontsize=5.4, color=INK, ha="left")
-axA.text(-0.45, 7.35, "7% pre-registered gate", fontsize=5.4, color=VERM, ha="left")
+axA.text(-0.45, 5.35, "5% nominal", fontsize=ANN, color=INK, ha="left")
+axA.text(-0.45, 7.35, "7% pre-registered gate", fontsize=ANN, color=VERM, ha="left")
 axA.annotate("B0: 2.94-3.13%\nin every pair,\n0/20 runs with a\nq<0.05 hit", xy=(4.0, 3.4),
-             xytext=(3.62, 12.0), fontsize=5.6, color=INK, ha="center", linespacing=1.3,
+             xytext=(3.62, 12.0), fontsize=ANN, color=INK, ha="center", linespacing=1.3,
              arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.7))
 axA.set_xticks(range(6))
-axA.set_xticklabels([ARMS[a]["short"] for a in ORDER], fontsize=5.8)
-axA.set_ylabel("null p<0.05 per stage pair (%)")
+axA.set_xticklabels([ARMS[a]["short"] for a in ORDER], fontsize=ANN)
+axA.set_ylabel(sentence_case("null p<0.05 per stage pair (%)"))
 axA.set_ylim(0, 27.5)
-axA.set_title("a   No stage pair drives any verdict", loc="left", fontweight="bold")
+axA.set_title(sc_title("a   no stage pair drives any verdict"), loc="left", fontweight="bold")
 axA.legend([Line2D([], [], marker=PAIR_MARK[p], ls="none", ms=4.2, color=MUTED) for p in PAIRS]
            + [Line2D([], [], marker="o", ls="none", ms=4.2, color=MUTED),
               Line2D([], [], marker="o", ls="none", ms=4.2, mfc="none", mec=MUTED, mew=0.9)],
            [p.replace("_vs_", " vs ") for p in PAIRS] + ["marker pre-sel. on", "marker pre-sel. off"],
-           loc="upper right", frameon=False, fontsize=5.2, handlelength=1.0, labelspacing=0.25)
+           loc="upper right", frameon=False, fontsize=ANN, handlelength=1.0, labelspacing=0.25)
 style(axA)
 
 # ---- panel b: B0 expression strata ---------------------------------------
@@ -317,21 +329,21 @@ axB.axhspan(2.6, 4.0, color=GRID, alpha=0.55, zorder=1)
 axB.bar(xs, strata.frac_null_p_lt_05 * 100, width=0.62, facecolor="none",
         edgecolor=GREEN, lw=1.2, zorder=3)
 for x, v in zip(xs, strata.frac_null_p_lt_05 * 100):
-    axB.text(x, v + 0.12, f"{v:.1f}", ha="center", fontsize=5.6, color=INK)
+    axB.text(x, v + 0.12, f"{v:.1f}", ha="center", fontsize=ANN, color=INK)
 rate_lines(axB)
-axB.text(5.35, 5.15, "5% nominal", fontsize=5.4, color=INK, ha="right")
-axB.text(5.35, 7.15, "7% pre-registered gate", fontsize=5.4, color=VERM, ha="right")
+axB.text(5.35, 5.15, "5% nominal", fontsize=ANN, color=INK, ha="right")
+axB.text(5.35, 7.15, "7% pre-registered gate", fontsize=ANN, color=VERM, ha="right")
 # the recomputation caveat behind the band moved to the legend (sidecar); the
 # band keeps a short name on the image
 axB.text(0.02, 0.99, "band: verified range 2.6-4.0%", transform=axB.transAxes,
-         fontsize=5.4, color=MUTED, va="top")
+         fontsize=ANN, color=MUTED, va="top")
 axB.set_xticks(xs)
 axB.set_xticklabels([f"{l}\n{n/1e6:.2f}M" if n >= 1e6 else f"{l}\n{n/1000:.0f}k"
-                     for l, n in zip(SLAB, strata.n_null_tests)], fontsize=5.6)
-axB.set_xlabel("expressing cells per PAS (bin; n null tests)")
-axB.set_ylabel("B0 null p<0.05 (%)")
+                     for l, n in zip(SLAB, strata.n_null_tests)], fontsize=ANN)
+axB.set_xlabel(sentence_case("expressing cells per PAS (bin; n null tests)"))
+axB.set_ylabel(sentence_case("B0 null p<0.05 (%)"))
 axB.set_ylim(0, 8.7)
-axB.set_title("b   Calibrated arm, by expression stratum", loc="left", fontweight="bold")
+axB.set_title(sc_title("b   calibrated arm, by expression stratum"), loc="left", fontweight="bold")
 style(axB)
 
 # ---- panel c: reads vs cells count mode ----------------------------------
@@ -345,24 +357,24 @@ for gi, (glab, a_reads, a_cells) in enumerate(groups):
         kw = dict(color=col) if filled else dict(facecolor="none", edgecolor=col, lw=1.2)
         x = gi * 1.15 + (k - 0.5) * 0.42
         axC.bar(x, v, width=0.38, zorder=3, **kw)
-        axC.text(x, v + 0.4, f"{v:.1f}%", ha="center", fontsize=5.9, color=INK)
+        axC.text(x, v + 0.4, f"{v:.1f}%", ha="center", fontsize=ANN, color=INK)
         mh = float(s.mean_hits_per_null_run)
         mh_lab = "0" if mh == 0 else (f"{mh:,.0f}" if mh >= 100 else f"{mh:.1f}")
-        axC.text(x, 0.55, mh_lab, ha="center", fontsize=5.6,
+        axC.text(x, 0.55, mh_lab, ha="center", fontsize=ANN,
                  color=("white" if filled else col), zorder=4, fontweight="bold")
 rate_lines(axC)
-axC.text(1.72, 5.28, "5% nominal", fontsize=5.4, color=INK, ha="right")
-axC.text(1.72, 7.28, "7% gate", fontsize=5.4, color=VERM, ha="right")
+axC.text(1.72, 5.28, "5% nominal", fontsize=ANN, color=INK, ha="right")
+axC.text(1.72, 7.28, "7% gate", fontsize=ANN, color=VERM, ha="right")
 axC.set_xticks([0, 1.15])
-axC.set_xticklabels([g[0] for g in groups], fontsize=6.2)
-axC.set_ylabel("null p<0.05 (%)")
+axC.set_xticklabels([sentence_case(g[0]) for g in groups], fontsize=TYPE["tick"])
+axC.set_ylabel(sentence_case("null p<0.05 (%)"))
 axC.set_ylim(0, 23.5)
-axC.set_title("c   count-mode reads vs cells", loc="left", fontweight="bold")
+axC.set_title(sc_title("c   count-mode reads vs cells"), loc="left", fontweight="bold")
 axC.legend([Patch(color=BLUE), Patch(color=GREEN)],
            ["count-mode reads (pseudoreplicates UMIs within cells)", "count-mode cells"],
-           loc="upper right", frameon=False, fontsize=5.4, handlelength=1.1, labelspacing=0.3)
+           loc="upper right", frameon=False, fontsize=ANN, handlelength=1.1, labelspacing=0.3)
 axC.text(0.99, 0.74, "numbers at bar bases:\nmean false q<0.05 hits\nper null run",
-         transform=axC.transAxes, fontsize=5.4, color=MUTED, ha="right", va="top", linespacing=1.3)
+         transform=axC.transAxes, fontsize=ANN, color=MUTED, ha="right", va="top", linespacing=1.3)
 style(axC)
 axC.grid(False, axis="x")
 
@@ -376,22 +388,22 @@ for gi, arm in enumerate(["C_nb_pairwise", "C0_nb_pairwise_nomarker"]):
         kw = dict(color=VERM) if filled else dict(facecolor="none", edgecolor=VERM, lw=1.2)
         x = k * 1.1 + (gi - 0.5) * 0.42
         axE.bar(x, v, width=0.38, zorder=3, **kw)
-        axE.text(x, v + 1.3, f"{v:.1f}%", ha="center", fontsize=5.9, color=INK)
+        axE.text(x, v + 1.3, f"{v:.1f}%", ha="center", fontsize=ANN, color=INK)
 axE.set_xticks([0, 1.1])
-axE.set_xticklabels(labels_e, fontsize=6.2)
-axE.set_ylabel("% of C-arm null tests / hits")
+axE.set_xticklabels([sentence_case(s) for s in labels_e], fontsize=TYPE["tick"])
+axE.set_ylabel(sentence_case("% of C-arm null tests / hits"))
 axE.set_ylim(0, 84)
-axE.set_title("e   NB plug-in dispersion floor inflates the tail", loc="left", fontweight="bold")
+axE.set_title(sc_title("e   NB plug-in dispersion floor inflates the tail"), loc="left", fontweight="bold")
 axE.legend([Patch(color=VERM), Patch(facecolor="none", edgecolor=VERM, lw=1.2)],
            ["C  nb_pairwise, top-200 markers", "C0  nb_pairwise, no marker pre-sel."],
-           loc="upper left", frameon=False, fontsize=5.4, handlelength=1.1, labelspacing=0.3)
+           loc="upper left", frameon=False, fontsize=ANN, handlelength=1.1, labelspacing=0.3)
 # the mechanism/decision prose moved to the legend (sidecar); the two shares are
 # already printed on the bars
 style(axE)
 axE.grid(False, axis="x")
 
 # ---- panel d: permutation-calibrated q -----------------------------------
-H = 0.24
+H = 0.30   # was 0.24: the three per-arm value labels touched at the 6 pt floor
 for yi, arm in enumerate(ORDER):
     s = stats.loc[arm]
     d = ARMS[arm]
@@ -409,7 +421,7 @@ for yi, arm in enumerate(ORDER):
             if k == 2:
                 kw.update(ls=(0, (2, 1.2)))
         axD.barh(y + (1 - k) * H, v, height=H * 0.92, zorder=3, **kw)
-        axD.text(v * 1.06, y + (1 - k) * H, f"{v:,}", va="center", fontsize=5.4, color=INK)
+        axD.text(v * 1.06, y + (1 - k) * H, f"{v:,}", va="center", fontsize=ANN, color=INK)
 DSHORT = {"A_fisher_reads": "A  fisher reads\n+ top-200 markers",
           "B_fisher_cells": "B  fisher cells\n+ top-200 markers",
           "C_nb_pairwise": "C  nb_pairwise\n+ top-200 markers",
@@ -417,21 +429,22 @@ DSHORT = {"A_fisher_reads": "A  fisher reads\n+ top-200 markers",
           "B0_fisher_cells_nomarker": "B0  fisher cells\nno marker (SHIPS)",
           "C0_nb_pairwise_nomarker": "C0  nb_pairwise\nno marker pre-sel."}
 axD.set_yticks(range(len(ORDER)))
-axD.set_yticklabels([DSHORT[a] for a in reversed(ORDER)], fontsize=5.9)
+axD.set_yticklabels([DSHORT[a] for a in reversed(ORDER)], fontsize=ANN, linespacing=1.05)
 axD.set_xscale("log")
 axD.set_xlim(55, 4.2e5)
-axD.set_xlabel("significant tests in the TRUE run (log scale)")
-axD.set_title("d   Permutation-calibrated q vs nominal BH q (TRUE runs)", loc="left", fontweight="bold")
+axD.set_xlabel(sentence_case("significant tests in the TRUE run (log scale)"))
+axD.set_title(sc_title("d   permutation-calibrated q vs nominal BH q (TRUE runs)"),
+              loc="left", fontweight="bold")
 axD.legend([Patch(color=MUTED), Patch(color=MUTED, hatch="////", edgecolor="white", lw=0),
             Patch(color=MUTED, alpha=0.45)],
            ["top bar of each arm: nominal BH q<0.05",
             "middle bar: permutation-calibrated q_perm<0.05",
             "bottom bar: q_perm<0.05 AND effect floor (|Δprop|≥0.1 / |log2FC|≥1)"],
-           loc="upper right", bbox_to_anchor=(0.985, 0.70), frameon=False, fontsize=5.6,
+           loc="upper right", bbox_to_anchor=(0.985, 0.70), frameon=False, fontsize=ANN,
            handlelength=1.2, labelspacing=0.3)
 # the conservative-null / resolution / comparability prose moved to the legend
 # (sidecar); a short label keeps the B0 anomaly visible on the image
-axD.text(0.985, 0.97, "B0: q_perm ADDS hits", transform=axD.transAxes, fontsize=5.8,
+axD.text(0.985, 0.97, "B0: q_perm ADDS hits", transform=axD.transAxes, fontsize=ANN,
          color=INK, ha="right", va="top", fontweight="bold")
 style(axD)
 axD.grid(False, axis="y")
@@ -541,6 +554,17 @@ Sources: `manuscript/14_switch_calibration_v2.md` (SOUND); `results/figures/manu
 Every plotted value: `results/figures/manuscript/{NAME}_*.tsv` (source column per row).
 Script: `scripts/manuscript_figures/{NAME}.py` (env `FIGS9_REUSE_STRATA=1` reuses an existing strata TSV;
 EXPECT asserts run either way). Rendered at PNG 600 dpi / PDF fonttype 42.
+"""
+cap_md += """
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure
+annotation, key entry and tick label now sits at or above the 6 pt floor. Axis labels, panel titles and prose
+tick labels are sentence-cased through `_pubstyle.sentence_case()`, canonical identifiers preserved and the
+lower-case panel letters kept. The figure carried no on-image subtitle to move. Three collisions that the
+larger type exposed were fixed by geometry, never by dropping content: panel **d** gained row height and its
+per-arm bar spacing went 0.24 -> 0.30 so its three count labels clear each other; panel **a**'s no-marker arm
+labels are wrapped on three lines instead of two (same words); and the left margin was widened for panel d's
+arm labels. No panel, number or audit TSV changed; all six TSVs regenerate byte-identical.
 """
 p = FIGDIR / f"{NAME}.caption.md"
 p.write_text(cap_md)

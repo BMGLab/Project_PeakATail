@@ -59,10 +59,21 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-matplotlib.rcParams["pdf.fonttype"] = 42
-matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.5
+import re
+import sys
+import textwrap
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+
+apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
+ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
+
+
+def sc_title(s):
+    """Sentence-case a panel title (directive 6) while keeping the lower-case
+    panel letter that prefixes it: 'a   the ...' -> 'a   The ...'."""
+    m = re.match(r"^([a-z])(\s+)(.*)$", s, flags=re.S)
+    return m.group(1) + m.group(2) + sentence_case(m.group(3)) if m else sentence_case(s)
 
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 BT = WD / "results/benchmark_tools"
@@ -228,22 +239,23 @@ axB = fig.add_subplot(gsB[0])
 axA.set_xlim(-0.05, 5.05)
 axA.set_ylim(-4.6, 4.6)
 axA.axis("off")
-axA.set_title("a   The pre-registration timeline — every gate fixed before the number it judges",
-              loc="left", fontweight="bold", fontsize=7.8)
+axA.set_title(sc_title("a   the pre-registration timeline — every gate fixed "
+                       "before the number it judges"),
+              loc="left", fontweight="bold", fontsize=TYPE["panel_title"])
 
 # day bands + labels
 DAYS = ["Aug 19", "Aug 20", "Aug 21", "Aug 22", "Aug 23"]
 for d in range(5):
     if d % 2 == 0:
         axA.axvspan(d, d + 1, color="#F0F4F6", zorder=0)
-    axA.text(d + 0.5, -4.45, f"{DAYS[d]}, 2026", ha="center", va="bottom", fontsize=6.6,
+    axA.text(d + 0.5, -4.45, f"{DAYS[d]}, 2026", ha="center", va="bottom", fontsize=TYPE["tick"],
              color=MUTED, fontweight="bold")
 axA.axhline(0, color=INK, lw=1.2, zorder=2)
 
 # hour ticks on Aug 21 (the crowded day)
 for h in (6, 12, 18):
     axA.plot([2 + h / 24] * 2, [-0.10, 0.10], color=MUTED, lw=0.6, zorder=2)
-    axA.text(2 + h / 24, 0.14, f"{h:02d}h", ha="center", va="bottom", fontsize=4.8, color=MUTED)
+    axA.text(2 + h / 24, 0.14, f"{h:02d}h", ha="center", va="bottom", fontsize=ANN, color=MUTED)
 
 tl_rows = []
 for ev in EVENTS:
@@ -263,21 +275,25 @@ for ev in EVENTS:
     # each in its own colour -- the two gates genuinely disagree by design)
     gy = -0.42 if by < 0 else 0.30
     gva = "top" if by < 0 else "bottom"
+    # glyphs sit on the side AWAY from the label box: centred on the marker they were
+    # crossed by their own leader line (design pass 2026-09-03)
+    gside = -0.09 if bx >= anchor else 0.09
     if ev["verdict"] == "PASS+FAIL":
-        axA.text(anchor - 0.035, gy, "✓", ha="right", va=gva, fontsize=7.5, color=C_PASS,
-                 fontweight="bold", zorder=6)
-        axA.text(anchor + 0.035, gy, "✗", ha="left", va=gva, fontsize=7.5, color=C_FAIL,
-                 fontweight="bold", zorder=6)
+        axA.text(anchor + gside - 0.035, gy, "✓", ha="right", va=gva, fontsize=7.5,
+                 color=C_PASS, fontweight="bold", zorder=6)
+        axA.text(anchor + gside + 0.035, gy, "✗", ha="left", va=gva, fontsize=7.5,
+                 color=C_FAIL, fontweight="bold", zorder=6)
     else:
         glyph = {"PASS": "✓", "FAIL": "✗", "PENDING": "?", "FAIL (identity)": "=0", "": ""}[ev["verdict"]]
         if glyph:
-            axA.text(anchor, gy, glyph, ha="center", va=gva, fontsize=7.5, color=vc,
-                     fontweight="bold", zorder=6)
+            gx = anchor + (-0.055 if bx >= anchor else 0.055)
+            axA.text(gx, gy, glyph, ha="right" if bx >= anchor else "left", va=gva,
+                     fontsize=7.5, color=vc, fontweight="bold", zorder=6)
     # leader line + label box
     ytop = by - 0.55 * np.sign(by) * 0  # box center
     axA.plot([anchor, bx], [0.22 * np.sign(by), by - np.sign(by) * 0.72], color=c, lw=0.6,
              alpha=0.75, zorder=3)
-    axA.text(bx, by, ev["text"], ha="center", va="center", fontsize=5.4, color=INK,
+    axA.text(bx, by, ev["text"], ha="center", va="center", fontsize=ANN, color=INK,
              linespacing=1.32, zorder=7,
              bbox=dict(boxstyle="round,pad=0.42", facecolor=BOXFACE, edgecolor=vc if ev["verdict"] else c,
                        linewidth=1.0))
@@ -287,13 +303,13 @@ for ev in EVENTS:
 
 # tiny legend
 axA.plot(0.06, -2.9, marker="D", ms=5.5, mfc=C_PREREG, mec=C_PREREG, ls="none")
-axA.text(0.12, -2.9, "pre-registration", fontsize=5.6, color=INK, va="center")
+axA.text(0.12, -2.9, sentence_case("pre-registration"), fontsize=ANN, color=INK, va="center")
 axA.add_patch(matplotlib.patches.Rectangle((0.035, -3.35), 0.05, 0.16, facecolor=INK))
-axA.text(0.12, -3.27, "run (span)", fontsize=5.6, color=INK, va="center")
+axA.text(0.12, -3.27, sentence_case("run (span)"), fontsize=ANN, color=INK, va="center")
 axA.text(0.045, -3.68, "✓", fontsize=7, color=C_PASS, fontweight="bold", va="center")
-axA.text(0.12, -3.68, "gate PASS", fontsize=5.6, color=INK, va="center")
+axA.text(0.12, -3.68, sentence_case("gate PASS"), fontsize=ANN, color=INK, va="center")
 axA.text(0.045, -4.06, "✗", fontsize=7, color=C_FAIL, fontweight="bold", va="center")
-axA.text(0.12, -4.06, "gate FAIL", fontsize=5.6, color=INK, va="center")
+axA.text(0.12, -4.06, sentence_case("gate FAIL"), fontsize=ANN, color=INK, va="center")
 
 # ---------------------------------------------------------------------------
 # panel b: the gate table (T3 drawn) -- every gate, every arm, every verdict
@@ -301,8 +317,10 @@ axA.text(0.12, -4.06, "gate FAIL", fontsize=5.6, color=INK, va="center")
 axB.set_xlim(0, 1)
 axB.set_ylim(0, 1)
 axB.axis("off")
-axB.set_title("b   Every pre-registered gate and every outcome (table T3 drawn)",
-              loc="left", fontweight="bold", fontsize=7.8)
+# the '(table T3 drawn)' provenance aside moved to the Legend sidecar (directive 2,
+# no-loss: it is the '(b) Table T3 drawn: every pre-registered gate ...' sentence)
+axB.set_title(sc_title("b   every pre-registered gate and every outcome"),
+              loc="left", fontweight="bold", fontsize=TYPE["panel_title"])
 
 GATES = [
     ("ORIGINAL two-sided gate — P@100 ≥ 0.38 AND F1_det > 0.261, PBMC ≥1-molecule output "
@@ -356,35 +374,49 @@ for g, (gtitle, rows) in enumerate(GATES):
     for r in rows:
         row_specs.append(("r", r))
 
-H_G, H_R = 0.062, 0.082  # heights (axes fraction) for group header / data row
-total = sum(H_G if k == "g" else H_R for k, _ in row_specs)
+# group headers are wrapped for DRAWING only (the audit TSV keeps the full string):
+# the longest ran past the canvas edge at the shared 6 pt floor (design pass 2026-09-03)
+GHEAD_WRAP = 148
+H_G, H_R = 0.062, 0.082  # heights (axes fraction) for a 1-line group header / data row
+H_G2 = 0.088             # ... and for a header that wraps to two lines
+
+
+def _gh(payload):
+    return textwrap.fill(payload, GHEAD_WRAP)
+
+
+def _hg(payload):
+    return H_G if _gh(payload).count("\n") == 0 else H_G2
+
+
+total = sum(_hg(p) if k == "g" else H_R for k, p in row_specs)
 scale = 0.995 / total
 y = 1.0
 gate_rows = []
 for kind, payload in row_specs:
-    h = (H_G if kind == "g" else H_R) * scale
+    h = (_hg(payload) if kind == "g" else H_R) * scale
     y0 = y - h
     if kind == "g":
         axB.add_patch(matplotlib.patches.Rectangle((0, y0), 1.0, h, facecolor="#3D5A6C",
                       edgecolor="none", zorder=1))
-        axB.text(0.006, y0 + h / 2, payload, ha="left", va="center", fontsize=5.9,
-                 color="white", fontweight="bold", zorder=2)
+        axB.text(0.006, y0 + h / 2, _gh(payload), ha="left", va="center", fontsize=ANN,
+                 color="white", fontweight="bold", zorder=2, linespacing=1.25)
         current_gate = payload
     else:
         arm, values, verdict, src = payload
         axB.add_patch(matplotlib.patches.Rectangle((0, y0), 1.0, h, facecolor="white",
                       edgecolor="none", zorder=1))
         axB.axhline(y0, color=GRID, lw=0.5, zorder=2)
-        axB.text(0.006, y0 + h / 2, arm, ha="left", va="center", fontsize=5.8, color=INK,
-                 zorder=3, linespacing=1.25)
-        axB.text(0.290, y0 + h / 2, values, ha="left", va="center", fontsize=5.7, color=INK,
+        axB.text(0.006, y0 + h / 2, sentence_case(arm), ha="left", va="center", fontsize=ANN,
+                 color=INK, zorder=3, linespacing=1.25)
+        axB.text(0.290, y0 + h / 2, values, ha="left", va="center", fontsize=ANN, color=INK,
                  zorder=3, linespacing=1.3)
         vc = VERD_COLOR.get(verdict.split()[0], C_FAIL) if verdict not in VERD_COLOR else VERD_COLOR[verdict]
         if verdict.startswith("F1 pass"):
             vc = C_FAIL
         axB.add_patch(matplotlib.patches.FancyBboxPatch((0.872, y0 + h / 2 - 0.016), 0.120, 0.032,
                       boxstyle="round,pad=0.004", facecolor=vc, edgecolor="none", zorder=3))
-        axB.text(0.932, y0 + h / 2, verdict, ha="center", va="center", fontsize=5.6,
+        axB.text(0.932, y0 + h / 2, verdict, ha="center", va="center", fontsize=ANN,
                  color="white", fontweight="bold", zorder=4)
         gate_rows.append(dict(gate=current_gate, evaluated_on=arm,
                               values=values.replace("\n", " "), verdict=verdict, source=src))
@@ -473,6 +505,24 @@ programmatic reads of the v1 score TSVs, the verified `fig2_accuracy.tsv` (v2) a
 TSV, EXPECT-asserted against 15 §1-2, 19 §1-2 and 26 R2; Stage-2 values are cited from 12.
 Every event and row: `results/figures/manuscript/figS11_gatehistory.tsv` / `figS11_gatehistory_gates.tsv`.
 Script: `scripts/manuscript_figures/figS11_gatehistory.py`; rendered at PNG 600 dpi / PDF fonttype 42.
+"""
+cap_md += """
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure label —
+timeline event boxes, hour ticks, key, and all three table columns — now sits at or above the 6 pt floor
+(the hour ticks were 4.8 pt). Panel titles and the prose parts of the table's arm column are sentence-cased
+through `_pubstyle.sentence_case()`, canonical identifiers preserved and the lower-case panel letters kept.
+Panel b's *(table T3 drawn)* aside left the image for the Legend above (no-loss: it is the \"(b) Table T3 drawn:
+every pre-registered gate ...\" sentence). Two overlaps were fixed: each verdict glyph now sits on the side of
+its marker away from its label box, where its own leader line used to run through it; and the gate group
+headers are wrapped for drawing only — the PRIME header reached the canvas edge at the larger type — while the
+audit TSV keeps each header as one unwrapped string. No panel, number or audit TSV changed; both TSVs
+regenerate byte-identical.
+
+*Flagged for the PI, not changed here (it would re-encode the verdict colours):* the PENDING neutral
+`#999999` gives low contrast twice — the `?` glyph over the light day band, and white pill text on the grey.
+The other verdict pills (PASS, FAIL, identity) use the same white-on-colour treatment, so a change would have
+to be made to the set, not to one member.
 """
 p = FIGDIR / f"{NAME}.caption.md"; p.write_text(cap_md); print("wrote", p)
 

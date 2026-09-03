@@ -42,3 +42,11 @@ Figure S3 | Why the benchmark is built this way: curated points, one reconciled 
 Sources: `results/figures/manuscript/benchmark_curated.tsv (verified SOUND, 07 §2)`; `fig2_accuracy.tsv` (19 FIXED, v2 chain); density `computed 2026-09-02 from data/references/atlases/polyasite2.GRCh38.96.rep_sites.bed6 (569,005 sites, provenance md5-logged in atlases/README.md) + chrom.sizes.nochr.filt + results/benchmark_tools/shared_refs/genebodies.merged.bed -- precondition (ii) recompute; dump-derived densities forbidden (05 R5)`;
 retired-regime constants `manuscript/07_curated_benchmark_report.md §1 (verified SOUND; retired-regime constant)` and `manuscript/05_figure_index.md R4/R5 (FIXED records; retired-regime constant, gap 7)`.
 Every plotted value: `results/figures/manuscript/figS3_nulldesign.tsv` and `figS3_nulldesign_density.tsv`.
+
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure annotation
+sits at or above the 6 pt floor. Axis labels, panel titles and prose tick labels are sentence-cased through
+`_pubstyle.sentence_case()` with canonical identifiers preserved and the lower-case panel letters kept. Panel b's
+parenthetical subtitle line *(recomputed here; dump densities retired)* left the image for the Legend above
+(no-loss: it is the "(b) Reference density recomputed on the curated point reference (dump densities retired)"
+sentence). No panel, number or audit TSV changed; both TSVs regenerate byte-identical.

@@ -20,10 +20,10 @@ Values and verbatim caveats: `results/figures/manuscript/figS8_compute*.tsv`.
 ## Provenance
 
 **Registry rows carried verbatim (`fig3_tradeoff_compute.tsv` note column):**
-- **PeakATail v1** (peakatail): final Stage-2 clip-seeded arm WITHOUT --ip-filter, code 4efeb125, --threads 16; paired with the v2 no-IP arm below so the Stage-1d arrow is like for like — `results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final/runtime_mem.txt`
-- **PeakATail v2** (peakatail): code 9dfdefb, clip-seeded arm WITHOUT --ip-filter, --threads 16, measured with all four arms running concurrently; this is the 34:37 / 12.53 GB pair quoted in 19 sec.3. The IP-filtered default arm used in panels a-c was cheaper on both codes (audit rows below) — `results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2/runtime_mem.txt`
-- **PeakATail v2 uncontended** (peakatail_uncontended): single uncontended run quoted in 19 sec.3 (peak RSS not re-measured; v2 value reused) — `manuscript/19_final_gate_v2.md section 3`
-- **PeakATail shipped** (shipped): pre-clip-seeding caller, v1-era benchmark run — `results/figures/manuscript/benchmark_headtohead.tsv (verified, manuscript/05)`
+- **PeakATail v1** (not_plotted_history): final Stage-2 clip-seeded arm WITHOUT --ip-filter, code 4efeb125, --threads 16; paired with the v2 no-IP arm below so the Stage-1d comparison is like for like. NOT PLOTTED since 2026-09-02 -- see Fig S8 / Fig S12 — `results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final/runtime_mem.txt`
+- **PeakATail** (peakatail): code 9dfdefb, clip-seeded arm WITHOUT --ip-filter, --threads 16, measured with all four arms running concurrently; this is the 34:37 / 12.53 GB pair quoted in 19 sec.3. The IP-filtered default arm used in panels a-c was cheaper on both codes (audit rows below) — `results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2/runtime_mem.txt`
+- **PeakATail v2 uncontended** (not_plotted_caveat): single uncontended run quoted in 19 sec.3 (peak RSS not re-measured; v2 value reused). NOT PLOTTED since 2026-09-02 -- the concurrency caveat is a Legend sentence — `manuscript/19_final_gate_v2.md section 3`
+- **PeakATail shipped** (not_plotted_history): pre-clip-seeding caller, v1-era benchmark run. NOT PLOTTED since 2026-09-02 — `results/figures/manuscript/benchmark_headtohead.tsv (verified, manuscript/05)`
 - **PeakATail v1 IP arm** (audit_only): AUDIT ROW, not plotted: the IP-filtered v1 arm (the v1 default call set); matches 15 sec.5 (3:44:37 / 239.5 GB) — `results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_ipfilt/runtime_mem.txt`
 - **PeakATail v2 IP arm** (audit_only): AUDIT ROW, not plotted: the IP-filtered v2 arm whose calls are in panels a-c; the 32:59 / 11.12 GB pair of 19 sec.3, also concurrent — `results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/runtime_mem.txt`
 - **polyApipe** (competitor): competitor's own verified run on the same box (v1-era benchmark). single clean run, exit 0 — `results/figures/manuscript/benchmark_headtohead.tsv (verified, manuscript/05) -> its RUNTIME registry entry, sourced from the tool's own run log`
@@ -41,3 +41,19 @@ uncontended after the fix; mouse1 3.68 GB / 9m03s).
 
 Sources: every plotted value in `results/figures/manuscript/figS8_compute*.tsv` with a source column;
 panels a/b re-read `fig3_tradeoff_compute.tsv` (verified) rather than retyping it.
+
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure annotation
+sits at or above the 6 pt floor. Axis labels, panel titles and prose tick labels are sentence-cased through
+`_pubstyle.sentence_case()`, canonical identifiers preserved and the lower-case panel letters kept. Two title
+qualifiers left the image for the Legend above: panel c's *(wall, with peak RSS)* — no-loss, the "(c) ... fell
+9:06:26 → 1:06:26 (8.2×) ... with peak RSS 23.1/22.4 → 3.07/3.65 GB" sentence carries it — and panel d's
+*(15 §5 addendum)* citation, which is the panel-d source line in this Provenance. Overlaps fixed: panel b's
+150 GB stop-signal label now sits beside its reference line instead of straddling it, panel b's bar values
+carry an opaque backing so that line passes behind them, and panel d's axis label is set on two lines (one
+line overran the canvas edge). Panel d and the confirm TSV regenerate byte-identical; every plotted value in
+`figS8_compute.tsv` is unchanged — only its `registry_note_verbatim` column moved, because it travels verbatim
+from `fig3_tradeoff_compute.tsv`, which the main-figure pass re-noted on 2026-09-02. That same pass renamed the
+registry's current-version row `PeakATail v2` → `PeakATail` (directive 4: no v1→v2 history in the mains); this
+script resolves the renamed row through `REG_ALIAS`, and the unchanged EXPECT asserts (34:37.49 / 12.53 GB)
+still pin it.

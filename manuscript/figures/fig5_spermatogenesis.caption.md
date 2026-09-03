@@ -18,23 +18,42 @@ medians are not comparable across stages). Medians fall at every step in both mi
 (+0.0018 → −0.0036 → −0.0114 and +0.0031 → −0.0014 → −0.0081); Cliff's δ SPC vs RS 0.26 / 0.32,
 RS vs ES 0.41 / 0.46, SPC vs ES 0.55 / 0.63 against 20-shuffle null ranges of [−0.10, +0.11] and
 [−0.08, +0.07]. Violin = all cells, thick bar = IQR, whisker = 5–95th percentile, open marker =
-median; δ = Cliff's delta (earlier stage more distal). **Panel c** — reliability payload. Left: PAS called switching at q < 0.05 in **both**
+median; δ = Cliff's delta (earlier stage more distal). **Panel c** — PAS called switching at q < 0.05 in **both**
 mice with the same sign of Δ proportion (arm B0: `fisher --count-mode cells --marker-top-n 0`), per
 stage pair — 11,219 / 6,070 / 9,480 of 36,840 / 35,668 / 35,382 coordinate-matched PAS (gene + strand,
 ≤ 100 bp, greedy 1:1), sign agreement 99.7–99.8%, 3.25–5.05× the independence expectation (hollow bars;
 the 10-draw PAS-shuffle mean agrees with the analytic value to within 0.8%), and **0 replicated in all 15 null
 pairings** (▼). TRUE switch hits over the three pairs: 50,354 / 52,111; label-shuffle null 3.2% / 3.2%
-at p < 0.05 with **0 q < 0.05 hits in all 30 null BH families**. Right: the per-gene effect
+at p < 0.05 with **0 q < 0.05 hits in all 30 null BH families**. **Panel d** — the per-gene effect
 Δ PDUI (ES − SPC) in mouse 1 vs mouse 2 over the 923 genes guarded in both — Spearman ρ = **0.641**
 (Pearson r = 0.842) against a gene-correspondence null of 0.004 ± 0.033 (200 permutations, max |ρ|
 0.088; strip below the scatter). 339 genes (36.7%) shorten in both mice, 273 (29.6%) lengthen in both,
-253 are strictly discordant, 58 have Δ exactly 0 in one mouse. **Panel d (boxed — NEGATIVE findings,
-not claim carriers)** — left: the **across-gene UMI-weighted** per-cell distal index rises at RS → ES
+253 are strictly discordant, 58 have Δ exactly 0 in one mouse. **Panels e and f (boxed — negative results, not claim
+carriers)** — **e**: the **across-gene UMI-weighted** per-cell distal index rises at RS → ES
 in both mice (0.587 → 0.572 → 0.627 and 0.640 → 0.636 → 0.672; Cliff δ RS vs ES −0.93 / −0.87), because
 protamine transcripts alone carry 25.2% (mouse 1) / 14.5% (mouse 2) of the guarded ES UMIs at ceiling
-PDUI. Right: of the 16 genes of the 27-gene curated literature panel measurable in both mice, only
+PDUI. **f**: of the 16 genes of the 27-gene curated literature panel measurable in both mice, only
 **4 shorten in both** (Prm3, Ybx2, Ppp1cc, Nsun7), **5 lengthen in both** (Prm1, Tnp2, Odf1, Spata19,
 Smcp), 5 are discordant and 2 uninformative — the identical classification to v1.
+
+**Moved off the image at the 2026-09-02 publication design pass (no-loss rule; every sentence below used to be
+printed beside a mark and is now here, with its values unchanged in the audit TSVs).** Panel a keeps the two TRUE
+fractions, their z against the shuffle null for the shortening direction, and the binomial p of the excess; the
+z for *monotone lengthening*, the null means and standard deviations, the TRUE/null ratios and the wording of the
+1/6 chance line are legend-only (values above and in `fig5_spermatogenesis{,_null_shuffles}.tsv`). Panel b keeps
+one Cliff's δ per mouse for SPC vs ES with the shuffle-null bound; the per-step δ for SPC vs RS and RS vs ES, the
+per-stage medians, and the violin/IQR/whisker glyph key are legend-only
+(`fig5_spermatogenesis_percell_resid.tsv`). Panel c keeps the replicated counts and the enrichment over
+independence; the 99.7–99.8% sign agreement, the PAS-shuffle cross-check and the coordinate-matched denominators
+are legend-only (`fig5_spermatogenesis_replication.tsv`). Panel d keeps ρ, n and the two same-direction quadrant
+counts; the discordant and Δ = 0 counts, Pearson r, and the null-band construction (200 permutations, ±1 sd and
+full range) are legend-only (`fig5_spermatogenesis_gene_scatter.tsv`). Panel e keeps one reversal callout; the six
+per-stage index values are legend-only. Panel f keeps the four category counts; the 16 gene symbols are named
+above and in `fig5_spermatogenesis_negatives.tsv` — a list of identifiers is reference data, not a chart. Panel
+letters: the working render lettered these a, b, c(left/right) and d(left/right); each plot now carries its own
+letter so that one panel makes one point, and the two `panel` keys in
+`fig5_spermatogenesis_negatives.tsv` follow (`d1_*`/`d2_*` → `e_*`/`f_*`). Every numeric column in every audit
+TSV is unchanged.
 
 **Cautions, binding on any use of this figure (they are part of the legend and must travel with it).**
 - **Monotone LENGTHENING is also above its null** (z 2.8 / 2.1). The label shuffle destroys ordered
@@ -81,7 +100,7 @@ Smcp), 5 are discordant and 2 uninformative — the identical classification to 
   fraction of p-values at exactly 1), so the TRUE hit counts are **not** to be read as "N true switches";
   only 5 label shuffles per mouse there (20 for the PDUI arm; pooled null p<0.05 3.169% / 3.156%).
   Cross-mouse PAS matching is coordinate-based, so only the matched subset (~60% of tested PAS) can
-  replicate — the denominator is on the figure.
+  replicate — the matched-PAS denominators are in this legend, not on the image.
 - **The ≥ 50-UMI depth guard** keeps 1,548 / 1,200 of ~10,500 genes with a PAS pair; the surviving set is
   biased toward highly expressed genes. The shuffle null is computed on the *same* guarded set, so the
   comparison is internally valid, but the gene set is not a random sample of the transcriptome.
@@ -135,11 +154,18 @@ figure states that claim and no stronger one; the v1 body is the labelled compar
 `summary/gene_replication_summary.json`, `summary/gene_literature_panel.tsv`. Audit TSVs (every
 plotted value):
 `results/figures/manuscript/fig5_spermatogenesis{,_null_shuffles,_percell_resid,_percell_values,_replication,_gene_scatter,_negatives,_reference_lines}.tsv`.
-Palette: Okabe-Ito (#0072B2 #009E73 #D55E00 #CC79A7 #E69F00 #56B4E9 #999999); every series also carries a
-marker or fill style, so nothing depends on hue alone. PNG 600 dpi, PDF vector with subsetted TrueType
-(fonttype 42, no Type 3). The on-figure title, subtitle and cautions footer of the working-phase render
-moved into this Legend at the 2026-09-02 surgery pass; the image keeps panel letters, short titles,
-axis labels and data annotations only.
+Design: the shared publication style `scripts/manuscript_figures/_pubstyle.py` (PAL / TOOL_STYLE / TYPE /
+`apply_rc()` / `sentence_case()`), so Fig 1–6 read as one system. Colour carries the DIRECTION of the per-gene
+effect only (shortening `PAL['peakatail']` / lengthening `PAL['accent']`); stage is carried by position on the x
+axis and mouse by marker and line style, so no channel is spent twice and nothing depends on hue alone. Six
+checks re-validated 2026-09-02 with `validate_palette.js` (light mode): lightness band PASS, chroma floor PASS,
+CVD separation ΔE 29.2 protan / 30.9 tritan PASS, normal-vision floor 36.2 PASS. Canvas 7.09 in (180 mm) at
+final print width; PNG 600 dpi, PDF vector with subsetted TrueType (fonttype 42, no Type 3). The render passes
+an automated text-overlap, minimum-type-size (6 pt floor) and off-canvas audit plus the 8-px edge check; the
+page is saved at that fixed canvas (no tight bounding box), so an overflowing artist fails the audit instead of
+quietly widening the figure. The on-figure title,
+subtitle and cautions footer of the working-phase render moved into this Legend at the 2026-09-02 surgery pass;
+the image keeps panel letters, short titles, axis labels and at most three short data callouts per panel.
 
 **Note for whoever quotes the residual test.** The on-disk null for the per-cell residual Cliff's δ is
 the **20-shuffle** column `cell_cliffs_resid_SPC_ES`, whose empirical p floor is 1/21 ≈ 0.048; the

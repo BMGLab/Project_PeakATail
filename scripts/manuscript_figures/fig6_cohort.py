@@ -27,21 +27,27 @@ pre-registration, the cohort label counts, the top-30 gene-name audit) -- those
 are cited to 20 on the figure.  Consistency asserts below check the headline
 counts against the verified table in 20.
 
-PANELS
+PANELS (2026-09-02 publication design pass: four panels, one message each; the
+effect-size histogram folded into the caption Legend, see RETIRED below)
   a  Replication funnel, real vs 10 patient-wise label-shuffle nulls on ONE log
      axis: tested (pair, PAS) hypotheses -> called BH q<0.05 in >=1 patient ->
      called in >=2 patients (any direction) -> replicated (>=2 patients, same
      direction, any opposite-direction patient vetoes) -> + effect floor
      |dprop| >= 0.1.  The null replicates nothing at any stage past the first.
-  b  Per cell-type pair (top 16 of the 47 pairs tested in >=2 patients):
+  b  Per cell-type pair (top 12 of the 47 pairs tested in >=2 patients):
      replicated (pair, PAS) at K=2 with the K=3 subset overlaid; patients tested
      annotated on each row.
-  c  Distribution of the consensus |delta proportion| of the replicated
-     switches (v2: 15,942), with the pre-registered 0.1 effect floor marked.
-  d  Patient support: how many patients back each replicated switch.  The K=3
+  c  Patient support: how many patients back each replicated switch.  The K=3
      sensitivity set is exactly the replication_count >= 3 tail (v2: 5,438).
-  e  Honesty panel: genomic context of the distinct replicated PAS (v2: 5,951;
+  d  Honesty panel: genomic context of the distinct replicated PAS (v2: 5,951;
      recomputed here from the GTF, exclusive partition) + the gene-name caveat.
+
+RETIRED, NOT PLOTTED SINCE 2026-09-02 (record kept)
+  the distribution of the consensus |delta proportion| of the replicated
+  switches with the pre-registered 0.1 effect floor.  Its message is three
+  numbers (median, mean, and how many the floor removes), which the caption
+  Legend now carries; fig6_cohort_effects.tsv is still written and the values
+  are asserted in a sidecar-generation check before the caption is composed.
 
 CRITICAL (20 disclosure 1) -- NO ranked list of named top genes is drawn.  On
 the v2 chain 12 of the top-30 gene-level rows (40%) name a gene whose 3' UTR
@@ -56,10 +62,10 @@ OUTPUTS
                                                 binding cautions -- + '## Provenance')
   results/figures/manuscript/fig6_cohort_funnel.tsv          (panel a)
   results/figures/manuscript/fig6_cohort_per_pair.tsv        (panel b, all 59 pairs)
-  results/figures/manuscript/fig6_cohort_effects.tsv         (panel c histogram)
-  results/figures/manuscript/fig6_cohort_support.tsv         (panel d)
-  results/figures/manuscript/fig6_cohort_context.tsv         (panel e, per-PAS)
-  results/figures/manuscript/fig6_cohort_context_summary.tsv (panel e, plotted values)
+  results/figures/manuscript/fig6_cohort_effects.tsv         (RETIRED panel, record only)
+  results/figures/manuscript/fig6_cohort_support.tsv         (panel c)
+  results/figures/manuscript/fig6_cohort_context.tsv         (panel d, per-PAS)
+  results/figures/manuscript/fig6_cohort_context_summary.tsv (panel d, plotted values)
   results/figures/manuscript/fig6_cohort_cohort.tsv          (cohort facts on the figure)
   results/figures/manuscript/fig6_cohort_own3utr_genes.tsv   (AUDIT ONLY, not plotted)
 
@@ -69,6 +75,7 @@ Run:  export LC_ALL=C; python3 scripts/manuscript_figures/fig6_cohort.py
 import collections
 import json
 import os
+import sys
 import textwrap
 from pathlib import Path
 
@@ -81,16 +88,15 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
+from matplotlib.transforms import offset_copy
 import numpy as np
 import pandas as pd
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+
 matplotlib.rcParams["pdf.fonttype"] = 42
 matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.5
-matplotlib.rcParams["axes.titlesize"] = 8
-matplotlib.rcParams["axes.labelsize"] = 7.5
-matplotlib.rcParams["legend.fontsize"] = 6.3
 
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 OUTDIR = WD / "results/figures/manuscript"
@@ -99,10 +105,17 @@ NAME = "fig6_cohort"
 OUTDIR.mkdir(parents=True, exist_ok=True)
 FIGDIR.mkdir(parents=True, exist_ok=True)
 
-INK, MUTED, GRID = "#1B2429", "#5A6B73", "#D8E0E3"
-# Okabe-Ito colourblind-safe palette (manuscript/figures/README.md convention).
-BLUE, GREEN, VERM = "#0072B2", "#009E73", "#D55E00"
-PINK, ORANGE, SKY, GREY = "#CC79A7", "#E69F00", "#56B4E9", "#999999"
+# Shared publication style (DESIGN_DIRECTIVES.md item 1) -- imported, never
+# redefined here, so Fig 1-6 read as one system.  Real vs null is blue vs the
+# reserved neutral; K=2 / K=3 is one hue light->dark (an ordinal pair, validated
+# with --ordinal: monotone lightness, gap >= 0.06, single hue).  Panel d's five
+# genomic-context classes take the categorical slots peakatail / bad / light /
+# accent / alt: all-pairs six-checks PASS 2026-09-02 (worst CVD deltaE 9.6
+# protan / 8.5 tritan, normal-vision floor 15.6), with every class also named
+# and counted in the key, so nothing depends on hue alone.
+INK, MUTED, GRID = PAL["ink"], PAL["muted"], PAL["grid"]
+BLUE, GREEN, VERM = PAL["peakatail"], PAL["good"], PAL["bad"]
+PINK, ORANGE, SKY, GREY = PAL["alt"], PAL["accent"], PAL["light"], PAL["neutral"]
 
 FDR = 0.05
 FLOOR = 0.10
@@ -390,6 +403,19 @@ FUNNEL_STAGES = [
     (f"+ effect floor |Δproportion| ≥ {FLOOR:g}", FUN["replicated_floor"], 0.0, "0 in all 10"),
 ]
 
+# Display-only stage labels for the panel-a y axis (2026-09-02 design pass:
+# sentence case, one line each, the discordant-veto clause in the Legend).
+# FUNNEL_STAGES itself is untouched -- it is what fig6_cohort_funnel.tsv writes,
+# so that audit TSV regenerates byte-identical.
+FUNNEL_DISPLAY = [sentence_case(t) for t in (      # directive 6, applied at the source
+    "tested (pair, PAS) hypotheses",
+    f"called at BH q < {FDR:g} in ≥ 1 patient",
+    f"called in ≥ {K_PRIMARY} patients, any direction",
+    f"replicated: same direction in ≥ {K_PRIMARY} patients",
+    f"also over the effect floor |Δproportion| ≥ {FLOOR:g}",
+)]
+assert len(FUNNEL_DISPLAY) == len(FUNNEL_STAGES)
+
 # ---------------------------------------------------------------------------
 # 3. panel b -- per cell-type pair, K=2 with the K=3 subset
 # ---------------------------------------------------------------------------
@@ -410,7 +436,7 @@ N_PAIRS_WITH_HITS = int((pairs.replicated_q_K2 > 0).sum())
 N_SINGLE_PATIENT_PAIRS = N_PAIRS - N_MULTI_PAIRS
 if EXPECT:
     assert N_PAIRS_WITH_HITS == EXPECT["n_pairs_with_hits"], N_PAIRS_WITH_HITS
-N_SHOW = 16
+N_SHOW = 12
 TOPB = MULTI.head(N_SHOW).iloc[::-1]                    # bottom-to-top for barh
 REST = MULTI.iloc[N_SHOW:]
 REST_N, REST_SUM = len(REST), int(REST.replicated_q_K2.sum())
@@ -432,6 +458,11 @@ rep = pd.read_csv(REPL / "pas_K2" / "replicated.tsv", sep="\t",
                            "min_q_called", "mean_effect_consensus", "passes_replication_floor"])
 assert len(rep) == N_REPL
 rep["abs_effect"] = rep.mean_effect_consensus.abs()
+# NOT PLOTTED SINCE 2026-09-02 -- the effect-size histogram folded into the
+# caption Legend at the publication design pass (its message is the median and
+# mean consensus |dprop| plus the floor's yield, three numbers).  The bins, the
+# histogram and every summary below are still computed, still written to
+# fig6_cohort_effects.tsv, and asserted in the sidecar-generation check.
 BINW = 0.02
 bins = np.arange(0.0, 1.0 + BINW, BINW)
 hist_all, _ = np.histogram(rep.abs_effect, bins=bins)
@@ -524,7 +555,7 @@ def classify(pid):
 
 CONTEXT_ORDER = ["own-gene 3' UTR", "other-gene 3' UTR", "exonic, not 3' UTR",
                  "intronic (same-strand gene body)", "outside any same-strand gene"]
-CONTEXT_COLOR = dict(zip(CONTEXT_ORDER, [GREEN, PINK, SKY, ORANGE, GREY]))
+CONTEXT_COLOR = dict(zip(CONTEXT_ORDER, [BLUE, VERM, SKY, ORANGE, PINK]))
 ctx = pd.DataFrame(dict(
     pas_id=pas_int.index,
     chrom=pas_int.chrom.values, start=pas_int.start.values, end=pas_int.end.values,
@@ -594,14 +625,30 @@ safe = safe.sort_values(["chrom", "start"])            # genomic order, NOT rank
 safe["disclosure"] = "own-gene 3'UTR verified vs GTF; audit only, not a published ranked list (20 disclosure 1, issue #99)"
 
 # ---------------------------------------------------------------------------
-# figure -- publication layout: the on-figure title, subtitle, panel notes,
-# honesty block and cautions footer all live in the caption sidecar's Legend
-# now, so the canvas holds only the panel band (11.6 -> 8.1 in tall; 8.4 ->
-# 7.5 in wide, toward the 180 mm double-column norm -- panel b's long pair
-# labels rule out going all the way down without shrinking type).
+# figure -- 2026-09-02 publication design pass (DESIGN_DIRECTIVES.md 1, 2, 6).
+#
+# The working render carried five panels; the PI's brief asked whether context
+# or effects still earn a main-figure slot.  The EFFECT-SIZE histogram folds
+# into the Legend (its message is two numbers -- the median and mean consensus
+# |dprop| -- and a floor line that removes 4.6% of the set), while the honesty
+# panel stays on the image because a caveat a reader must not miss cannot live
+# only in a caption.  Four panels remain, one message each:
+#   a  nothing survives replication under the null            (the reliability claim)
+#   b  where the replicated switches sit across cell-type pairs
+#   c  how many patients back each replicated switch
+#   d  what the replicated PAS actually are, in genomic terms (honesty)
+# The on-figure title, subtitle, panel notes, honesty prose and cautions footer
+# are all in the caption sidecar's Legend, sentence for sentence.
 # ---------------------------------------------------------------------------
-fig = plt.figure(figsize=(7.5, 8.1))
-FW = 540.0  # figure width in points, for text-width budgeting
+apply_rc()
+plt.rcParams.update({
+    "text.color": INK, "axes.labelcolor": INK, "axes.edgecolor": MUTED,
+    "xtick.color": MUTED, "ytick.color": MUTED, "figure.facecolor": "#FFFFFF",
+    "axes.facecolor": "#FFFFFF", "savefig.facecolor": "#FFFFFF",
+    "axes.titlelocation": "left", "axes.titlepad": 6,
+})
+ANN, ANN_MIN, TICK = TYPE["annotation"], TYPE["annotation_min"], TYPE["tick"]
+fig = plt.figure(figsize=(7.09, 6.55))
 
 
 def style(ax, grid_axis="both"):
@@ -609,145 +656,198 @@ def style(ax, grid_axis="both"):
         ax.spines[s].set_visible(False)
     for s in ("left", "bottom"):
         ax.spines[s].set_color(GRID)
-    ax.tick_params(colors=MUTED, length=2.5, labelsize=6.6)
-    ax.grid(True, axis=grid_axis, color=GRID, lw=0.5, alpha=0.7)
+    ax.tick_params(colors=MUTED, length=2.5, labelsize=TICK, pad=2)
+    ax.grid(True, axis=grid_axis, color=GRID, lw=0.5, alpha=0.8)
     ax.set_axisbelow(True)
 
 
-def panel_title(ax, letter, text, pad=6):
-    ax.set_title(f"{letter}   {text}", loc="left", fontweight="bold", pad=pad)
+def panel_title(ax, letter, text, dy=1.035):
+    """House panel tag (shared with Fig 2/3): a bold panel letter at
+    TYPE['panel_letter'] and, offset a fixed 13 pt to its right so the gap does
+    not scale with panel width, the sentence-cased title at TYPE['panel_title']."""
+    ax.text(0.0, dy, letter, transform=ax.transAxes, fontsize=TYPE["panel_letter"],
+            fontweight="bold", va="bottom", ha="left", color=INK)
+    ax.text(0.0, dy, sentence_case(text), va="bottom", ha="left", color=INK,
+            fontsize=TYPE["panel_title"],
+            transform=offset_copy(ax.transAxes, fig=ax.figure, x=13.0, y=0.0, units="points"))
 
 
 # ---- a: funnel ------------------------------------------------------------
-axA = fig.add_axes([0.315, 0.786, 0.660, 0.175])
+axA = fig.add_axes([0.300, 0.758, 0.675, 0.202])
 XMIN, XMAX = 0.55, 3.0e7
 nstage = len(FUNNEL_STAGES)
 ys = np.arange(nstage)[::-1].astype(float)
 bh = 0.34
 for y, (lab, real, null, note) in zip(ys, FUNNEL_STAGES):
-    yr, yn = y + bh / 2 + 0.015, y - bh / 2 - 0.015
+    yr, yn = y + bh / 2 + 0.080, y - bh / 2 - 0.080   # 6.5 pt labels need the air
     axA.barh(yr, real - XMIN, left=XMIN, height=bh, color=BLUE, edgecolor="none", zorder=3)
     axA.text(real * 1.30, yr, f"{real:,.0f}", va="center", ha="left",
-             fontsize=6.6, color=INK, zorder=5)
+             fontsize=ANN, color=INK, zorder=5)
     if null >= 1.0:
         axA.barh(yn, null - XMIN, left=XMIN, height=bh, color=GREY, edgecolor="none", zorder=3)
         axA.text(null * 1.30, yn, f"{null:,.0f}" if null >= 10 else f"{null:.1f}",
-                 va="center", ha="left", fontsize=6.2, color=MUTED, zorder=5)
+                 va="center", ha="left", fontsize=ANN, color=MUTED, zorder=5)
     else:
         axA.plot([XMIN * 1.16], [yn], marker="o", ms=3.0, mfc="white", mec=GREY,
                  mew=0.9, zorder=4)
-        axA.text(XMIN * 1.75, yn, "0", va="center", ha="left", fontsize=6.2,
+        axA.text(XMIN * 1.75, yn, "0", va="center", ha="left", fontsize=ANN,
                  color=MUTED, zorder=5)
 axA.set_yticks(ys)
-axA.set_yticklabels([s[0] for s in FUNNEL_STAGES], fontsize=6.5, color=INK)
+axA.set_yticklabels(FUNNEL_DISPLAY, fontsize=TICK, color=INK, linespacing=1.3)
 axA.set_xscale("log")
 axA.set_xlim(XMIN, XMAX)
 axA.set_ylim(-0.62, nstage - 0.38)
 axA.set_xticks([1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7])
 axA.set_xticklabels(["1", "10", "100", "1k", "10k", "100k", "1M", "10M"])
-axA.set_xlabel("number of (pair, PAS) hypotheses  (log scale)")
+axA.set_xlabel(sentence_case("number of (pair, PAS) hypotheses  (log scale)"))
 style(axA, grid_axis="x")
 axA.legend([Patch(facecolor=BLUE), Patch(facecolor=GREY)],
-           ["real labels", f"label-shuffle null (mean of {N_NULL_COMBOS})"],
+           [sentence_case("real labels"), sentence_case(f"label-shuffle null (mean of {N_NULL_COMBOS})")],
            loc="lower right", bbox_to_anchor=(1.006, -0.045), frameon=False,
            handlelength=1.1, handleheight=0.85, borderpad=0.2, labelspacing=0.3)
-panel_title(axA, "a", "Replication funnel, real vs patient-wise label-shuffle null (one axis)")
-# (the null-design note under panel a moved to the caption Legend)
+panel_title(axA, "a", "Replication funnel vs null")
 
 # ---- b: per cell-type pair ------------------------------------------------
-axB = fig.add_axes([0.315, 0.416, 0.660, 0.308])
+axB = fig.add_axes([0.300, 0.388, 0.675, 0.278])
 yb = np.arange(len(TOPB))
-axB.barh(yb, TOPB.replicated_q_K2, height=0.66, color=SKY, edgecolor="none", zorder=3,
-         label=f"K={K_PRIMARY} (pre-registered): ≥2 patients, same direction")
-axB.barh(yb, TOPB.replicated_q_K3, height=0.34, color=BLUE, edgecolor="none", zorder=4,
-         label=f"K={K_SENS} (sensitivity): ≥3 patients")
+axB.barh(yb, TOPB.replicated_q_K2, height=0.62, color=SKY, edgecolor="none", zorder=3,
+         label=f"≥{K_PRIMARY} patients, same direction (pre-registered)")
+axB.barh(yb, TOPB.replicated_q_K3, height=0.32, color=BLUE, edgecolor="none", zorder=4,
+         label=f"≥{K_SENS} patients (sensitivity)")
 for y, r in zip(yb, TOPB.itertuples()):
     axB.text(r.replicated_q_K2 + N_REPL * 0.004, y, f"{int(r.replicated_q_K2):,}",
-             va="center", ha="left", fontsize=6.0, color=INK, zorder=5)
+             va="center", ha="left", fontsize=ANN, color=INK, zorder=5)
 axB.set_yticks(yb)
-axB.set_yticklabels([f"{pretty_pair(r.pair)}  ({int(r.n_patients_tested)} pt)"
-                     for r in TOPB.itertuples()], fontsize=6.4, color=INK)
-axB.set_xlim(0, float(TOPB.replicated_q_K2.max()) * 1.16)
-axB.set_ylim(-0.75, len(TOPB) - 0.35)
-axB.set_xlabel("replicated (pair, PAS) switches")
+axB.set_yticklabels([f"{pretty_pair(r.pair)}   {int(r.n_patients_tested)} patients"
+                     for r in TOPB.itertuples()], fontsize=TICK, color=INK)
+axB.set_xlim(0, float(TOPB.replicated_q_K2.max()) * 1.22)
+axB.set_xticks([0, 1000, 2000, 3000]); axB.set_xticklabels(["0", "1,000", "2,000", "3,000"])
+axB.set_ylim(-0.72, len(TOPB) - 0.30)
+axB.set_xlabel(sentence_case("replicated (pair, PAS) switches"))
 style(axB, grid_axis="x")
 axB.legend(loc="lower right", frameon=False, handlelength=1.1, handleheight=0.85,
            borderpad=0.2, labelspacing=0.3)
-panel_title(axB, "b", f"Top {N_SHOW} of the {N_MULTI_PAIRS} cell-type pairs tested in ≥{K_PRIMARY} patients")
-# (the remaining-pairs / single-patient-pairs note and the "n pt" definition moved to the caption Legend)
+panel_title(axB, "b", f"Top {N_SHOW} of the {N_MULTI_PAIRS} multi-patient cell-type pairs")
 
-# ---- c: effect sizes ------------------------------------------------------
-axC = fig.add_axes([0.085, 0.220, 0.385, 0.135])
-centers = bins[:-1] + BINW / 2
-cols = [VERM if c < FLOOR else BLUE for c in centers]
-axC.bar(centers, hist_all, width=BINW * 0.92, color=cols, edgecolor="none", zorder=3)
-CMAX = float(hist_all.max())
-axC.set_ylim(0, CMAX * 1.45)
-axC.axvline(FLOOR, color=INK, lw=0.8, ls=(0, (4, 2)), zorder=4)
-axC.text(FLOOR + 0.018, CMAX * 1.16, f"pre-registered effect floor |Δprop| ≥ {FLOOR:g}",
-         fontsize=5.9, color=INK, va="center", ha="left", zorder=6)
-axC.text(0.985, 0.985, f"median {MEDIAN_EFFECT:.2f}   mean {MEAN_EFFECT:.2f}",
-         transform=axC.transAxes, fontsize=6.0, color=INK, va="top", ha="right")
-axC.set_xlim(0, 1.0)
-axC.set_xlabel("consensus |Δ proportion| of the replicated switch")
-axC.set_ylabel("replicated (pair, PAS)")
-style(axC, grid_axis="y")
-panel_title(axC, "c", f"Effect size of the {N_REPL:,} replicated switches")
-
-# ---- d: patient support ---------------------------------------------------
-axD = fig.add_axes([0.590, 0.220, 0.385, 0.135])
+# ---- c: patient support ---------------------------------------------------
+axC = fig.add_axes([0.085, 0.088, 0.360, 0.212])
 dcols = [SKY if k < K_SENS else BLUE for k in SUPPORT_K]
-axD.bar(SUPPORT_K, SUPPORT_N, width=0.72, color=dcols, edgecolor="none", zorder=3)
+axC.bar(SUPPORT_K, SUPPORT_N, width=0.72, color=dcols, edgecolor="none", zorder=3)
 for k, n in zip(SUPPORT_K, SUPPORT_N):
-    axD.text(k, n + SUPPORT_N.max() * 0.025, f"{n:,}", ha="center", va="bottom",
-             fontsize=5.9, color=INK, zorder=5)
-axD.set_xticks(SUPPORT_K)
-axD.set_xlim(SUPPORT_K.min() - 0.75, SUPPORT_K.max() + 0.75)
-axD.set_ylim(0, SUPPORT_N.max() * 1.34)
-axD.set_xlabel("patients supporting the switch (same direction)")
-axD.set_ylabel("replicated (pair, PAS)")
-style(axD, grid_axis="y")
-axD.legend([Patch(facecolor=BLUE)],
-           [f"≥{K_SENS} patients = the K={K_SENS} sensitivity set ({N_REPL_K3:,})"],
-           loc="upper right", frameon=False, handlelength=1.1, handleheight=0.85,
-           borderpad=0.2)
-panel_title(axD, "d", "Patient support of the replicated set")
+    axC.text(k, n + SUPPORT_N.max() * 0.030, f"{n:,}", ha="center", va="bottom",
+             fontsize=ANN, color=INK, zorder=5)
+axC.set_xticks(SUPPORT_K)
+axC.set_xlim(SUPPORT_K.min() - 0.75, SUPPORT_K.max() + 0.75)
+axC.set_ylim(0, SUPPORT_N.max() * 1.16)
+axC.set_yticks([0, 4000, 8000]); axC.set_yticklabels(["0", "4k", "8k"])
+axC.set_xlabel(sentence_case("patients supporting the switch"))
+axC.set_ylabel(sentence_case("replicated (pair, PAS)"), labelpad=3)
+style(axC, grid_axis="y")
+panel_title(axC, "c", "Patient support")
 
-# ---- e: honesty panel -----------------------------------------------------
-fig.text(0.085, 0.168,
-         f"e   Genomic context of the {N_DISTINCT_PAS:,} replicated PAS "
-         f"(recomputed here from the Ensembl GRCh38.99 GTF)",
-         fontsize=8, fontweight="bold", color=INK, va="top", ha="left")
-axE = fig.add_axes([0.085, 0.104, 0.890, 0.037])
+# ---- d: genomic context of the replicated PAS (honesty panel) -------------
+axD = fig.add_axes([0.560, 0.253, 0.408, 0.047])
+def on_fill(hex_color):
+    """Label ink that actually reads on the segment: white only on a dark fill,
+    otherwise the ink token.  (Six-checks contrast rule -- white on the light
+    steps of the palette is a ~2:1 contrast and is not legible at 6.5 pt.)"""
+    r, g, b = (int(hex_color[i:i + 2], 16) / 255 for i in (1, 3, 5))
+    lin = [(c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4) for c in (r, g, b)]
+    lum = 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+    return "white" if (1.05 / (lum + 0.05)) >= 4.5 else INK
+
 left = 0.0
 for cat in CONTEXT_ORDER:
     frac = CTX_N[cat] / N_DISTINCT_PAS
-    axE.barh(0, frac, left=left, height=1.0, color=CONTEXT_COLOR[cat],
+    axD.barh(0, frac, left=left, height=1.0, color=CONTEXT_COLOR[cat],
              edgecolor="white", linewidth=0.9, zorder=3)
-    if frac > 0.055:
-        axE.text(left + frac / 2, 0, f"{frac*100:.1f}%", ha="center", va="center",
-                 fontsize=6.4, color="white", fontweight="bold", zorder=5)
+    if frac > 0.10:
+        axD.text(left + frac / 2, 0, f"{frac*100:.1f}%", ha="center", va="center",
+                 fontsize=ANN, color=on_fill(CONTEXT_COLOR[cat]), fontweight="bold", zorder=5)
     left += frac
-axE.set_xlim(0, 1.0)
-axE.set_ylim(-0.6, 0.6)
-axE.set_yticks([])
-axE.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
-axE.set_xticklabels(["0", "25%", "50%", "75%", "100%"])
+axD.set_xlim(0, 1.0)
+axD.set_ylim(-0.6, 0.6)
+axD.set_yticks([])
+axD.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
+axD.set_xticklabels(["0", "25%", "50%", "75%", "100%"])
 for s in ("top", "right", "left"):
-    axE.spines[s].set_visible(False)
-axE.spines["bottom"].set_color(GRID)
-axE.tick_params(colors=MUTED, length=2.5, labelsize=6.6)
+    axD.spines[s].set_visible(False)
+axD.spines["bottom"].set_color(GRID)
+axD.tick_params(colors=MUTED, length=2.5, labelsize=TICK, pad=2)
+panel_title(axD, "d", "Genomic context of replicated PAS")
 fig.legend([Patch(facecolor=CONTEXT_COLOR[c]) for c in CONTEXT_ORDER],
-           [f"{c} — {int(CTX_N[c]):,} ({CTX_N[c]/N_DISTINCT_PAS*100:.1f}%)" for c in CONTEXT_ORDER],
-           loc="upper left", bbox_to_anchor=(0.085, 0.060), frameon=False, ncol=2,
-           handlelength=1.1, handleheight=0.85, borderpad=0.2, columnspacing=1.4,
-           labelspacing=0.32, fontsize=6.2)
+           [f"{sentence_case(c)} — {int(CTX_N[c]):,} ({CTX_N[c]/N_DISTINCT_PAS*100:.1f}%)"
+            for c in CONTEXT_ORDER],
+           loc="upper left", bbox_to_anchor=(0.560, 0.218), frameon=False, ncol=1,
+           handlelength=1.1, handleheight=0.85, borderpad=0.2,
+           labelspacing=0.38, fontsize=ANN)
 
 # ---- no on-figure title / subtitle / honesty block / footer ---------------
-# Journal style (surgery pass, 2026-09-02): the figure title, the headline
-# subtitle, panel e's honesty prose and the numbered cautions footer are all
-# in the caption sidecar's '## Legend' now, sentence for sentence.  The values
-# they carried stay in fig6_cohort_cohort.tsv, which is unchanged.
+# Journal style (surgery pass, 2026-09-02; design pass 2026-09-02): the figure
+# title, the headline subtitle, panel d's honesty prose and the numbered
+# cautions footer are all in the caption sidecar's '## Legend'.  The values they
+# carried stay in fig6_cohort_cohort.tsv, which is unchanged.
+
+# ---- bounding-box discipline: no overlapping text, none under the type floor
+def bbox_audit(figure, min_pt=ANN_MIN, name=NAME, margin=1.5):
+    """No text overlaps another, nothing is under the print type floor, and
+    nothing runs off the canvas (this render is saved without a tight bbox, so
+    an overflowing title would only surface later in the 8-px edge check)."""
+    figure.canvas.draw()
+    rend = figure.canvas.get_renderer()
+    items, small = [], []
+
+    def in_view(ax_, axis):
+        """Tick labels for ticks outside the current view are laid out but never
+        drawn; keep only the ones the reader actually sees."""
+        lo, hi = (ax_.get_xlim() if axis == "x" else ax_.get_ylim())
+        lo, hi = min(lo, hi), max(lo, hi)
+        locs = ax_.get_xticks() if axis == "x" else ax_.get_yticks()
+        labs = ax_.get_xticklabels() if axis == "x" else ax_.get_yticklabels()
+        return [t for loc, t in zip(locs, labs) if lo - 1e-9 <= loc <= hi + 1e-9]
+
+    for ax in figure.axes:
+        arts = list(ax.texts) + in_view(ax, "x") + in_view(ax, "y")
+        arts += [ax.xaxis.label, ax.yaxis.label, ax.title]
+        lg = ax.get_legend()
+        if lg is not None:
+            arts += list(lg.get_texts())
+        for t in arts:
+            if not t.get_visible() or not t.get_text().strip():
+                continue
+            if t.get_fontsize() < min_pt - 1e-9:
+                small.append((t.get_text()[:34], t.get_fontsize()))
+            items.append((t.get_text()[:34], t.get_window_extent(rend)))
+    for lg in figure.legends:
+        for t in lg.get_texts():
+            if t.get_fontsize() < min_pt - 1e-9:
+                small.append((t.get_text()[:34], t.get_fontsize()))
+            items.append((t.get_text()[:34], t.get_window_extent(rend)))
+    for t in figure.texts:
+        if t.get_visible() and t.get_text().strip():
+            if t.get_fontsize() < min_pt - 1e-9:
+                small.append((t.get_text()[:34], t.get_fontsize()))
+            items.append((t.get_text()[:34], t.get_window_extent(rend)))
+    assert not small, f"{name}: annotation below {min_pt} pt -- {small}"
+    bad = []
+    for i in range(len(items)):
+        for j in range(i + 1, len(items)):
+            a_, b_ = items[i][1], items[j][1]
+            ov_w = min(a_.x1, b_.x1) - max(a_.x0, b_.x0)
+            ov_h = min(a_.y1, b_.y1) - max(a_.y0, b_.y0)
+            if ov_w > 1.0 and ov_h > 1.0:
+                bad.append((items[i][0], items[j][0], round(ov_w, 1), round(ov_h, 1)))
+    assert not bad, f"{name}: overlapping text -- {bad}"
+    fb = figure.bbox
+    out = [(t, [round(v, 1) for v in (bb.x0, bb.y0, bb.x1, bb.y1)]) for t, bb in items
+           if bb.x0 < fb.x0 + margin or bb.y0 < fb.y0 + margin
+           or bb.x1 > fb.x1 - margin or bb.y1 > fb.y1 - margin]
+    assert not out, f"{name}: text runs off the canvas -- {out}"
+    print(f"bbox audit: {len(items)} text artists, no overlap, none below {min_pt} pt, "
+          f"none off-canvas")
+
+
+bbox_audit(fig)
 
 for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = FIGDIR / f"{NAME}.{ext}"
@@ -803,15 +903,31 @@ pairs_out[["panel", "pair", "pair_label", "n_patients_tested", "n_gsm_tested", "
     p, sep="\t", index=False)
 print("wrote", p)
 
-eff = pd.DataFrame(dict(panel="c", bin_left=bins[:-1], bin_right=bins[1:],
+# not plotted since 2026-09-02 -- the effect-size panel folded into the Legend;
+# the TSV stays as the record and the values are asserted just below.
+eff = pd.DataFrame(dict(panel="retired_effect_histogram", bin_left=bins[:-1], bin_right=bins[1:],
                         n_replicated=hist_all,
                         below_effect_floor=bins[:-1] + BINW / 2 < FLOOR))
 eff["source"] = f"{SRC_REPL}/pas_K2/replicated.tsv (mean_effect_consensus, abs)"
+eff["note"] = "not plotted since 2026-09-02 (publication design pass); values quoted in the caption Legend"
 p = OUTDIR / f"{NAME}_effects.tsv"
 eff.to_csv(p, sep="\t", index=False, float_format="%.4f")
-print("wrote", p)
+print("wrote", p, "(not plotted since 2026-09-02; record only)")
 
-sup = pd.DataFrame(dict(panel="d", replication_count=SUPPORT_K, n_replicated=SUPPORT_N))
+# SIDECAR-GENERATION CHECK -- the value-asserts for the retired effect panel.
+# The numbers left the image, so they are pinned here and written into the Legend.
+assert int(eff.n_replicated.sum()) == N_REPL, (int(eff.n_replicated.sum()), N_REPL)
+assert int(eff.loc[eff.below_effect_floor, "n_replicated"].sum()) == N_CONSENSUS_BELOW_FLOOR
+assert 0.0 < MEDIAN_EFFECT < 1.0 and 0.0 < MEAN_EFFECT < 1.0, (MEDIAN_EFFECT, MEAN_EFFECT)
+assert abs(MEDIAN_EFFECT - float(rep.abs_effect.median())) < 1e-12
+assert abs(MEAN_EFFECT - float(rep.abs_effect.mean())) < 1e-12
+assert 0 <= N_CONSENSUS_BELOW_FLOOR <= N_REMOVED_BY_FLOOR <= N_REPL
+_EFF_MODE = float(bins[int(np.argmax(hist_all))] + BINW / 2)
+print(f"sidecar check (retired effect panel): median {MEDIAN_EFFECT:.4f}, mean {MEAN_EFFECT:.4f}, "
+      f"modal bin {_EFF_MODE:.2f}, {N_CONSENSUS_BELOW_FLOOR:,} below the floor, "
+      f"{N_REMOVED_BY_FLOOR:,} removed by the per-patient floor")
+
+sup = pd.DataFrame(dict(panel="c", replication_count=SUPPORT_K, n_replicated=SUPPORT_N))
 sup["in_K3_sensitivity_set"] = sup.replication_count >= K_SENS
 sup["source"] = f"{SRC_REPL}/pas_K2/replicated.tsv (replication_count)"
 p = OUTDIR / f"{NAME}_support.tsv"
@@ -819,20 +935,20 @@ sup.to_csv(p, sep="\t", index=False)
 print("wrote", p)
 
 ctx_out = ctx.copy()
-ctx_out["panel"] = "e"
+ctx_out["panel"] = "d"
 ctx_out["gtf"] = str(GTF)
 p = OUTDIR / f"{NAME}_context.tsv"
 ctx_out.to_csv(p, sep="\t", index=False)
 print("wrote", p)
 
-ctx_sum = pd.DataFrame([dict(panel="e", category=c, n=int(CTX_N[c]),
+ctx_sum = pd.DataFrame([dict(panel="d", category=c, n=int(CTX_N[c]),
                              fraction=float(CTX_N[c] / N_DISTINCT_PAS)) for c in CONTEXT_ORDER])
 for k, n, f_ in (("roll-up: any same-strand gene body", int((ctx.n_samestrand_gene_bodies > 0).sum()), FRAC_GENEBODY),
                  ("roll-up: exonic (any same-strand gene)", int(ctx.exonic_any_gene.sum()), FRAC_EXONIC),
                  ("roll-up: any gene's 3' UTR", N_ANY3, FRAC_ANY_3UTR),
                  ("caveat: inside >=2 overlapping same-strand genes", N_MULTI_GENE, FRAC_MULTI_GENE),
                  ("caveat: 3'UTR PAS assigned to a different gene", N_3UTR_MISASSIGNED, FRAC_3UTR_MISASSIGNED)):
-    ctx_sum.loc[len(ctx_sum)] = dict(panel="e", category=k, n=n, fraction=f_)
+    ctx_sum.loc[len(ctx_sum)] = dict(panel="d", category=k, n=n, fraction=f_)
 ctx_sum["denominator"] = N_DISTINCT_PAS
 ctx_sum["source"] = f"recomputed: {SRC_REPL}/pas_K2/replicated.tsv vs {GTF}"
 p = OUTDIR / f"{NAME}_context_summary.tsv"
@@ -868,14 +984,18 @@ cohort_rows = [
      "reached K in one direction but an opposite-direction patient vetoed it"),
     ("empirical_p_floor", EMP_P, f"1/({N_NULL_COMBOS}+1); NOT an FDR"),
     # ---- panel c / footer values printed on the figure ----
-    ("median_abs_consensus_effect", round(MEDIAN_EFFECT, 6), "panel c annotation; replicated.tsv"),
-    ("mean_abs_consensus_effect", round(MEAN_EFFECT, 6), "panel c annotation; replicated.tsv"),
+    ("median_abs_consensus_effect", round(MEDIAN_EFFECT, 6),
+     "retired panel c (not plotted since 2026-09-02); quoted in the caption Legend; replicated.tsv"),
+    ("mean_abs_consensus_effect", round(MEAN_EFFECT, 6),
+     "retired panel c (not plotted since 2026-09-02); quoted in the caption Legend; replicated.tsv"),
     ("n_consensus_below_effect_floor", N_CONSENSUS_BELOW_FLOOR,
-     f"|mean_effect_consensus| < {FLOOR:g}; footer"),
+     f"|mean_effect_consensus| < {FLOOR:g}; caption Legend"),
     ("n_removed_by_effect_floor", N_REMOVED_BY_FLOOR,
      "floor applied per patient then patients re-counted; footer"),
     ("null_tested_mean_per_combo", round(NULL_TESTED_MEAN, 1), "panel a grey bar; null_control.tsv"),
     ("null_called_ge1_mean_per_combo", NULL_CALLED_GE1_MEAN, f"panel a grey bar; {NULL_QHITS_SRC}"),
+    ("effect_histogram_modal_bin_centre", round(_EFF_MODE, 4),
+     "retired panel c; fig6_cohort_effects.tsv"),
     (f"null_tests_{DISCLOSED_GSM}", DISCLOSED_NULL_TESTS, "footer BH-discreteness disclosure"),
     (f"null_qhits_{DISCLOSED_GSM}", DISCLOSED_NULL_QHITS, "footer BH-discreteness disclosure"),
 ] + ([
@@ -984,15 +1104,32 @@ calls (range {min(NULL_CALLED_GE1)}–{max(NULL_CALLED_GE1)}) and **zero** at ev
 (light) with the K={K_SENS} subset overlaid (dark); "n pt" is the number of patients in which the pair was testable.
 The other {REST_N} multi-patient pairs hold {REST_SUM:,} more switches ({REST_MIN}–{REST_MAX} each);
 {N_SINGLE_PATIENT_PAIRS} pairs were tested in a single patient and can never replicate.
-**Panel c** — consensus |Δproportion| of the {N_REPL:,} replicated switches (median {MEDIAN_EFFECT:.2f}, mean
-{MEAN_EFFECT:.2f}); the dashed line is the pre-registered floor. **Panel d** — patient support; the K={K_SENS}
-sensitivity set is exactly the ≥3-patient tail ({N_REPL_K3:,}).
-**Panel e (honesty panel)** — genomic context of the {N_DISTINCT_PAS:,} distinct replicated PAS, recomputed for this
+**Panel c** — patient support; the K={K_SENS} sensitivity set is exactly the ≥3-patient tail ({N_REPL_K3:,}), and
+{SUPPORT_N[0]:,} of the {N_REPL:,} replicated switches ({SUPPORT_N[0]/N_REPL*100:.0f}%) sit at the two-patient
+minimum.
+**Panel d (honesty panel)** — genomic context of the {N_DISTINCT_PAS:,} distinct replicated PAS, recomputed for this
 figure from `{GTF}` as an exclusive, strand-matched partition:
 {FRAC_OWN_3UTR*100:.1f}% own-gene 3′ UTR, {N_OTH3/N_DISTINCT_PAS*100:.1f}% another gene's 3′ UTR,
 {N_EXNOT3/N_DISTINCT_PAS*100:.1f}% exonic but not 3′ UTR, {FRAC_INTRONIC*100:.1f}% intronic,
 {FRAC_OUTSIDE*100:.1f}% outside any same-strand gene — i.e. {FRAC_GENEBODY*100:.1f}% inside a same-strand gene body,
 {FRAC_EXONIC*100:.1f}% exonic, {FRAC_ANY_3UTR*100:.1f}% in some gene's 3′ UTR. {CAP_ROLLUP_NOTE}
+
+**Moved off the image at the 2026-09-02 publication design pass (no-loss rule; the numbers below are asserted in
+the script's sidecar-generation check and still written to the audit TSVs).** The working render carried a fifth
+panel, the distribution of the consensus |Δproportion| of the replicated switches with the pre-registered floor
+drawn on it. Its message is three numbers, and they are these: the {N_REPL:,} replicated switches have a **median
+consensus |Δproportion| of {MEDIAN_EFFECT:.2f}** and a mean of {MEAN_EFFECT:.2f}, the distribution is unimodal with
+its mode in the {_EFF_MODE - BINW/2:.2f}–{_EFF_MODE + BINW/2:.2f} bin, {N_CONSENSUS_BELOW_FLOOR} switches
+({N_CONSENSUS_BELOW_FLOOR/N_REPL*100:.1f}%) have a consensus effect below the |Δproportion| ≥ {FLOOR:g} floor, and
+the floor as pre-registered — applied per patient, with the patients then re-counted — removes
+{N_REMOVED_BY_FLOOR} of them ({N_REPL:,} → {N_REPL_FLOOR:,}, {N_REMOVED_BY_FLOOR/N_REPL*100:.1f}%). The full 50-bin
+histogram is still written to `results/figures/manuscript/{NAME}_effects.tsv`, headed *not plotted since
+2026-09-02*. Also off the image and here instead: the discordant-veto clause of the funnel's fourth stage
+({N_SPLIT_DIRECTION} features reached ≥{K_PRIMARY} patients but in no single direction, {N_DISCORDANT_VETO} were
+vetoed by an opposite-direction patient), and the definition of the per-row patient count in panel b (the number of
+patients in which that cell-type pair was testable). Panel b now shows the top {N_SHOW} pairs rather than 16; the
+other {REST_N} multi-patient pairs are quantified two paragraphs above and every one of the {N_PAIRS} pairs is in
+`{NAME}_per_pair.tsv`.
 
 **Gene names (20 disclosure 1, tool issue #99).** No ranked list of named top-switch genes is shown. {CAP_GENENAME_NOTE}. {CAP_AMBIENT_IG}
 Recomputed here: {N_3UTR_MISASSIGNED:,} of the {N_ANY3:,}
@@ -1019,21 +1156,35 @@ One cohort, one chemistry, one caller — no orthogonal 3′-end assay confirms 
 patients replicate more, so panel b tracks cohort composition as much as biology. One library
 ({DISCLOSED_GSM.split(chr(45))[0]}) trips the per-GSM null rule only through BH discreteness
 ({DISCLOSED_NULL_QHITS} hits in {DISCLOSED_NULL_TESTS/1e6:.1f}M null tests) and is kept and disclosed (20).
-Panel c plots the consensus effect, but the pre-registered floor is applied PER PATIENT and the patients
-re-counted, so it removes {N_REMOVED_BY_FLOOR} switches ({N_REPL:,} → {N_REPL_FLOOR:,}) — more than the
-{N_CONSENSUS_BELOW_FLOOR} whose consensus alone falls below {FLOOR:g}.
+The pre-registered effect floor is applied PER PATIENT and the patients are then re-counted, so it removes
+{N_REMOVED_BY_FLOOR} switches ({N_REPL:,} → {N_REPL_FLOOR:,}) — more than the {N_CONSENSUS_BELOW_FLOOR} whose
+consensus effect alone falls below {FLOOR:g}; never quote the consensus-below-floor count as the floor's yield.
+Two thirds of the replicated set rests on the two-patient minimum (panel c), which is the weakest support the
+pre-registration allows.
 
 ## Provenance
 
 Sources: `{V['doc_path']}` ({V['verdict']}) and, read directly, `{SRC_REPL}/` (`pas_K2`, `pas_K3`, `gene_K2`:
 `all_features.tsv`, `replicated.tsv`, `null_control.tsv`, `summary.json`; `per_pair_pas_K{{2,3}}.tsv`), the per-GSM
-switch summaries `{SWITCH}/<GSM>/summary.json`, the verifier's null recount `{VERIFY}/`, and `{GTF}` for panel e.
-Every plotted value: `results/figures/manuscript/{NAME}_{{funnel,per_pair,effects,support,context,context_summary,cohort}}.tsv`.
+switch summaries `{SWITCH}/<GSM>/summary.json`, the verifier's null recount `{VERIFY}/`, and `{GTF}` for panel d.
+Every plotted value: `results/figures/manuscript/{NAME}_{{funnel,per_pair,support,context,context_summary,cohort}}.tsv`.
+Still written, **not plotted since 2026-09-02**: `{NAME}_effects.tsv` (the retired effect-size histogram); its
+summary values are quoted in the Legend above and asserted in the script before the caption is composed.
 
-PeakATail code `{V['commit']}` ({V['commit_note']}); PNG 600 dpi, PDF vector with subsetted TrueType (fonttype 42,
-no Type 3). The working-phase render carried the title, headline, panel notes, honesty prose and cautions footer on
-the image; at the 2026-09-02 surgery pass they moved into the Legend above, sentence for sentence, and the image
-keeps panel letters, short titles, axis labels and data annotations only.
+PeakATail code `{V['commit']}` ({V['commit_note']}). Design: the shared publication style
+`scripts/manuscript_figures/_pubstyle.py` (PAL / TYPE / `apply_rc()` / `sentence_case()`), so Fig 1–6 read as one
+system. Real versus null is `PAL['peakatail']` against the reserved neutral; K={K_PRIMARY} / K={K_SENS} is one hue
+light→dark (an ordinal pair: monotone lightness, step gap ≥ 0.06, single hue — `validate_palette.js --ordinal`
+PASS); panel d's five genomic-context classes take the categorical slots peakatail / bad / light / accent / alt,
+all-pairs six-checks PASS 2026-09-02 (worst CVD ΔE 9.6 protan / 8.5 tritan, normal-vision floor 15.6), and every
+class is named and counted in the key so nothing depends on hue alone; the percentage written inside a stacked
+segment takes white ink only where the fill clears 4.5:1 against it and the ink token otherwise, so no label sits
+on a sub-3:1 fill. Canvas 7.09 in (180 mm) at final print
+width; PNG 600 dpi, PDF vector with subsetted TrueType (fonttype 42, no Type 3); the render passes an automated
+text-overlap, minimum-type-size (6 pt) and off-canvas audit plus the 8-px edge check. The working-phase render
+carried the title, headline, panel notes, honesty prose and cautions footer on the image; at the 2026-09-02 surgery
+and design passes they moved into the Legend above, sentence for sentence, and the image keeps panel letters, short
+titles, axis labels and at most three short data callouts per panel.
 
 ### Index paragraph (for `manuscript/05_figure_index.md` — paste there; this script does not edit that file)
 
@@ -1069,6 +1220,9 @@ try:
     ink = int((border < 250).sum())
     print(f"edge check: {im.shape[1]}x{im.shape[0]} px, ink pixels in the outer {edge} px = {ink}")
     assert ink == 0, "INK IN THE OUTER 8 PX -- something is clipped"
+    assert im.shape[1] <= 600 * 7.30, (
+        f"canvas {im.shape[1] / 600:.2f} in wide -- past the 180 mm (7.09 in) print target; "
+        "an artist is overflowing its panel and bbox_inches='tight' grew the figure")
 except ImportError:
     print("edge check skipped (no PIL)")
 

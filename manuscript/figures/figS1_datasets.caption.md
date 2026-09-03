@@ -32,3 +32,10 @@ panel b: `figS1_datasets_cliprate.tsv`. Machine-read inputs: the four v2 `run_co
 (fonttype 42, no Type 3). The working-phase render carried the legend paragraph on the image; at the
 2026-09-02 surgery pass it moved here, and the image keeps the table, panel titles, axis labels and
 the two reference-line labels only.
+
+Design pass 2026-09-03 (`DESIGN_DIRECTIVES.md`, supplement light pass): type now comes from the shared
+`scripts/manuscript_figures/_pubstyle.py` scale (`apply_rc()`), every on-figure annotation sits at or above
+the 6 pt floor, axis label and panel titles are sentence-cased through `_pubstyle.sentence_case()`
+(canonical identifiers preserved), and panel b's descriptive qualifier *(where a verified value exists)*
+left the image for the Legend above (no-loss: it is the "(b) Clip rates where a verified value exists"
+sentence). Numbers, panels and audit TSVs are unchanged.

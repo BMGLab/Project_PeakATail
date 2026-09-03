@@ -58,13 +58,20 @@ from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
-matplotlib.rcParams["pdf.fonttype"] = 42
-matplotlib.rcParams["ps.fonttype"] = 42
-matplotlib.rcParams["font.family"] = "DejaVu Sans"
-matplotlib.rcParams["font.size"] = 7.5
-matplotlib.rcParams["axes.titlesize"] = 8
-matplotlib.rcParams["axes.labelsize"] = 8
-matplotlib.rcParams["legend.fontsize"] = 6.3
+import re
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+
+apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
+ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
+
+
+def sc_title(s):
+    """Sentence-case a panel title (directive 6) while keeping the lower-case
+    panel letter that prefixes it: 'a   the ...' -> 'a   The ...'."""
+    m = re.match(r"^([a-z])(\s+)(.*)$", s, flags=re.S)
+    return m.group(1) + m.group(2) + sentence_case(m.group(3)) if m else sentence_case(s)
 
 WD = Path("/mnt/ssd1/Projects/PeakATail_wd")
 OUTDIR = WD / "results/figures/manuscript"
@@ -177,7 +184,7 @@ libsize_row = dn.loc["A2_trim_default -> A3_libsize"]
 # b's title -- legibility outranks the double-column width target here.
 fig = plt.figure(figsize=(8.3, 6.65))
 gs = fig.add_gridspec(2, 2, width_ratios=[1.0, 1.12], height_ratios=[1.0, 1.18],
-                      left=0.135, right=0.965, top=0.935, bottom=0.083,
+                      left=0.152, right=0.965, top=0.935, bottom=0.083,
                       hspace=0.55, wspace=0.44)
 axA = fig.add_subplot(gs[0, 0])
 axC = fig.add_subplot(gs[1, 0])
@@ -189,7 +196,7 @@ def style(ax, axis="x"):
         ax.spines[s].set_visible(False)
     for s in ("left", "bottom"):
         ax.spines[s].set_color(GRID)
-    ax.tick_params(colors=MUTED, length=2.5, labelsize=7)
+    ax.tick_params(colors=MUTED, length=2.5, labelsize=TYPE["tick"])
     ax.grid(True, axis=axis, color=GRID, lw=0.5, alpha=0.8)
     ax.set_axisbelow(True)
 
@@ -207,7 +214,7 @@ for y, v, vk, c, lab in rows_a:
     axA.plot(vk, y, marker="D", ms=5, mfc="white", mec=c, mew=1.2, ls="none", zorder=5)
     axA.text(v - 0.012, y, f"{v:.3f}", ha="right", va="center", fontsize=7.2,
              color="white", fontweight="bold", zorder=4)
-    axA.text(0.012, y + 0.38, lab, ha="left", va="bottom", fontsize=6.3, color=c, zorder=5)
+    axA.text(0.012, y + 0.38, lab, ha="left", va="bottom", fontsize=ANN + 0.3, color=c, zorder=5)
 # Delta bracket
 xb = max(ami_sites, ami_gene) + 0.022
 axA.plot([xb, xb], [0, 1], color=INK, lw=0.9, zorder=4)
@@ -218,20 +225,20 @@ axA.text(xb + 0.015, 0.5, f"Δ AMI = {d_abl:+.3f}\nsite resolution\nadds nothing
 axA.plot(pbmc_ari_c, 1.0, marker="o", ms=5, mfc="white", mec=C_SITES, mew=1.2,
          ls="none", zorder=6)
 axA.annotate(f"ARI {pbmc_ari_c:.3f} (site space)", (pbmc_ari_c, 1.0),
-             xytext=(0.535, 1.62), fontsize=5.8, color=MUTED,
+             xytext=(0.535, 1.62), fontsize=ANN, color=MUTED,
              ha="left", va="center",
              arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.6, shrinkA=0, shrinkB=3))
 axA.set_xlim(0, 1.0)
 axA.set_ylim(-0.75, 1.95)
 axA.set_yticks([])
-axA.set_xlabel("AMI vs GEX marker cell types (0 = chance)")
-axA.set_title("a   The ablation that dropped the claim (PBMC)", loc="left", fontweight="bold")
+axA.set_xlabel(sentence_case("AMI vs GEX marker cell types (0 = chance)"))
+axA.set_title(sc_title("a   the ablation that dropped the claim (PBMC)"), loc="left", fontweight="bold")
 axA.legend(handles=[
     Line2D([], [], marker="s", ls="", ms=7, mfc=MUTED, mec=MUTED, label="Leiden res 1.0 (bars)"),
     Line2D([], [], marker="D", ls="", ms=5, mfc="white", mec=MUTED, mew=1.2,
            label="k matched to 8 types"),
     Line2D([], [], marker="o", ls="", ms=5, mfc="white", mec=MUTED, mew=1.2, label="ARI"),
-], loc="lower left", bbox_to_anchor=(0.0, -0.02), frameon=False, fontsize=5.8,
+], loc="lower left", bbox_to_anchor=(0.0, -0.02), frameon=False, fontsize=ANN,
     handletextpad=0.35, labelspacing=0.3)
 style(axA, axis="x")
 
@@ -251,30 +258,32 @@ axB.plot(pbmc_ari_c, y_p, "o", ms=4.6, mfc="white", mec=C_GENE, mew=1.3, zorder=
 axB.plot(pbmc_ami_c, y_p, "o", ms=5.0, mfc=C_GENE, mec="white", mew=0.8, zorder=4)
 axB.axvline(med_ami, color=INK, lw=0.9, ls=(0, (4, 2)), alpha=0.75, zorder=1)
 axB.axvline(med_ari, color=MUTED, lw=0.9, ls=(0, (1, 2)), alpha=0.85, zorder=1)
-axB.text(med_ami + 0.006, len(b) - 0.25, f"median AMI {med_ami:.3f}", fontsize=6.0,
+axB.text(med_ami + 0.006, len(b) - 0.25, f"median AMI {med_ami:.3f}", fontsize=ANN,
          color=INK, ha="left", va="center")
-axB.text(med_ari - 0.006, len(b) - 0.25, f"median ARI {med_ari:.3f}", fontsize=6.0,
+axB.text(med_ari - 0.006, len(b) - 0.25, f"median ARI {med_ari:.3f}", fontsize=ANN,
          color=MUTED, ha="right", va="center")
 axB.set_yticks(list(range(len(b))) + [y_p])
-axB.set_yticklabels([g.replace("GSM351", "…") for g in b.gsm] + ["PBMC 10k v3"], fontsize=5.6)
+axB.set_yticklabels([g.replace("GSM351", "…") for g in b.gsm] + ["PBMC 10k v3"], fontsize=ANN)
 for tick in axB.get_yticklabels():
     tick.set_color(MUTED)
 axB.get_yticklabels()[-1].set_color(C_GENE)
 axB.set_ylim(-0.8, y_p + 0.9)
 axB.set_xlim(0.0, 0.9)
-axB.set_xlabel("agreement with GEX marker cell types\n(0 = chance, 1 = identical)")
-axB.set_title("b   The (dropped) recovery replicates in 17/17\n"
-              "      Laughney samples — but gene totals suffice (a)",
+axB.set_xlabel(sentence_case("agreement with GEX marker cell types\n(0 = chance, 1 = identical)"))
+# the '— but gene totals suffice (a)' corrective moved to the Legend sidecar (directive 2,
+# no-loss: the legend opens with 'collapsing the sites to per-gene totals recovers them
+# just as well' and (a) states the ablation numerically)
+axB.set_title(sc_title("b   the (dropped) recovery replicates\n      in 17/17 Laughney samples"),
               loc="left", fontweight="bold")
 axB.legend(handles=[
     Line2D([], [], marker="o", ls="", ms=5.0, mfc=C_SITES, mec="white", mew=0.8, label="AMI (Laughney)"),
     Line2D([], [], marker="o", ls="", ms=4.6, mfc="white", mec=C_SITES, mew=1.3, label="ARI (Laughney)"),
     Line2D([], [], marker="o", ls="", ms=5.0, mfc=C_GENE, mec="white", mew=0.8, label="PBMC 10k v3"),
-], loc="lower right", frameon=False, fontsize=6.0, handletextpad=0.35, labelspacing=0.3)
+], loc="lower right", frameon=False, fontsize=ANN, handletextpad=0.35, labelspacing=0.3)
 # the coverage/scoring caveat block moved to the legend (sidecar); a short data
 # annotation keeps the 17/17 ordering fact visible
 axB.text(0.02, 0.845, f"AMI range {min_ami:.3f}–{max_ami:.3f};\nAMI > ARI in 17/17",
-         transform=axB.transAxes, fontsize=5.5, color=MUTED, ha="left", va="top",
+         transform=axB.transAxes, fontsize=ANN, color=MUTED, ha="left", va="top",
          linespacing=1.5)
 style(axB, axis="x")
 
@@ -291,26 +300,32 @@ for (pair, lab), y in zip(KNOBS, yk):
     va = "center"
     if r["median"] >= 0:
         axC.text(max(r["p75"], r["median"]) + 4, y, f"{r['median']:+.1f}%",
-                 ha="left", va=va, fontsize=6.2,
+                 ha="left", va=va, fontsize=ANN + 0.2,
                  color=C_RES if is_res else MUTED,
                  fontweight="bold" if is_res else "normal")
     else:
         axC.text(min(r["p25"], r["median"]) - 4, y, f"{r['median']:+.1f}%",
-                 ha="right", va=va, fontsize=6.2, color=MUTED)
+                 ha="right", va=va, fontsize=ANN + 0.2, color=MUTED)
 axC.axvline(0, color=MUTED, lw=0.8, zorder=2)
 axC.set_yticks(yk)
-axC.set_yticklabels([lab for _, lab in KNOBS], fontsize=6.2)
+axC.set_yticklabels([sentence_case(lab) for _, lab in KNOBS], fontsize=TYPE["tick"])
+# floor lowered so the cluster-count data note sits clear of the bottom bar's
+# value label at the shared 6 pt floor (design pass 2026-09-03)
+axC.set_ylim(-1.85, yk[0] + 0.62)
 axC.set_xlim(-45, 165)
-axC.set_xlabel("paired % change in Leiden cluster count per dataset\n(median across 17 samples, whiskers = IQR)")
-axC.set_title("c   One knob governs granularity (retired sweep's\n"
-              "      sole durable finding)", loc="left", fontweight="bold")
+axC.set_xlabel(sentence_case("paired % change in Leiden cluster count per dataset\n"
+                             "(median across 17 samples, whiskers = IQR)"))
+# the "(retired sweep's sole durable finding)" aside moved to the Legend sidecar
+# (directive 2, no-loss: it is the '(c) The retired parameter sweep's one durable
+# finding: ...' sentence there)
+axC.set_title(sc_title("c   one knob governs granularity"), loc="left", fontweight="bold")
 # the library-size caveat moved to the legend (sidecar); the cluster counts stay
 # as a data annotation
 axC.text(0.97, 0.06,
          f"resolution 0.5 → 2.0: clusters {n05['median']:.0f} → {n20['median']:.0f}\n"
          f"(res 1.0 default: {n10['median']:.0f}); 17/17 datasets move,\n"
          f"per-dataset {res_row['q1_or_min']:+.0f}% to {res_row['q3_or_max']:+.0f}%",
-         transform=axC.transAxes, fontsize=5.5, color=MUTED, ha="right", va="bottom",
+         transform=axC.transAxes, fontsize=ANN, color=MUTED, ha="right", va="bottom",
          linespacing=1.45)
 style(axC, axis="x")
 
@@ -451,6 +466,18 @@ Sources: `{SRC_NOV}`; `{SRC_LAU}`; `{SRC_SW}`; claim framing `manuscript/01_outl
 Every plotted value: `results/figures/manuscript/figS10_clustering.tsv` and `figS10_clustering_sweep.tsv`.
 Script: `scripts/manuscript_figures/figS10_clustering.py`; rendered at PNG 600 dpi / PDF fonttype 42,
 8.3 in (211 mm) wide (a 7.1 in narrowing clipped panel b/c labels and was rejected).
+"""
+cap_md += """
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure annotation,
+key entry and tick label now sits at or above the 6 pt floor. Axis labels, panel titles and prose tick labels
+are sentence-cased through `_pubstyle.sentence_case()`, canonical identifiers preserved and the lower-case panel
+letters kept. Two title clauses left the image for the Legend above: panel b's *— but gene totals suffice (a)*
+(no-loss: the legend's opening sentence and panel a state it) and panel c's *(retired sweep's sole durable
+finding)* (no-loss: it is the legend's \"(c) The retired parameter sweep's one durable finding\" sentence). Two
+layout fixes: panel c's floor was lowered so its cluster-count note clears the bottom bar's value label, and the
+left margin was widened so panel c's knob labels clear the canvas edge. No panel, number or audit TSV changed;
+both TSVs regenerate byte-identical.
 """
 p = FIGDIR / f"{NAME}.caption.md"
 p.write_text(cap_md)

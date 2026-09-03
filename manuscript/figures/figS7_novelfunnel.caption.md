@@ -81,3 +81,20 @@ Tool: `scripts/reliability/trusted_novel_pas.py` (md5-identical to the v1 run).
 The v1 figure remains reproducible: `TRUSTED_NOVEL_VERSION=v1 python3 scripts/manuscript_figures/figS7_novelfunnel.py`.
 Palette: Okabe-Ito, six-checks validated 2026-08-21 (adjacent CVD ΔE ≥ 8.5; feature-class ramp validated
 `--ordinal`).
+
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`); only this figure's non-type
+rc (surface colours, left-aligned titles, hatch width) is still set locally, and every on-figure annotation,
+key entry and tick label now sits at or above the 6 pt floor — the smallest were 5.2 pt. Axis labels, panel
+titles, key entries and prose tick labels are sentence-cased through `_pubstyle.sentence_case()`, canonical
+identifiers preserved and the lower-case panel letters kept. Three title clauses left the image for the Legend
+above: panel a's *(13 §3)* citation (no-loss — the legend's "Definition (13 §3, committed before any number
+existed)"), panel b's *: target missed throughout* verdict (no-loss — "the pre-registered ≥0.70 target is not
+met at any threshold"), and panel d's title is now set on two lines with the same words. **The POST HOC
+caveat stays on the image**, in its warning colour, with the dashed frame — it is a caveat, not a subtitle.
+Three overlaps were fixed: panel d's exploratory note is set on three lines so it clears the key, panel a's
+0.70 reference stops below the "change vs previous stage" strip it used to cross, and no text/text pair
+remains. The image is saved with `bbox_inches="tight"`, so labels that overhang the declared 7.1 in canvas are
+absorbed into the delivered ~9.1 in image; the script's own 8-px edge check confirms nothing is clipped. No
+panel, number or audit TSV changed; all five TSVs regenerate byte-identical, and the `TRUSTED_NOVEL_VERSION`
+v1/v2 switch is untouched.

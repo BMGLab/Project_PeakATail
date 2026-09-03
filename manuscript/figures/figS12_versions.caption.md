@@ -114,6 +114,14 @@ full set — quoted for scale only, not drawn as a bar.
   thread); peak RSS is. The two things prime ships **off** — `--read-geometry true` and `--pas-score calibrated` —
   were not exercised here and are not on this figure.
 
+**Panel notes** (each was a subtitle line on the image until the 2026-09-03 design pass; reproduced verbatim, nothing dropped):
+
+- **b   Progression at the pre-registered default** — tier-1 ∩ IP-pass ∩ ≥2 clip molecules
+- **c   Against the field — PBMC 10k v3** — circles = full call set · diamonds = precision default · | = genic-shuffle null (mean)
+- **d   Against the field — GSE104556 testis** — two mice, mean ± range
+- **f   What each step cost — compute** — wall time (upper strip) is a run record, not a benchmark; both strips log
+- **g   Does the atlas agree with the long reads?** — PBMC 10k v3, ≥2-molecule output — human-only (the mice have no long-read truth)
+
 ## Provenance
 
 Sources: `results/prime_bench/fourway.tsv` + `results/prime_bench/README.md` (the four-way benchmark record; every
@@ -154,3 +162,12 @@ atlas *agreement*; Kinnex truth is a different donor and the mice have no long-r
 ranked by clip molecules; shipped and v1 were never run on pbmc4k; wall times are not comparable across version
 sets. Full caption: `figures/figS12_versions.caption.md`; benchmark record `results/prime_bench/README.md`;
 pre-registration [24_prime_preregistration.md](24_prime_preregistration.md).
+
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and all 19 on-figure
+annotation call sites that sat below the 6 pt floor — the smallest were 4.7 pt — were raised to it. Axis labels,
+panel titles and prose tick labels are sentence-cased through `_pubstyle.sentence_case()`, canonical identifiers
+preserved and the lower-case panel letters kept. Every panel subtitle left the image for the **Panel notes**
+list above (that is the whole of the no-loss move). The iso-F1 contour labels in **c** and **d** are offset off
+their own curves, which used to run through them. No panel, number or audit TSV changed; all four TSVs
+regenerate byte-identical.

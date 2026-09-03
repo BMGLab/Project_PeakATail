@@ -1,0 +1,568 @@
+% ============================================================================
+% references.bib — PeakATail manuscript (Genome Biology, Method track)
+% Built 2026-09-02 by the bibliography-resolution pass over the 47 [[CITE]]
+% tokens in manuscript/00_draft/MAIN.md (SUPPLEMENTARY.md carries none).
+%
+% RULES APPLIED
+%   * Every entry below was verified against a live record: its real title,
+%     author list, venue, year and DOI (or a stable preprint/registry URL)
+%     were read off the source named in the "% verified:" comment above it.
+%     Nothing here is reconstructed from memory.
+%   * Targets that could NOT be verified are NOT in this file. They are listed,
+%     with what was searched and what is still needed, in CITATION_GAPS.md.
+%   * Author names are transcribed from the publisher's own Crossref deposit
+%     (full given names where the publisher deposited them). Nothing is
+%     expanded from memory: where Crossref itself carries only initials
+%     (e.g. dominguezconde2022celltypist, traag2019leiden), the initials are
+%     kept verbatim rather than guessed at.
+%   * Verification method: Europe PMC REST API (resultType=core), Crossref REST
+%     API, and NCBI E-utilities esummary for GEO series. The exact URL queried
+%     is recorded per entry. All accessed 2026-09-02.
+%
+% ADVERSARIAL RE-VERIFICATION, 2026-09-03
+%   All 35 entries were independently re-resolved from scratch, without
+%   trusting the "% verified:" comments below. Each of the 33 DOI-bearing
+%   entries was resolved twice — once against api.crossref.org/works/<doi>
+%   and once against the Europe PMC REST API by DOI — and title, first author,
+%   author COUNT, journal, volume, pages, year and PMID were compared field by
+%   field. All 35 matched; zero entries were fabricated, and none was deleted.
+%   The two @misc GEO entries were confirmed against NCBI E-utilities esummary
+%   (accession, series title, organism, sample count and linked PMID).
+%   Both preprints were re-checked against the bioRxiv API on 2026-09-03 and
+%   are still unpublished ("published": NA) — see the notes on those entries.
+%   Changes made by that pass: 10 author lists were expanded from abbreviated
+%   initials to the publisher-deposited full given names (this corrects the
+%   known-wrong "Zheng, G X" for "Zheng, Grace X. Y."); the gse123904 author
+%   list was synced to match its journal entry; and the benjamini1995fdr
+%   journal string was aligned to the DOI registrant's exact wording.
+%
+% SECTIONS
+%   1. Entries required by [[CITE]] tokens
+%   2. Companion entries offered alongside a token (see CITATION_MAP.tsv)
+%   3. Entries NOT referenced by any current token — software and resources the
+%      text names without a citation slot. Provided so the main session can add
+%      slots if it wants; safe to delete otherwise.
+% ============================================================================
+
+
+% ============================================================================
+% 1. ENTRIES REQUIRED BY [[CITE]] TOKENS
+% ============================================================================
+
+% ---------------------------------------------------------------- APA biology
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Alternative%20polyadenylation%20of%20mRNA%20precursors%22&format=json&resultType=core (accessed 2026-09-02)
+@article{tian2017apa,
+  author  = {Tian, Bin and Manley, James L.},
+  title   = {Alternative polyadenylation of {mRNA} precursors},
+  journal = {Nature Reviews Molecular Cell Biology},
+  year    = {2017},
+  volume  = {18},
+  number  = {1},
+  pages   = {18--30},
+  doi     = {10.1038/nrm.2016.116},
+  note    = {PMID: 27677860}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Context-specific%20regulation%20and%20function%20of%20mRNA%20alternative%20polyadenylation%22&format=json&resultType=core (accessed 2026-09-02)
+@article{mitschka2022apa,
+  author  = {Mitschka, Sibylle and Mayr, Christine},
+  title   = {Context-specific regulation and function of {mRNA} alternative polyadenylation},
+  journal = {Nature Reviews Molecular Cell Biology},
+  year    = {2022},
+  volume  = {23},
+  number  = {12},
+  pages   = {779--796},
+  doi     = {10.1038/s41580-022-00507-5},
+  note    = {PMID: 35798852}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Proliferating%20cells%20express%20mRNAs%20with%20shortened%203%27%20untranslated%20regions%22&format=json&resultType=core (accessed 2026-09-02)
+@article{sandberg2008proliferating,
+  author  = {Sandberg, Rickard and Neilson, Joel R. and Sarma, Arup and Sharp, Phillip A. and Burge, Christopher B.},
+  title   = {Proliferating cells express {mRNAs} with shortened 3' untranslated regions and fewer {microRNA} target sites},
+  journal = {Science},
+  year    = {2008},
+  volume  = {320},
+  number  = {5883},
+  pages   = {1643--1647},
+  doi     = {10.1126/science.1155390},
+  note    = {PMID: 18566288}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Widespread%20shortening%20of%203%27UTRs%20by%20alternative%20cleavage%20and%20polyadenylation%22&format=json&resultType=core (accessed 2026-09-02)
+@article{mayr2009shortening,
+  author  = {Mayr, Christine and Bartel, David P.},
+  title   = {Widespread shortening of 3'{UTRs} by alternative cleavage and polyadenylation activates oncogenes in cancer cells},
+  journal = {Cell},
+  year    = {2009},
+  volume  = {138},
+  number  = {4},
+  pages   = {673--684},
+  doi     = {10.1016/j.cell.2009.06.016},
+  note    = {PMID: 19703394}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Alternative%20cleavage%20and%20polyadenylation%20in%20spermatogenesis%20connects%20chromatin%20regulation%22&format=json&resultType=core (accessed 2026-09-02)
+@article{li2016spermatogenesis,
+  author  = {Li, Wencheng and Park, Ji Yeon and Zheng, Dinghai and Hoque, Mainul and Yehia, Ghassan and Tian, Bin},
+  title   = {Alternative cleavage and polyadenylation in spermatogenesis connects chromatin regulation with post-transcriptional control},
+  journal = {BMC Biology},
+  year    = {2016},
+  volume  = {14},
+  pages   = {6},
+  doi     = {10.1186/s12915-016-0229-6},
+  note    = {PMID: 26801249}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22internal%20poly(A)%20priming%22&format=json&resultType=core (accessed 2026-09-02)
+@article{nam2002internalpriming,
+  author  = {Nam, Douglas Kyung and Lee, Sanggyu and Zhou, Guolin and Cao, Xiaohong and Wang, Clarence and Clark, Terry and Chen, Jianjun and Rowley, Janet D. and Wang, San Ming},
+  title   = {Oligo(d{T}) primer generates a high frequency of truncated {cDNAs} through internal poly({A}) priming during reverse transcription},
+  journal = {Proceedings of the National Academy of Sciences of the United States of America},
+  year    = {2002},
+  volume  = {99},
+  number  = {9},
+  pages   = {6152--6156},
+  doi     = {10.1073/pnas.092140899},
+  note    = {PMID: 11972056}
+}
+
+% ------------------------------------------------- single-cell APA tool papers
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Sierra%3A%20discovery%20of%20differential%20transcript%20usage%22&format=json&resultType=core (accessed 2026-09-02)
+@article{patrick2020sierra,
+  author  = {Patrick, Ralph and Humphreys, David T. and Janbandhu, Vaibhao and Oshlack, Alicia and Ho, Joshua W. K. and Harvey, Richard P. and Lo, Kitty K.},
+  title   = {Sierra: discovery of differential transcript usage from {polyA}-captured single-cell {RNA}-seq data},
+  journal = {Genome Biology},
+  year    = {2020},
+  volume  = {21},
+  number  = {1},
+  pages   = {167},
+  doi     = {10.1186/s13059-020-02071-7},
+  note    = {PMID: 32641141}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22scAPAtrap%22&format=json&resultType=core (accessed 2026-09-02)
+@article{wu2021scapatrap,
+  author  = {Wu, Xiaohui and Liu, Tao and Ye, Congting and Ye, Wenbin and Ji, Guoli},
+  title   = {{scAPAtrap}: identification and quantification of alternative polyadenylation sites from single-cell {RNA}-seq data},
+  journal = {Briefings in Bioinformatics},
+  year    = {2021},
+  volume  = {22},
+  number  = {4},
+  pages   = {bbaa273},
+  doi     = {10.1093/bib/bbaa273},
+  note    = {PMID: 33142319}
+}
+
+% verified: https://api.crossref.org/works/10.7490/f1000research.1117076.1 (accessed 2026-09-02)
+% CAUTION — read CITATION_GAPS.md item G2 before using. polyApipe has NO
+% peer-reviewed algorithm paper. This F1000Research poster is the only citable
+% record with a registered DOI, and it is the one the tool's own README points
+% to ("This poster on polyApipe was presented at Oz Single Cell 2019",
+% https://raw.githubusercontent.com/MonashBioinformaticsPlatform/polyApipe/master/README.md,
+% verified 2026-09-02). The poster title does not name polyApipe. Crossref types
+% this record as "posted-content". The PI must decide whether a poster DOI is an
+% acceptable citation for a benchmarked competitor or whether the software repo
+% should be cited alongside it (URL given in the note field).
+@misc{harrison2019polyapipe,
+  author       = {Harrison, Paul and Williams, Sarah and Powell, David and Albrecht, David and Beilharz, Traude},
+  title        = {Tools for identifying and characterizing alternative polyadenylation in {scRNA}-Seq},
+  year         = {2019},
+  howpublished = {F1000Research poster},
+  doi          = {10.7490/f1000research.1117076.1},
+  note         = {Poster (Crossref type: posted-content). Software: \url{https://github.com/MonashBioinformaticsPlatform/polyApipe}}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22SCAPTURE%22&format=json&resultType=core (accessed 2026-09-02)
+@article{li2021scapture,
+  author  = {Li, Guo-Wei and Nan, Fang and Yuan, Guo-Hua and Liu, Chu-Xiao and Liu, Xindong and Chen, Ling-Ling and Tian, Bin and Yang, Li},
+  title   = {{SCAPTURE}: a deep learning-embedded pipeline that captures polyadenylation information from 3' tag-based {RNA}-seq of single cells},
+  journal = {Genome Biology},
+  year    = {2021},
+  volume  = {22},
+  number  = {1},
+  pages   = {221},
+  doi     = {10.1186/s13059-021-02437-5},
+  note    = {PMID: 34376223}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A%2210.1186%2Fs13059-025-03710-7%22&format=json&resultType=core (accessed 2026-09-02)
+@article{hou2025sctail,
+  author  = {Hou, Ruiyan and Huang, Yuanhua},
+  title   = {{scTail}: precise polyadenylation site detection and its alternative usage analysis from reads 1 preserved 3' {scRNA}-seq data},
+  journal = {Genome Biology},
+  year    = {2025},
+  volume  = {26},
+  number  = {1},
+  pages   = {236},
+  doi     = {10.1186/s13059-025-03710-7},
+  note    = {PMID: 40775355}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A%2210.1038%2Fs41467-024-48254-9%22&format=json&resultType=core (accessed 2026-09-02)
+% This is the scUTRquant paper: the verified abstract states the authors
+% "incorporate the CS annotations into a computational pipeline, called
+% scUTRquant". The tool name is not in the title, so cite by these authors/year.
+@article{fansler2024scutrquant,
+  author  = {Fansler, Mervin M. and Mitschka, Sibylle and Mayr, Christine},
+  title   = {Quantifying 3'{UTR} length from {scRNA}-seq data reveals changes independent of gene expression},
+  journal = {Nature Communications},
+  year    = {2024},
+  volume  = {15},
+  number  = {1},
+  pages   = {4050},
+  doi     = {10.1038/s41467-024-48254-9},
+  note    = {PMID: 38744866. Describes the scUTRquant pipeline}
+}
+
+% ------------------------------------------------------------ atlas, benchmark
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22PolyASite%22&format=json&resultType=core (accessed 2026-09-02)
+@article{herrmann2020polyasite,
+  author  = {Herrmann, Christina J. and Schmidt, Ralf and Kanitz, Alexander and Artimo, Panu and Gruber, Andreas J. and Zavolan, Mihaela},
+  title   = {{PolyASite} 2.0: a consolidated atlas of polyadenylation sites from 3' end sequencing},
+  journal = {Nucleic Acids Research},
+  year    = {2020},
+  volume  = {48},
+  number  = {D1},
+  pages   = {D174--D179},
+  doi     = {10.1093/nar/gkz918},
+  note    = {PMID: 31617559}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Benchmarking%20of%20methods%20that%20identify%20alternative%20polyadenylation%20events%22&format=json&resultType=core (accessed 2026-09-02)
+@article{tian2025benchmark,
+  author  = {Tian, Qiuxiang and Zou, Quan and Jia, Linpei},
+  title   = {Benchmarking of methods that identify alternative polyadenylation events in single-/multiple-polyadenylation site genes},
+  journal = {NAR Genomics and Bioinformatics},
+  year    = {2025},
+  volume  = {7},
+  number  = {2},
+  pages   = {lqaf056},
+  doi     = {10.1093/nargab/lqaf056},
+  note    = {PMID: 40371010}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=%22Guidelines%20for%20alternative%20polyadenylation%20identification%20tools%22&format=json&resultType=core (accessed 2026-09-02)
+% PREPRINT — no peer-reviewed version found in Europe PMC as of 2026-09-02.
+% Re-check before submission in case it has since appeared in a journal.
+@article{zhao2024apaguidelines,
+  author  = {Zhao, Qian and Rattray, Magnus},
+  title   = {Guidelines for alternative polyadenylation identification tools using single-cell and spatial transcriptomics data},
+  journal = {bioRxiv},
+  year    = {2024},
+  doi     = {10.1101/2024.11.29.626111},
+  note    = {Preprint, posted 2024-12-04, v1. Re-checked against the bioRxiv API
+             on 2026-09-03: "published": NA, i.e. still no journal version.
+             \url{https://doi.org/10.1101/2024.11.29.626111}}
+}
+
+% ----------------------------------------------------- long reads / Kinnex
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22programmed%20cDNA%20concatenation%22&format=json&resultType=core (accessed 2026-09-02)
+% This is the MAS-ISO-seq method paper that Kinnex commercialises; it is the
+% platform citation the manuscript's "PacBio Kinnex" mentions require.
+@article{alkhafaji2024kinnex,
+  author  = {Al'Khafaji, Aziz M. and Smith, Jonathan T. and Garimella, Kiran V. and Babadi, Mehrtash and Popic, Victoria and Sade-Feldman, Moshe and Gatzen, Michael and Sarkizova, Siranush and Schwartz, Marc A. and Blaum, Emily M. and Day, Allyson and Costello, Maura and Bowers, Tera and Gabriel, Stacey and Banks, Eric and Philippakis, Anthony A. and Boland, Genevieve M. and Blainey, Paul C. and Hacohen, Nir},
+  title   = {High-throughput {RNA} isoform sequencing using programmed {cDNA} concatenation},
+  journal = {Nature Biotechnology},
+  year    = {2024},
+  volume  = {42},
+  number  = {4},
+  pages   = {582--586},
+  doi     = {10.1038/s41587-023-01815-7},
+  note    = {PMID: 37291427}
+}
+
+% ------------------------------------------------------------ pipelines, stats
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Massively%20parallel%20digital%20transcriptional%20profiling%20of%20single%20cells%22&format=json&resultType=core (accessed 2026-09-02)
+@article{zheng2017cellranger,
+  author  = {Zheng, Grace X. Y. and Terry, Jessica M. and Belgrader, Phillip and Ryvkin, Paul and Bent, Zachary W. and Wilson, Ryan and Ziraldo, Solongo B. and Wheeler, Tobias D. and McDermott, Geoff P. and Zhu, Junjie and Gregory, Mark T. and Shuga, Joe and Montesclaros, Luz and Underwood, Jason G. and Masquelier, Donald A. and Nishimura, Stefanie Y. and Schnall-Levin, Michael and Wyatt, Paul W. and Hindson, Christopher M. and Bharadwaj, Rajiv and Wong, Alexander and Ness, Kevin D. and Beppu, Lan W. and Deeg, H. Joachim and McFarland, Christopher and Loeb, Keith R. and Valente, William J. and Ericson, Nolan G. and Stevens, Emily A. and Radich, Jerald P. and Mikkelsen, Tarjei S. and Hindson, Benjamin J. and Bielas, Jason H.},
+  title   = {Massively parallel digital transcriptional profiling of single cells},
+  journal = {Nature Communications},
+  year    = {2017},
+  volume  = {8},
+  pages   = {14049},
+  doi     = {10.1038/ncomms14049},
+  note    = {PMID: 28091601. Standard citation for the 10x Chromium platform and Cell Ranger}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22STARsolo%22&format=json&resultType=core (accessed 2026-09-02)
+% PREPRINT — searched for a peer-reviewed version 2026-09-02 and found none.
+% STARsolo remains a bioRxiv preprint; the DOI below is its stable identifier.
+@article{kaminow2021starsolo,
+  author  = {Kaminow, Benjamin and Yunusov, Dinar and Dobin, Alexander},
+  title   = {{STARsolo}: accurate, fast and versatile mapping/quantification of single-cell and single-nucleus {RNA}-seq data},
+  journal = {bioRxiv},
+  year    = {2021},
+  doi     = {10.1101/2021.05.05.442755},
+  note    = {Preprint, posted 2021-05-05, v1. Re-checked against the bioRxiv API
+             on 2026-09-03: "published": NA, i.e. still no journal version after
+             five years. \url{https://doi.org/10.1101/2021.05.05.442755}}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22STAR%3A%20ultrafast%20universal%20RNA-seq%20aligner%22&format=json&resultType=core (accessed 2026-09-02)
+@article{dobin2013star,
+  author  = {Dobin, Alexander and Davis, Carrie A. and Schlesinger, Felix and Drenkow, Jorg and Zaleski, Chris and Jha, Sonali and Batut, Philippe and Chaisson, Mark and Gingeras, Thomas R.},
+  title   = {{STAR}: ultrafast universal {RNA}-seq aligner},
+  journal = {Bioinformatics},
+  year    = {2013},
+  volume  = {29},
+  number  = {1},
+  pages   = {15--21},
+  doi     = {10.1093/bioinformatics/bts635},
+  note    = {PMID: 23104886}
+}
+
+% verified: https://api.crossref.org/works/10.1111/j.2517-6161.1995.tb02031.x (accessed 2026-09-02)
+@article{benjamini1995fdr,
+  author  = {Benjamini, Yoav and Hochberg, Yosef},
+  title   = {Controlling the false discovery rate: a practical and powerful approach to multiple testing},
+  journal = {Journal of the Royal Statistical Society Series B: Statistical Methodology},
+  year    = {1995},
+  volume  = {57},
+  number  = {1},
+  pages   = {289--300},
+  doi     = {10.1111/j.2517-6161.1995.tb02031.x},
+  note    = {Journal name given as the DOI registrant (OUP) records it. The 1995
+             masthead read "Series B (Methodological)"; either form is defensible,
+             but only the form above is what the DOI record returns. Not indexed
+             in Europe PMC, so Crossref is the single source for this entry.}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22BEDTools%22%20AND%20TITLE%3A%22genomic%20features%22&format=json&resultType=core (accessed 2026-09-02)
+@article{quinlan2010bedtools,
+  author  = {Quinlan, Aaron R. and Hall, Ira M.},
+  title   = {{BEDTools}: a flexible suite of utilities for comparing genomic features},
+  journal = {Bioinformatics},
+  year    = {2010},
+  volume  = {26},
+  number  = {6},
+  pages   = {841--842},
+  doi     = {10.1093/bioinformatics/btq033},
+  note    = {PMID: 20110278}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Single-cell%20chromatin%20state%20analysis%20with%20Signac%22&format=json&resultType=core (accessed 2026-09-02)
+% An Author Correction exists (Nat Methods 2022;19(2):257, doi 10.1038/s41592-022-01393-7,
+% PMID 34997233); it does not replace the article above.
+@article{stuart2021signac,
+  author  = {Stuart, Tim and Srivastava, Avi and Madad, Shaista and Lareau, Caleb A. and Satija, Rahul},
+  title   = {Single-cell chromatin state analysis with {Signac}},
+  journal = {Nature Methods},
+  year    = {2021},
+  volume  = {18},
+  number  = {11},
+  pages   = {1333--1341},
+  doi     = {10.1038/s41592-021-01282-5},
+  note    = {PMID: 34725479. Source of the TF-IDF implementation referenced in Methods}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A35549406&format=json&resultType=core (accessed 2026-09-02)
+% This is the CellTypist paper: the verified abstract states the authors
+% "developed CellTypist, a machine learning tool for rapid and precise cell type
+% annotation". The tool name is not in the title.
+@article{dominguezconde2022celltypist,
+  author  = {Dom{\'i}nguez Conde, C and Xu, C and Jarvis, L B and Rainbow, D B and Wells, S B and Gomes, T and Howlett, S K and Suchanek, O and Polanski, K and King, H W and Mamanova, L and Huang, N and Szabo, P A and Richardson, L and Bolt, L and Fasouli, E S and Mahbubani, K T and Prete, M and Tuck, L and Richoz, N and Tuong, Z K and Campos, L and Mousa, H S and Needham, E J and Pritchard, S and Li, T and Elmentaite, R and Park, J and Rahmani, E and Chen, D and Menon, D K and Bayraktar, O A and James, L K and Meyer, K B and Yosef, N and Clatworthy, M R and Sims, P A and Farber, D L and Saeb-Parsy, K and Jones, J L and Teichmann, S A},
+  title   = {Cross-tissue immune cell analysis reveals tissue-specific features in humans},
+  journal = {Science},
+  year    = {2022},
+  volume  = {376},
+  number  = {6594},
+  pages   = {eabl5197},
+  doi     = {10.1126/science.abl5197},
+  note    = {PMID: 35549406. Describes CellTypist}
+}
+
+% ------------------------------------------------------- datasets and sources
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Single-cell%20RNA%20sequencing%20of%20adult%20mouse%20testes%22&format=json&resultType=core (accessed 2026-09-02)
+% Accession link confirmed two ways on 2026-09-02: (a) the paper's full text at
+% https://pmc.ncbi.nlm.nih.gov/articles/PMC6132189/ gives GEO accession GSE104556;
+% (b) NCBI esummary for the GEO series returns PubMed ID 30204153, i.e. this paper.
+@article{lukassen2018testis,
+  author  = {Lukassen, Soeren and Bosch, Elisabeth and Ekici, Arif B. and Winterpacht, Andreas},
+  title   = {Single-cell {RNA} sequencing of adult mouse testes},
+  journal = {Scientific Data},
+  year    = {2018},
+  volume  = {5},
+  pages   = {180192},
+  doi     = {10.1038/sdata.2018.192},
+  note    = {PMID: 30204153. Data descriptor for GEO series GSE104556}
+}
+
+% verified: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gds&id=200104556&retmode=json (accessed 2026-09-02)
+% Series title, organism (Mus musculus), 2 samples and linked PMID 30204153 all
+% read off the NCBI E-utilities record. Deposition/release dates deliberately
+% omitted: the esummary field was ambiguous and an approximate date is worse
+% than none.
+@misc{gse104556,
+  author       = {Lukassen, Soeren and Bosch, Elisabeth and Ekici, Arif B. and Winterpacht, Andreas},
+  title        = {A broad single-cell transcriptome view of the male mouse germ line},
+  year         = {2018},
+  howpublished = {Gene Expression Omnibus, accession {GSE104556}},
+  note         = {\url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE104556}. Mus musculus; 2 samples; linked publication PMID 30204153}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A32042191&format=json&resultType=core (accessed 2026-09-02)
+% Accession link confirmed: NCBI esummary for GEO series GSE123904 returns
+% PubMed ID 32042191, i.e. this paper.
+@article{laughney2020lungmet,
+  author  = {Laughney, Ashley M. and Hu, Jing and Campbell, Nathaniel R. and Bakhoum, Samuel F. and Setty, Manu and Lavall{\'e}e, Vincent-Philippe and Xie, Yubin and Masilionis, Ignas and Carr, Ambrose J. and Kottapalli, Sanjay and Allaj, Viola and Mattar, Marissa and Rekhtman, Natasha and Xavier, Joao B. and Mazutis, Linas and Poirier, John T. and Rudin, Charles M. and Pe'er, Dana and Massagu{\'e}, Joan},
+  title   = {Regenerative lineages and immune-mediated pruning in lung cancer metastasis},
+  journal = {Nature Medicine},
+  year    = {2020},
+  volume  = {26},
+  number  = {2},
+  pages   = {259--269},
+  doi     = {10.1038/s41591-019-0750-6},
+  note    = {PMID: 32042191}
+}
+
+% verified: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gds&id=200123904&retmode=json (accessed 2026-09-02)
+% Series title, organism (Homo sapiens), 30 samples and linked PMID 32042191 all
+% read off the NCBI E-utilities record. Dates omitted for the reason above.
+% NOTE: the GEO series holds 30 samples; the manuscript uses 17 libraries from
+% 14 patients. That subsetting is a Methods statement, not a citation defect.
+@misc{gse123904,
+  author       = {Laughney, Ashley M. and Hu, Jing and Campbell, Nathaniel R. and Bakhoum, Samuel F. and Setty, Manu and Lavall{\'e}e, Vincent-Philippe and Xie, Yubin and Masilionis, Ignas and Carr, Ambrose J. and Kottapalli, Sanjay and Allaj, Viola and Mattar, Marissa and Rekhtman, Natasha and Xavier, Joao B. and Mazutis, Linas and Poirier, John T. and Rudin, Charles M. and Pe'er, Dana and Massagu{\'e}, Joan},
+  title       = {The single cell transcriptional landscape of lung adenocarcinoma metastasis},
+  year        = {2020},
+  howpublished = {Gene Expression Omnibus, accession {GSE123904}},
+  note        = {\url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE123904}. Homo sapiens; 30 samples; linked publication PMID 32042191}
+}
+
+
+% ============================================================================
+% 2. COMPANION ENTRIES OFFERED ALONGSIDE A TOKEN
+% (all also verified; CITATION_MAP.tsv says which token each accompanies)
+% ============================================================================
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Alternative%20cleavage%20and%20polyadenylation%20in%20health%20and%20disease%22&format=json&resultType=core (accessed 2026-09-02)
+@article{gruber2019apa,
+  author  = {Gruber, Andreas J. and Zavolan, Mihaela},
+  title   = {Alternative cleavage and polyadenylation in health and disease},
+  journal = {Nature Reviews Genetics},
+  year    = {2019},
+  volume  = {20},
+  number  = {10},
+  pages   = {599--614},
+  doi     = {10.1038/s41576-019-0145-z},
+  note    = {PMID: 31267064}
+}
+
+
+% ============================================================================
+% 3. ENTRIES NOT REFERENCED BY ANY CURRENT [[CITE]] TOKEN
+% The manuscript names these tools/resources without a citation slot, or the
+% task brief listed them as resources in play. Verified and provided so a slot
+% can be added; delete any the PI does not want.
+% ============================================================================
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22From%20Louvain%20to%20Leiden%3A%20guaranteeing%20well-connected%20communities%22&format=json&resultType=core (accessed 2026-09-02)
+% "Leiden" is used uncited in MAIN.md line 215 (stage labels) and
+% SUPPLEMENTARY.md line 53 (resolution sweep).
+@article{traag2019leiden,
+  author  = {Traag, V A and Waltman, L and van Eck, N J},
+  title   = {From {Louvain} to {Leiden}: guaranteeing well-connected communities},
+  journal = {Scientific Reports},
+  year    = {2019},
+  volume  = {9},
+  number  = {1},
+  pages   = {5233},
+  doi     = {10.1038/s41598-019-41695-z},
+  note    = {PMID: 30914743}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Detecting%20differential%20usage%20of%20exons%20from%20RNA-seq%20data%22&format=json&resultType=core (accessed 2026-09-02)
+% "DEXSeq" is named uncited in MAIN.md line 59 (the Sierra description).
+@article{anders2012dexseq,
+  author  = {Anders, Simon and Reyes, Alejandro and Huber, Wolfgang},
+  title   = {Detecting differential usage of exons from {RNA}-seq data},
+  journal = {Genome Research},
+  year    = {2012},
+  volume  = {22},
+  number  = {10},
+  pages   = {2008--2017},
+  doi     = {10.1101/gr.133744.111},
+  note    = {PMID: 22722343. Describes DEXSeq}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Patterns%20of%20variant%20polyadenylation%20signal%20usage%20in%20human%20genes%22&format=json&resultType=core (accessed 2026-09-02)
+% Candidate support for the uncited "canonical hexamer" / poly(A) signal usage
+% statements (MAIN.md lines 84, 138, 286; SUPPLEMENTARY.md lines 35, 37, 41).
+@article{beaudoing2000hexamer,
+  author  = {Beaudoing, Emmanuel and Freier, Susan and Wyatt, Jacqueline R. and Claverie, Jean-Michel and Gautheret, Daniel},
+  title   = {Patterns of variant polyadenylation signal usage in human genes},
+  journal = {Genome Research},
+  year    = {2000},
+  volume  = {10},
+  number  = {7},
+  pages   = {1001--1010},
+  doi     = {10.1101/gr.10.7.1001},
+  note    = {PMID: 10899149}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22A%20comprehensive%20analysis%20of%203%27%20end%20sequencing%20data%20sets%20reveals%20novel%20polyadenylation%20signals%22&format=json&resultType=core (accessed 2026-09-02)
+% The PolyASite methodology paper; the modern reference for poly(A) signal
+% hexamer sets and for internal-priming filtering in 3'-end sequencing.
+@article{gruber2016polyasignals,
+  author  = {Gruber, Andreas J. and Schmidt, Ralf and Gruber, Andreas R. and Martin, Georges and Ghosh, Souvik and Belmadani, Manuel and Keller, Walter and Zavolan, Mihaela},
+  title   = {A comprehensive analysis of 3' end sequencing data sets reveals novel polyadenylation signals and the repressive role of heterogeneous ribonucleoprotein {C} on cleavage and polyadenylation},
+  journal = {Genome Research},
+  year    = {2016},
+  volume  = {26},
+  number  = {8},
+  pages   = {1145--1159},
+  doi     = {10.1101/gr.202432.115},
+  note    = {PMID: 27382025}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22PolyASite%22&format=json&resultType=core (accessed 2026-09-02)
+% The successor atlas. The manuscript benchmarks against 2.0 throughout; this is
+% here only in case a reviewer asks why 3.0 was not used.
+@article{moon2025polyasite3,
+  author  = {Moon, Youngbin and Herrmann, Christina J. and Mironov, Aleksei and Zavolan, Mihaela},
+  title   = {{PolyASite} v3.0: a multi-species atlas of polyadenylation sites inferred from single-cell {RNA}-sequencing data},
+  journal = {Nucleic Acids Research},
+  year    = {2025},
+  volume  = {53},
+  number  = {D1},
+  pages   = {D197--D204},
+  doi     = {10.1093/nar/gkae1043},
+  note    = {PMID: 39530237}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22Twelve%20years%20of%20SAMtools%20and%20BCFtools%22&format=json&resultType=core (accessed 2026-09-02)
+@article{danecek2021samtools,
+  author  = {Danecek, Petr and Bonfield, James K and Liddle, Jennifer and Marshall, John and Ohan, Valeriu and Pollard, Martin O and Whitwham, Andrew and Keane, Thomas and McCarthy, Shane A and Davies, Robert M and Li, Heng},
+  title   = {Twelve years of {SAMtools} and {BCFtools}},
+  journal = {GigaScience},
+  year    = {2021},
+  volume  = {10},
+  number  = {2},
+  pages   = {giab008},
+  doi     = {10.1093/gigascience/giab008},
+  note    = {PMID: 33590861. Cite for samtools/htslib; pysam has no paper of its own}
+}
+
+% verified: https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE%3A%22UMI-tools%22&format=json&resultType=core (accessed 2026-09-02)
+@article{smith2017umitools,
+  author  = {Smith, Tom and Heger, Andreas and Sudbery, Ian},
+  title   = {{UMI}-tools: modeling sequencing errors in Unique Molecular Identifiers to improve quantification accuracy},
+  journal = {Genome Research},
+  year    = {2017},
+  volume  = {27},
+  number  = {3},
+  pages   = {491--499},
+  doi     = {10.1101/gr.209601.116},
+  note    = {PMID: 28100584}
+}
+
+% ============================================================================
+% END. Unresolved targets are in CITATION_GAPS.md — they are deliberately not
+% represented here, because a guessed reference is worse than a marked gap.
+% ============================================================================

@@ -1,0 +1,125 @@
+# CITATION.cff for the COMPANION / analysis repository
+# (github.com/BMGLab/Project_PeakATail).
+#
+# This is the second of the two citation files. The tool repo's file is
+# submission/CITATION.cff. This one clears "Before release" blocker 1 in the
+# companion repo's README ("Replace the placeholder author list ... with the
+# final manuscript author list and ORCIDs").
+#
+# Validated 2026-09-02 against the Citation File Format 1.2.0 JSON schema:
+# parses as YAML, passes jsonschema Draft-07 with zero errors.
+#
+# ============================ READ THIS FIRST ============================
+# AUTHORSHIP IS AN OPEN PI DECISION. The file this replaces currently lists
+# FOUR authors, including **Ebru Koçakaya**, who is NOT on the manuscript
+# author list the PI set on 2026-09-02 (A.A.T., Y.K.). The git record of the
+# internal working directory shows:
+#
+#     git shortlog -sne --all
+#       111  ebrukocakaya <kocakayaebru@gmail.com>
+#        10  yasinkaymaz  <yasinkaymaz@gmail.com>
+#         2  Yasin Kaymaz <yasinkaymaz@gmail.com>
+#         1  Sercan Ozturk <n.sercan.ozturk@gmail.com>
+#         1  ebrukocakaya <sevtapduman@gmail.com>
+#
+# i.e. 111 of 125 commits. Software authorship and paper authorship are
+# allowed to differ, and dropping a named person from a citation record is
+# not a decision an assistant may make silently.
+#
+# The list below follows the README blocker's own instruction (match the
+# manuscript author list). If the PI decides the analysis code should also
+# credit Ebru Koçakaya and/or Sercan Özturk, add them here as `person`
+# entries — the schema takes any number — before the repository goes public.
+# Whatever is decided, this file is what Zenodo will read when it mints the
+# DOI, so it is the authorship record of the archived software.
+# =========================================================================
+#
+# PLACEHOLDERS: same two as the tool repo's file, for the same reasons.
+# `version` carries the literal placeholder (any non-empty string is
+# schema-valid); `doi` is commented out because CFF constrains it with the
+# pattern ^10\.\d{4,9}(\.\d+)?/[...]+$ and a placeholder string there makes
+# the file fail validation. [[PLACEHOLDER: Zenodo DOI]]
+#
+# LICENCE: `license: MIT` mirrors the claim already in this repo's README and
+# its current CITATION.cff. THE REPO HAS NO LICENSE FILE AT ALL — that is
+# "Before release" blocker 2 and the subject of LICENSE_DECISION.md. Set this
+# field to whatever SPDX id the PI adopts, in the same commit that adds the
+# LICENSE text.
+
+cff-version: 1.2.0
+message: "If you use this analysis code, its figure source data or its benchmark outputs, please cite this repository and the paper listed under `preferred-citation`."
+type: software
+title: "Project_PeakATail: benchmarking and application analyses for PeakATail"
+abstract: >-
+  Analysis code, figure source data and environment specifications for the
+  PeakATail manuscript: validation of single-cell poly(A) site detection, a
+  seven-tool head-to-head benchmark of single-cell APA callers scored by one
+  common scorer against the PolyASite 2.0 atlas and a PacBio Kinnex long-read
+  truth set, and cell-type-resolved APA analyses in lung adenocarcinoma and
+  mouse testis. Includes the pre-registration documents with their appended
+  amendments, the run manifests, and one script per manuscript figure with its
+  audit TSVs.
+version: "[[PLACEHOLDER: version tag]]"
+# doi: [[PLACEHOLDER: Zenodo DOI]]   # uncomment and fill, e.g. 10.5281/zenodo.NNNNNNN
+repository-code: "https://github.com/BMGLab/Project_PeakATail"
+license: MIT
+
+authors:
+  - family-names: "Amiri Tabat"
+    given-names: "Amir"
+    affiliation: "Department of Computer Engineering, Faculty of Computer and Informatics Sciences, Ege University, İzmir, Türkiye"
+  - family-names: "Kaymaz"
+    given-names: "Yasin"
+    orcid: "https://orcid.org/0000-0002-9725-7536"
+    email: "yasin.kaymaz@ege.edu.tr"
+    affiliation: "Department of Bioengineering, Faculty of Engineering, Ege University, İzmir, Türkiye"
+
+contact:
+  - family-names: "Kaymaz"
+    given-names: "Yasin"
+    orcid: "https://orcid.org/0000-0002-9725-7536"
+    email: "yasin.kaymaz@ege.edu.tr"
+    affiliation: "Department of Bioengineering, Faculty of Engineering, Ege University, İzmir, Türkiye"
+
+keywords:
+  - bioinformatics
+  - single-cell RNA-seq
+  - alternative polyadenylation
+  - poly(A) site
+  - benchmarking
+  - reproducibility
+
+references:
+  - type: software
+    title: "PeakATail"
+    authors:
+      - family-names: "Amiri Tabat"
+        given-names: "Amir"
+      - family-names: "Kaymaz"
+        given-names: "Yasin"
+        orcid: "https://orcid.org/0000-0002-9725-7536"
+    repository-code: "https://github.com/BMGLab/PeakATail"
+    notes: >-
+      The tool this repository benchmarks and applies. The manuscript's frozen
+      commits are 4efeb1252e6d7c7d51b252b443b5be5947ae000f (v1) and
+      9dfdefb3eb353b0817ef79c4eb9ace6d6c8aab53 (v2, the manuscript's record);
+      both are reachable on the public default branch `develop`.
+
+preferred-citation:
+  type: article
+  status: in-preparation
+  title: "PeakATail: precision-first poly(A)-site calling and calibrated alternative polyadenylation analysis in single-cell RNA-seq"
+  authors:
+    - family-names: "Amiri Tabat"
+      given-names: "Amir"
+      affiliation: "Department of Computer Engineering, Faculty of Computer and Informatics Sciences, Ege University, İzmir, Türkiye"
+    - family-names: "Kaymaz"
+      given-names: "Yasin"
+      orcid: "https://orcid.org/0000-0002-9725-7536"
+      email: "yasin.kaymaz@ege.edu.tr"
+      affiliation: "Department of Bioengineering, Faculty of Engineering, Ege University, İzmir, Türkiye"
+  notes: >-
+    Manuscript in preparation as of 2026-09-02. Replace `status:
+    in-preparation` with the published record — adding `journal`, `year`,
+    `volume`, `pages` and `doi` — once the paper is accepted. Do not add a
+    `year` before publication.

@@ -48,8 +48,20 @@ from matplotlib.patches import Patch, FancyBboxPatch
 import numpy as np
 import pandas as pd
 
-mpl.rcParams["pdf.fonttype"] = 42
-mpl.rcParams["ps.fonttype"] = 42
+import re
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
+
+apply_rc()   # DESIGN_DIRECTIVES.md item 1: one type scale across every figure
+ANN = TYPE["annotation_min"]   # 6 pt floor for on-figure annotation
+
+
+def sc_title(s):
+    """Sentence-case a panel title (directive 6) while keeping the lower-case
+    panel letter that prefixes it: 'a  the ...' -> 'a  The ...'."""
+    m = re.match(r"^([a-z])(\s+)(.*)$", s, flags=re.S)
+    return m.group(1) + m.group(2) + sentence_case(m.group(3)) if m else sentence_case(s)
 
 WD = "/mnt/ssd1/Projects/PeakATail_wd"
 FIGDIR = f"{WD}/manuscript/figures"
@@ -283,14 +295,12 @@ pd.DataFrame(ref_rows).to_csv(f"{TSVDIR}/{NAME}_reference_lines.tsv", sep="\t", 
 # ----------------------------------------------------------------------------
 # 6. figure
 # ----------------------------------------------------------------------------
+apply_rc()   # type scale from _pubstyle; only this figure's non-type rc follows
 plt.rcParams.update({
-    "font.size": 7.4, "axes.labelsize": 7.2, "axes.titlesize": 8.0,
-    "xtick.labelsize": 6.5, "ytick.labelsize": 6.5, "legend.fontsize": 6.0,
     "text.color": INK, "axes.labelcolor": INK, "axes.edgecolor": MUTED,
     "xtick.color": MUTED, "ytick.color": MUTED, "figure.facecolor": SURFACE,
     "axes.facecolor": SURFACE, "savefig.facecolor": SURFACE,
-    "axes.titlelocation": "left", "axes.titlepad": 5, "axes.linewidth": 0.7,
-    "font.family": "DejaVu Sans", "hatch.linewidth": 0.6,
+    "axes.titlelocation": "left", "axes.titlepad": 5, "hatch.linewidth": 0.6,
 })
 # canvas: the pre-submission 7.5 x 8.7 in canvas carried a suptitle+subtitle
 # band on top and a 12-line caveat block below; both now live in the caption
@@ -298,8 +308,10 @@ plt.rcParams.update({
 # figsize narrowed 7.5 -> 7.1 in; because this script saves with
 # bbox_inches='tight', the funnel's long y labels (left) and panel b's legend
 # (right) overhang the declared canvas, so the DELIVERED image is ~8.9 in
-# (225 mm) wide, down from 9.3 in pre-surgery.  Narrowing further crowds the
-# 5.2-6.5 pt annotations (legibility outranks the 180 mm width target).
+# (225 mm) wide, down from 9.3 in pre-surgery; the 2026-09-03 design pass lifted
+# every annotation to the shared 6 pt floor, which takes the delivered image to
+# ~9.1 in (231 mm).  Narrowing further crowds those annotations (legibility
+# outranks the 180 mm width target).
 fig = plt.figure(figsize=(7.1, 7.3))
 gs = fig.add_gridspec(2, 2, height_ratios=[1.0, 1.0], width_ratios=[1.05, 1.0], hspace=0.46, wspace=0.30,
                       left=0.058, right=0.985, top=0.965, bottom=0.105)
@@ -318,30 +330,35 @@ def style(ax, axis="y"):
 y = np.arange(len(A))
 ax_a1.barh(y, A["n"], color=A["color"], height=0.62, zorder=3)
 for i, rw in A.iterrows():
-    ax_a1.text(rw["n"] + N_INPUT * 0.015, i, f"{rw['n']:,} ({rw['frac_of_input']:.1%})".replace("100.0%", "100%"), va="center", ha="left", fontsize=6.0, color=INK)
-ax_a1.set_yticks(y); ax_a1.set_yticklabels([s[2] for s in STAGES], fontsize=5.9, linespacing=1.15)
+    ax_a1.text(rw["n"] + N_INPUT * 0.015, i, f"{rw['n']:,} ({rw['frac_of_input']:.1%})".replace("100.0%", "100%"), va="center", ha="left", fontsize=ANN, color=INK)
+ax_a1.set_yticks(y); ax_a1.set_yticklabels([sentence_case(s[2]) for s in STAGES], fontsize=ANN, linespacing=1.15)
 ax_a1.invert_yaxis(); ax_a1.set_xlim(0, N_INPUT * 1.95)
 ax_a1.set_xticks([0, 20000, 40000]); ax_a1.set_xticklabels(["0", "20k", "40k"])
 N_DEFAULT = int(funnel.loc["input", "n_pass"])   # 44,413 incl. 19 off-contig sites; frac_of_input is relative to this
-style(ax_a1, "x"); ax_a1.set_xlabel(f"sites retained (% of\nthe {N_DEFAULT:,}-site default)", fontsize=6.3)
-ax_a1.set_title("a  Pre-registered funnel (13 §3) and per-stage concordance")
+style(ax_a1, "x"); ax_a1.set_xlabel(sentence_case(f"sites retained (% of\nthe {N_DEFAULT:,}-site default)"),
+                                   fontsize=ANN + 0.3)
+# the '(13 s3)' citation moved to the Legend sidecar (directive 2, no-loss: 'Definition
+# (13 s3, committed before any number existed)' is the legend's own sentence)
+ax_a1.set_title(sc_title("a  pre-registered funnel and per-stage concordance"))
 
-ax_a2.axvline(TARGET, color=INK, lw=0.9, ls=(0, (3, 2)), zorder=2)
-ax_a2.text(TARGET + 0.01, len(A) - 0.45, "target 0.70", fontsize=5.8, color=INK, ha="left", va="center")
+# stops below the 'change vs previous stage' caption strip, which it used to cross
+ax_a2.axvline(TARGET, ymax=0.88, color=INK, lw=0.9, ls=(0, (3, 2)), zorder=2)
+ax_a2.text(TARGET + 0.01, len(A) - 0.45, "target 0.70", fontsize=ANN, color=INK, ha="left", va="center")
 ax_a2.errorbar(A["frac_t5"], y, xerr=[A["frac_t5"] - A["wilson95_lo"], A["wilson95_hi"] - A["frac_t5"]],
                fmt="none", ecolor=INK, elinewidth=0.8, capsize=1.5, zorder=4)
 ax_a2.scatter(A["frac_t5"], y, s=26, c=A["color"], edgecolor=SURFACE, linewidth=0.6, zorder=5)
 for i, rw in A.iterrows():
-    ax_a2.text(rw["frac_t5"] + 0.022, i, f"{rw['frac_t5']:.3f}", ha="left", va="center", fontsize=6.0, color=INK, zorder=6)
+    ax_a2.text(rw["frac_t5"] + 0.022, i, f"{rw['frac_t5']:.3f}", ha="left", va="center", fontsize=ANN, color=INK, zorder=6)
     if i > 0:
         d = rw["delta_frac_vs_previous"]
         big = d < -0.1
-        ax_a2.text(0.415, i - 0.5, (f"{d:+.3f}" if abs(d) > 0 else "no change"), ha="left", va="center", fontsize=5.8,
+        ax_a2.text(0.415, i - 0.5, (f"{d:+.3f}" if abs(d) > 0 else "no change"), ha="left", va="center", fontsize=ANN,
                    color=(VERM if big else MUTED), fontweight=("bold" if big else "normal"), zorder=6)
-ax_a2.text(0.415, -0.5, "change vs\nprevious stage", ha="left", va="center", fontsize=5.2, color=MUTED)
+ax_a2.text(0.415, -0.5, sentence_case("change vs\nprevious stage"), ha="left", va="center", fontsize=ANN, color=MUTED)
 ax_a2.set_xlim(0.40, 1.0); ax_a2.set_xticks([0.5, 0.7, 0.9]); ax_a2.set_ylim(len(A) - 0.35, -0.85)
 plt.setp(ax_a2.get_yticklabels(), visible=False); ax_a2.tick_params(axis="y", length=0)
-style(ax_a2, "x"); ax_a2.set_xlabel("fraction within 25 bp of a\nKinnex 3' end (>=5 UMI),\nWilson 95% CI", fontsize=6.3)
+style(ax_a2, "x"); ax_a2.set_xlabel(sentence_case("fraction within 25 bp of a\nKinnex 3' end (>=5 UMI),\nWilson 95% CI"),
+                                   fontsize=ANN + 0.3)
 
 # --- b: concordance vs truth stringency --------------------------------------
 xs = np.array(list(TRUTHS.values()), dtype=float)
@@ -349,7 +366,7 @@ nb = B[B.set == "trusted_novel"].sort_values("umi_threshold")
 ax_b.fill_between(xs, nb["null_min"].values, nb["null_max"].values, color=GREY, alpha=0.6, lw=0, zorder=1)   # true 10-seed range, not widened
 ax_b.plot(xs, nb["null_mean"].values, color=GREY, lw=1.3, ls="-", zorder=2)
 ax_b.axhline(TARGET, color=INK, lw=0.9, ls=(0, (3, 2)), zorder=2)
-ax_b.text(560, TARGET + 0.012, "pre-registered target 0.70", fontsize=5.9, color=INK, ha="right", va="bottom")
+ax_b.text(560, TARGET + 0.012, "pre-registered target 0.70", fontsize=ANN, color=INK, ha="right", va="bottom")
 handles = []
 for q, meta in SETS.items():
     g = B[B.set == q].sort_values("umi_threshold")
@@ -365,11 +382,14 @@ for q, meta in SETS.items():
                           mfc=meta["mfc"], mec=meta["color"], mew=0.9, label=lab))
 ax_b.set_xscale("log"); ax_b.set_xticks(xs); ax_b.set_xticklabels([f">={int(v)}" for v in xs]); ax_b.minorticks_off()
 ax_b.set_xlim(4.2, 620); ax_b.set_ylim(0, 1.36); ax_b.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0]); ax_b.spines["left"].set_bounds(0, 1.0)
-ax_b.set_xlabel("Kinnex truth stringency: UMI per 3' end (log)"); ax_b.set_ylabel("fraction within 25 bp, strand-matched (Wilson 95% CI)")
+ax_b.set_xlabel(sentence_case("Kinnex truth stringency: UMI per 3' end (log)"))
+ax_b.set_ylabel(sentence_case("fraction within 25 bp, strand-matched (Wilson 95% CI)"))
 handles.append(Line2D([], [], color=GREY, lw=1.3, label=f"gene-body-shuffled null, 10 seeds (mean {float(nb['null_mean'].iloc[0]):.3f}, "
                       f"range {float(nb['null_min'].iloc[0]):.3f}-{float(nb['null_max'].iloc[0]):.3f} at >=5 UMI)"))
-style(ax_b); ax_b.legend(handles=handles, loc="upper left", frameon=False, handlelength=2.4, labelspacing=0.3, borderaxespad=0.1, fontsize=5.6)
-ax_b.set_title("b  Concordance vs truth stringency: target missed throughout")
+style(ax_b); ax_b.legend(handles=handles, loc="upper left", frameon=False, handlelength=2.4, labelspacing=0.3, borderaxespad=0.1, fontsize=ANN)
+# the ': target missed throughout' verdict clause moved to the Legend sidecar (directive 2,
+# no-loss: 'the pre-registered >=0.70 target is not met at any threshold' is in the legend)
+ax_b.set_title(sc_title("b  concordance vs truth stringency"))
 
 # --- c1: feature-class composition --------------------------------------------
 rows_c = C[C.panel == "c_feature_class"]
@@ -381,17 +401,17 @@ for j, (s, lab, col) in enumerate(COMP_SETS):
         fr = float(g.loc[cls, "frac"])
         ax_c1.barh(j, fr, left=left, color=FEAT_COLS[cls], height=0.58, edgecolor=SURFACE, linewidth=1.2, zorder=3)
         if fr >= 0.06:
-            ax_c1.text(left + fr / 2, j, f"{fr:.1%}", ha="center", va="center", fontsize=5.9,
+            ax_c1.text(left + fr / 2, j, f"{fr:.1%}", ha="center", va="center", fontsize=ANN,
                        color=(SURFACE if cls in ("3utr", "other_exon", "intronic") else INK), zorder=4)
         left += fr
-ax_c1.set_yticks(yc); ax_c1.set_yticklabels([f"{lab}\nn = {int(feat.loc[s, 'n']):,}" for s, lab, _ in COMP_SETS], fontsize=6.2, linespacing=1.15)
+ax_c1.set_yticks(yc); ax_c1.set_yticklabels([sentence_case(f"{lab}\nn = {int(feat.loc[s, 'n']):,}") for s, lab, _ in COMP_SETS], fontsize=TYPE["tick"], linespacing=1.15)
 for t, (_, _, col) in zip(ax_c1.get_yticklabels(), COMP_SETS):
     t.set_color(col)
 ax_c1.invert_yaxis(); ax_c1.set_xlim(0, 1); ax_c1.set_xticks([0, 0.25, 0.5, 0.75, 1]); ax_c1.set_xticklabels(["0", "25", "50", "75", "100%"])
-style(ax_c1, "x"); ax_c1.set_xlabel("share of sites (Ensembl 99 GTF, strand-matched, hierarchical)", labelpad=2)
-ax_c1.legend(handles=[Patch(facecolor=FEAT_COLS[c], label=FEAT_LABEL[c]) for c in FEAT_COLS], loc="upper center",
+style(ax_c1, "x"); ax_c1.set_xlabel(sentence_case("share of sites (Ensembl 99 GTF, strand-matched, hierarchical)"), labelpad=2)
+ax_c1.legend(handles=[Patch(facecolor=FEAT_COLS[c], label=sentence_case(FEAT_LABEL[c])) for c in FEAT_COLS], loc="upper center",
              bbox_to_anchor=(0.5, -0.46), ncol=4, frameon=False, handlelength=1.2, columnspacing=1.2, handletextpad=0.5)
-ax_c1.set_title("c  Feature class and internal-priming decoy proximity")
+ax_c1.set_title(sc_title("c  feature class and internal-priming decoy proximity"))
 
 # --- c2: decoy proximity ---------------------------------------------------------
 rows_d = C[C.panel == "c_decoy_within25bp"]
@@ -401,11 +421,11 @@ ax_c2.barh(yd, rows_d["frac"], color=cols, height=0.58, zorder=3)
 ax_c2.errorbar(rows_d["frac"], yd, xerr=[rows_d["frac"] - rows_d["wilson95_lo"], rows_d["wilson95_hi"] - rows_d["frac"]],
                fmt="none", ecolor=INK, elinewidth=0.7, capsize=1.4, zorder=4)
 for j, (_, rw) in enumerate(rows_d.iterrows()):
-    ax_c2.text(rw["wilson95_hi"] + 0.006, j, f"{rw['frac']:.1%} ({rw['count']:,} / {rw['n']:,})", va="center", ha="left", fontsize=5.9, color=INK)
-ax_c2.set_yticks(yd); ax_c2.set_yticklabels([lab for _, lab, _ in DECOY_SETS], fontsize=6.2)
+    ax_c2.text(rw["wilson95_hi"] + 0.006, j, f"{rw['frac']:.1%} ({rw['count']:,} / {rw['n']:,})", va="center", ha="left", fontsize=ANN, color=INK)
+ax_c2.set_yticks(yd); ax_c2.set_yticklabels([sentence_case(lab) for _, lab, _ in DECOY_SETS], fontsize=TYPE["tick"])
 ax_c2.invert_yaxis(); ax_c2.set_xlim(0, 0.40); ax_c2.set_xticks([0, 0.1, 0.2, 0.3, 0.4]); ax_c2.set_xticklabels(["0", "10", "20", "30", "40%"])
 style(ax_c2, "x")
-ax_c2.set_xlabel("within 25 bp (same strand) of a Kinnex x3p internal-priming decoy terminus\n(Kinnex: >=12 A in +1..+18; caller's IP rule: -10..+30, >=6 A or >=70% A)", labelpad=2, fontsize=6.0)
+ax_c2.set_xlabel(sentence_case("within 25 bp (same strand) of a Kinnex x3p internal-priming decoy terminus\n(Kinnex: >=12 A in +1..+18; caller's IP rule: -10..+30, >=6 A or >=70% A)"), labelpad=2, fontsize=ANN)
 
 # --- d: POST-HOC strata -------------------------------------------------------------
 plot_d = Dd[Dd.group.isin(["feature", "support"])].reset_index(drop=True)
@@ -421,9 +441,9 @@ ax_d.axhline(TARGET, color=INK, lw=0.9, ls=(0, (3, 2)), zorder=2)
 ax_d.axhline(FRAC_TN, color=BLUE, lw=0.7, ls="-", alpha=0.6, zorder=2)
 ax_d.axhline(T20, color=BLUE, lw=0.7, ls=(0, (1, 1.5)), alpha=0.6, zorder=2)
 LBOX = dict(boxstyle="round,pad=0.15", fc=SURFACE, ec="none")
-ax_d.text(XR, TARGET, "target\n0.70", fontsize=5.3, color=INK, ha="left", va="center", linespacing=1.1, bbox=LBOX, zorder=6)
-ax_d.text(XR, FRAC_TN, f"all, >=5 UMI\n{FRAC_TN:.3f}", fontsize=5.3, color=BLUE, ha="left", va="center", linespacing=1.1, bbox=LBOX, zorder=6)
-ax_d.text(XR, T20, f"all, >=20 UMI\n{T20:.3f}", fontsize=5.3, color=BLUE, ha="left", va="center", linespacing=1.1, bbox=LBOX, zorder=6)
+ax_d.text(XR, TARGET, "target\n0.70", fontsize=ANN, color=INK, ha="left", va="center", linespacing=1.1, bbox=LBOX, zorder=6)
+ax_d.text(XR, FRAC_TN, f"all, >=5 UMI\n{FRAC_TN:.3f}", fontsize=ANN, color=BLUE, ha="left", va="center", linespacing=1.1, bbox=LBOX, zorder=6)
+ax_d.text(XR, T20, f"all, >=20 UMI\n{T20:.3f}", fontsize=ANN, color=BLUE, ha="left", va="center", linespacing=1.1, bbox=LBOX, zorder=6)
 ax_d.bar(xpos - w / 2, plot_d["frac_t5"], width=w * 0.94, color=BLUE, zorder=3)
 ax_d.bar(xpos + w / 2, plot_d["frac_t20"], width=w * 0.94, facecolor="none", edgecolor=BLUE, linewidth=1.0, zorder=3)
 ax_d.errorbar(xpos - w / 2, plot_d["frac_t5"], yerr=[plot_d["frac_t5"] - plot_d["t5_wilson95_lo"], plot_d["t5_wilson95_hi"] - plot_d["frac_t5"]],
@@ -431,23 +451,27 @@ ax_d.errorbar(xpos - w / 2, plot_d["frac_t5"], yerr=[plot_d["frac_t5"] - plot_d[
 ax_d.errorbar(xpos + w / 2, plot_d["frac_t20"], yerr=[plot_d["frac_t20"] - plot_d["t20_wilson95_lo"], plot_d["t20_wilson95_hi"] - plot_d["frac_t20"]],
               fmt="none", ecolor=INK, elinewidth=0.7, capsize=1.3, zorder=4)
 for xi, (_, rw) in zip(xpos, plot_d.iterrows()):
-    ax_d.text(xi - w / 2, rw["t5_wilson95_hi"] + 0.012, f"{rw['frac_t5']:.2f}", ha="center", va="bottom", fontsize=5.6, color=INK)
-    ax_d.text(xi + w / 2, rw["t20_wilson95_hi"] + 0.012, f"{rw['frac_t20']:.2f}", ha="center", va="bottom", fontsize=5.6, color=MUTED)
+    ax_d.text(xi - w / 2, rw["t5_wilson95_hi"] + 0.012, f"{rw['frac_t5']:.2f}", ha="center", va="bottom", fontsize=ANN, color=INK)
+    ax_d.text(xi + w / 2, rw["t20_wilson95_hi"] + 0.012, f"{rw['frac_t20']:.2f}", ha="center", va="bottom", fontsize=ANN, color=MUTED)
 ax_d.set_xticks(xpos)
 TICK_NAME = {"other exon": "other\nexon", "intergenic": "inter-\ngenic"}
 ax_d.set_xticklabels([f"{TICK_NAME.get(rw['level'], rw['level'])}\n{rw['n']:,}\n({rw['frac_of_trusted_novel']:.0%})" for _, rw in plot_d.iterrows()],
-                     fontsize=5.5, linespacing=1.12)
+                     fontsize=ANN, linespacing=1.12)
 for grp, lab in (("feature", "by feature class"), ("support", "by clip-molecule support")):
     sel = xpos[plot_d.group.values == grp]
-    ax_d.text(sel.mean(), -0.255, lab, transform=ax_d.get_xaxis_transform(), ha="center", va="top", fontsize=6.2, color=INK, fontweight="bold")
+    ax_d.text(sel.mean(), -0.255, sentence_case(lab), transform=ax_d.get_xaxis_transform(), ha="center", va="top", fontsize=TYPE["tick"], color=INK, fontweight="bold")
 ax_d.set_xlim(xpos[0] - 0.6, xpos[-1] + 1.75); ax_d.set_ylim(0, 1.0)
-ax_d.set_ylabel("fraction within 25 bp (Wilson 95% CI)")
+ax_d.set_ylabel(sentence_case("fraction within 25 bp (Wilson 95% CI)"))
 style(ax_d)
 ax_d.legend(handles=[Patch(facecolor=BLUE, label="Kinnex >=5 UMI"), Patch(facecolor="none", edgecolor=BLUE, lw=1.0, label="Kinnex >=20 UMI")],
             loc="upper left", frameon=False, ncol=1, handlelength=1.2, labelspacing=0.3, borderaxespad=0.2)
-ax_d.set_title("d  POST HOC, not a definition: trusted-novel sites by stratum", color=VERM)
-ax_d.text(0.99, 0.985, "exploratory: strata chosen AFTER seeing the data;\n>=5 molecules = 5-9 and 10+ bins pooled", transform=ax_d.transAxes,
-          ha="right", va="top", fontsize=5.2, color=VERM, linespacing=1.2)
+# same words, set on two lines: one line overran the canvas at the shared type scale.
+# The POST HOC caveat STAYS on the image (21 s7 caveat rule) and keeps its warning colour.
+ax_d.set_title(sc_title("d  trusted-novel sites by stratum\n   POST HOC, not a definition"), color=VERM)
+# same words on three lines: at the 6 pt floor the two-line form reached across into
+# the key on the left (design pass 2026-09-03)
+ax_d.text(0.99, 0.985, "exploratory: strata chosen\nAFTER seeing the data; >=5 molecules\n= 5-9 and 10+ bins pooled",
+          transform=ax_d.transAxes, ha="right", va="top", fontsize=ANN, color=VERM, linespacing=1.2)
 
 # dashed frame around panel d so it cannot be read as part of the pre-registered result
 fig.canvas.draw()
@@ -496,6 +520,25 @@ print(f"VERDICT: trusted-novel {FRAC_TN:.3f} [{TN['wilson95_lo']:.3f}-{TN['wilso
 # it is only written when VERSION == 'v2' so a v1 record render cannot
 # overwrite the manuscript caption with mismatched prose.
 # ---------------------------------------------------------------------------
+DESIGN_NOTE = r"""
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`); only this figure's non-type
+rc (surface colours, left-aligned titles, hatch width) is still set locally, and every on-figure annotation,
+key entry and tick label now sits at or above the 6 pt floor — the smallest were 5.2 pt. Axis labels, panel
+titles, key entries and prose tick labels are sentence-cased through `_pubstyle.sentence_case()`, canonical
+identifiers preserved and the lower-case panel letters kept. Three title clauses left the image for the Legend
+above: panel a's *(13 §3)* citation (no-loss — the legend's "Definition (13 §3, committed before any number
+existed)"), panel b's *: target missed throughout* verdict (no-loss — "the pre-registered ≥0.70 target is not
+met at any threshold"), and panel d's title is now set on two lines with the same words. **The POST HOC
+caveat stays on the image**, in its warning colour, with the dashed frame — it is a caveat, not a subtitle.
+Three overlaps were fixed: panel d's exploratory note is set on three lines so it clears the key, panel a's
+0.70 reference stops below the "change vs previous stage" strip it used to cross, and no text/text pair
+remains. The image is saved with `bbox_inches="tight"`, so labels that overhang the declared 7.1 in canvas are
+absorbed into the delivered ~9.1 in image; the script's own 8-px edge check confirms nothing is clipped. No
+panel, number or audit TSV changed; all five TSVs regenerate byte-identical, and the `TRUSTED_NOVEL_VERSION`
+v1/v2 switch is untouched.
+"""
+
 CAPTION_MD = r"""# Fig S7 — `figS7_novelfunnel` caption (generated by `scripts/manuscript_figures/figS7_novelfunnel.py`; renamed 2026-09-02, see FIGURE_MAP.tsv — demoted from 21's main Fig 6 slot, prominence kept in R6/abstract/Author Summary; submission pass 2026-09-02: the on-figure suptitle, subtitle and caveat block moved into the Legend below, image at 600 dpi)
 
 ## Legend
@@ -582,7 +625,7 @@ Palette: Okabe-Ito, six-checks validated 2026-08-21 (adjacent CVD ΔE ≥ 8.5; f
 """
 if VERSION == "v2":
     with open(f"{FIGDIR}/{NAME}.caption.md", "w") as fh:
-        fh.write(CAPTION_MD)
+        fh.write(CAPTION_MD + DESIGN_NOTE)
     print("wrote", f"{FIGDIR}/{NAME}.caption.md")
 else:
     print("caption sidecar NOT rewritten (v1 record render; the sidecar describes v2)")

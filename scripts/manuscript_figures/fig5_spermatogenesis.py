@@ -66,14 +66,20 @@ for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXP
 
 import json
 
+import sys
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch, FancyBboxPatch
+from matplotlib.transforms import offset_copy
 import numpy as np
 import pandas as pd
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _pubstyle import PAL, TYPE, apply_rc, sentence_case   # shared publication style
 
 mpl.rcParams["pdf.fonttype"] = 42
 mpl.rcParams["ps.fonttype"] = 42
@@ -140,14 +146,20 @@ MICE = ["mouse1", "mouse2"]
 MOUSE_LABEL = {"mouse1": "mouse 1", "mouse2": "mouse 2"}
 CHANCE = 1.0 / 6.0                # a uniformly random ordering of 3 stages is monotone 1/6 of the time
 
-# Okabe-Ito, as mandated.  Colour follows the ROLE and is fixed across panels; every series also
-# carries a marker or fill style so nothing depends on hue alone.
-BLUE, SKY, GREEN, ORANGE, PINK, VERM, GREY = "#0072B2", "#56B4E9", "#009E73", "#E69F00", "#CC79A7", "#D55E00", "#999999"
-INK, MUTED, GRID, SURFACE, FAINT = "#1B2429", "#5A6B73", "#D8E0E3", "#FFFFFF", "#C6D0D4"
-STAGE_COL = {"SPC": SKY, "RS": GREEN, "ES": BLUE}
+# Shared publication style (DESIGN_DIRECTIVES.md item 1): one palette, one type
+# scale, one marker identity across Fig 1-6 -- imported, never redefined here.
+# Colour follows the DIRECTION of the per-gene effect (shortening / lengthening),
+# which is the only categorical variable in this figure; stage is carried by
+# position on the x axis and mouse by marker + line style, so no channel is spent
+# twice and nothing depends on hue alone.  Six checks re-validated 2026-09-02
+# (validate_palette.js, light): shortening/lengthening adjacent CVD deltaE 29.2
+# protan / 30.9 tritan, normal-vision floor 36.2 -- ALL PASS.
+BLUE, ORANGE, VERM, GREY = PAL["peakatail"], PAL["accent"], PAL["bad"], PAL["neutral"]
+INK, MUTED, GRID, SURFACE, FAINT = PAL["ink"], PAL["muted"], PAL["grid"], "#FFFFFF", PAL["grid"]
 DIR_COL = {"shortening": BLUE, "lengthening": ORANGE}
 MOUSE_MARK = {"mouse1": "o", "mouse2": "s"}
 MOUSE_LS = {"mouse1": "-", "mouse2": (0, (4, 2))}
+MOUSE_INK = {"mouse1": INK, "mouse2": MUTED}     # negatives panel: identity by marker/dash, not hue
 
 # ---------------------------------------------------------------------------
 # 1. read the sources (+ provenance asserts)
@@ -340,12 +352,12 @@ CAT_COL = {"shorten in both": BLUE, "lengthen in both": ORANGE, "discordant": GR
 d_rows = []
 for m in MICE:
     for s in STAGES:
-        d_rows.append(dict(panel="d1_across_gene_umi_weighted_distal_index", mouse=m, stage=s,
+        d_rows.append(dict(panel="e_across_gene_umi_weighted_distal_index", mouse=m, stage=s,
                            median_wdi_across_cells=float(S[m]["per_cell"]["wdi_median_by_stage"][s]),
                            n_cells=int(S[m]["info"]["stage_counts"][s])))
     for a_, b_ in CLIFF_PAIRS:
         k = f"wdi_{a_}_vs_{b_}"
-        d_rows.append(dict(panel="d1_across_gene_umi_weighted_distal_index", mouse=m, stage=f"cliff_{a_}_vs_{b_}",
+        d_rows.append(dict(panel="e_across_gene_umi_weighted_distal_index", mouse=m, stage=f"cliff_{a_}_vs_{b_}",
                            cliffs_delta=float(S[m]["per_cell"][k]["cliffs_delta_a_minus_b"]),
                            mannwhitney_p=float(S[m]["per_cell"][k]["mannwhitney_p"])))
 LIT_CATS = [("shorten in both", BLUE), ("lengthen in both", ORANGE), ("discordant", GREY), ("delta 0 in one mouse", FAINT)]
@@ -358,94 +370,123 @@ assert lc["shorten in both"] == LP["n_shorten_both"] and lc["lengthen in both"] 
 assert lc["discordant"] == LP["n_strictly_discordant"] and lc["delta 0 in one mouse"] == LP["n_zero_delta_one_mouse"]
 assert len(lit) == LP["n_measurable_in_both"]
 for _, r in lit.iterrows():
-    d_rows.append(dict(panel="d2_literature_panel", mouse="both", stage=r["symbol"], gene_id=r["gene_id"],
+    d_rows.append(dict(panel="f_literature_panel", mouse="both", stage=r["symbol"], gene_id=r["gene_id"],
                        m1_delta=float(r["m1_delta"]), m2_delta=float(r["m2_delta"]),
                        mean_delta=float(r["mean_delta"]), category=r["category"]))
 pd.DataFrame(d_rows).to_csv(f"{TSVDIR}/{NAME}_negatives.tsv", sep="\t", index=False)
 LIT_SYMS = {c: sorted(lit[lit.category == c]["symbol"].tolist()) for c, _ in LIT_CATS}
 
 # ---------------------------------------------------------------------------
-# 7. figure
+# 7. figure -- 2026-09-02 publication design pass (DESIGN_DIRECTIVES.md 1, 2, 6)
+#
+# One message per panel, so the two composite panels of the working render are
+# split into their own letters: a monotone fractions, b per-cell residual,
+# c cross-mouse PAS replication, d cross-mouse per-gene effect, e/f the boxed
+# negatives.  Every explanatory sentence that used to sit next to a mark is in
+# the sidecar Legend (no-loss rule); what stays on the image is at most three
+# short callouts per panel, all at or above the minimum print type size.
 # ---------------------------------------------------------------------------
+apply_rc()
 plt.rcParams.update({
-    "font.size": 7.4, "axes.labelsize": 7.0, "axes.titlesize": 8.0,
-    "xtick.labelsize": 6.5, "ytick.labelsize": 6.5, "legend.fontsize": 6.0,
     "text.color": INK, "axes.labelcolor": INK, "axes.edgecolor": MUTED,
     "xtick.color": MUTED, "ytick.color": MUTED, "figure.facecolor": SURFACE,
     "axes.facecolor": SURFACE, "savefig.facecolor": SURFACE,
-    "axes.titlelocation": "left", "axes.titlepad": 5, "axes.linewidth": 0.7,
-    "font.family": "DejaVu Sans",
+    "axes.titlelocation": "left", "axes.titlepad": 6,
 })
-# Publication layout: the figure-level title, subtitle and cautions footer live in the
-# .caption.md Legend now, so the canvas keeps only the panel band (height 11.4 -> 8.4 in;
-# width 7.5 -> 7.1 in, the double-column norm, which the panels tolerate).
-LEFT = 0.075
-fig = plt.figure(figsize=(7.1, 8.4))
-gs = fig.add_gridspec(3, 2, height_ratios=[1.0, 1.0, 0.80], width_ratios=[1.0, 1.0],
-                      hspace=0.72, wspace=0.30, left=LEFT, right=0.980, top=0.968, bottom=0.070)
+ANN, ANN_MIN, TICK = TYPE["annotation"], TYPE["annotation_min"], TYPE["tick"]
+
+# Canvas at final print width (7.09 in / 180 mm) and saved WITHOUT a tight bbox,
+# so the page cannot grow: an artist that overflows is a failure the audit below
+# catches.  Row gaps are sized to exactly what hangs under a row (two-line stage
+# ticks + the bold group label under a/b; the rho strip under d), not padded.
+fig = plt.figure(figsize=(7.09, 7.05))
+gs = fig.add_gridspec(3, 2, height_ratios=[1.00, 1.00, 0.62], width_ratios=[1.0, 1.0],
+                      hspace=0.50, wspace=0.34, left=0.088, right=0.972, top=0.964, bottom=0.060)
 ax_a = fig.add_subplot(gs[0, 0])
 ax_b = fig.add_subplot(gs[0, 1])
-ax_c1 = fig.add_subplot(gs[1, 0])
-gs_c2 = gs[1, 1].subgridspec(2, 1, height_ratios=[1.0, 0.10], hspace=0.62)
-ax_c2 = fig.add_subplot(gs_c2[0, 0])
-ax_c2n = fig.add_subplot(gs_c2[1, 0])
-ax_d1 = fig.add_subplot(gs[2, 0])
-ax_d2 = fig.add_subplot(gs[2, 1])
+ax_c = fig.add_subplot(gs[1, 0])
+gs_d = gs[1, 1].subgridspec(2, 1, height_ratios=[1.0, 0.115], hspace=0.72)
+ax_d = fig.add_subplot(gs_d[0, 0])
+ax_dn = fig.add_subplot(gs_d[1, 0])
+gs_neg = gs[2, :].subgridspec(1, 2, width_ratios=[1.20, 0.80], wspace=0.34)
+ax_e = fig.add_subplot(gs_neg[0, 0])
+ax_f = fig.add_subplot(gs_neg[0, 1])
 
 
 def style(ax, axis="y"):
     ax.set_axisbelow(True); ax.grid(True, axis=axis, color=GRID, lw=0.5)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
+    ax.spines["bottom"].set_color(GRID); ax.spines["left"].set_color(GRID)
+    ax.tick_params(length=2.5, pad=2)
+
+
+def title(ax, letter, text, dy=1.035):
+    """House panel tag (shared with Fig 2/3): a bold panel letter at
+    TYPE['panel_letter'] and, offset a fixed 13 pt to its right so the gap does
+    not scale with panel width, the sentence-cased title at TYPE['panel_title']."""
+    ax.text(0.0, dy, letter, transform=ax.transAxes, fontsize=TYPE["panel_letter"],
+            fontweight="bold", va="bottom", ha="left", color=INK)
+    ax.text(0.0, dy, sentence_case(text), va="bottom", ha="left", color=INK,
+            fontsize=TYPE["panel_title"],
+            transform=offset_copy(ax.transAxes, fig=ax.figure, x=13.0, y=0.0, units="points"))
 
 
 # --- a: monotone fraction vs the label-shuffle null ---------------------------
+# message: the TRUE monotone-shortening fraction sits far above its own shuffle
+# null, and above monotone lengthening.  Callouts: the 1/6 reference and one
+# binomial p per mouse.  Everything else (z per direction, null means and sds,
+# ratios) is in the Legend and in fig5_spermatogenesis{,_null_shuffles}.tsv.
 XA = {("mouse1", "shortening"): 0.0, ("mouse1", "lengthening"): 1.0,
       ("mouse2", "shortening"): 2.4, ("mouse2", "lengthening"): 3.4}
 rng = np.random.default_rng(0)
 ax_a.axhline(CHANCE, color=MUTED, lw=0.8, ls=(0, (1, 1.6)), zorder=2)
-ax_a.text(3.78, CHANCE + 0.004, "chance 1/6 for a\nrandom ordering\nof 3 stages", fontsize=5.2, color=MUTED,
-          ha="left", va="bottom", linespacing=1.25)
+ax_a.text(4.24, CHANCE, sentence_case("chance 1/6"), fontsize=ANN, color=MUTED,
+          ha="right", va="center", zorder=6,
+          bbox=dict(boxstyle="round,pad=0.16", fc=SURFACE, ec="none"))
 for m in MICE:
     for d in ("shortening", "lengthening"):
         x = XA[(m, d)]; r = arow(m, d)
         nv = NULLS[m]["frac_mono_short3_fixed" if d == "shortening" else "frac_mono_long3_fixed"].to_numpy()
-        ax_a.scatter(x + rng.uniform(-0.14, 0.14, nv.size), nv, s=6.0, c=GREY, alpha=0.75,
+        ax_a.scatter(x + rng.uniform(-0.15, 0.15, nv.size), nv, s=6.0, c=GREY, alpha=0.75,
                      linewidths=0, zorder=3)
-        ax_a.plot([x - 0.22, x + 0.22], [nv.mean()] * 2, color=MUTED, lw=1.2, solid_capstyle="butt", zorder=4)
-        ax_a.plot([x, x], [nv.mean(), r["true_frac"]], color=DIR_COL[d], lw=0.7, alpha=0.55, zorder=3)
-        ax_a.plot([x], [r["true_frac"]], marker=MOUSE_MARK[m], ms=6.4, mfc=DIR_COL[d], mec=SURFACE, mew=0.8, zorder=6)
-        ax_a.text(x, r["true_frac"] + 0.016, f"{r['true_frac']:.3f}", ha="center", va="bottom",
-                  fontsize=6.2, color=DIR_COL[d], fontweight="bold", zorder=6)
-        ax_a.text(x, r["true_frac"] + 0.040, f"z {r['z_vs_null_fixed']:.1f}", ha="center", va="bottom",
-                  fontsize=5.6, color=MUTED, zorder=6)
+        ax_a.plot([x - 0.24, x + 0.24], [nv.mean()] * 2, color=MUTED, lw=1.2, solid_capstyle="butt", zorder=4)
+        ax_a.plot([x, x], [nv.mean(), r["true_frac"]], color=DIR_COL[d], lw=0.8, alpha=0.55, zorder=3)
+        ax_a.plot([x], [r["true_frac"]], marker=MOUSE_MARK[m], ms=6.2, mfc=DIR_COL[d], mec=SURFACE, mew=0.8, zorder=6)
+        lab = f"{r['true_frac']:.3f}\nz {r['z_vs_null_fixed']:.1f}" if d == "shortening" else f"{r['true_frac']:.3f}"
+        ax_a.text(x, r["true_frac"] + 0.014, lab, ha="center", va="bottom", fontsize=ANN,
+                  color=DIR_COL[d], linespacing=1.25, zorder=6)
 for m in MICE:
     xl, xr = XA[(m, "shortening")], XA[(m, "lengthening")]
-    yb = 0.400
-    ax_a.plot([xl, xl, xr, xr], [yb - 0.012, yb, yb, yb - 0.012], color=INK, lw=0.6, zorder=5)
-    ax_a.text((xl + xr) / 2, yb + 0.006, f"excess: {int(EXC.loc[m, 'n_monotone_shortening']):,} vs "
-              f"{int(EXC.loc[m, 'n_monotone_lengthening']):,} genes\nbinomial p {BINOM_P[m]}",
-              ha="center", va="bottom", fontsize=5.4, color=INK, linespacing=1.25, zorder=6)
-    ax_a.text((xl + xr) / 2, -0.175, f"{MOUSE_LABEL[m]}\n{int(arow(m, 'shortening')['n_genes_guarded']):,} guarded genes",
-              transform=ax_a.get_xaxis_transform(), ha="center", va="top", fontsize=6.4, color=INK,
-              fontweight="bold", linespacing=1.2)
+    yb = 0.428
+    ax_a.plot([xl, xl, xr, xr], [yb - 0.011, yb, yb, yb - 0.011], color=INK, lw=0.6, zorder=5)
+    ax_a.text((xl + xr) / 2, yb + 0.005, sentence_case(f"binomial p {BINOM_P[m]}"), ha="center", va="bottom",
+              fontsize=ANN, color=INK, zorder=6)
+    ax_a.text((xl + xr) / 2, -0.170, f"{sentence_case(MOUSE_LABEL[m])}\n{int(arow(m, 'shortening')['n_genes_guarded']):,} guarded genes",
+              transform=ax_a.get_xaxis_transform(), ha="center", va="top", fontsize=ANN,
+              color=INK, fontweight="bold", linespacing=1.25)
 ax_a.set_xticks(list(XA.values()))
-ax_a.set_xticklabels([f"{d}\n{int(arow(m, d)['n_monotone']):,}" for (m, d) in XA], fontsize=6.0, linespacing=1.2)
+ax_a.set_xticklabels([f"{sentence_case(d)}\n{int(arow(m, d)['n_monotone']):,}" for (m, d) in XA],
+                     fontsize=TICK, linespacing=1.25)
 for t, (m, d) in zip(ax_a.get_xticklabels(), XA):
     t.set_color(DIR_COL[d])
-ax_a.set_xlim(-0.55, 4.75); ax_a.set_ylim(0.10, 0.475)
+ax_a.set_xlim(-0.62, 4.36); ax_a.set_ylim(0.055, 0.470)
 ax_a.set_yticks([0.10, 0.15, 0.20, 0.25, 0.30, 0.35])
-ax_a.set_ylabel("fraction of depth-guarded genes strictly\nmonotone across SPC → RS → ES", labelpad=3)
+ax_a.set_ylabel(sentence_case("fraction of depth-guarded genes strictly\nmonotone across SPC → RS → ES"), labelpad=4)
 style(ax_a)
-ax_a.set_title("a  Claim carrier: per-gene monotone shortening vs its null")
+title(ax_a, "a", "Monotone genes vs label-shuffle null")
 ax_a.legend(handles=[
-    Line2D([], [], ls="none", marker="o", ms=5.0, mfc=BLUE, mec=SURFACE, mew=0.7, label="TRUE labels, shortening (mouse 1 ● / mouse 2 ■)"),
-    Line2D([], [], ls="none", marker="o", ms=5.0, mfc=ORANGE, mec=SURFACE, mew=0.7, label="TRUE labels, lengthening"),
-    Line2D([], [], ls="none", marker="o", ms=2.8, mfc=GREY, mec=GREY, label=f"{N_SHUF} label shuffles (fixed gene set); bar = null mean"),
-], loc="upper center", bbox_to_anchor=(0.5, -0.365), frameon=False, ncol=1, handlelength=1.2,
-    labelspacing=0.25, borderaxespad=0.0, handletextpad=0.5)
+    Line2D([], [], ls="none", marker="o", ms=5.0, mfc=INK, mec=SURFACE, mew=0.7,
+           label=sentence_case("TRUE labels (mouse 1 ●, mouse 2 ■)")),
+    Line2D([], [], ls="none", marker="o", ms=2.8, mfc=GREY, mec=GREY,
+           label=f"{N_SHUF} label shuffles; bar = null mean"),
+], loc="lower left", bbox_to_anchor=(-0.015, -0.02), frameon=False, ncol=1, handlelength=1.2,
+    labelspacing=0.28, borderaxespad=0.0, handletextpad=0.5)
 
 # --- b: composition-controlled per-cell residual -------------------------------
+# message: the residual falls at every step, in both mice.  Stage is on the x
+# axis, so the violins carry one colour; the per-step Cliff deltas are in the
+# Legend and in fig5_spermatogenesis_percell_resid.tsv.
 XB = {("mouse1", "SPC"): 0.0, ("mouse1", "RS"): 0.85, ("mouse1", "ES"): 1.70,
       ("mouse2", "SPC"): 3.05, ("mouse2", "RS"): 3.90, ("mouse2", "ES"): 4.75}
 ax_b.axhline(0.0, color=MUTED, lw=0.7, ls=(0, (1, 1.6)), zorder=2)
@@ -453,157 +494,157 @@ for (m, s), x in XB.items():
     v = PB[m][s]
     parts = ax_b.violinplot([v], positions=[x], widths=0.66, showextrema=False, showmedians=False)
     for pc in parts["bodies"]:
-        pc.set_facecolor(STAGE_COL[s]); pc.set_alpha(0.30); pc.set_edgecolor(STAGE_COL[s]); pc.set_linewidth(0.7); pc.set_zorder(3)
+        pc.set_facecolor(BLUE); pc.set_alpha(0.22); pc.set_edgecolor(BLUE); pc.set_linewidth(0.7); pc.set_zorder(3)
     q1, med, q3 = np.percentile(v, [25, 50, 75])
-    ax_b.plot([x, x], [np.percentile(v, 5), np.percentile(v, 95)], color=STAGE_COL[s], lw=0.8, zorder=4)
-    ax_b.plot([x, x], [q1, q3], color=STAGE_COL[s], lw=3.0, solid_capstyle="butt", zorder=5)
-    ax_b.plot([x], [med], marker=MOUSE_MARK[m], ms=4.4, mfc=SURFACE, mec=STAGE_COL[s], mew=1.1, zorder=6)
+    ax_b.plot([x, x], [np.percentile(v, 5), np.percentile(v, 95)], color=BLUE, lw=0.8, zorder=4)
+    ax_b.plot([x, x], [q1, q3], color=BLUE, lw=3.0, solid_capstyle="butt", zorder=5)
+    ax_b.plot([x], [med], marker=MOUSE_MARK[m], ms=4.4, mfc=SURFACE, mec=BLUE, mew=1.1, zorder=6)
 for m in MICE:
     xs = [XB[(m, s)] for s in STAGES]
     meds = [np.median(PB[m][s]) for s in STAGES]
-    ax_b.plot(xs, meds, color=INK, lw=0.8, ls=MOUSE_LS[m], alpha=0.8, zorder=5)
-    for (a_, b_), yb in zip([("SPC", "RS"), ("RS", "ES")], [0.0655, 0.0655]):
-        xl, xr = XB[(m, a_)], XB[(m, b_)]
-        ax_b.plot([xl, xl, xr, xr], [yb - 0.004, yb, yb, yb - 0.004], color=MUTED, lw=0.6, zorder=5)
-        ax_b.text((xl + xr) / 2, yb + 0.0015, f"δ {cliff(m, a_, b_):.2f}", ha="center", va="bottom",
-                  fontsize=5.6, color=INK, zorder=6)
+    ax_b.plot(xs, meds, color=INK, lw=0.9, ls=MOUSE_LS[m], alpha=0.85, zorder=5)
     xl, xr = XB[(m, "SPC")], XB[(m, "ES")]
-    ax_b.plot([xl, xl, xr, xr], [0.0805 - 0.004, 0.0805, 0.0805, 0.0805 - 0.004], color=INK, lw=0.7, zorder=5)
-    ax_b.text((xl + xr) / 2, 0.0820, f"SPC vs ES δ {cliff(m, 'SPC', 'ES'):.2f}\n{N_SHUF}-shuffle null "
-              f"[{NULL_CLIFF[m][0]:+.2f}, {NULL_CLIFF[m][1]:+.2f}]", ha="center", va="bottom",
-              fontsize=5.4, color=INK, linespacing=1.2, zorder=6)
-    ax_b.text((XB[(m, 'SPC')] + XB[(m, 'ES')]) / 2, -0.175, f"{MOUSE_LABEL[m]}\n{sum(S[m]['info']['stage_counts'][s] for s in STAGES):,} labelled cells",
-              transform=ax_b.get_xaxis_transform(), ha="center", va="top", fontsize=6.4, color=INK,
-              fontweight="bold", linespacing=1.2)
+    yb = 0.0655
+    ax_b.plot([xl, xl, xr, xr], [yb - 0.004, yb, yb, yb, ], color=INK, lw=0.7, zorder=5)
+    ax_b.plot([xr, xr], [yb, yb - 0.004], color=INK, lw=0.7, zorder=5)
+    ax_b.text((xl + xr) / 2, yb + 0.0022,
+              f"SPC → ES  δ {cliff(m, 'SPC', 'ES'):.2f}\n"
+              f"null |δ| ≤ {max(abs(NULL_CLIFF[m][0]), abs(NULL_CLIFF[m][1])):.2f}",
+              ha="center", va="bottom", fontsize=ANN, color=INK, linespacing=1.25, zorder=6)
+    ax_b.text((xl + xr) / 2, -0.170, f"{sentence_case(MOUSE_LABEL[m])}\n{sum(S[m]['info']['stage_counts'][s] for s in STAGES):,} labelled cells",
+              transform=ax_b.get_xaxis_transform(), ha="center", va="top", fontsize=ANN,
+              color=INK, fontweight="bold", linespacing=1.25)
 ax_b.set_xticks(list(XB.values()))
-ax_b.set_xticklabels([f"{s}\n{S[m]['info']['stage_counts'][s]:,}" for (m, s) in XB], fontsize=6.0, linespacing=1.2)
-for t, (m, s) in zip(ax_b.get_xticklabels(), XB):
-    t.set_color(STAGE_COL[s])
-ax_b.set_xlim(-0.60, 5.35); ax_b.set_ylim(-0.052, 0.108)
+ax_b.set_xticklabels([f"{s}\n{S[m]['info']['stage_counts'][s]:,}" for (m, s) in XB],
+                     fontsize=TICK, linespacing=1.25)
+ax_b.set_xlim(-0.62, 5.37); ax_b.set_ylim(-0.052, 0.098)
 ax_b.set_yticks([-0.04, -0.02, 0.0, 0.02, 0.04])
-ax_b.set_ylabel("per-cell distal-usage residual", labelpad=3)
+ax_b.set_ylabel(sentence_case("per-cell distal-usage residual"), labelpad=4)
 style(ax_b)
-ax_b.set_title("b  Composition-controlled per-cell residual")
-# (the residual definition and the violin/IQR/whisker glyph key moved to the caption Legend)
+title(ax_b, "b", "Per-cell residual by stage")
 
-# --- c1: cross-mouse replication of switch hits ---------------------------------
+# --- c: cross-mouse replication of switch hits ---------------------------------
+# message: hits replicate across the two mice far above the independence
+# expectation, and never under the null pairings.  Sign agreement and the
+# PAS-shuffle cross-check are in the Legend.
 xc = np.arange(len(C)); w = 0.34
-ax_c1.bar(xc - w / 2, C["replicated_same_dir"], width=w * 0.94, color=BLUE, zorder=3, label="replicated in both mice, same direction")
-ax_c1.bar(xc + w / 2, C["expected_same_dir_if_independent"], width=w * 0.94, facecolor="none",
-          edgecolor=MUTED, lw=0.9, zorder=3, label="expected if the two mice were independent")
+ax_c.bar(xc - w / 2, C["replicated_same_dir"], width=w * 0.94, color=BLUE, zorder=3)
+ax_c.bar(xc + w / 2, C["expected_same_dir_if_independent"], width=w * 0.94, facecolor="none",
+         edgecolor=MUTED, lw=0.9, zorder=3)
 for i, r in C.iterrows():
-    ax_c1.text(i - w / 2, r["replicated_same_dir"] + 320, f"{int(r['replicated_same_dir']):,}",
-               ha="center", va="bottom", fontsize=6.2, color=BLUE, fontweight="bold")
-    ax_c1.text(i - w / 2, r["replicated_same_dir"] + 1180, f"{r['sign_agreement']:.1%} sign\nagreement",
-               ha="center", va="bottom", fontsize=5.3, color=INK, linespacing=1.15)
-    ax_c1.text(i + w / 2, r["expected_same_dir_if_independent"] + 320, f"{r['enrichment_over_independent']:.1f}×",
-               ha="center", va="bottom", fontsize=5.8, color=MUTED)
-    ax_c1.plot([i], [0], marker="v", ms=4.2, mfc=VERM, mec=VERM, zorder=6, clip_on=False)
-ax_c1.set_xticks(xc)
-ax_c1.set_xticklabels([f"{r['label']}\n{int(r['n_pas_matched']):,} PAS matched\n"
-                       f"({int(r['hits_m1_matched']):,} / {int(r['hits_m2_matched']):,} hit)" for _, r in C.iterrows()],
-                      fontsize=5.9, linespacing=1.25)
-ax_c1.set_ylim(0, 17500); ax_c1.set_yticks([0, 4000, 8000, 12000, 16000])
-ax_c1.set_yticklabels(["0", "4k", "8k", "12k", "16k"])
-ax_c1.spines["left"].set_bounds(0, 16000)
-ax_c1.set_ylabel("PAS with q < 0.05 in both mice,\nsame sign of Δ proportion", labelpad=3)
-style(ax_c1)
-ax_c1.set_title("c  Cross-mouse replication: PAS hits (left) and per-gene effects (right)")
-# (the arm-B0 switch-test description and PAS-matching rule moved to the caption Legend)
-ax_c1.legend(handles=[Patch(facecolor=BLUE, label="replicated in both mice, same direction"),
-                      Patch(facecolor="none", edgecolor=MUTED, lw=0.9, label="expected if the mice were independent (analytic; PAS-shuffle agrees)"),
-                      Line2D([], [], ls="none", marker="v", ms=4.2, mfc=VERM, mec=VERM,
-                             label=f"0 replicated in all {N_NULL_PAIRINGS} null pairings (5 shuffles × 3 pairs)")],
-             loc="upper center", bbox_to_anchor=(0.5, -0.30), frameon=False, ncol=1, handlelength=1.2,
-             labelspacing=0.25, borderaxespad=0.0, handletextpad=0.5)
+    ax_c.text(i - w / 2, r["replicated_same_dir"] + 350, f"{int(r['replicated_same_dir']):,}",
+              ha="center", va="bottom", fontsize=ANN, color=BLUE, fontweight="bold")
+    ax_c.text(i + w / 2, r["expected_same_dir_if_independent"] + 350, f"{r['enrichment_over_independent']:.1f}×",
+              ha="center", va="bottom", fontsize=ANN, color=MUTED)
+    ax_c.plot([i], [0], marker="v", ms=4.2, mfc=VERM, mec=VERM, zorder=6, clip_on=False)
+ax_c.set_xticks(xc)
+ax_c.set_xticklabels([r["label"] for _, r in C.iterrows()], fontsize=TICK)
+ax_c.set_ylim(0, 17800); ax_c.set_yticks([0, 4000, 8000, 12000, 16000])
+ax_c.set_yticklabels(["0", "4k", "8k", "12k", "16k"])
+ax_c.spines["left"].set_bounds(0, 16000)
+ax_c.set_ylabel(sentence_case("PAS with q < 0.05 in both mice,\nsame sign of Δ proportion"), labelpad=4)
+style(ax_c)
+title(ax_c, "c", "Cross-mouse PAS replication")
+ax_c.legend(handles=[Patch(facecolor=BLUE, label=sentence_case("replicated, same direction")),
+                     Patch(facecolor="none", edgecolor=MUTED, lw=0.9, label=sentence_case("expected if the mice were independent")),
+                     Line2D([], [], ls="none", marker="v", ms=4.2, mfc=VERM, mec=VERM,
+                            label=f"0 in all {N_NULL_PAIRINGS} null pairings")],
+            loc="upper left", bbox_to_anchor=(-0.015, 1.02), frameon=False, ncol=1, handlelength=1.2,
+            labelspacing=0.28, borderaxespad=0.0, handletextpad=0.5)
 
-# --- c2: per-gene effect scatter -------------------------------------------------
+# --- d: per-gene effect scatter -------------------------------------------------
+# message: the per-gene effect itself reproduces across mice.  The two coloured
+# quadrant labels double as the colour key; discordant and zero-delta counts are
+# in the Legend and in fig5_spermatogenesis_gene_scatter.tsv.
 for cat in ("delta 0 in one mouse", "discordant", "lengthen in both", "shorten in both"):
     sub = g[g.category == cat]
-    ax_c2.scatter(sub["m1_delta"], sub["m2_delta"], s=5.0, c=CAT_COL[cat], alpha=0.75, linewidths=0,
-                  zorder=(3 if cat in ("delta 0 in one mouse", "discordant") else 4))
-ax_c2.axhline(0, color=MUTED, lw=0.6, zorder=2); ax_c2.axvline(0, color=MUTED, lw=0.6, zorder=2)
-ax_c2.plot([-1, 1], [-1, 1], color=GRID, lw=0.8, ls=(0, (3, 2)), zorder=2)
-ax_c2.set_xlim(-1.04, 1.04); ax_c2.set_ylim(-1.04, 1.04)
-ax_c2.set_xticks([-1, -0.5, 0, 0.5, 1]); ax_c2.set_yticks([-1, -0.5, 0, 0.5, 1])
-ax_c2.set_xlabel("mouse 1  Δ PDUI (ES − SPC)", labelpad=2)
-ax_c2.set_ylabel("mouse 2  Δ PDUI (ES − SPC)", labelpad=2)
-TBOX = dict(boxstyle="round,pad=0.18", fc=SURFACE, ec="none", alpha=0.82)
-ax_c2.text(-0.98, -0.98, f"shorten in both\n{counts['shorten in both']:,} ({counts['shorten in both'] / len(g):.1%})",
-           ha="left", va="bottom", fontsize=5.6, color=BLUE, linespacing=1.2, zorder=6, bbox=TBOX)
-ax_c2.text(0.98, 0.98, f"lengthen in both\n{counts['lengthen in both']:,} ({counts['lengthen in both'] / len(g):.1%})",
-           ha="right", va="top", fontsize=5.6, color=ORANGE, linespacing=1.2, zorder=6, bbox=TBOX)
-ax_c2.text(0.98, -0.98, f"discordant {counts['discordant']:,}\nΔ = 0 in one mouse {counts['delta 0 in one mouse']:,}",
-           ha="right", va="bottom", fontsize=5.6, color=MUTED, linespacing=1.2, zorder=6, bbox=TBOX)
-ax_c2.text(-0.98, 0.98, f"Spearman ρ = {RHO:.3f}\nn = {RHO_N:,} genes guarded in both\nPearson r = "
-           f"{float(grep_['replicate_pearson_r']):.3f}", ha="left", va="top", fontsize=6.0, color=INK,
-           fontweight="bold", linespacing=1.3, zorder=6, bbox=TBOX)
-style(ax_c2, axis="both")
+    ax_d.scatter(sub["m1_delta"], sub["m2_delta"], s=5.0, c=CAT_COL[cat], alpha=0.75, linewidths=0,
+                 zorder=(3 if cat in ("delta 0 in one mouse", "discordant") else 4))
+ax_d.axhline(0, color=MUTED, lw=0.6, zorder=2); ax_d.axvline(0, color=MUTED, lw=0.6, zorder=2)
+ax_d.plot([-1, 1], [-1, 1], color=GRID, lw=0.8, ls=(0, (3, 2)), zorder=2)
+ax_d.set_xlim(-1.04, 1.04); ax_d.set_ylim(-1.04, 1.04)
+ax_d.set_xticks([-1, -0.5, 0, 0.5, 1]); ax_d.set_yticks([-1, -0.5, 0, 0.5, 1])
+ax_d.set_xlabel(sentence_case("mouse 1  Δ PDUI (ES − SPC)"), labelpad=2)
+ax_d.set_ylabel(sentence_case("mouse 2  Δ PDUI (ES − SPC)"), labelpad=2)
+TBOX = dict(boxstyle="round,pad=0.18", fc=SURFACE, ec="none", alpha=0.85)
+ax_d.text(-0.98, -0.98, sentence_case(f"shorten in both\n{counts['shorten in both']:,} ({counts['shorten in both'] / len(g):.1%})"),
+          ha="left", va="bottom", fontsize=ANN, color=BLUE, linespacing=1.25, zorder=6, bbox=TBOX)
+ax_d.text(0.98, 0.98, sentence_case(f"lengthen in both\n{counts['lengthen in both']:,} ({counts['lengthen in both'] / len(g):.1%})"),
+          ha="right", va="top", fontsize=ANN, color=ORANGE, linespacing=1.25, zorder=6, bbox=TBOX)
+ax_d.text(-0.98, 0.98, f"Spearman ρ = {RHO:.3f}\nn = {RHO_N:,} genes", ha="left", va="top",
+          fontsize=ANN, color=INK, fontweight="bold", linespacing=1.3, zorder=6, bbox=TBOX)
+style(ax_d, axis="both")
+title(ax_d, "d", "Cross-mouse per-gene effect")
 
 # null band for that rho, as its own strip under the scatter
-ax_c2n.add_patch(plt.Rectangle((-NULL_RHO_MAX, -1), 2 * NULL_RHO_MAX, 2, color=GREY, alpha=0.30, lw=0, zorder=2))
-ax_c2n.add_patch(plt.Rectangle((NULL_RHO_M - NULL_RHO_SD, -1), 2 * NULL_RHO_SD, 2, color=GREY, alpha=0.80, lw=0, zorder=3))
-ax_c2n.plot([RHO], [0], marker="D", ms=5.2, mfc=BLUE, mec=SURFACE, mew=0.8, zorder=5, clip_on=False)
-ax_c2n.text(RHO, 1.35, f"{RHO:.3f}", ha="center", va="bottom", fontsize=5.6, color=BLUE, fontweight="bold")
-ax_c2n.text(NULL_RHO_M, 1.35, f"null {NULL_RHO_M:.3f} ± {NULL_RHO_SD:.3f}", ha="center", va="bottom", fontsize=5.2, color=MUTED)
-ax_c2n.set_xlim(-0.22, 0.80); ax_c2n.set_ylim(-1, 1)
-ax_c2n.set_yticks([]); ax_c2n.set_xticks([-0.2, 0, 0.2, 0.4, 0.6, 0.8])
-ax_c2n.tick_params(axis="x", labelsize=5.4, pad=1.5, length=2)
+ax_dn.add_patch(plt.Rectangle((-NULL_RHO_MAX, -1), 2 * NULL_RHO_MAX, 2, color=GREY, alpha=0.28, lw=0, zorder=2))
+ax_dn.add_patch(plt.Rectangle((NULL_RHO_M - NULL_RHO_SD, -1), 2 * NULL_RHO_SD, 2, color=GREY, alpha=0.75, lw=0, zorder=3))
+ax_dn.plot([RHO], [0], marker="D", ms=5.2, mfc=BLUE, mec=SURFACE, mew=0.8, zorder=5, clip_on=False)
+ax_dn.text(RHO, 1.6, f"{RHO:.3f}", ha="center", va="bottom", fontsize=ANN, color=BLUE, fontweight="bold")
+ax_dn.text(NULL_RHO_M, 1.6, sentence_case("null"), ha="center", va="bottom", fontsize=ANN, color=MUTED)
+ax_dn.set_xlim(-0.22, 0.80); ax_dn.set_ylim(-1, 1)
+ax_dn.set_yticks([]); ax_dn.set_xticks([-0.2, 0, 0.2, 0.4, 0.6, 0.8])
+ax_dn.tick_params(axis="x", labelsize=TICK, pad=1.5, length=2)
 for sp in ("top", "right", "left"):
-    ax_c2n.spines[sp].set_visible(False)
-ax_c2n.set_xlabel(f"cross-mouse Spearman ρ of the per-gene effect, against\n"
-                  f"the gene-correspondence null (200 permutations; dark band\n"
-                  f"± 1 sd, light band the full range, max |ρ| {NULL_RHO_MAX:.3f})",
-                  fontsize=5.4, labelpad=3)
+    ax_dn.spines[sp].set_visible(False)
+ax_dn.spines["bottom"].set_color(GRID)
+ax_dn.set_xlabel(sentence_case("cross-mouse ρ against the gene-correspondence null"), fontsize=ANN, labelpad=3)
 
-# --- d1: the across-gene UMI-weighted index (NEGATIVE) ---------------------------
+# --- e: the across-gene UMI-weighted index (NEGATIVE) ---------------------------
+# message: the same data summarised with UMI weights across genes REVERSES at
+# RS -> ES.  Mouse identity is marker + dash, not hue.
 xd = np.arange(3)
-for m, col, dy in zip(MICE, (VERM, PINK), (-1, 1)):
+for m in MICE:
     ys = [S[m]["per_cell"]["wdi_median_by_stage"][s] for s in STAGES]
-    ax_d1.plot(xd, ys, color=col, lw=1.4, ls=MOUSE_LS[m], marker=MOUSE_MARK[m], ms=5.0,
-               mfc=col, mec=SURFACE, mew=0.7, zorder=4, label=MOUSE_LABEL[m])
-    for x, y in zip(xd, ys):
-        ax_d1.text(x, y + dy * 0.0055, f"{y:.3f}", ha="center", va=("top" if dy < 0 else "bottom"),
-                   fontsize=5.5, color=col, zorder=5)
-ax_d1.text(1.42, 0.694, f"reversal at RS → ES\nCliff δ {S['mouse1']['per_cell']['wdi_RS_vs_ES']['cliffs_delta_a_minus_b']:.2f}"
-           f" / {S['mouse2']['per_cell']['wdi_RS_vs_ES']['cliffs_delta_a_minus_b']:.2f}",
-           ha="center", va="top", fontsize=5.6, color=VERM, fontweight="bold", linespacing=1.25)
-ax_d1.set_xticks(xd); ax_d1.set_xticklabels(STAGES, fontsize=6.5)
-ax_d1.set_xlim(-0.35, 2.45); ax_d1.set_ylim(0.555, 0.700)
-ax_d1.set_yticks([0.56, 0.60, 0.64, 0.68])
-ax_d1.set_ylabel("median per-cell distal index,\nUMIs pooled ACROSS genes", labelpad=3)
-style(ax_d1)
-ax_d1.set_title("d  Negative findings — not claim carriers", color=VERM)
-ax_d1.legend(loc="upper left", frameon=False, handlelength=2.0, labelspacing=0.25, borderaxespad=0.2)
-# (the protamine-ceiling explanation and the wdi name-collision caution moved to the caption Legend)
+    ax_e.plot(xd, ys, color=MOUSE_INK[m], lw=1.3, ls=MOUSE_LS[m], marker=MOUSE_MARK[m], ms=4.6,
+              mfc=MOUSE_INK[m], mec=SURFACE, mew=0.7, zorder=4, label=sentence_case(MOUSE_LABEL[m]))
+ax_e.annotate(sentence_case(f"reverses at RS → ES\nCliff δ {S['mouse1']['per_cell']['wdi_RS_vs_ES']['cliffs_delta_a_minus_b']:.2f}"
+                            f" / {S['mouse2']['per_cell']['wdi_RS_vs_ES']['cliffs_delta_a_minus_b']:.2f}"),
+              xy=(1.62, 0.6555), xytext=(1.00, 0.6985), fontsize=ANN, color=VERM, fontweight="bold",
+              ha="left", va="top", linespacing=1.3, zorder=6,
+              arrowprops=dict(arrowstyle="-", color=VERM, lw=0.7, shrinkA=2, shrinkB=2))
+ax_e.set_xticks(xd); ax_e.set_xticklabels(STAGES, fontsize=TICK)
+ax_e.set_xlim(-0.30, 2.40); ax_e.set_ylim(0.552, 0.700)
+ax_e.set_yticks([0.56, 0.60, 0.64, 0.68])
+ax_e.set_ylabel(sentence_case("median per-cell distal index"), labelpad=4)
+style(ax_e)
+title(ax_e, "e", "Across-gene UMI-weighted index")
+# top-left: the only corner of e that no series passes through, so the key never
+# sits on the data (the lower-left corner is where mouse 1 starts)
+ax_e.legend(loc="upper left", bbox_to_anchor=(-0.015, 1.02), frameon=False, handlelength=2.0,
+            labelspacing=0.28, borderaxespad=0.0, handletextpad=0.5)
 
-# --- d2: the 16-gene literature panel (NEGATIVE) ----------------------------------
+# --- f: the 16-gene literature panel (NEGATIVE) ----------------------------------
+# message: the curated panel splits, it does not reproduce.  The 16 gene symbols
+# are named in the Legend and in fig5_spermatogenesis_negatives.tsv, not on the
+# image -- a list of identifiers is reference data, not a chart.
 yl = np.arange(len(LIT_CATS))
 for j, (cat, col) in enumerate(LIT_CATS):
     n = len(LIT_SYMS[cat])
-    ax_d2.barh(j, n, color=col, height=0.56, zorder=3)
-    ax_d2.text(n + 0.16, j, f"{n}   " + ", ".join(LIT_SYMS[cat]), va="center", ha="left", fontsize=5.5, color=INK)
-ax_d2.set_yticks(yl); ax_d2.set_yticklabels([c.replace("delta 0", "Δ = 0") for c, _ in LIT_CATS], fontsize=6.0)
-for t, (_, col) in zip(ax_d2.get_yticklabels(), LIT_CATS):
+    ax_f.barh(j, n, color=col, height=0.56, zorder=3)
+    ax_f.text(n + 0.16, j, f"{n}", va="center", ha="left", fontsize=ANN, color=INK, zorder=4)
+ax_f.set_yticks(yl)
+ax_f.set_yticklabels([sentence_case(c.replace("delta 0", "Δ = 0")) for c, _ in LIT_CATS], fontsize=TICK)
+for t, (_, col) in zip(ax_f.get_yticklabels(), LIT_CATS):
     t.set_color(col if col != FAINT else MUTED)
-ax_d2.invert_yaxis(); ax_d2.set_xlim(0, 10.8); ax_d2.set_xticks([0, 2, 4, 6])
-ax_d2.set_xlabel(f"genes, of the {LP['n_measurable_in_both']} of the {LP['n_in_panel']}-gene curated panel\n"
-                 f"measurable in both mice", labelpad=2)
-style(ax_d2, axis="x")
-ax_d2.set_title("   the 16-gene literature panel does not reproduce", color=VERM)
-# (the quarantined-6/6 context and the Prm/Tnp ceiling-PDUI caution moved to the caption Legend)
+ax_f.invert_yaxis(); ax_f.set_xlim(0, 6.4); ax_f.set_xticks([0, 2, 4, 6])
+ax_f.set_xlabel(sentence_case("number of genes"), labelpad=2)
+style(ax_f, axis="x")
+title(ax_f, "f", "Curated 16-gene panel")
 
 # dashed frame around row 3 so the negatives cannot be read as part of the claim
 fig.canvas.draw()
 rend = fig.canvas.get_renderer()
 from matplotlib.transforms import Bbox
-bb = Bbox.union([ax_d1.get_tightbbox(rend), ax_d2.get_tightbbox(rend)]) \
+bb = Bbox.union([ax_e.get_tightbbox(rend), ax_f.get_tightbbox(rend)]) \
      .transformed(fig.transFigure.inverted())
-pad_x, pad_y = 0.010, 0.010
+pad_x, pad_y = 0.012, 0.012
 frame = FancyBboxPatch((bb.x0 - pad_x, bb.y0 - pad_y), bb.width + 2 * pad_x, bb.height + 2 * pad_y,
                        boxstyle="round,pad=0.002,rounding_size=0.006", transform=fig.transFigure, fill=False,
                        edgecolor=VERM, linewidth=0.9, linestyle=(0, (4, 2)), zorder=0, clip_on=False)
 fig.add_artist(frame)
+NEG_TAG = fig.text(bb.x1 + pad_x, bb.y1 + pad_y + 0.006, sentence_case("negative results — not claim carriers"),
+                   ha="right", va="bottom", fontsize=ANN, color=VERM, fontweight="bold")
 
 # --- no on-figure title / subtitle / footer: journal style ------------------------
 # The figure-level title, the subtitle paragraph and the numbered cautions footer all
@@ -611,12 +652,67 @@ fig.add_artist(frame)
 # stay: the VERDICT print and the reference-lines TSV still use them.
 m1s, m2s = arow("mouse1", "shortening"), arow("mouse2", "shortening")
 
-# --- save ---------------------------------------------------------------------------
-fig.savefig(f"{TSVDIR}/{NAME}.png", dpi=600, bbox_inches="tight", pad_inches=0.07)
-for ext in ("png", "pdf"):
+# --- bounding-box discipline: no overlapping text, nothing under the type floor,
+# --- nothing off the fixed 7.09 in canvas ------------------------------------------
+def bbox_audit(figure, min_pt=ANN_MIN, name=NAME, margin=1.5):
+    figure.canvas.draw()
+    rend_ = figure.canvas.get_renderer()
+    items, small = [], []
+
+    def in_view(ax_, axis):
+        """Tick labels for ticks outside the current view are laid out but never
+        drawn; keep only the ones the reader actually sees."""
+        lo, hi = (ax_.get_xlim() if axis == "x" else ax_.get_ylim())
+        lo, hi = min(lo, hi), max(lo, hi)
+        locs = ax_.get_xticks() if axis == "x" else ax_.get_yticks()
+        labs = ax_.get_xticklabels() if axis == "x" else ax_.get_yticklabels()
+        return [t for loc, t in zip(locs, labs) if lo - 1e-9 <= loc <= hi + 1e-9]
+
+    for ax in figure.axes:
+        arts = list(ax.texts) + in_view(ax, "x") + in_view(ax, "y")
+        arts += [ax.xaxis.label, ax.yaxis.label, ax.title]
+        lg = ax.get_legend()
+        if lg is not None:
+            arts += list(lg.get_texts())
+        for t in arts:
+            if not t.get_visible() or not t.get_text().strip():
+                continue
+            if t.get_fontsize() < min_pt - 1e-9:
+                small.append((t.get_text()[:34], t.get_fontsize()))
+            items.append((t.get_text()[:34], t.get_window_extent(rend_)))
+    for t in figure.texts:
+        if t.get_visible() and t.get_text().strip():
+            if t.get_fontsize() < min_pt - 1e-9:
+                small.append((t.get_text()[:34], t.get_fontsize()))
+            items.append((t.get_text()[:34], t.get_window_extent(rend_)))
+    assert not small, f"{name}: annotation below {min_pt} pt -- {small}"
+    bad = []
+    for i in range(len(items)):
+        for j in range(i + 1, len(items)):
+            a_, b_ = items[i][1], items[j][1]
+            ov_w = min(a_.x1, b_.x1) - max(a_.x0, b_.x0)
+            ov_h = min(a_.y1, b_.y1) - max(a_.y0, b_.y0)
+            if ov_w > 1.0 and ov_h > 1.0:
+                bad.append((items[i][0], items[j][0], round(ov_w, 1), round(ov_h, 1)))
+    assert not bad, f"{name}: overlapping text -- {bad}"
+    fb = figure.bbox
+    out = [(t, [round(v, 1) for v in (bb.x0, bb.y0, bb.x1, bb.y1)]) for t, bb in items
+           if bb.x0 < fb.x0 + margin or bb.y0 < fb.y0 + margin
+           or bb.x1 > fb.x1 - margin or bb.y1 > fb.y1 - margin]
+    assert not out, (f"{name}: text runs off the {fb.x1 / figure.dpi:.2f} x "
+                     f"{fb.y1 / figure.dpi:.2f} in canvas -- {out}")
+    print(f"bbox audit: {len(items)} text artists, no overlap, none below {min_pt} pt, "
+          f"none off-canvas")
+
+
+bbox_audit(fig)
+
+# --- save (fixed canvas: no tight bbox, so the print width stays 7.09 in) ------------
+for ext, kw in (("png", dict(dpi=600)), ("pdf", {})):
     p = f"{FIGDIR}/{NAME}.{ext}"
-    fig.savefig(p, bbox_inches="tight", pad_inches=0.07, **({"dpi": 600} if ext == "png" else {}))
+    fig.savefig(p, **kw)
     print("wrote", p)
+fig.savefig(f"{TSVDIR}/{NAME}.png", dpi=600)
 
 # --- reference lines: every number that appears only in the caption Legend ------------
 # (formerly the on-figure title/footer; the TSV is unchanged so the audit trail holds)
@@ -664,6 +760,8 @@ try:
     ink = int((border < 250).sum())
     print(f"edge check: {im.shape[1]}x{im.shape[0]} px, ink pixels in the outer {edge} px = {ink}")
     assert ink == 0, "INK IN THE OUTER 8 PX -- something is clipped"
+    assert im.shape[1] <= 600 * 7.10, (
+        f"canvas {im.shape[1] / 600:.2f} in wide -- past the 180 mm (7.09 in) print target")
 except ImportError:
     print("edge check skipped (no PIL)")
 
@@ -703,23 +801,42 @@ medians are not comparable across stages). Medians fall at every step in both mi
 (+0.0017 → −0.0036 → −0.0115 and +0.0028 → −0.0010 → −0.0084); Cliff's δ SPC vs RS 0.28 / 0.28,
 RS vs ES 0.41 / 0.46, SPC vs ES 0.56 / 0.61 against 20-shuffle null ranges of [−0.11, +0.10] and
 [−0.07, +0.07]. Violin = all cells, thick bar = IQR, whisker = 5–95th percentile, open marker =
-median; δ = Cliff's delta (earlier stage more distal). **Panel c** — reliability payload. Left: PAS called switching at q < 0.05 in **both**
+median; δ = Cliff's delta (earlier stage more distal). **Panel c** — PAS called switching at q < 0.05 in **both**
 mice with the same sign of Δ proportion (arm B0: `fisher --count-mode cells --marker-top-n 0`), per
 stage pair — 11,263 / 6,049 / 9,469 of 36,826 / 35,644 / 35,372 coordinate-matched PAS (gene + strand,
 ≤ 100 bp, greedy 1:1), sign agreement 99.7–99.8%, 3.2–5.1× the independence expectation (hollow bars;
 the 10-draw PAS-shuffle mean agrees with the analytic value to within 1.3%), and **0 replicated in all 15 null
 pairings** (▼). TRUE switch hits over the three pairs: 50,415 / 52,043; label-shuffle null 3.2% / 3.2%
-at p < 0.05 with **0 q < 0.05 hits in all 30 null BH families**. Right: the per-gene effect
+at p < 0.05 with **0 q < 0.05 hits in all 30 null BH families**. **Panel d** — the per-gene effect
 Δ PDUI (ES − SPC) in mouse 1 vs mouse 2 over the 917 genes guarded in both — Spearman ρ = **0.655**
 (Pearson r = 0.853) against a gene-correspondence null of 0.001 ± 0.032 (200 permutations, max |ρ|
 0.110; strip below the scatter). 338 genes (36.9%) shorten in both mice, 278 (30.3%) lengthen in both,
-244 are strictly discordant, 57 have Δ exactly 0 in one mouse. **Panel d (boxed — NEGATIVE findings,
-not claim carriers)** — left: the **across-gene UMI-weighted** per-cell distal index rises at RS → ES
+244 are strictly discordant, 57 have Δ exactly 0 in one mouse. **Panels e and f (boxed — negative results, not claim
+carriers)** — **e**: the **across-gene UMI-weighted** per-cell distal index rises at RS → ES
 in both mice (0.589 → 0.578 → 0.638 and 0.641 → 0.636 → 0.672; Cliff δ RS vs ES −0.95 / −0.86), because
-protamine transcripts alone carry ~26% of the guarded ES UMIs at ceiling PDUI. Right: of the 16 genes
+protamine transcripts alone carry ~26% of the guarded ES UMIs at ceiling PDUI. **f**: of the 16 genes
 of the 27-gene curated literature panel measurable in both mice, only **4 shorten in both**
 (Prm3, Ybx2, Ppp1cc, Nsun7), **5 lengthen in both** (Prm1, Tnp2, Odf1, Spata19, Smcp), 5 are
 discordant and 2 uninformative.
+
+**Moved off the image at the 2026-09-02 publication design pass (no-loss rule; every sentence below used to be
+printed beside a mark and is now here, with its values unchanged in the audit TSVs).** Panel a keeps the two TRUE
+fractions, their z against the shuffle null for the shortening direction, and the binomial p of the excess; the
+z for *monotone lengthening*, the null means and standard deviations, the TRUE/null ratios and the wording of the
+1/6 chance line are legend-only (values above and in `fig5_spermatogenesis{,_null_shuffles}.tsv`). Panel b keeps
+one Cliff's δ per mouse for SPC vs ES with the shuffle-null bound; the per-step δ for SPC vs RS and RS vs ES, the
+per-stage medians, and the violin/IQR/whisker glyph key are legend-only
+(`fig5_spermatogenesis_percell_resid.tsv`). Panel c keeps the replicated counts and the enrichment over
+independence; the 99.7–99.8% sign agreement, the PAS-shuffle cross-check and the coordinate-matched denominators
+are legend-only (`fig5_spermatogenesis_replication.tsv`). Panel d keeps ρ, n and the two same-direction quadrant
+counts; the discordant and Δ = 0 counts, Pearson r, and the null-band construction (200 permutations, ±1 sd and
+full range) are legend-only (`fig5_spermatogenesis_gene_scatter.tsv`). Panel e keeps one reversal callout; the six
+per-stage index values are legend-only. Panel f keeps the four category counts; the 16 gene symbols are named
+above and in `fig5_spermatogenesis_negatives.tsv` — a list of identifiers is reference data, not a chart. Panel
+letters: the working render lettered these a, b, c(left/right) and d(left/right); each plot now carries its own
+letter so that one panel makes one point, and the two `panel` keys in
+`fig5_spermatogenesis_negatives.tsv` follow (`d1_*`/`d2_*` → `e_*`/`f_*`). Every numeric column in every audit
+TSV is unchanged.
 
 **Cautions, binding on any use of this figure (they are part of the legend and must travel with it).**
 - **Monotone LENGTHENING is also above its null** (z 3.1 / 2.1). The label shuffle destroys ordered
@@ -761,8 +878,7 @@ discordant and 2 uninformative.
 - **The switch test's null is conservative, not exact** (manuscript/14; Fisher discreteness puts a large
   fraction of p-values at exactly 1), so the TRUE hit counts are **not** to be read as "N true switches";
   only 5 label shuffles per mouse there (20 for the PDUI arm). Cross-mouse PAS matching is
-  coordinate-based, so only the matched subset (~60% of tested PAS) can replicate — the denominator is
-  on the figure.
+  coordinate-based, so only the matched subset (~60% of tested PAS) can replicate — the matched-PAS denominators are in this legend, not on the image.
 - **The ≥ 50-UMI depth guard** keeps 1,553 / 1,194 of ~10,400 genes with a PAS pair; the surviving set is
   biased toward highly expressed genes. The shuffle null is computed on the *same* guarded set, so the
   comparison is internally valid, but the gene set is not a random sample of the transcriptome.
@@ -811,11 +927,18 @@ claim and no stronger one) and `results/stage3_spermatogenesis_final/` —
 `summary/gene_cross_mouse_delta.tsv`, `summary/gene_replication_summary.json`,
 `summary/gene_literature_panel.tsv`. Audit TSVs (every plotted value):
 `results/figures/manuscript/fig5_spermatogenesis{,_null_shuffles,_percell_resid,_percell_values,_replication,_gene_scatter,_negatives,_reference_lines}.tsv`.
-Palette: Okabe-Ito (#0072B2 #009E73 #D55E00 #CC79A7 #E69F00 #56B4E9 #999999); every series also carries a
-marker or fill style, so nothing depends on hue alone. PNG 600 dpi, PDF vector with subsetted TrueType
-(fonttype 42, no Type 3). The on-figure title, subtitle and cautions footer of the working-phase render
-moved into this Legend at the 2026-09-02 surgery pass; the image keeps panel letters, short titles,
-axis labels and data annotations only.
+Design: the shared publication style `scripts/manuscript_figures/_pubstyle.py` (PAL / TOOL_STYLE / TYPE /
+`apply_rc()` / `sentence_case()`), so Fig 1–6 read as one system. Colour carries the DIRECTION of the per-gene
+effect only (shortening `PAL['peakatail']` / lengthening `PAL['accent']`); stage is carried by position on the x
+axis and mouse by marker and line style, so no channel is spent twice and nothing depends on hue alone. Six
+checks re-validated 2026-09-02 with `validate_palette.js` (light mode): lightness band PASS, chroma floor PASS,
+CVD separation ΔE 29.2 protan / 30.9 tritan PASS, normal-vision floor 36.2 PASS. Canvas 7.09 in (180 mm) at
+final print width; PNG 600 dpi, PDF vector with subsetted TrueType (fonttype 42, no Type 3). The render passes
+an automated text-overlap, minimum-type-size (6 pt floor) and off-canvas audit plus the 8-px edge check; the
+page is saved at that fixed canvas (no tight bounding box), so an overflowing artist fails the audit instead of
+quietly widening the figure. The on-figure title,
+subtitle and cautions footer of the working-phase render moved into this Legend at the 2026-09-02 surgery pass;
+the image keeps panel letters, short titles, axis labels and at most three short data callouts per panel.
 
 **Note for whoever quotes the residual test.** An earlier draft of `manuscript/18` gave the per-cell
 residual Cliff's δ a "permutation p < 0.005"; that wording was corrected in the same commit as this
@@ -846,23 +969,42 @@ medians are not comparable across stages). Medians fall at every step in both mi
 (+0.0018 → −0.0036 → −0.0114 and +0.0031 → −0.0014 → −0.0081); Cliff's δ SPC vs RS 0.26 / 0.32,
 RS vs ES 0.41 / 0.46, SPC vs ES 0.55 / 0.63 against 20-shuffle null ranges of [−0.10, +0.11] and
 [−0.08, +0.07]. Violin = all cells, thick bar = IQR, whisker = 5–95th percentile, open marker =
-median; δ = Cliff's delta (earlier stage more distal). **Panel c** — reliability payload. Left: PAS called switching at q < 0.05 in **both**
+median; δ = Cliff's delta (earlier stage more distal). **Panel c** — PAS called switching at q < 0.05 in **both**
 mice with the same sign of Δ proportion (arm B0: `fisher --count-mode cells --marker-top-n 0`), per
 stage pair — 11,219 / 6,070 / 9,480 of 36,840 / 35,668 / 35,382 coordinate-matched PAS (gene + strand,
 ≤ 100 bp, greedy 1:1), sign agreement 99.7–99.8%, 3.25–5.05× the independence expectation (hollow bars;
 the 10-draw PAS-shuffle mean agrees with the analytic value to within 0.8%), and **0 replicated in all 15 null
 pairings** (▼). TRUE switch hits over the three pairs: 50,354 / 52,111; label-shuffle null 3.2% / 3.2%
-at p < 0.05 with **0 q < 0.05 hits in all 30 null BH families**. Right: the per-gene effect
+at p < 0.05 with **0 q < 0.05 hits in all 30 null BH families**. **Panel d** — the per-gene effect
 Δ PDUI (ES − SPC) in mouse 1 vs mouse 2 over the 923 genes guarded in both — Spearman ρ = **0.641**
 (Pearson r = 0.842) against a gene-correspondence null of 0.004 ± 0.033 (200 permutations, max |ρ|
 0.088; strip below the scatter). 339 genes (36.7%) shorten in both mice, 273 (29.6%) lengthen in both,
-253 are strictly discordant, 58 have Δ exactly 0 in one mouse. **Panel d (boxed — NEGATIVE findings,
-not claim carriers)** — left: the **across-gene UMI-weighted** per-cell distal index rises at RS → ES
+253 are strictly discordant, 58 have Δ exactly 0 in one mouse. **Panels e and f (boxed — negative results, not claim
+carriers)** — **e**: the **across-gene UMI-weighted** per-cell distal index rises at RS → ES
 in both mice (0.587 → 0.572 → 0.627 and 0.640 → 0.636 → 0.672; Cliff δ RS vs ES −0.93 / −0.87), because
 protamine transcripts alone carry 25.2% (mouse 1) / 14.5% (mouse 2) of the guarded ES UMIs at ceiling
-PDUI. Right: of the 16 genes of the 27-gene curated literature panel measurable in both mice, only
+PDUI. **f**: of the 16 genes of the 27-gene curated literature panel measurable in both mice, only
 **4 shorten in both** (Prm3, Ybx2, Ppp1cc, Nsun7), **5 lengthen in both** (Prm1, Tnp2, Odf1, Spata19,
 Smcp), 5 are discordant and 2 uninformative — the identical classification to v1.
+
+**Moved off the image at the 2026-09-02 publication design pass (no-loss rule; every sentence below used to be
+printed beside a mark and is now here, with its values unchanged in the audit TSVs).** Panel a keeps the two TRUE
+fractions, their z against the shuffle null for the shortening direction, and the binomial p of the excess; the
+z for *monotone lengthening*, the null means and standard deviations, the TRUE/null ratios and the wording of the
+1/6 chance line are legend-only (values above and in `fig5_spermatogenesis{,_null_shuffles}.tsv`). Panel b keeps
+one Cliff's δ per mouse for SPC vs ES with the shuffle-null bound; the per-step δ for SPC vs RS and RS vs ES, the
+per-stage medians, and the violin/IQR/whisker glyph key are legend-only
+(`fig5_spermatogenesis_percell_resid.tsv`). Panel c keeps the replicated counts and the enrichment over
+independence; the 99.7–99.8% sign agreement, the PAS-shuffle cross-check and the coordinate-matched denominators
+are legend-only (`fig5_spermatogenesis_replication.tsv`). Panel d keeps ρ, n and the two same-direction quadrant
+counts; the discordant and Δ = 0 counts, Pearson r, and the null-band construction (200 permutations, ±1 sd and
+full range) are legend-only (`fig5_spermatogenesis_gene_scatter.tsv`). Panel e keeps one reversal callout; the six
+per-stage index values are legend-only. Panel f keeps the four category counts; the 16 gene symbols are named
+above and in `fig5_spermatogenesis_negatives.tsv` — a list of identifiers is reference data, not a chart. Panel
+letters: the working render lettered these a, b, c(left/right) and d(left/right); each plot now carries its own
+letter so that one panel makes one point, and the two `panel` keys in
+`fig5_spermatogenesis_negatives.tsv` follow (`d1_*`/`d2_*` → `e_*`/`f_*`). Every numeric column in every audit
+TSV is unchanged.
 
 **Cautions, binding on any use of this figure (they are part of the legend and must travel with it).**
 - **Monotone LENGTHENING is also above its null** (z 2.8 / 2.1). The label shuffle destroys ordered
@@ -909,7 +1051,7 @@ Smcp), 5 are discordant and 2 uninformative — the identical classification to 
   fraction of p-values at exactly 1), so the TRUE hit counts are **not** to be read as "N true switches";
   only 5 label shuffles per mouse there (20 for the PDUI arm; pooled null p<0.05 3.169% / 3.156%).
   Cross-mouse PAS matching is coordinate-based, so only the matched subset (~60% of tested PAS) can
-  replicate — the denominator is on the figure.
+  replicate — the matched-PAS denominators are in this legend, not on the image.
 - **The ≥ 50-UMI depth guard** keeps 1,548 / 1,200 of ~10,500 genes with a PAS pair; the surviving set is
   biased toward highly expressed genes. The shuffle null is computed on the *same* guarded set, so the
   comparison is internally valid, but the gene set is not a random sample of the transcriptome.
@@ -963,11 +1105,18 @@ figure states that claim and no stronger one; the v1 body is the labelled compar
 `summary/gene_replication_summary.json`, `summary/gene_literature_panel.tsv`. Audit TSVs (every
 plotted value):
 `results/figures/manuscript/fig5_spermatogenesis{,_null_shuffles,_percell_resid,_percell_values,_replication,_gene_scatter,_negatives,_reference_lines}.tsv`.
-Palette: Okabe-Ito (#0072B2 #009E73 #D55E00 #CC79A7 #E69F00 #56B4E9 #999999); every series also carries a
-marker or fill style, so nothing depends on hue alone. PNG 600 dpi, PDF vector with subsetted TrueType
-(fonttype 42, no Type 3). The on-figure title, subtitle and cautions footer of the working-phase render
-moved into this Legend at the 2026-09-02 surgery pass; the image keeps panel letters, short titles,
-axis labels and data annotations only.
+Design: the shared publication style `scripts/manuscript_figures/_pubstyle.py` (PAL / TOOL_STYLE / TYPE /
+`apply_rc()` / `sentence_case()`), so Fig 1–6 read as one system. Colour carries the DIRECTION of the per-gene
+effect only (shortening `PAL['peakatail']` / lengthening `PAL['accent']`); stage is carried by position on the x
+axis and mouse by marker and line style, so no channel is spent twice and nothing depends on hue alone. Six
+checks re-validated 2026-09-02 with `validate_palette.js` (light mode): lightness band PASS, chroma floor PASS,
+CVD separation ΔE 29.2 protan / 30.9 tritan PASS, normal-vision floor 36.2 PASS. Canvas 7.09 in (180 mm) at
+final print width; PNG 600 dpi, PDF vector with subsetted TrueType (fonttype 42, no Type 3). The render passes
+an automated text-overlap, minimum-type-size (6 pt floor) and off-canvas audit plus the 8-px edge check; the
+page is saved at that fixed canvas (no tight bounding box), so an overflowing artist fails the audit instead of
+quietly widening the figure. The on-figure title,
+subtitle and cautions footer of the working-phase render moved into this Legend at the 2026-09-02 surgery pass;
+the image keeps panel letters, short titles, axis labels and at most three short data callouts per panel.
 
 **Note for whoever quotes the residual test.** The on-disk null for the per-cell residual Cliff's δ is
 the **20-shuffle** column `cell_cliffs_resid_SPC_ES`, whose empirical p floor is 1/21 ≈ 0.048; the

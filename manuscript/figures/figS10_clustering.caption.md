@@ -34,3 +34,14 @@ Sources: `results/figures/manuscript/pbmc_novelty.tsv (verified ablation rows; 0
 Every plotted value: `results/figures/manuscript/figS10_clustering.tsv` and `figS10_clustering_sweep.tsv`.
 Script: `scripts/manuscript_figures/figS10_clustering.py`; rendered at PNG 600 dpi / PDF fonttype 42,
 8.3 in (211 mm) wide (a 7.1 in narrowing clipped panel b/c labels and was rejected).
+
+**Design pass 2026-09-03** (`manuscript/figures/DESIGN_DIRECTIVES.md`, supplement light pass). Type comes from
+the shared style module `scripts/manuscript_figures/_pubstyle.py` (`apply_rc()`), and every on-figure annotation,
+key entry and tick label now sits at or above the 6 pt floor. Axis labels, panel titles and prose tick labels
+are sentence-cased through `_pubstyle.sentence_case()`, canonical identifiers preserved and the lower-case panel
+letters kept. Two title clauses left the image for the Legend above: panel b's *— but gene totals suffice (a)*
+(no-loss: the legend's opening sentence and panel a state it) and panel c's *(retired sweep's sole durable
+finding)* (no-loss: it is the legend's "(c) The retired parameter sweep's one durable finding" sentence). Two
+layout fixes: panel c's floor was lowered so its cluster-count note clears the bottom bar's value label, and the
+left margin was widened so panel c's knob labels clear the canvas edge. No panel, number or audit TSV changed;
+both TSVs regenerate byte-identical.

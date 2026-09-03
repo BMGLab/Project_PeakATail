@@ -30,19 +30,36 @@ patient went the other way) →
 15,212 also over the |Δproportion| ≥ 0.1 floor. The null tests a comparable
 2,033,818 hypotheses per combination and reaches a mean of 1.1 single-patient
 calls (range 0–4) and **zero** at every later stage.
-**Panel b** — the top 16 of the 47 cell-type pairs tested in ≥2 patients, K=2
+**Panel b** — the top 12 of the 47 cell-type pairs tested in ≥2 patients, K=2
 (light) with the K=3 subset overlaid (dark); "n pt" is the number of patients in which the pair was testable.
-The other 31 multi-patient pairs hold 2,148 more switches (1–243 each);
+The other 35 multi-patient pairs hold 3,231 more switches (1–296 each);
 12 pairs were tested in a single patient and can never replicate.
-**Panel c** — consensus |Δproportion| of the 15,942 replicated switches (median 0.34, mean
-0.36); the dashed line is the pre-registered floor. **Panel d** — patient support; the K=3
-sensitivity set is exactly the ≥3-patient tail (5,438).
-**Panel e (honesty panel)** — genomic context of the 5,951 distinct replicated PAS, recomputed for this
+**Panel c** — patient support; the K=3 sensitivity set is exactly the ≥3-patient tail (5,438), and
+10,504 of the 15,942 replicated switches (66%) sit at the two-patient
+minimum.
+**Panel d (honesty panel)** — genomic context of the 5,951 distinct replicated PAS, recomputed for this
 figure from `/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf` as an exclusive, strand-matched partition:
 57.8% own-gene 3′ UTR, 3.7% another gene's 3′ UTR,
 13.7% exonic but not 3′ UTR, 21.6% intronic,
 3.2% outside any same-strand gene — i.e. 96.8% inside a same-strand gene body,
 75.2% exonic, 61.5% in some gene's 3′ UTR. **Three of these five roll-ups exist in 20**: disclosure 1 quotes 61.5% (any same-strand 3′ UTR), 57.8% (the assigned gene's own 3′ UTR) and 96.8% (same-strand gene body), and all three are reproduced here to within 0.1 pp; the exonic, intronic and outside-any-gene figures appear in no write-up and are recomputed for this figure from the GTF. The two 3′-UTR figures must not be conflated — the v1 write-up quoted a single "62.5% in own-gene 3′ UTRs", which the verifier showed was the ANY-gene figure (own-gene was 58.6% on v1). Here 61.5% lie in *some* gene's 3′ UTR and only 57.8% in the 3′ UTR of the gene the caller assigned them to. Use the own-gene figure (57.8%) whenever the claim is about gene-level interpretation.
+
+**Moved off the image at the 2026-09-02 publication design pass (no-loss rule; the numbers below are asserted in
+the script's sidecar-generation check and still written to the audit TSVs).** The working render carried a fifth
+panel, the distribution of the consensus |Δproportion| of the replicated switches with the pre-registered floor
+drawn on it. Its message is three numbers, and they are these: the 15,942 replicated switches have a **median
+consensus |Δproportion| of 0.34** and a mean of 0.36, the distribution is unimodal with
+its mode in the 0.28–0.30 bin, 291 switches
+(1.8%) have a consensus effect below the |Δproportion| ≥ 0.1 floor, and
+the floor as pre-registered — applied per patient, with the patients then re-counted — removes
+730 of them (15,942 → 15,212, 4.6%). The full 50-bin
+histogram is still written to `results/figures/manuscript/fig6_cohort_effects.tsv`, headed *not plotted since
+2026-09-02*. Also off the image and here instead: the discordant-veto clause of the funnel's fourth stage
+(148 features reached ≥2 patients but in no single direction, 39 were
+vetoed by an opposite-direction patient), and the definition of the per-row patient count in panel b (the number of
+patients in which that cell-type pair was testable). Panel b now shows the top 12 pairs rather than 16; the
+other 35 multi-patient pairs are quantified two paragraphs above and every one of the 59 pairs is in
+`fig6_cohort_per_pair.tsv`.
 
 **Gene names (20 disclosure 1, tool issue #99).** No ranked list of named top-switch genes is shown. The v1 problem persists
 unchanged on the v2 chain: 12 of the top-30 gene-level rows (40%) name a gene whose 3′ UTR does not contain the
@@ -73,21 +90,35 @@ One cohort, one chemistry, one caller — no orthogonal 3′-end assay confirms 
 patients replicate more, so panel b tracks cohort composition as much as biology. One library
 (GSM3516672) trips the per-GSM null rule only through BH discreteness
 (3 hits in 9.1M null tests) and is kept and disclosed (20).
-Panel c plots the consensus effect, but the pre-registered floor is applied PER PATIENT and the patients
-re-counted, so it removes 730 switches (15,942 → 15,212) — more than the
-291 whose consensus alone falls below 0.1.
+The pre-registered effect floor is applied PER PATIENT and the patients are then re-counted, so it removes
+730 switches (15,942 → 15,212) — more than the 291 whose
+consensus effect alone falls below 0.1; never quote the consensus-below-floor count as the floor's yield.
+Two thirds of the replicated set rests on the two-patient minimum (panel c), which is the weakest support the
+pre-registration allows.
 
 ## Provenance
 
 Sources: `manuscript/20_stage3_replication.md` (verifier verdict SOUND) and, read directly, `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/` (`pas_K2`, `pas_K3`, `gene_K2`:
 `all_features.tsv`, `replicated.tsv`, `null_control.tsv`, `summary.json`; `per_pair_pas_K{2,3}.tsv`), the per-GSM
-switch summaries `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/switch/<GSM>/summary.json`, the verifier's null recount `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/verify_v2chain/`, and `/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf` for panel e.
-Every plotted value: `results/figures/manuscript/fig6_cohort_{funnel,per_pair,effects,support,context,context_summary,cohort}.tsv`.
+switch summaries `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/switch/<GSM>/summary.json`, the verifier's null recount `/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/verify_v2chain/`, and `/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf` for panel d.
+Every plotted value: `results/figures/manuscript/fig6_cohort_{funnel,per_pair,support,context,context_summary,cohort}.tsv`.
+Still written, **not plotted since 2026-09-02**: `fig6_cohort_effects.tsv` (the retired effect-size histogram); its
+summary values are quoted in the Legend above and asserted in the script before the caption is composed.
 
-PeakATail code `9dfdefb` (#96 minus-strand IP fix); PNG 600 dpi, PDF vector with subsetted TrueType (fonttype 42,
-no Type 3). The working-phase render carried the title, headline, panel notes, honesty prose and cautions footer on
-the image; at the 2026-09-02 surgery pass they moved into the Legend above, sentence for sentence, and the image
-keeps panel letters, short titles, axis labels and data annotations only.
+PeakATail code `9dfdefb` (#96 minus-strand IP fix). Design: the shared publication style
+`scripts/manuscript_figures/_pubstyle.py` (PAL / TYPE / `apply_rc()` / `sentence_case()`), so Fig 1–6 read as one
+system. Real versus null is `PAL['peakatail']` against the reserved neutral; K=2 / K=3 is one hue
+light→dark (an ordinal pair: monotone lightness, step gap ≥ 0.06, single hue — `validate_palette.js --ordinal`
+PASS); panel d's five genomic-context classes take the categorical slots peakatail / bad / light / accent / alt,
+all-pairs six-checks PASS 2026-09-02 (worst CVD ΔE 9.6 protan / 8.5 tritan, normal-vision floor 15.6), and every
+class is named and counted in the key so nothing depends on hue alone; the percentage written inside a stacked
+segment takes white ink only where the fill clears 4.5:1 against it and the ink token otherwise, so no label sits
+on a sub-3:1 fill. Canvas 7.09 in (180 mm) at final print
+width; PNG 600 dpi, PDF vector with subsetted TrueType (fonttype 42, no Type 3); the render passes an automated
+text-overlap, minimum-type-size (6 pt) and off-canvas audit plus the 8-px edge check. The working-phase render
+carried the title, headline, panel notes, honesty prose and cautions footer on the image; at the 2026-09-02 surgery
+and design passes they moved into the Legend above, sentence for sentence, and the image keeps panel letters, short
+titles, axis labels and at most three short data callouts per panel.
 
 ### Index paragraph (for `manuscript/05_figure_index.md` — paste there; this script does not edit that file)
 

@@ -1,0 +1,102 @@
+# CITATION.cff for the PeakATail TOOL repository (github.com/BMGLab/PeakATail).
+#
+# Drop-in replacement for the placeholder file currently on `develop`
+# (which carries the author entity "PeakATail developers (BMGLab)").
+# Validated 2026-09-02 against the Citation File Format 1.2.0 JSON schema
+# (citation-file-format/citation-file-format, schema.json): parses as YAML and
+# passes jsonschema Draft-07 validation with zero errors.
+#
+# TWO PLACEHOLDERS REMAIN — both must be filled at release, and BOTH are
+# recorded in WD/submission/COMPANION_REPO_PLAN.md:
+#
+#   1. version: currently "[[PLACEHOLDER: version tag]]".
+#      Fill with the git tag cut for the manuscript release (e.g. "v0.3.0").
+#      The repo's pyproject.toml declares 0.2.0 and the only tags that exist
+#      today are 0.1.a1 / 0.1.a2 — no release tag has been cut yet.
+#
+#   2. Zenodo DOI: the `doi:` key below is COMMENTED OUT ON PURPOSE.
+#      CFF 1.2.0 constrains `doi` with the pattern
+#        ^10\.\d{4,9}(\.\d+)?/[A-Za-z0-9:/_;\-\.\(\)\[\]\\]+$
+#      so a literal "[[PLACEHOLDER: Zenodo DOI]]" string in that field makes
+#      the file FAIL schema validation. Leaving the key commented keeps the
+#      file valid today, and filling it in is a one-line uncomment once the
+#      DOI is minted. [[PLACEHOLDER: Zenodo DOI]]
+#
+# LICENCE: `license: MIT` below mirrors what the repository's default branch
+# (`develop`) actually ships today — LICENSE (MIT, added in d146590) and
+# pyproject.toml `license = "MIT"`. It is NOT an independent decision. If the
+# PI adopts a different licence per WD/submission/LICENSE_DECISION.md, change
+# this field to the matching SPDX id in the same commit as the LICENSE file.
+# NOTE: github.com/BMGLab/PeakATail `main` still carries GPL-3.0 — see
+# LICENSE_DECISION.md §"The conflict you actually have".
+#
+# A.A.T. ORCID: intentionally absent. The PI stated on 2026-09-02 that it is
+# not yet supplied, and CFF forbids anything but a real
+# https://orcid.org/XXXX-XXXX-XXXX-XXXX value in that field. Add the `orcid:`
+# key to the first author when it is provided; nothing else needs to change.
+#
+# Author e-mails: only the corresponding author's is included, as printed on
+# the manuscript title page. pyproject.toml carries a personal address for
+# A.A.T.; it is deliberately not reproduced here — add it only if the author
+# asks for it.
+
+cff-version: 1.2.0
+message: "If you use PeakATail in your research, please cite both the software (this file) and the paper listed under `preferred-citation`."
+type: software
+title: "PeakATail"
+abstract: >-
+  PeakATail (command-line name `ema`) calls poly(A) sites from single-cell
+  RNA-seq BAM files using direct poly(A) evidence — reads whose non-templated
+  poly(A) soft clips record cleavage and polyadenylation on the individual
+  molecule — tiers sites by molecule-counted clip support, filters internal
+  priming, and provides an FDR-calibrated, replication-filtered cell-type
+  alternative polyadenylation (APA) switch test.
+version: "[[PLACEHOLDER: version tag]]"
+# doi: [[PLACEHOLDER: Zenodo DOI]]   # uncomment and fill, e.g. 10.5281/zenodo.NNNNNNN
+repository-code: "https://github.com/BMGLab/PeakATail"
+url: "https://bmglab.github.io/PeakATail/"
+license: MIT
+
+authors:
+  - family-names: "Amiri Tabat"
+    given-names: "Amir"
+    affiliation: "Department of Computer Engineering, Faculty of Computer and Informatics Sciences, Ege University, İzmir, Türkiye"
+  - family-names: "Kaymaz"
+    given-names: "Yasin"
+    orcid: "https://orcid.org/0000-0002-9725-7536"
+    email: "yasin.kaymaz@ege.edu.tr"
+    affiliation: "Department of Bioengineering, Faculty of Engineering, Ege University, İzmir, Türkiye"
+
+contact:
+  - family-names: "Kaymaz"
+    given-names: "Yasin"
+    orcid: "https://orcid.org/0000-0002-9725-7536"
+    email: "yasin.kaymaz@ege.edu.tr"
+    affiliation: "Department of Bioengineering, Faculty of Engineering, Ege University, İzmir, Türkiye"
+
+keywords:
+  - bioinformatics
+  - single-cell RNA-seq
+  - polyadenylation
+  - poly(A) site
+  - alternative polyadenylation
+  - APA
+
+preferred-citation:
+  type: article
+  status: in-preparation
+  title: "PeakATail: precision-first poly(A)-site calling and calibrated alternative polyadenylation analysis in single-cell RNA-seq"
+  authors:
+    - family-names: "Amiri Tabat"
+      given-names: "Amir"
+      affiliation: "Department of Computer Engineering, Faculty of Computer and Informatics Sciences, Ege University, İzmir, Türkiye"
+    - family-names: "Kaymaz"
+      given-names: "Yasin"
+      orcid: "https://orcid.org/0000-0002-9725-7536"
+      email: "yasin.kaymaz@ege.edu.tr"
+      affiliation: "Department of Bioengineering, Faculty of Engineering, Ege University, İzmir, Türkiye"
+  notes: >-
+    Manuscript in preparation as of 2026-09-02. Replace `status:
+    in-preparation` with the published record — adding `journal`, `year`,
+    `volume`, `pages` and `doi` — once the paper is accepted. Do not add a
+    `year` before publication: a speculative year is worse than no year.
