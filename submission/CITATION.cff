@@ -45,7 +45,7 @@ message: "If you use PeakATail in your research, please cite both the software (
 type: software
 title: "PeakATail"
 abstract: >-
-  PeakATail (command-line name `ema`) calls poly(A) sites from single-cell
+  PeakATail (command-line name `peakatail`) calls poly(A) sites from single-cell
   RNA-seq BAM files using direct poly(A) evidence — reads whose non-templated
   poly(A) soft clips record cleavage and polyadenylation on the individual
   molecule — tiers sites by molecule-counted clip support, filters internal

@@ -9,7 +9,7 @@ types" is only interesting if the recovery comes from poly(A)-site BIOLOGY.
 The shipped PAS feature space is per-site UMI COUNTS (TF-IDF -> LSI -> Leiden).
 Per-site counts carry gene abundance, so a 3'-end count matrix is close to a
 gene-expression matrix with extra rows. This script decomposes the signal by
-re-running the IDENTICAL clustering pipeline (ema LeidenTfidfStrategy, the same
+re-running the IDENTICAL clustering pipeline (PeakATail's LeidenTfidfStrategy, the same
 parameters the run used: TF-IDF sf 1e4, 50 SVD comps, depth-corr filter 0.75,
 40 dims, 30 neighbours, resolution 1.0, seed 42) on feature spaces that differ
 only in what information they retain:
@@ -71,7 +71,7 @@ def log(*a):
 
 
 def tfidf_sparse(X, scale_factor=1e4):
-    """Signac Method 1 TF-IDF, sparse. Exactly equivalent to ema's dense
+    """Signac Method 1 TF-IDF, sparse. Exactly equivalent to PeakATail's dense
     implementation: the transform maps 0 -> log1p(0) = 0, so the sparsity
     pattern is preserved and only stored non-zeros need transforming."""
     X = sp.csr_matrix(X, dtype=np.float64)
@@ -89,7 +89,7 @@ def tfidf_sparse(X, scale_factor=1e4):
 
 
 def run_space(name, X, obs_names, counts_for_depth=None, prenormalised=False):
-    """Identical ema pipeline on an arbitrary feature matrix."""
+    """Identical PeakATail pipeline on an arbitrary feature matrix."""
     A = ad_mod.AnnData(sp.csr_matrix(X, dtype=np.float64) if sp.issparse(X)
                        else np.asarray(X, np.float64))
     A.obs_names = obs_names

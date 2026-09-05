@@ -4,8 +4,11 @@ document properties.  Word features pandoc 2.9's docx writer cannot emit.
 
     python3 postprocess_docx.py <file.docx> [--no-line-numbers] [--title "..."]
 
-Content is never touched — only section properties, the footer, and docProps.
+Content is never touched — only section properties, the footer, docProps, and the
+run-level type sizes of the two things a paragraph style cannot reach on its own:
+table cell text (9 pt) and figure/table legend paragraphs (10 pt).  See TYPOGRAPHY.md.
 """
+import re
 import sys
 
 import docx
@@ -118,6 +121,48 @@ def add_footer_page_numbers(section, font="Times New Roman", pt=10):
     return p
 
 
+TABLE_PT = 9.0          # PI spec, 2026-09-05
+LEGEND_PT = 10.0
+# A legend paragraph opens with its own label.  Matched on the paragraph text so
+# this works in the submission copy (legends collected in one section, body style)
+# as well as the reading copy (legends inline under the FigureLegend style).
+LEGEND_RE = re.compile(r"^\s*(?:\*\*)?(?:Fig(?:ure)?|Table)\s+S?\d+\s*[|.:]")
+
+
+def set_pt(par, pt):
+    """Force a run-level size on every run, so nothing inherits a larger style."""
+    n = 0
+    for run in par.runs:
+        run.font.size = docx.shared.Pt(pt)
+        n += 1
+    return n
+
+
+def apply_typography(d):
+    """Table text to 9 pt and legend paragraphs to 10 pt, run by run."""
+    cells = legends = 0
+    seen = set()
+    for tbl in d.tables:
+        for row in tbl.rows:
+            for cell in row.cells:
+                if id(cell._tc) in seen:      # merged cells appear more than once
+                    continue
+                seen.add(id(cell._tc))
+                for par in cell.paragraphs:
+                    cells += set_pt(par, TABLE_PT) and 1
+    for par in d.paragraphs:
+        # A supplementary HEADING also opens "Fig S1 | ..." -- style wins over the
+        # text pattern, or every supplementary heading gets shrunk to legend size.
+        if par.style.name.startswith("Heading"):
+            continue
+        if par.style.name == "FigureLegend" or LEGEND_RE.match(par.text):
+            if set_pt(par, LEGEND_PT):
+                legends += 1
+    print("  typography: %d table cell paragraph(s) at %.0f pt, "
+          "%d legend paragraph(s) at %.0f pt" % (cells, TABLE_PT, legends, LEGEND_PT))
+    return cells, legends
+
+
 def main():
     path = sys.argv[1]
     args = sys.argv[2:]
@@ -132,6 +177,8 @@ def main():
             add_line_numbers(sec)
         add_page_number_start(sec)
         add_footer_page_numbers(sec)
+
+    apply_typography(d)
 
     cp = d.core_properties
     if title:

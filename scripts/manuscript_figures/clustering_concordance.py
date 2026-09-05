@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Manuscript figure: GEX-vs-PAS clustering concordance (PeakATail / ema).
+Manuscript figure: GEX-vs-PAS clustering concordance (PeakATail).
 
 Core claim carried by this figure: cells clustered on poly(A)-site (PAS)
 profiles ALONE -- no gene-level expression matrix -- recover the cell-type

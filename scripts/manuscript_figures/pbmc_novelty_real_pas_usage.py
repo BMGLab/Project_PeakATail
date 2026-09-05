@@ -15,7 +15,7 @@ survives, alternative polyadenylation genuinely carries cell identity here.
 If it collapses while the unrestricted (mostly non-PAS) version does not, the
 signal is coverage shape and the APA interpretation is unsupported.
 
-Matched controls, all through the identical ema pipeline:
+Matched controls, all through the identical PeakATail pipeline:
   real_pas_usage        usage over atlas-supported sites  (n features = N_R)
   decoy_usage_matched   usage over NON-atlas sites, same n features, matched
                         on usage variance rank -- the like-for-like decoy

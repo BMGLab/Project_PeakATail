@@ -7,7 +7,7 @@ schematic). The PI chooses between them.
 ## Legend
 
 **Figure 1 | PeakATail: algorithm, evidence model and outputs.**
-**(a)** The pipeline. A single command, `ema run`, takes an aligned single-cell BAM with cell
+**(a)** The pipeline. A single command, `peakatail run`, takes an aligned single-cell BAM with cell
 barcodes and UMIs and returns poly(A) sites with a per-cell count matrix. Reads whose end
 carries a non-templated A/T run are the tool's primary evidence; genome-wide only
 0.573% of cell-barcoded reads carry one, a scarce but highly specific channel
@@ -15,8 +15,8 @@ carries a non-templated A/T run are the tool's primary evidence; genome-wide onl
 resulting candidates are ranked by whether tail evidence supports them, and sites sitting on a
 genomic A-run are removed by screening the reference sequence. Two flags set the operating
 point: `--polya-min-umis`, the number of distinct tail-carrying molecules a site must have, and
-`--ip-filter`, the genome screen. Downstream, `ema switch diff` tests cell-type differences in
-site usage, `ema switch length` summarises 3'UTR length as per-cell PDUI, and
+`--ip-filter`, the genome screen. Downstream, `peakatail switch diff` tests cell-type differences in
+site usage, `peakatail switch length` summarises 3'UTR length as per-cell PDUI, and
 `replication_filter.py` keeps only switches on which independent samples agree.
 **(b)** The evidence model. Atlas-agreement precision at 100 bp for the three evidence classes
 on PBMC 10k v3: sites with at least two tail-carrying molecules (the default output, 0.7062,

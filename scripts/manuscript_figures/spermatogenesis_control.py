@@ -33,12 +33,12 @@ index IS the pas_id -- and re-key rows by pas_id.
 
 BLOCKER 2.  ``07_clustering/*/clusters.h5ad`` stores the TF-IDF-transformed
 matrix in ``.X`` (values are non-integer, min ~0.2), not counts.  The
-documented ``ema switch length -i clusters.h5ad`` therefore computes PDUI on
+documented ``peakatail switch length -i clusters.h5ad`` therefore computes PDUI on
 TF-IDF weights; proximal and distal PAS of the same gene carry different IDF
 factors, so the ratio is biased.  Raw counts survive in
 ``06_preprocessing/*/preprocessed.h5ad`` (identical obs/var order, verified).
 
-BLOCKER 3.  ``ema switch length --strategy classic --isoform-agg per_gene``
+BLOCKER 3.  ``peakatail switch length --strategy classic --isoform-agg per_gene``
 is strand-blind.  The synthesised per-gene map gives every PAS rank=1, so the
 strategy's ``sort_values("rank")`` degenerates to pas_id order (= ascending
 genomic coordinate) and proximal/distal are swapped for every MINUS-strand
@@ -366,7 +366,7 @@ cav = (
  "   same interval: Spearman 0.058 as shipped -> 0.730 re-keyed.\n"
  "   Everything above uses the re-keyed matrix.\n"
  "\n"
- "2. clusters.h5ad .X is TF-IDF, not counts, so `ema switch length`\n"
+ "2. clusters.h5ad .X is TF-IDF, not counts, so `peakatail switch length`\n"
  "   as documented computes PDUI on IDF-weighted values.  And its\n"
  "   classic/per_gene path is strand-blind (proximal/distal swapped\n"
  "   for every minus-strand gene; unit-tested).  The index used here\n"

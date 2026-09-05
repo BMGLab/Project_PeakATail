@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-fdr_calibration.py -- is `ema switch diff` FDR honest under a label-permutation
+fdr_calibration.py -- is `peakatail switch diff` FDR honest under a label-permutation
 null?  Side-by-side calibration of BOTH strategies: fisher and nb_pairwise.
 
 Design
@@ -99,7 +99,7 @@ def read_run(diff_dir: str, prefix: str) -> pd.DataFrame:
 
 def true_dir_for(pattern: str, prefix: str) -> str:
     """Newest dir matching `pattern` that actually holds differential TSVs
-    (`ema` appends a timestamp to -o unless PEAKATAIL_NO_TIMESTAMP=1, so the
+    (`peakatail` appends a timestamp to -o unless PEAKATAIL_NO_TIMESTAMP=1, so the
     nb TRUE run landed in true_nb_<ts>/)."""
     cands = [d for d in sorted(glob.glob(pattern))
              if glob.glob(os.path.join(d, "differential", f"{prefix}_*_vs_*.tsv"))]

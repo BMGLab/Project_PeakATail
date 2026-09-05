@@ -19,7 +19,7 @@ supplying a plausible-looking one.
 
 > ### Availability of data and materials
 >
-> **Tool code.** PeakATail (command-line name `ema`) is developed openly at
+> **Tool code.** PeakATail (command-line name `peakatail`) is developed openly at
 > https://github.com/BMGLab/PeakATail and is released under the
 > [[PLACEHOLDER: licence — PI decision; see submission/LICENSE_DECISION.md]]
 > licence. The development record behind this paper is public: pull requests #92

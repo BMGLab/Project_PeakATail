@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-fig4_calibration.py -- manuscript Fig 4: re-calibration of `ema switch diff` on
+fig4_calibration.py -- manuscript Fig 4: re-calibration of `peakatail switch diff` on
 a CORRECT input.
 
 Why v2: the first calibration (fdr_calibration.py, retired) ran on a mis-keyed matrix

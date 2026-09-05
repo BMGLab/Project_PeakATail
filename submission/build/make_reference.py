@@ -26,12 +26,18 @@ def q(tag):
 PROFILES = {
     # body_pt, line (240ths of a line; 240=single, 276=1.15, 360=1.5, 480=double),
     # space_after (twips), h1_pt, h2_pt, h3_pt, title_pt, margin (twips)
-    "submission": dict(body_pt=12, line=360, after=120, h1_pt=14, h2_pt=12, h3_pt=12,
-                       title_pt=16, margin=1440, legend_pt=12),
-    "reading": dict(body_pt=11, line=276, after=160, h1_pt=14, h2_pt=12, h3_pt=11,
-                    title_pt=16, margin=1134, legend_pt=10),
-    "supplementary": dict(body_pt=11, line=276, after=160, h1_pt=14, h2_pt=12, h3_pt=11,
-                          title_pt=15, margin=1247, legend_pt=11),
+    #
+    # PI typography spec, 2026-09-05, identical across all three profiles:
+    #   main text 11 pt · headings bold 12 pt · figure and table legends 10 pt
+    #   · table body text 9 pt · body paragraphs justified to both edges.
+    # Only page margin and line spacing still vary by profile: double-spaced
+    # with a wide margin for the copy a reviewer marks up, tighter for reading.
+    "submission": dict(body_pt=11, line=480, after=120, h1_pt=12, h2_pt=12, h3_pt=12,
+                       title_pt=16, margin=1440, legend_pt=10, table_pt=9),
+    "reading": dict(body_pt=11, line=276, after=160, h1_pt=12, h2_pt=12, h3_pt=12,
+                    title_pt=16, margin=1134, legend_pt=10, table_pt=9),
+    "supplementary": dict(body_pt=11, line=276, after=160, h1_pt=12, h2_pt=12, h3_pt=12,
+                          title_pt=15, margin=1247, legend_pt=10, table_pt=9),
 }
 
 SERIF = "Times New Roman"
@@ -157,19 +163,26 @@ def build(profile, base_path, out_path):
         return r
 
     # Body styles
-    for sid in ("BodyText", "FirstParagraph"):
+    # Normal is the root of every paragraph style, so justifying it catches the
+    # paragraphs pandoc emits with no more specific style (5 in MAIN.md).  The
+    # heading, title and title-page styles below then set jc="left" explicitly so
+    # they do NOT inherit it -- a heading that wraps would otherwise be justified.
+    for sid in ("Normal", "BodyText", "FirstParagraph", "BlockText"):
         s = style(sid)
         if s is not None:
-            set_ppr(s)
+            set_ppr(s, jc="both")
     c = style("Compact")
     if c is not None:
-        set_ppr(c, after=int(cfg["after"] * 0.4))
+        # Compact is pandoc's in-table and tight-list paragraph style.  It is
+        # justified like the body but NEVER given a size here: leaving its size
+        # unset is what lets the 9 pt table pass in postprocess_docx.py bind.
+        set_ppr(c, after=int(cfg["after"] * 0.4), jc="both")
 
     # Headings: plain black serif, no theme colour
     for sid, pt, bold, italic in (
         ("Heading1", cfg["h1_pt"], True, False),
         ("Heading2", cfg["h2_pt"], True, False),
-        ("Heading3", cfg["h3_pt"], True, True),
+        ("Heading3", cfg["h3_pt"], True, True),   # bold 12 + italic: the one level cue left
         ("Heading4", cfg["h3_pt"], False, True),
         ("Heading5", cfg["h3_pt"], False, True),
         ("Heading6", cfg["h3_pt"], False, True),
@@ -179,7 +192,7 @@ def build(profile, base_path, out_path):
             continue
         set_rpr(s, pt=pt, bold=bold, italic=italic)
         before = 320 if sid == "Heading1" else 240
-        set_ppr(s, before=before, after=80, line=240, keepnext=True)
+        set_ppr(s, before=before, after=80, line=240, keepnext=True, jc="left")
 
     t = style("Title")
     if t is not None:
@@ -200,7 +213,8 @@ def build(profile, base_path, out_path):
     custom = """
     <w:style w:type="paragraph" w:customStyle="1" w:styleId="TitlePageLine">
       <w:name w:val="TitlePageLine"/><w:basedOn w:val="Normal"/><w:qFormat/>
-      <w:pPr><w:spacing w:before="0" w:after="60" w:line="240" w:lineRule="auto"/></w:pPr>
+      <w:pPr><w:spacing w:before="0" w:after="60" w:line="240" w:lineRule="auto"/>
+        <w:jc w:val="left"/></w:pPr>
       <w:rPr><w:rFonts w:ascii="{serif}" w:hAnsi="{serif}" w:eastAsia="{serif}" w:cs="{serif}"/>
         <w:sz w:val="{bodyhalf}"/><w:szCs w:val="{bodyhalf}"/></w:rPr>
     </w:style>
@@ -212,7 +226,7 @@ def build(profile, base_path, out_path):
     <w:style w:type="paragraph" w:customStyle="1" w:styleId="FigureLegend">
       <w:name w:val="FigureLegend"/><w:basedOn w:val="Normal"/><w:qFormat/>
       <w:pPr><w:spacing w:before="0" w:after="280" w:line="240" w:lineRule="auto"/>
-        <w:ind w:left="284" w:right="284"/></w:pPr>
+        <w:ind w:left="284" w:right="284"/><w:jc w:val="both"/></w:pPr>
       <w:rPr><w:rFonts w:ascii="{serif}" w:hAnsi="{serif}" w:eastAsia="{serif}" w:cs="{serif}"/>
         <w:sz w:val="{leghalf}"/><w:szCs w:val="{leghalf}"/></w:rPr>
     </w:style>
@@ -248,8 +262,10 @@ def build(profile, base_path, out_path):
     zout.close()
     import os
     os.remove(out_path + ".tmp")
-    print("wrote %s (profile=%s, %d pt serif, line=%d/240, A4, margin=%d twips)"
-          % (out_path, profile, cfg["body_pt"], cfg["line"], cfg["margin"]))
+    print("wrote %s (profile=%s, body %d pt / headings %d pt bold / legends %d pt "
+          "/ tables %d pt, justified, line=%d/240, A4, margin=%d twips)"
+          % (out_path, profile, cfg["body_pt"], cfg["h1_pt"], cfg["legend_pt"],
+             cfg["table_pt"], cfg["line"], cfg["margin"]))
 
 
 if __name__ == "__main__":

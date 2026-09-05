@@ -80,7 +80,7 @@ or author is altered. What it does:
   | 1 | 2.1 | "PeakATail calls poly(A) sites (PAS) from the one element…" |
   | 2 | 2.1 | "The internal-priming filter is measured on its own output…" (cites Fig 2a) |
   | 3 | 2.3 | "Tightening the matching window to 10 bp…" |
-  | 4 | 2.4 | "Before reporting a single switch we asked whether `ema switch diff`…" |
+  | 4 | 2.4 | "Before reporting a single switch we asked whether `peakatail switch diff`…" |
   | 5 | 2.5 | "We next asked whether the calibrated test recovers a known biological program…" |
   | 6 | 2.6 | "We then applied the same discipline where labels are noisier…" |
 

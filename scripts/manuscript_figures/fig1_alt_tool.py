@@ -146,7 +146,7 @@ def span(xa, xb, y, label, color):
     T((xa + xb) / 2, y - fh(0.15), label, fontsize=6.2, ha="center", va="center",
       color=color, fontweight="bold", family="DejaVu Sans Mono")
 
-span(x0, x0 + 6 * (bw + gap) - gap, fy(1.12), "ema run", BLUE)
+span(x0, x0 + 6 * (bw + gap) - gap, fy(1.12), "peakatail run", BLUE)
 T(0.5, fy(1.45), "One command produces the sites and the count matrix.", fontsize=6.2,
   ha="center", va="center", color=MUTED)
 T(0.5, fy(1.60), "Two flags set the operating point: --polya-min-umis (tail molecules required) "
@@ -156,8 +156,8 @@ T(0.5, fy(1.60), "Two flags set the operating point: --polya-min-umis (tail mole
 # downstream row
 dy, dh = fy(2.66), fh(0.78)
 DOWN = [
-    ("Cell-type switch tests", "ema switch diff", "False-positive rate checked\nagainst shuffled labels"),
-    ("3′UTR length shifts", "ema switch length", "Per-cell PDUI along\na differentiation axis"),
+    ("Cell-type switch tests", "peakatail switch diff", "False-positive rate checked\nagainst shuffled labels"),
+    ("3′UTR length shifts", "peakatail switch length", "Per-cell PDUI along\na differentiation axis"),
     ("Cross-sample replication", "replication_filter.py", "Keep a switch only if\nindependent samples agree"),
 ]
 dw = (x1 - x0 - 2 * 0.030) / 3
@@ -334,7 +334,7 @@ schematic). The PI chooses between them.
 ## Legend
 
 **Figure 1 | PeakATail: algorithm, evidence model and outputs.**
-**(a)** The pipeline. A single command, `ema run`, takes an aligned single-cell BAM with cell
+**(a)** The pipeline. A single command, `peakatail run`, takes an aligned single-cell BAM with cell
 barcodes and UMIs and returns poly(A) sites with a per-cell count matrix. Reads whose end
 carries a non-templated A/T run are the tool's primary evidence; genome-wide only
 {CLIP_RATE:.3f}% of cell-barcoded reads carry one, a scarce but highly specific channel
@@ -342,8 +342,8 @@ carries a non-templated A/T run are the tool's primary evidence; genome-wide onl
 resulting candidates are ranked by whether tail evidence supports them, and sites sitting on a
 genomic A-run are removed by screening the reference sequence. Two flags set the operating
 point: `--polya-min-umis`, the number of distinct tail-carrying molecules a site must have, and
-`--ip-filter`, the genome screen. Downstream, `ema switch diff` tests cell-type differences in
-site usage, `ema switch length` summarises 3'UTR length as per-cell PDUI, and
+`--ip-filter`, the genome screen. Downstream, `peakatail switch diff` tests cell-type differences in
+site usage, `peakatail switch length` summarises 3'UTR length as per-cell PDUI, and
 `replication_filter.py` keeps only switches on which independent samples agree.
 **(b)** The evidence model. Atlas-agreement precision at 100 bp for the three evidence classes
 on PBMC 10k v3: sites with at least two tail-carrying molecules (the default output, {DEFAULT_P[0][1]:.4f},

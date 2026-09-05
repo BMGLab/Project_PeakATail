@@ -88,5 +88,25 @@ The matched-N sentence appears in both. GB allows it; trimming buys words for A1
 ### C10. Title
 Resolved during the fix pass window: the PI set the title and author list directly (see MAIN.md comments, 2026-09-02). Reviewer m12 is thereby addressed. A.A.T. ORCID placeholder remains.
 
+### C11. The manuscript now names a CLI that has not shipped yet (PI instruction, 2026-09-05)
+The PI directed that `ema` is obsolete and the manuscript and figures should say `peakatail`, with
+Amir to rename the command in the tool. That rename is done in the paper: 34 CLI invocations and 8
+name mentions across MAIN.md, the figure scripts and the submission package now read `peakatail run`,
+`peakatail switch diff` and `peakatail switch length`. The Python package paths (`ema/benchmark/metrics.py`,
+`ema.clustering.strategies` and nine others) were deliberately NOT renamed: they point at real files in
+the current source tree, and the instruction was about the command, not the package.
+
+**The dependency this creates, and it is blocking for submission.** As of today the tool still ships the
+command as `ema`; every run behind every number in this paper was executed as `ema`. A reader who installs
+the archived version and types `peakatail run` gets nothing. Three things must therefore line up before
+submission:
+  1. Amir's rename must merge AND be cut as a release, and that release is the version tagged in
+     CITATION.cff and archived to Zenodo (interacts with the open version-tag decision).
+  2. If the package is renamed too, the eleven `ema/...` path references above must be re-checked; if it
+     is not, Methods should say the command is `peakatail` while the importable package remains `ema`.
+  3. If the rename will NOT land before submission, this change must be reverted rather than shipped:
+     a paper naming a command that does not exist is a reproducibility defect, not a cosmetic one.
+Nothing in the evidence base changed — no re-run is implied, only the name printed in prose and figures.
+
 ## D. Resolved in the fix pass (for the record — no action needed)
 Audit PI-item 1 (Fig S12 over-pointing): the Results paragraph heading no longer cites Fig S12; the figure is cited only for the byte-for-byte version identity it actually carries. Review structure item 3 (two-truth composite debuting in Discussion): moved to Results with 25 §8.6's wording; Discussion keeps a back-reference. M2/M5c/M6b/M9i/M9iv/M9v/M11/M12 and minors 1, 2, 4, 5, 6, 10, 11 were addressed in-draft; see STATUS.md.
