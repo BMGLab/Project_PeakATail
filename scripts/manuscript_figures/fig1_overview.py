@@ -7,8 +7,9 @@ TWO RENDERS FROM ONE SCRIPT AND ONE SET OF NUMBERS (FIG1_STYLE)
             Four plain-language panels for a reader who has never run a caller:
             (a) reads that keep a piece of the poly(A) tail, (b) tail-carrying read
             ends piling up into a called site, (c) the internal-priming look-alike
-            and the genome check that removes it, (d) the trusted site list feeding
-            cell-type comparisons.  Two headline badges, no trade curve (it lives in
+            and the genome check that removes it, (d) the tool itself -- one
+            command, the two switches that set the operating point, the two
+            outputs and the three commands that read them.  Two headline badges, no trade curve (it lives in
             Fig 2/3 only, item 5), no acceptance-rule table, no stats block and no
             base-resolution locus panels.  The panels are SCHEMATICS: they carry no
             plotted data series, and every quantity they stand for is printed in the
@@ -826,7 +827,7 @@ assert len(drawn_reads) == len(show) + len(un_show) + len(cl2), len(drawn_reads)
 # string is wrapped by chars() / wrap_to(), which turn the panel's own width into
 # a character count.  Layout is therefore stable when a number changes length.
 # ---------------------------------------------------------------------------
-FIG_W, FIG_H = (7.09, 7.90) if SIMPLE else (7.35, 8.30)
+FIG_W, FIG_H = (7.09, 8.54) if SIMPLE else (7.35, 8.30)
 ML, MR = (0.30, 0.22) if SIMPLE else (0.42, 0.14)
 CW = FIG_W - ML - MR
 fig = plt.figure(figsize=(FIG_W, FIG_H))
@@ -1331,7 +1332,7 @@ else:
     TOP_B, H_B = 2.38, 1.28
     TOP_C, H_C = 4.14, 1.90
     TOP_G2, H_G2 = 6.20, 0.30
-    TOP_D, H_D = 6.82, 0.98
+    TOP_D, H_D = 6.82, 1.62
 
     def sq(ax, dx):
         """An x-extent expressed as the y-extent that renders square on this axes."""
@@ -1384,7 +1385,8 @@ else:
         # NOT "Default:".  `--polya-min-umis` is 1 at the caller and `--ip-filter` is
         # opt-in, so a bare "default" would claim something about the shipped CLI that
         # is false -- exactly what caveat 5 of this sidecar forbids.  "Trusted set" is
-        # the figure's own word for it (panel d: "Trusted site list"), and the Legend
+        # the figure's own word for it (panel d names the output box "Trusted site
+    # list"), and the Legend
         # names it as the paper's pre-registered output.
         (GREEN, f"Trusted set: keep a site when ≥ {MIN_MOLECULES} tail-carrying molecules "
                 f"support it and it passes the genome check"),
@@ -1547,46 +1549,77 @@ else:
     sbadge(axG2, BADGES[1][1], BADGES[1][0])
 
     # ------------------------------------------------------------- panel d -----
+    # The tool itself, which panels a-c never show: one command, the two switches
+    # that set the operating point, what comes out, and the three things you can
+    # run on it.  Deliberately carries NO measured series -- every accuracy,
+    # calibration and compute number belongs to Figs 2-4, and repeating one here
+    # is the redundancy DESIGN_DIRECTIVES.md item 5 forbids.  The only numeral is
+    # the run's own resolved --polya-min-umis, read from run_config.json above.
     axD = plain(axbox(ML, TOP_D, CW, H_D, "d"))
-    head(axD, "d", "From trusted sites to cell-type comparisons")
+    head(axD, "d", "One command, two switches, and what comes out")
 
-    CARDS = [(0.005, 0.300, "Trusted site list", "One row per trusted transcript end"),
-             (0.352, 0.647, "Counts in every cell", "How much each cell uses each end"),
-             (0.700, 0.995, "Cell-type comparison",
-              "With a test whose error rate has been checked")]
-    for _i, (_x0, _x1, _title, _sub) in enumerate(CARDS):
-        spill(axD, _x0, 0.02, _x1 - _x0, 0.94, "white", GRID, lw=0.9, z=2, r=0.010)
-        _cx = (_x0 + _x1) / 2
-        if _i == 0:
-            for _j in range(4):
-                _yy = 0.79 - _j * 0.077
-                axD.add_patch(Rectangle((_x0 + 0.035, _yy), 0.150, 0.045, facecolor=GREEN,
-                                        alpha=0.30 + 0.16 * _j, edgecolor="none", zorder=4))
-                axD.add_patch(Rectangle((_x0 + 0.195, _yy), 0.065, 0.045, facecolor=GRID,
-                                        edgecolor="none", zorder=4))
-        elif _i == 1:
-            _rng = np.random.default_rng(4)          # icon only: a fixed seed, no data
-            for _r in range(4):
-                for _c in range(6):
-                    axD.add_patch(Rectangle((_x0 + 0.048 + _c * 0.037, 0.79 - _r * 0.077),
-                                            0.029, 0.048, facecolor=BLUE,
-                                            alpha=float(0.14 + 0.70 * _rng.random()),
-                                            edgecolor="none", zorder=4))
-        else:
-            for _bx, _split, _lab in ((0.085, 0.62, "Type 1"), (0.175, 0.34, "Type 2")):
-                axD.add_patch(Rectangle((_x0 + _bx, 0.605), 0.048, 0.235 * _split,
-                                        facecolor=BLUE, alpha=0.80, edgecolor="none", zorder=4))
-                axD.add_patch(Rectangle((_x0 + _bx, 0.605 + 0.235 * _split), 0.048,
-                                        0.235 * (1 - _split), facecolor=TAIL, alpha=0.80,
-                                        edgecolor="none", zorder=4))
-                axD.text(_x0 + _bx + 0.024, 0.590, sentence_case(_lab), fontsize=AN_S,
-                         color=MUTED, ha="center", va="top")
-        axD.text(_cx, 0.430, sentence_case(_title), fontsize=7.4, color=INK, ha="center",
-                 va="center", fontweight="bold")
-        axD.text(_cx, 0.318, wrap_to(axD, sentence_case(_sub), 0.26), fontsize=AN, color=MUTED,
-                 ha="center", va="top", linespacing=1.45)
-        if _i < 2:
-            sarrow(axD, _x1 + 0.014, 0.48, _x1 + 0.040, 0.48, color=MUTED, lw=1.0, ms=7)
+    MONO = "DejaVu Sans Mono"
+
+    def dbox(x0, x1, y0, y1, ec=GRID, fc="white", lw=0.8):
+        spill(axD, x0, y0, x1 - x0, y1 - y0, fc, ec, lw=lw, z=2, r=0.010)
+
+    def dtitle(xc, y, t, **kw):
+        kw.setdefault("fontsize", 7.0); kw.setdefault("color", INK)
+        axD.text(xc, y, t, ha="center", va="center", fontweight="bold", **kw)
+
+    def dsub(xc, y, t, frac=0.24, color=MUTED, fs=AN):
+        axD.text(xc, y, wrap_to(axD, sentence_case(t), frac), fontsize=fs, color=color,
+                 ha="center", va="center", linespacing=1.40)
+
+    RY0, RY1 = 0.585, 1.000          # the command row
+    DY0, DY1 = 0.000, 0.395          # the downstream row
+
+    # input -> the command -> the two outputs
+    dbox(0.000, 0.186, RY0, RY1)
+    dtitle(0.093, 0.905, "Aligned BAM")
+    dsub(0.093, 0.735, "Cell barcodes and UMIs", frac=0.165)
+    sarrow(axD, 0.196, 0.79, 0.232, 0.79, color=MUTED, lw=1.0, ms=7)
+
+    dbox(0.242, 0.470, RY0, RY1, ec=BLUE, fc=TINT[BLUE], lw=1.1)
+    axD.text(0.356, 0.915, "ema run", fontsize=8.0, family=MONO, fontweight="bold",
+             color=BLUE, ha="center", va="center")
+    axD.text(0.356, 0.775, "--polya-min-umis", fontsize=AN_S, family=MONO, color=INK,
+             ha="center", va="center")
+    axD.text(0.356, 0.680, "--ip-filter", fontsize=AN_S, family=MONO, color=INK,
+             ha="center", va="center")
+    # EXPECT: the caller's own resolved value is 1, which is exactly why no value
+    # is drawn next to the >= 2-molecule badge.  If a future run ships 2 as the
+    # caller default this assert fires and the panel can print the value again.
+    assert P_RUN["polya_min_umis"] == 1, P_RUN["polya_min_umis"]
+    sarrow(axD, 0.480, 0.79, 0.516, 0.79, color=MUTED, lw=1.0, ms=7)
+
+    dbox(0.526, 0.756, RY0, RY1, ec=GREEN)
+    dtitle(0.641, 0.905, "Trusted site list", color=GREEN)
+    dsub(0.641, 0.720, "One row per kept transcript end", frac=0.200)
+
+    dbox(0.770, 1.000, RY0, RY1, ec=GREEN)
+    dtitle(0.885, 0.905, "Count matrix", color=GREEN)
+    dsub(0.885, 0.720, "Every cell against every kept site", frac=0.200)
+
+    _BUS = 0.487                                  # all three read the same matrix
+    axD.plot([0.763, 0.763], [0.560, _BUS], color=GRID, lw=1.1, zorder=5,
+             solid_capstyle="butt")
+    axD.plot([0.1575, 0.8425], [_BUS, _BUS], color=GRID, lw=1.1, zorder=5,
+             solid_capstyle="butt")
+    for _cx in (0.1575, 0.5000, 0.8425):
+        sarrow(axD, _cx, _BUS, _cx, DY1 + 0.012, color=GRID, lw=1.1, ms=8)
+
+    # the three things a user runs on that matrix
+    DOWN = [("ema switch diff", "Which sites shift between cell types"),
+            ("ema switch length", "3\u2032UTR length per cell, as PDUI"),
+            ("replication_filter.py", "Keep only what independent samples agree on")]
+    _w, _g = 0.315, 0.0275
+    for _i, (_cli, _sub) in enumerate(DOWN):
+        _x0 = _i * (_w + _g)
+        dbox(_x0, _x0 + _w, DY0, DY1)
+        axD.text(_x0 + _w / 2, 0.300, _cli, fontsize=6.6, family=MONO, color=BLUE,
+                 ha="center", va="center")
+        dsub(_x0 + _w / 2, 0.135, _sub, frac=0.255)
 
 # ===========================================================================
 # legends (sidecar only -- the on-figure footer was retired at the 2026-09-02
@@ -1619,10 +1652,18 @@ CAPTION_SIMPLE = (
     f"genomic A. On PBMC 10k v3 that removes {N_REMOVED:,} of {NB['ge2_noip']:,} ≥2-molecule calls and "
     f"moves atlas agreement {S['ge2_noip']['P']:.4f} → {S['default']['P']:.4f}; it also costs recall, "
     f"since {P_REMOVED:.1%} of what it removes does have an atlas site within 100 bp. "
-    f"(d) The kept sites are counted in every cell and compared between cell types with the one test "
-    f"configuration that holds its false-positive rate ({FDR_NULL_P05:.1%} of label-shuffled tests p < 0.05, "
-    f"0/{FDR_NULL_RUNS} null runs with a q < 0.05 hit), reporting only switches that replicate across "
-    f"biological units. "
+    f"(d) The tool. One command, `ema run`, takes an aligned single-cell BAM carrying cell barcodes and "
+    f"UMIs and returns the trusted site list and a matrix of every cell against every kept site. Two "
+    f"switches set the operating point: `--polya-min-umis`, the number of distinct tail-carrying molecules "
+    f"a site must have, and `--ip-filter`, the genome check of panel c. Neither switch is drawn with a "
+    f"value, because `--polya-min-umis` resolves to 1 at the caller while the badge above states the "
+    f"paper's pre-registered \u2265 {MIN_MOLECULES}-molecule OUTPUT rule; printing the caller's 1 beneath that "
+    f"badge would read as a contradiction. Three commands then read the same matrix: `ema switch diff` for "
+    f"sites that shift between cell types, `ema switch length` for 3\u2032UTR length per cell as PDUI, and "
+    f"`replication_filter.py` to keep only what independent samples agree on. The panel is a schematic of "
+    f"the interface and deliberately plots no measured quantity: the accuracy of these outputs is Figs 2 "
+    f"and 3, the false-positive rate of `ema switch diff` ({FDR_NULL_P05:.1%} of label-shuffled tests "
+    f"p < 0.05, 0/{FDR_NULL_RUNS} null runs with a q < 0.05 hit) is Fig 4. "
     f"The two badges are the figure’s only headline numbers; the second names the paper’s pre-registered "
     f"TRUSTED SET and not a shipped CLI default — `--polya-min-umis` is 1 at the caller and the genome check is "
     f"the opt-in `--ip-filter`, run here in filtering mode. Code {CODE}; PBMC 10k v3 arm run {RUN_STAMP}; "
@@ -1855,8 +1896,9 @@ internal-priming look-alike and the genome check that removes it — the genomic
 in {TRIG['run_ends_at_or_before_call']:.1%} of removals, the window read is {int(IP_HI - IP_LO)} nt **around**
 the called end, and the filter removes {N_REMOVED:,} of {NB['ge2_noip']:,} ≥2-molecule calls, moving P@100
 {S['ge2_noip']['P']:.4f} → {S['default']['P']:.4f} at a real recall cost ({P_REMOVED:.1%} of the removals do
-have an atlas site within 100 bp); (d) the trusted list → per-cell counts → cell-type comparison with the one
-FDR-controlling configuration ({FDR_NULL_P05:.1%} of label-shuffled tests p < 0.05). Exactly two headline
+have an atlas site within 100 bp); (d) the interface — `ema run` with `--polya-min-umis` and `--ip-filter`,
+the trusted site list and the cell × site matrix, and the three commands that read it (`ema switch diff`,
+`ema switch length`, `replication_filter.py`) — a schematic of the tool that plots no measured quantity. Exactly two headline
 badges ({CLIP_RATE_GW:.1%} of reads carry the tail; the trusted set keeps sites with ≥ {MIN_MOLECULES}
 tail-carrying molecules that pass the genome check — the paper's pre-registered output, not a CLI default); no trade curve (item 5 keeps it in exactly one place in the mains), no funnel
 table, no statistics block and no base-resolution locus track — those are the detailed render and Figs 2–4.
