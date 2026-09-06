@@ -252,8 +252,10 @@ for gi, sym in enumerate(GENES):
                 axm.add_patch(Rectangle((a, yc - 0.098), max(b - a, 1), 0.196,
                                         facecolor=cds_c, edgecolor="none", zorder=6))
 
-        for pos, col in ((prox, PROX_C), (dist, DIST_C)):
-            axm.plot([pos], [0.02], marker="^", ms=4.2, color=col, zorder=7, clip_on=False)
+        for pos, col, lab in ((prox, PROX_C, "Proximal"), (dist, DIST_C, "Distal")):
+            axm.plot([pos], [0.10], marker="^", ms=4.2, color=col, zorder=7, clip_on=False)
+            axm.text(pos, -0.13, lab, fontsize=6.0, color=col, ha="center", va="center",
+                     zorder=8, clip_on=False)
         axm.text(hi - (hi - lo) * 0.005, 0.96, f"{(hi - lo) / 1000:.1f} kb",
                  fontsize=6.0, color=MUTED, ha="right", va="center", zorder=8,
                  bbox=dict(facecolor="white", edgecolor="none", pad=1.1))
