@@ -31,26 +31,63 @@ GENES = [
     dict(symbol="Rragc", gene="ENSMUSG00000028646", chrom="4", strand="+",
          prox={"mouse1": 123935899, "mouse2": 123935899},
          dist={"mouse1": 123936992, "mouse2": 123936992},
-         direction="shortening", pair="ES_vs_SPC", qmax=2.782e-56,
-         dprox=(0.8755, 0.8738), ddist=(-0.9318, -0.9329)),
-    dict(symbol="Pttg1ip", gene="ENSMUSG00000009291", chrom="10", strand="+",
-         prox={"mouse1": 77597270, "mouse2": 77597270},
-         dist={"mouse1": 77598731, "mouse2": 77598731},
-         direction="shortening", pair="ES_vs_SPC", qmax=2.921e-61,
-         dprox=(0.6648, 0.6646), ddist=(-0.8225, -0.8729)),
-    dict(symbol="Pom121", gene="ENSMUSG00000053293", chrom="5", strand="-",
-         prox={"mouse1": 135377832, "mouse2": 135377832},
-         dist={"mouse1": 135376139, "mouse2": 135376144},
-         direction="shortening", pair="ES_vs_SPC", qmax=3.105e-20,
-         dprox=(0.5726, 0.5637), ddist=(-0.6218, -0.8456)),
-    dict(symbol="Map3k11", gene="ENSMUSG00000004054", chrom="19", strand="+",
-         prox={"mouse1": 5702861, "mouse2": 5702861},
-         dist={"mouse1": 5707100, "mouse2": 5707100},
-         direction="lengthening", pair="ES_vs_SPC", qmax=5.148e-33,
-         dprox=(-0.9412, -0.9221), ddist=(0.8687, 0.8951)),
+         direction="shortening", pair="all three", qmax=4.066e-05,
+         dprox=(0.8755, 0.0), ddist=(-0.9318, 0.0)),
+    dict(symbol="Bpgm", gene="ENSMUSG00000038871", chrom="6", strand="+",
+         prox={"mouse1": 34504465, "mouse2": 34504465},
+         dist={"mouse1": 34505126, "mouse2": 34505126},
+         direction="shortening", pair="all three", qmax=2.709e-17,
+         dprox=(0.4485, 0.0), ddist=(-0.7950, 0.0)),
+    dict(symbol="App", gene="ENSMUSG00000022892", chrom="16", strand="-",
+         prox={"mouse1": 84955228, "mouse2": 84955228},
+         dist={"mouse1": 84954439, "mouse2": 84954447},
+         direction="shortening", pair="all three", qmax=5.460e-04,
+         dprox=(0.5207, 0.0), ddist=(-0.4113, 0.0)),
+    dict(symbol="Prdm15", gene="ENSMUSG00000014039", chrom="16", strand="-",
+         prox={"mouse1": 97850497, "mouse2": 97850497},
+         dist={"mouse1": 97847520, "mouse2": 97847520},
+         direction="lengthening", pair="all three", qmax=5.408e-04,
+         dprox=(-0.3627, 0.0), ddist=(0.7549, 0.0)),
 ]
 
 CIG = re.compile(r"(\d+)([MIDNSHP=X])")
+
+
+
+def assert_annotation_clean(genes, gtf=WD / "data/references/mouse/Mus_musculus.GRCm38.102.gtf"):
+    """Both drawn sites must lie inside the assigned gene, with no other gene in the window.
+
+    This is not cosmetic.  PAS-to-gene assignment in overlapping loci is a known
+    open defect (tool issue #99), and two genes were dropped from this figure by
+    exactly this check: Map3k11, whose "distal site" is really the 3' end of the
+    neighbouring Kcnk7, and Pom121, which overlaps Nsun5.  Drawing either would
+    have labelled a between-gene artefact as a 3'UTR switch.
+    """
+    chroms = {g["chrom"] for g in genes}
+    rows = []
+    with open(gtf) as fh:
+        for line in fh:
+            if line[0] == "#":
+                continue
+            f = line.split("\t", 9)
+            if f[2] != "gene" or f[0] not in chroms:
+                continue
+            rows.append((f[0], int(f[3]), int(f[4]),
+                         re.search(r'gene_id "([^"]+)"', f[8]).group(1)))
+    G = pd.DataFrame(rows, columns=["chrom", "start", "end", "gene_id"])
+    for g in genes:
+        s = [g["prox"]["mouse1"], g["dist"]["mouse1"]]
+        lo, hi = min(s) - FLANK, max(s) + FLANK
+        own = G[G.gene_id == g["gene"]]
+        assert len(own) == 1, (g["symbol"], "gene not in the GTF")
+        o = own.iloc[0]
+        assert o.start <= min(s) and max(s) <= o.end, \
+            (g["symbol"], "a drawn site lies outside its own gene")
+        other = G[(G.chrom == g["chrom"]) & (G.end > lo) & (G.start < hi)
+                  & (G.gene_id != g["gene"])]
+        assert not len(other), (g["symbol"], f"{len(other)} other gene(s) in the window")
+    print(f"annotation guard: {len(genes)} genes, both sites inside the gene, "
+          f"no overlapping neighbour")
 
 
 def barcodes_by_stage(path):
@@ -102,6 +139,7 @@ def coverage(bam, chrom, lo, hi, cb_of_stage):
 
 
 def main():
+    assert_annotation_clean(GENES)
     rows, meta = [], []
     for m, bam in BAM.items():
         by_stage, lab = barcodes_by_stage(LAB[m])

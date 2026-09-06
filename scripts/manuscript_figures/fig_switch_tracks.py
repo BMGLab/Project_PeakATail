@@ -46,7 +46,9 @@ STAGE_COL = {"SPC": PAL["light"], "RS": PAL["peakatail"], "ES": PAL["accent"]}
 INK, MUTED, GRID = PAL["ink"], PAL["muted"], PAL["grid"]
 PROX_C, DIST_C = PAL["good"], PAL["bad"]
 
-SEL_N, SHORT_PCT, LONG_PCT = 1077, 64.7, 35.3   # from the two-site selection, see caption
+TWO_SITE_N = 722            # genes whose replicated sites number exactly two
+SEL_N = 259                 # ...of those, annotation-clean (see the guard in the extractor)
+SHORT_PCT, LONG_PCT = 73.4, 26.6
 cov = pd.read_csv(TSVDIR / "switch_tracks_coverage.tsv.gz", sep="\t")
 meta = pd.read_csv(TSVDIR / "switch_tracks_meta.tsv", sep="\t")
 use = pd.read_csv(TSVDIR / "switch_tracks_usage.tsv", sep="\t")
@@ -235,13 +237,21 @@ CAP = f"""# Figure — `{STEM}` caption
 ## Legend
 
 **Replicated poly(A)-site switches shown as read coverage at the locus.** Four genes
-selected from the {SEL_N:,} genes whose spermatogenesis switch replicated in both mice and
-that carry exactly two replicated significant sites, so that proximal and distal are
-unambiguous; genes with three or more significant sites were excluded from this figure
-because no two of them can be labelled proximal and distal without ambiguity. Three
-shortening examples and one lengthening example are drawn, against the {SHORT_PCT:.0f}%
-shortening / {LONG_PCT:.0f}% lengthening split of all {SEL_N:,} such genes, so the panel is
-representative of the direction balance rather than of shortening alone. Each column is one
+selected under two rules. First, the gene's replicated significant sites must number exactly
+two across all three stage comparisons, so that proximal and distal are unambiguous:
+{TWO_SITE_N:,} of the genes whose switch replicated in both mice qualify, and a gene with three
+or more sites is excluded because no two of them can be labelled proximal and distal without
+ambiguity. Second, both sites must lie inside the assigned gene with no other annotated gene
+overlapping the drawn window, which leaves {SEL_N:,}. That second rule is not cosmetic:
+poly(A)-site-to-gene assignment in overlapping loci is a known open defect (tool issue #99),
+and it removed two genes that had passed every statistical filter, Map3k11, whose apparent
+distal site is really the 3' end of the neighbouring Kcnk7, and Pom121, which overlaps Nsun5.
+Either would have been drawn as a 3'UTR switch that is actually a between-gene artefact.
+Applying the rule also moves the direction balance from 65% shortening to {SHORT_PCT:.0f}%,
+so overlapping loci were inflating the apparent lengthening class. Three
+shortening examples and one lengthening example are drawn, against the {SHORT_PCT:.0f}% shortening
+/ {LONG_PCT:.0f}% lengthening split of those {SEL_N:,} genes, so the panel is representative of
+the direction balance rather than of shortening alone. Each column is one
 mouse, scored independently end to end. Within a column, the three tracks are the three
 spermatogenic stages (SPC, spermatocyte; RS, round spermatid; ES, elongating spermatid) and
 share one vertical scale, printed beneath them, because the switch is a change in the shape
@@ -250,7 +260,7 @@ reads per base per cell, so tracks are comparable between stages containing diff
 numbers of cells ({NCELL}). Read acceptance matches the caller: SAM flag filter 3844, the
 tool's own CLIP_EXCLUDE_FLAGS, which drops unmapped, secondary, QC-failed, duplicate and
 supplementary records, and only reads on the gene's own strand are drawn, which is how the
-caller counts; {STRAND_PCT:.1f}-{STRAND_MAX:.1f}% of reads over these four loci are on that
+caller counts; {STRAND_PCT:.1f}-{STRAND_MAX:.1f}% of reads over these four loci lie on that
 strand in any case. Dashed lines mark the two called sites, green proximal and orange
 distal; the arrow gives the direction of transcription and the grey bar the interval
 between the two sites. The percentages on each track are the quantity the switch test
