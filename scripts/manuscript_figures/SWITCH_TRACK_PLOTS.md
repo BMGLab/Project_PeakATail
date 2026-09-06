@@ -1,8 +1,16 @@
 # Genome-browser plots of poly(A)-site switches — how to build them
 
-How the spermatogenesis and lung-cohort browser figures were built, and how to point
-the same pipeline at a different switch set. **The selection rules matter more than
-the plotting code.** Readable version: the companion artifact published 2026-09-06.
+How the spermatogenesis and lung-cohort browser figures were built, and how to point the
+same pipeline at a different switch set. **The selection rules matter more than the
+plotting code.**
+
+All paths below are absolute. The reference project lives on the same machine, so a
+companion project can read these scripts, the reference GTFs and the example inputs
+directly — nothing needs copying.
+
+- Reference project root: `/mnt/ssd1/Projects/PeakATail_wd`
+- Scripts: `/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/`
+- This guide: `/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/SWITCH_TRACK_PLOTS.md`
 
 ---
 
@@ -21,6 +29,18 @@ _switch_track_extract.py  ->  switch_tracks_coverage.tsv.gz   per-base depth, lo
 fig_switch_tracks.py      ->  fig_switch_tracks.{png,pdf,caption.md}
 ```
 
+Concretely, on this machine:
+
+```bash
+export LC_ALL=C OMP_NUM_THREADS=1
+python3 /mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/_switch_track_extract.py
+python3 /mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/fig_switch_tracks.py
+```
+
+Extractors write TSVs to `/mnt/ssd1/Projects/PeakATail_wd/results/figures/manuscript/`.
+Plotters write PNG, PDF and a caption sidecar to
+`/mnt/ssd1/Projects/PeakATail_wd/manuscript/figures/`.
+
 Keep that boundary. The most common way these figures go wrong is a plotter that
 recomputes from coverage something the statistical test defined differently.
 
@@ -36,19 +56,51 @@ recomputes from coverage something the statistical test defined differently.
 
 **Set `LC_ALL=C` for every step.** A `tr_TR` locale silently misorders BED/interval data.
 
+### Worked example: mouse spermatogenesis (3 ordered stages, 2 replicate animals)
+
+```
+BAM              /mnt/ssd1/Projects/PeakATail_wd/data/benchmark/gse104556/starsolo/Mouse1_scRNAseq/Aligned.sortedByCoord.out.bam
+                 (and Mouse2_scRNAseq/… ; both indexed)
+barcode -> stage /mnt/ssd1/Projects/PeakATail_wd/results/stage3_spermatogenesis_v2/mouse1/input/stage3_labels.tsv
+                 columns: cb, stage  (SPC / RS / ES)
+differential     /mnt/ssd1/Projects/PeakATail_wd/results/stage3_spermatogenesis_v2/mouse1/diff/true/differential/fisher_ES_vs_SPC.tsv
+                 also fisher_ES_vs_RS.tsv, fisher_RS_vs_SPC.tsv
+replication      /mnt/ssd1/Projects/PeakATail_wd/results/stage3_spermatogenesis_v2/summary/switch_replicated_pas_true.tsv
+GTF              /mnt/ssd1/Projects/PeakATail_wd/data/references/mouse/Mus_musculus.GRCm38.102.gtf
+```
+
+### Worked example: lung-adenocarcinoma cohort (2 cell types, replication across patients)
+
+```
+cohort tree      /mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3
+BAMs             /mnt/ssd2/Laugney_Aligned/<SRR>_STAR/<SRR>_Aligned.sortedByCoord.out.bam
+                 one GSM spans up to 8 SRR runs; pool them
+SRR -> GSM map   /mnt/ssd1/Projects/PeakATail_wd/data/laughney/20250507_laughney_metadata.csv
+                 column "Unnamed: 0" = SRR, "Sample.Name" = GSM
+barcode -> type  /mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/switch/<GSM>/labelled/<GSM>.labels.tsv
+                 index = <GSM>_<barcode>, column celltype
+differential     /mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/switch/<GSM>/true/differential/fisher_<A>_vs_<B>.tsv
+replication      /mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/replicated.tsv
+GTF              /home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf
+```
+
+Both differential-table families share one schema. The columns that matter:
+`gene_id, chrom, start, strand, cluster1, cluster2, qvalue, n_reads_pas_cluster1,
+n_reads_pas_cluster2, n_reads_gene_cluster1, n_reads_gene_cluster2, delta_proportion`.
+
 ## 3. The two selection rules
 
 Statistics alone will hand you genes that look perfect and are wrong.
 
 **Rule 1 — exactly two replicated sites per gene, across ALL comparisons.**
-Only then do "proximal" and "distal" mean anything. A gene with three or more
-significant sites cannot have two labelled that way without picking arbitrarily.
-Mouse set: keeps 722 of 5,361 genes. Apply per *gene*, not per comparison, or a gene
-with a third site in another contrast slips through.
+Only then do "proximal" and "distal" mean anything. A gene with three or more significant
+sites cannot have two labelled that way without picking arbitrarily. Mouse set: keeps 722
+of 5,361 genes. Apply per *gene*, not per comparison, or a gene with a third site in
+another contrast slips through.
 
 **Rule 2 — both sites inside the assigned gene, no other gene in the window.**
-The assigned gene's span must contain both sites, and no other annotated gene may
-overlap the drawn window including flanks. Leaves 259 of those 722.
+The assigned gene's span must contain both sites, and no other annotated gene may overlap
+the drawn window including flanks. Leaves 259 of those 722.
 
 ### Why rule 2 exists
 
@@ -59,15 +111,17 @@ large opposite-direction effects — and were drawn before the guard existed:
 - **Pom121** overlaps **Nsun5**.
 
 Both would have shipped as 3'UTR switches that are really artefacts of site-to-gene
-assignment in overlapping loci (tool issue #99). What exposed it was a strand anomaly:
-only 12% of reads at the Map3k11 window were on its own strand, because an antisense
-gene sits there. No amount of statistical significance would have caught this.
+assignment in overlapping loci (PeakATail issue #99). What exposed it was a strand
+anomaly: only 12% of reads at the Map3k11 window were on its own strand, because an
+antisense gene sits there. No amount of statistical significance would have caught this.
 
 Applying the guard also moved the direction balance from 65% to 73% shortening —
-overlapping loci were inflating the apparent lengthening class by about a third.
-The guard is a result, not just hygiene.
+overlapping loci were inflating the apparent lengthening class by about a third. The
+guard is a result, not just hygiene.
 
-Put it in the **extractor** as an assertion so a bad gene stops the run:
+Put it in the **extractor** as an assertion so a bad gene stops the run. Working
+implementation at
+`/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/_switch_track_extract.py`:
 
 ```python
 def assert_annotation_clean(genes, gtf):
@@ -121,26 +175,36 @@ then revert. An assert that has never fired may not work.
 
 ## 7. Two atlas-free checks worth running
 
-Curated panels show what a good call looks like, never what a typical one looks like.
-Run these on a random unfiltered sample before trusting a call set.
+Curated panels show what a good call looks like, never what a typical one looks like. Run
+these on a random unfiltered sample before trusting a call set. Implementations:
+`/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/_site_step_scan.py` and
+`/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/fig_switch_qc.py`.
 
 **Site separation.** Distance between the outermost switching sites per gene. A tandem
-3'UTR switch happens inside one 3'UTR, so mass beyond ~10 kb is something else. Mouse
-set: 48% of multi-site genes exceed 10 kb, 9% exceed 100 kb.
+3'UTR switch happens inside one 3'UTR, so mass beyond ~10 kb is something else. Mouse set:
+48% of multi-site genes exceed 10 kb, 9% exceed 100 kb.
 
 **Coverage step at the call.** Mean depth in the 200 bp inside the transcript over the
-200 bp outside, strand-aware. A genuine poly(A) site in 3'-tag data drops off a cliff.
-On 300 random replicated sites: 68.9% drop at least threefold, 24% show no step, 16%
-are inverted. That 68.9% uses no annotation atlas at all and lands beside the 0.706
-atlas agreement reported for the default call set — two independent measures converging.
+200 bp outside, strand-aware. A genuine poly(A) site in 3'-tag data drops off a cliff. On
+300 random replicated sites: 68.9% drop at least threefold, 24% show no step, 16% are
+inverted. That 68.9% uses no annotation atlas at all and lands beside the 0.706 atlas
+agreement reported for the default call set — two independent measures converging.
 
 ## 8. Starter prompt for Claude Code
 
-```
-Build a genome-browser figure of replicated poly(A)-site switches,
-following the PeakATail switch-track recipe in scripts/manuscript_figures/SWITCH_TRACK_PLOTS.md.
+Paste into a session opened in the companion project, filling in the five input paths.
 
-Inputs:
+```
+Build a genome-browser figure of replicated poly(A)-site switches, following
+the recipe at
+/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/SWITCH_TRACK_PLOTS.md
+
+Read these as reference implementations (same machine, absolute paths):
+  /mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/_switch_track_extract.py
+  /mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/fig_switch_tracks.py
+  /mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/_pubstyle.py
+
+My inputs:
   BAM (indexed)      <path>
   barcode -> group   <path>   column for the condition drawn as a track
   switch results     <path>   differential tables with n_reads_pas / n_reads_gene
@@ -184,15 +248,15 @@ beside the tracks rather than as more of them.
 
 ## 9. Reference implementations
 
-All in `scripts/manuscript_figures/`.
-
-| File | What it shows |
+| File (absolute) | What it shows |
 |---|---|
-| `_switch_track_extract.py`, `fig_switch_tracks.py` | Ordered conditions (three stages), two independent replicates as columns. Cleanest template to copy |
-| `_cohort_track_extract.py`, `fig_cohort_tracks.py` | Two cell types pooled across patients, per-patient replication drawn beside the tracks. Copy when replication is across samples |
-| `_random_switch_extract.py`, `fig_random_switches.py` | Random unfiltered sample. Copy to audit a call set rather than illustrate it |
-| `_site_step_scan.py`, `fig_switch_qc.py` | The two atlas-free checks |
-| `_pubstyle.py` | Shared palette, type scale, rcParams. Import rather than restating colours |
+| `/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/_switch_track_extract.py`<br>`/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/fig_switch_tracks.py` | Ordered conditions (three stages), two independent replicates as columns. Cleanest template to copy |
+| `/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/_cohort_track_extract.py`<br>`/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/fig_cohort_tracks.py` | Two cell types pooled across patients, per-patient replication drawn beside the tracks. Copy when replication is across samples, and for pooling several BAMs per sample |
+| `/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/_random_switch_extract.py`<br>`/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/fig_random_switches.py` | Random unfiltered sample, with max-per-bin downsampling for wide loci. Copy to audit a call set rather than illustrate it |
+| `/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/_site_step_scan.py`<br>`/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/fig_switch_qc.py` | The two atlas-free checks |
+| `/mnt/ssd1/Projects/PeakATail_wd/scripts/manuscript_figures/_pubstyle.py` | Shared palette, type scale, rcParams. Import rather than restating colours |
 
-Extractors write to `results/figures/manuscript/`; plotters write PNG, PDF and a caption
-sidecar to `manuscript/figures/`.
+Rendered figures for reference:
+`/mnt/ssd1/Projects/PeakATail_wd/manuscript/figures/fig_switch_tracks.png`,
+`fig_cohort_tracks.png`, `fig_random_switches.png`, `fig_switch_qc.png`, each with a
+`.caption.md` sidecar naming the source of every number on the canvas.
