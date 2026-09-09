@@ -89,6 +89,20 @@ The matched-N sentence appears in both. GB allows it; trimming buys words for A1
 Resolved during the fix pass window: the PI set the title and author list directly (see MAIN.md comments, 2026-09-02). Reviewer m12 is thereby addressed. A.A.T. ORCID placeholder remains.
 
 ### C11. The manuscript now names a CLI that has not shipped yet (PI instruction, 2026-09-05)
+
+**UPDATE 2026-09-09.** The rename is now implemented and submitted upstream as
+**PR #111** (`feat/cli-rename-peakatail`, assigned to @TRextabat): `peakatail` becomes the
+console script, `ema` stays as a deprecated alias that behaves identically and announces
+itself on stderr, so no existing pipeline breaks. 555 CLI invocations rewritten across 106
+files; the importable package `ema` is deliberately unchanged. Full suite 1650 passed. The
+conda recipe was also declaring only `ema`, and its consistency test only checked the first
+console script, so the alias would have silently vanished from conda builds; both fixed.
+
+The dependency is therefore narrowed but NOT cleared. Still required before submission:
+PR #111 merged, a release cut, and that release tagged and archived — the tag is what
+CITATION.cff and the Zenodo DOI must point at. If #111 will not merge in time, revert the
+manuscript to `ema` rather than shipping a paper that names a command no release provides.
+
 The PI directed that `ema` is obsolete and the manuscript and figures should say `peakatail`, with
 Amir to rename the command in the tool. That rename is done in the paper: 34 CLI invocations and 8
 name mentions across MAIN.md, the figure scripts and the submission package now read `peakatail run`,
