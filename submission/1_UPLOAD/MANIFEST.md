@@ -3,9 +3,9 @@
 Assembled by submission/assemble_upload.sh. Do not edit files here.
 
 FILE                                                BYTES  SHA256
-01_Manuscript.docx                                  54245  f2fe36740105b03d
-02_Additional_file_1_Supplementary.docx             21236  4491ed209d3a9980
-03_Cover_letter.docx                                12374  2e6a57696998f66b
+01_Manuscript.docx                                  53789  bbbbbbd6c558566b
+02_Additional_file_1_Supplementary.docx             18724  e09ceec6e93ff2fd
+03_Cover_letter.docx                                12374  86bbbd3fab047595
 03_Cover_letter.md                                   9111  0c043a77f1bbcce5
 04_Main_figures/Figure_1.pdf                        47739  5c39ccbae42bb4ee
 04_Main_figures/Figure_1.png                       879445  8bce36f21e34f98f
@@ -23,10 +23,6 @@ FILE                                                BYTES  SHA256
 05_Supplementary_figures/Figure_S1.png             940192  9ade939dd6fe6755
 05_Supplementary_figures/Figure_S10.pdf             39251  5bdc8f4cdfd82c88
 05_Supplementary_figures/Figure_S10.png            951432  53c5d405bbe13ade
-05_Supplementary_figures/Figure_S11.pdf             42119  7d26cb6b4d0ff9a8
-05_Supplementary_figures/Figure_S11.png           1947632  693e159997321cb0
-05_Supplementary_figures/Figure_S12.pdf             60191  93fb471598973e37
-05_Supplementary_figures/Figure_S12.png           1987651  913fa640f4899aac
 05_Supplementary_figures/Figure_S2.pdf              38315  4935c3e1f55b5315
 05_Supplementary_figures/Figure_S2.png            1575015  82b4d40ffcd902bb
 05_Supplementary_figures/Figure_S3.pdf              41815  da760e43f213ed83

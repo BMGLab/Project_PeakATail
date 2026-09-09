@@ -29,12 +29,24 @@ goes in the paper**. The repo is now public, so the Zenodo precondition is met.
 If #111 will not merge in time, the paper must be reverted to `ema` rather than naming a
 command that does not exist. See `manuscript/00_draft/PI_DECISIONS.md` item C11.
 
-## 5. Supplementary figures S5 and S6 — a decision at freeze
-Both are declared in the supplementary as **[In preparation]** and neither file exists.
-The draft already states the plan: if they are not built at freeze, the slots are dropped
-and S7-S12 renumber in a single pass. Ten supplementary figures exist and ship today.
-Decide: build them, or drop and renumber.
+## 5. Supplementary figure numbering — a decision at freeze
 
+**S11 and S12 were removed** on 9 September at the PI's instruction: S12 was the four-version
+caller progression (development history, which the figure directives keep out of the paper),
+and S11 was the pre-registration record. Removing S11 was flagged as costly and confirmed:
+five MAIN.md citations were rewritten, including a Results subsection formerly headed "The
+discipline is drawn, not asserted". Every fact those citations carried survives as prose —
+gates committed before the runs they judge, git-verified commit times, both failures
+reported, the post-hoc sweep disclosed as post hoc, the one untested pre-registration marked
+pending, and prime's byte-for-byte identity with the v2 arm. What is gone is the drawn
+audit; the pre-registration is now asserted in text rather than shown.
+
+**S5 and S6 were always placeholders.** Both are declared **[In preparation]** and neither
+file exists. The draft states the plan: if they are not built at freeze, the slots are
+dropped and the rest renumber in a single pass.
+
+Eight supplementary figures now ship: S1, S2, S3, S4, S7, S8, S9, S10. Decide at freeze:
+build S5/S6, or drop them and renumber S7-S10 to S5-S8 so the sequence has no gaps.
 ## 6. Cost — unresolved, and it may change the target journal
 Genome Biology is fully open access: there is no subscription route, so an APC is
 unavoidable there without a discretionary waiver. Verified on the publishers' own pages:
