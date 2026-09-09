@@ -26,7 +26,7 @@ Amir Amiri Tabat^1^, Yasin Kaymaz^2,\*^
 
 **Background:** Most human genes can end their messenger RNAs at more than one point, and the choice shifts between cell types. Single-cell data can read it off individual cells, but two questions are seldom asked of the tools that do so: are the reported sites real, and does the test for a cell-type difference hold its stated error rate?
 
-**Results:** PeakATail calls poly(A) sites from reads that still carry a piece of the tail, ranks sites by how many distinct molecules carry that evidence, discards sites where an A-rich genomic stretch mimics a tail, and pairs them with a differential test whose error rate is measured, not assumed. The evidence is scarce (0.6% of reads), so the tool is set to be right about what it reports rather than report everything. Across four libraries from two species, 71–83% of its calls fall within 100 bp of a curated reference atlas (PolyASite 2.0), over 30 times the shuffled-control rate and the highest of any de novo tool benchmarked. Long reads from different donors independently support 77% of the human calls. The cost is sensitivity: it recovers 11–21% of atlas sites in expressed genes, fewer than polyApipe, although at an equal number of calls it leads polyApipe on sensitivity throughout and on precision above ~20,000 calls. Only one of six test configurations held its false-positive rate under shuffled labels (3.0%, against 13–25% for the shipped defaults). With it, 15,942 cell-type switches replicated across 12 lung-cancer patients while none replicated in any of ten shuffled-label runs, and in mouse testis roughly 31% of testable genes shortened their 3′UTRs progressively through sperm development in both animals. One pre-registered target was missed and is reported as such: a trusted-novel-site definition reached 49% long-read support against a committed 70%. A 10,000-cell library runs in 12.5 GB of memory.
+**Results:** PeakATail calls poly(A) sites from reads that still carry a piece of the tail, ranks sites by how many distinct molecules carry that evidence, discards sites where an A-rich genomic stretch mimics a tail, and pairs them with a differential test whose error rate is measured, not assumed. The evidence is scarce (0.6% of reads), so the tool is set to be right about what it reports rather than report everything. Across four libraries from two species, 71–83% of its calls fall within 100 bp of a curated reference atlas (PolyASite 2.0), over 30 times the shuffled-control rate and the highest of any de novo tool benchmarked. Long reads from different donors independently support 76.5% of the human calls. The cost is sensitivity: it recovers 11–21% of atlas sites in expressed genes, fewer than polyApipe, although at an equal number of calls it leads polyApipe on sensitivity throughout and on precision above ~20,000 calls. Only one of six test configurations held its false-positive rate under shuffled labels (3.0%, against 13–25% for the shipped defaults). With it, 15,942 cell-type switches replicated across 12 lung-cancer patients while none replicated in any of ten shuffled-label runs, and in mouse testis roughly 31% of testable genes shortened their 3′UTRs progressively through sperm development in both animals. One pre-registered target was missed and is reported as such: a trusted-novel-site definition reached 49% long-read support against a committed 70%. A 10,000-cell library runs in 12.5 GB of memory.
 
 **Conclusions:** PeakATail makes both questions measurable: thresholds fixed before the data were scored, a differential test checked against shuffled labels, and findings kept only where independent samples agree, failures included. Code: github.com/BMGLab/PeakATail.
 
@@ -132,7 +132,7 @@ The shipped defaults are anti-conservative: with pre-selection on, 20.3% (Fisher
 
 The mechanisms are named and separately demonstrated. Marker pre-selection is a label double-dip: markers are chosen on the labels under test, and restricting the calibrated configuration's null p-values to PAS selected on permuted labels reproduces the inflation (17.4%). It also computes the within-gene Fisher denominator from the marker-restricted matrix, making marker mode a different test, not a subset. Fisher on read counts pseudoreplicates UMIs within cells, inflated even without pre-selection (9.6% null p < 0.05, ~1,500 false q < 0.05 calls per null run). The negative-binomial test is tail-inflated by its plug-in dispersion floor: in the pre-selection-off arm, tests at the 10⁻⁴ floor are 8.5% of its null tests yet carry 67% of its null q < 0.05 hits (13% in the marker arm; Fig S9e).
 
-PeakATail therefore changed its shipped configuration to Fisher on cells with pre-selection off (`--marker-top-n 0`, nominal Benjamini–Hochberg q; Benjamini and Hochberg, 1995) as its only default, and requires permutation-calibrated q whenever pre-selection or the negative-binomial test is used (Fig S9d). That flip is post-freeze and does not describe the code behind this paper: at v2 (`9dfdefb3`) `--marker-top-n` still defaults to 200, and only PR #105 (merge commit `c978e81`, 2026-09-03 UTC, 13 days after the freeze) changed the default to 0. A flagless `peakatail switch diff` at this paper's own frozen commit therefore runs the anti-conservative 13.0% arm, and every switch result reported here required passing `--marker-top-n 0` explicitly; `--strategy fisher` and `--count-mode cells` are already the defaults at `9dfdefb`, so the marker flag is the only one a reproducer must add., and requires permutation-calibrated q whenever pre-selection or the negative-binomial test is used (Fig S9d). "Calibrated" is our pre-stated operational rule (null p < 0.05 ≤ 7%, p < 0.01 ≤ 1.5%, q < 0.05 ≤ 5%, ≤ 25% of null runs with any hit), not a community standard, and the assessment rests on one mouse and one tissue with very large true stage effects. The harness measures only this tool's test: no competitor's differential test has been run through it, so Background's field-level concern about uncalibrated shipped defaults is, for every other tool, a hypothesis this paper does not test.
+PeakATail therefore changed its shipped configuration to Fisher on cells with pre-selection off (`--marker-top-n 0`, nominal Benjamini–Hochberg q; Benjamini and Hochberg, 1995) as its only default, and requires permutation-calibrated q whenever pre-selection or the negative-binomial test is used (Fig S9d). That flip is post-freeze and does not describe the code behind this paper: at v2 (`9dfdefb3`) `--marker-top-n` still defaults to 200, and only PR #105 (merge commit `c978e81`, 2026-09-03 UTC, 13 days after the freeze) changed the default to 0. A flagless `peakatail switch diff` at this paper's own frozen commit therefore runs the anti-conservative 13.0% arm, and every switch result reported here required passing `--marker-top-n 0` explicitly; `--strategy fisher` and `--count-mode cells` are already the defaults at `9dfdefb`, so the marker flag is the only one a reproducer must add. "Calibrated" is our pre-stated operational rule (null p < 0.05 ≤ 7%, p < 0.01 ≤ 1.5%, q < 0.05 ≤ 5%, ≤ 25% of null runs with any hit), not a community standard, and the assessment rests on one mouse and one tissue with very large true stage effects. The harness measures only this tool's test: no competitor's differential test has been run through it, so Background's field-level concern about uncalibrated shipped defaults is, for every other tool, a hypothesis this paper does not test.
 
 ## 2.5 A biological control with its own nulls: the spermatogenesis gradient
 
@@ -174,7 +174,7 @@ Two disclosures bound Fig 6. The MetBone exclusion stands because it was pre-reg
 
 ## 2.7 What did not work, reported as results
 
-We pre-registered four claims and their acceptance gates before the final run existed and report all four outcomes (Figs S7, S10–S12). Three negative results are contributions in their own right; each names the alternative explanation tested and excluded.
+We pre-registered four claims and their acceptance gates before the final run existed and report all four outcomes (Figs S7 and S10). Three negative results are contributions in their own right; each names the alternative explanation tested and excluded.
 
 **The pre-registered "trusted de novo PAS" definition failed its gate (Fig S7).** The definition was clip-supported, ≥2 molecules, internal-priming-filtered, canonical hexamer at −40..−5 and ≥100 bp from any PolyASite 2.0 (Herrmann et al., 2020) site (the pre-registration also named PolyA_DB, hg19-only, which could not be used); it was required to reach ≥70% concordance with poly(A)-verified Kinnex long-read 3′ ends within 25 bp (Al'Khafaji et al., 2024), at ≥5 supporting long-read records at the terminus (site-level truth from different donors). Its 7,259 sites (15.6% of the PBMC precision default) reached 48.5% (95% CI 47.4–49.7). The failure is a property of the definition: re-running it unchanged after the two caller fixes moved it down (52.1% → 48.5%); every alternative truth set misses at the pre-registered window (GEM-X 51.5%, pooled 58.2%); and donor mismatch is excluded, since atlas-known hexamer-pass sites score 89.4% on the same truth. The loss is localised to the atlas-novelty stage (0.811 → 0.485; the hexamer adds nothing among atlas-novel sites, hexamer-fail 0.487): 69.4% of trusted-novel sites are intronic, and 27.0% sit within 25 bp of a Kinnex internal-priming decoy terminus against 7.6% for atlas-known, hexamer-pass sites. A stricter genomic A-richness rule does not fix this: added on top of the shipped filter, the Kinnex-style rule removes 31 of 46,524 default sites, a no-op. The residual class therefore survives both rules, and the diagnosis, chosen after seeing the data, remains a hypothesis. The sites are 65–179× enriched over a gene-body-shuffled null, but the target was an absolute fraction, and no site in this paper is called "trusted novel".
 
@@ -313,6 +313,64 @@ Two further items are pending but are not PI decisions and carry no placeholder 
 
 Two citation tokens remain unresolved and are left exactly where they stand: the literature source of the spermatogenesis 3′UTR-shortening gene panel (Results; no source for the panel's gene list is recorded anywhere in the project record; CITATION_GAPS.md G1), and the data citation for the public Kinnex PBMC truth datasets (Methods; a vendor download directory with no accession and no DOI; CITATION_GAPS.md G3). Every other citation is now given in author-date form and the reference list is `REFERENCES.md`, whose formatting awaits the target journal's style.
 
+# References
+
+Author-date form, alphabetical by first-author surname. Final formatting awaits the target journal's style; this is the verified content, not the final layout. Every entry is generated from `references.bib`, whose entries were each verified against the publisher or archive record.
+
+Al'Khafaji AM, Smith JT, Garimella KV, Babadi M, Popic V, Sade-Feldman M, Gatzen M, Sarkizova S, Schwartz MA, Blaum EM, Day A, Costello M, Bowers T, Gabriel S, Banks E, Philippakis AA, Boland GM, Blainey PC, Hacohen N. 2024. High-throughput RNA isoform sequencing using programmed cDNA concatenation. Nature Biotechnology 42(4):582-586. doi:10.1038/s41587-023-01815-7.
+
+Benjamini Y, Hochberg Y. 1995. Controlling the false discovery rate: a practical and powerful approach to multiple testing. Journal of the Royal Statistical Society Series B: Statistical Methodology 57(1):289-300. doi:10.1111/j.2517-6161.1995.tb02031.x.
+
+Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR. 2013. STAR: ultrafast universal RNA-seq aligner. Bioinformatics 29(1):15-21. doi:10.1093/bioinformatics/bts635.
+
+Domínguez Conde C, Xu C, Jarvis LB, Rainbow DB, Wells SB, Gomes T, Howlett SK, Suchanek O, Polanski K, King HW, Mamanova L, Huang N, Szabo PA, Richardson L, Bolt L, Fasouli ES, Mahbubani KT, Prete M, Tuck L, Richoz N, Tuong ZK, Campos L, Mousa HS, Needham EJ, Pritchard S, Li T, Elmentaite R, Park J, Rahmani E, Chen D, Menon DK, Bayraktar OA, James LK, Meyer KB, Yosef N, Clatworthy MR, Sims PA, Farber DL, Saeb-Parsy K, Jones JL, Teichmann SA. 2022. Cross-tissue immune cell analysis reveals tissue-specific features in humans. Science 376(6594):eabl5197. doi:10.1126/science.abl5197.
+
+Fansler MM, Mitschka S, Mayr C. 2024. Quantifying 3'UTR length from scRNA-seq data reveals changes independent of gene expression. Nature Communications 15(1):4050. doi:10.1038/s41467-024-48254-9.
+
+Harrison P, Williams S, Powell D, Albrecht D, Beilharz T. 2019. Tools for identifying and characterizing alternative polyadenylation in scRNA-Seq. F1000Research poster. doi:10.7490/f1000research.1117076.1. Software: https://github.com/MonashBioinformaticsPlatform/polyApipe
+
+Herrmann CJ, Schmidt R, Kanitz A, Artimo P, Gruber AJ, Zavolan M. 2020. PolyASite 2.0: a consolidated atlas of polyadenylation sites from 3' end sequencing. Nucleic Acids Research 48(D1):D174-D179. doi:10.1093/nar/gkz918.
+
+Hou R, Huang Y. 2025. scTail: precise polyadenylation site detection and its alternative usage analysis from reads 1 preserved 3' scRNA-seq data. Genome Biology 26(1):236. doi:10.1186/s13059-025-03710-7.
+
+Kaminow B, Yunusov D, Dobin A. 2021. STARsolo: accurate, fast and versatile mapping/quantification of single-cell and single-nucleus RNA-seq data. bioRxiv. doi:10.1101/2021.05.05.442755. Preprint; no peer-reviewed version found on 2026-09-02.
+
+Laughney AM, Hu J, Campbell NR, Bakhoum SF, Setty M, Lavallée VP, Xie Y, Masilionis I, Carr AJ, Kottapalli S, Allaj V, Mattar M, Rekhtman N, Xavier JB, Mazutis L, Poirier JT, Rudin CM, Pe'er D, Massagué J. 2020a. Regenerative lineages and immune-mediated pruning in lung cancer metastasis. Nature Medicine 26(2):259-269. doi:10.1038/s41591-019-0750-6.
+
+Laughney AM, Hu J, Campbell NR, Bakhoum SF, Setty M, Lavallée VP, Xie Y, Masilionis I, Carr AJ, Kottapalli S, Allaj V, Mattar M, Rekhtman N, Xavier JB, Mazutis L, Poirier JT, Rudin CM, Pe'er D, Massagué J. 2020b. The single cell transcriptional landscape of lung adenocarcinoma metastasis. Gene Expression Omnibus, accession GSE123904. https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE123904
+
+Li GW, Nan F, Yuan GH, Liu CX, Liu X, Chen LL, Tian B, Yang L. 2021. SCAPTURE: a deep learning-embedded pipeline that captures polyadenylation information from 3' tag-based RNA-seq of single cells. Genome Biology 22(1):221. doi:10.1186/s13059-021-02437-5.
+
+Li W, Park JY, Zheng D, Hoque M, Yehia G, Tian B. 2016. Alternative cleavage and polyadenylation in spermatogenesis connects chromatin regulation with post-transcriptional control. BMC Biology 14:6. doi:10.1186/s12915-016-0229-6.
+
+Lukassen S, Bosch E, Ekici AB, Winterpacht A. 2018a. Single-cell RNA sequencing of adult mouse testes. Scientific Data 5:180192. doi:10.1038/sdata.2018.192.
+
+Lukassen S, Bosch E, Ekici AB, Winterpacht A. 2018b. A broad single-cell transcriptome view of the male mouse germ line. Gene Expression Omnibus, accession GSE104556. https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE104556
+
+Mayr C, Bartel DP. 2009. Widespread shortening of 3'UTRs by alternative cleavage and polyadenylation activates oncogenes in cancer cells. Cell 138(4):673-684. doi:10.1016/j.cell.2009.06.016.
+
+Mitschka S, Mayr C. 2022. Context-specific regulation and function of mRNA alternative polyadenylation. Nature Reviews Molecular Cell Biology 23(12):779-796. doi:10.1038/s41580-022-00507-5.
+
+Nam DK, Lee S, Zhou G, Cao X, Wang C, Clark T, Chen J, Rowley JD, Wang SM. 2002. Oligo(dT) primer generates a high frequency of truncated cDNAs through internal poly(A) priming during reverse transcription. Proceedings of the National Academy of Sciences of the United States of America 99(9):6152-6156. doi:10.1073/pnas.092140899.
+
+Patrick R, Humphreys DT, Janbandhu V, Oshlack A, Ho JWK, Harvey RP, Lo KK. 2020. Sierra: discovery of differential transcript usage from polyA-captured single-cell RNA-seq data. Genome Biology 21(1):167. doi:10.1186/s13059-020-02071-7.
+
+Quinlan AR, Hall IM. 2010. BEDTools: a flexible suite of utilities for comparing genomic features. Bioinformatics 26(6):841-842. doi:10.1093/bioinformatics/btq033.
+
+Sandberg R, Neilson JR, Sarma A, Sharp PA, Burge CB. 2008. Proliferating cells express mRNAs with shortened 3' untranslated regions and fewer microRNA target sites. Science 320(5883):1643-1647. doi:10.1126/science.1155390.
+
+Stuart T, Srivastava A, Madad S, Lareau CA, Satija R. 2021. Single-cell chromatin state analysis with Signac. Nature Methods 18(11):1333-1341. doi:10.1038/s41592-021-01282-5.
+
+Tian B, Manley JL. 2017. Alternative polyadenylation of mRNA precursors. Nature Reviews Molecular Cell Biology 18(1):18-30. doi:10.1038/nrm.2016.116.
+
+Tian Q, Zou Q, Jia L. 2025. Benchmarking of methods that identify alternative polyadenylation events in single-/multiple-polyadenylation site genes. NAR Genomics and Bioinformatics 7(2):lqaf056. doi:10.1093/nargab/lqaf056.
+
+Wu X, Liu T, Ye C, Ye W, Ji G. 2021. scAPAtrap: identification and quantification of alternative polyadenylation sites from single-cell RNA-seq data. Briefings in Bioinformatics 22(4):bbaa273. doi:10.1093/bib/bbaa273.
+
+Zhao Q, Rattray M. 2024. Guidelines for alternative polyadenylation identification tools using single-cell and spatial transcriptomics data. bioRxiv. doi:10.1101/2024.11.29.626111. Preprint; no peer-reviewed version found on 2026-09-02.
+
+Zheng GXY, Terry JM, Belgrader P, Ryvkin P, Bent ZW, Wilson R, Ziraldo SB, Wheeler TD, McDermott GP, Zhu J, Gregory MT, Shuga J, Montesclaros L, Underwood JG, Masquelier DA, Nishimura SY, Schnall-Levin M, Wyatt PW, Hindson CM, Bharadwaj R, Wong A, Ness KD, Beppu LW, Deeg HJ, McFarland C, Loeb KR, Valente WJ, Ericson NG, Stevens EA, Radich JP, Mikkelsen TS, Hindson BJ, Bielas JH. 2017. Massively parallel digital transcriptional profiling of single cells. Nature Communications 8:14049. doi:10.1038/ncomms14049.
+
 # Supplementary information
 
 Full supplementary figure legends, with their travelling caveats, are in Additional file 1 (`SUPPLEMENTARY.md`); the titles below fix the frozen numbering. S5 and S6 are in preparation and nothing in this draft cites them.
@@ -336,3 +394,5 @@ Full supplementary figure legends, with their travelling caveats, are in Additio
 **Fig S9 | Calibration deep-dive behind Fig 4.** Per-pair and per-stratum null rates, permutation-calibrated q, reads-vs-cells pseudoreplication, the NB dispersion-floor diagnostic; single mouse, single tissue; the label-permutation null tests exchangeability only.
 
 **Fig S10 | The dropped clustering claim, stated honestly.** The positive result never appears without its ablation on the same axis: per-gene totals recover cell types as well as site-level profiles, so no novelty claim rests on clustering.
+
+**Supplementary Table T7 | Competitor tool versions, parameters, run commands and run-log caveats.** [In preparation, referenced from Methods; to be collated from the verified run registry and run logs before submission.]

@@ -3,10 +3,10 @@
 Assembled by submission/assemble_upload.sh. Do not edit files here.
 
 FILE                                                BYTES  SHA256
-01_Manuscript.docx                                  53789  bbbbbbd6c558566b
-02_Additional_file_1_Supplementary.docx             18724  e09ceec6e93ff2fd
-03_Cover_letter.docx                                12374  86bbbd3fab047595
-03_Cover_letter.md                                   9111  0c043a77f1bbcce5
+01_Manuscript.docx                                  57501  dfa32dceee79371d
+02_Additional_file_1_Supplementary.docx             18724  333321d077e93c9d
+03_Cover_letter.docx                                12388  c700cfb110b94250
+03_Cover_letter.md                                   5108  7ccce37e7f3a751e
 04_Main_figures/Figure_1.pdf                        47739  5c39ccbae42bb4ee
 04_Main_figures/Figure_1.png                       879445  8bce36f21e34f98f
 04_Main_figures/Figure_2.pdf                        29723  5798fa4f976015e1

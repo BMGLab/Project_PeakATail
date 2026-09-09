@@ -19,7 +19,15 @@ cp "$S/4_BUILD/output/PeakATail_supplementary.docx"         "$U/02_Additional_fi
 
 # --- cover letter, as .docx and as plain text for pasting into a portal ----
 pandoc -f markdown -t docx "$S/3_SUPPORTING/cover_letter.md" -o "$U/03_Cover_letter.docx"
-cp "$S/3_SUPPORTING/cover_letter.md" "$U/03_Cover_letter.md"
+# strip the internal drafting comment: the .docx pipeline drops HTML comments but a
+# bare copy of the .md would ship the authors' private notes to the editor.
+python3 - "$S/3_SUPPORTING/cover_letter.md" "$U/03_Cover_letter.md" <<'PY'
+import re, sys
+src, dst = sys.argv[1], sys.argv[2]
+t = re.sub(r"<!--.*?-->", "", open(src).read(), flags=re.S).strip() + "\n"
+assert "<!--" not in t, "an unterminated HTML comment survived the strip"
+open(dst, "w").write(t)
+PY
 
 # --- main figures, renamed to what a journal portal expects ----------------
 declare -A MAIN=(

@@ -184,12 +184,16 @@ def main(wd):
         if label == "SUBMISSION":
             want = ["Abstract", "Key points", "1 Background", "2 Results",
                     "3 Discussion", "4 Conclusions", "5 Methods", "Declarations",
-                    "Figure legends", "Supplementary information"]
+                    "References", "Figure legends", "Supplementary information"]
             check(h1 == want, "%s: H1 order == %s" % (label, want))
+            body = "\n".join(x.text for x in d.paragraphs)
+            n_doi = body.count("doi:10.")
+            check(n_doi >= 20,
+                  "%s: reference list is populated (%d doi entries)" % (label, n_doi))
         elif label == "READING":
             want = ["Abstract", "Key points", "1 Background", "2 Results",
                     "3 Discussion", "4 Conclusions", "5 Methods", "Declarations",
-                    "Supplementary information"]
+                    "References", "Supplementary information"]
             check(h1 == want, "%s: H1 order == %s "
                   "(legends are inline, so no collected section)" % (label, want))
             legend_starts = [p.text[:12] for p in d.paragraphs
