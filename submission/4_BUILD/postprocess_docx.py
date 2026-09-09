@@ -184,7 +184,7 @@ def main():
     if title:
         cp.title = title
     cp.author = "Amir Amiri Tabat; Yasin Kaymaz"
-    cp.comments = ("Built from manuscript/00_draft by submission/build/build.sh; "
+    cp.comments = ("Built from manuscript/00_draft by submission/4_BUILD/build.sh; "
                    "content unaltered.")
     d.save(path)
     print("postprocessed %s  (line numbers: %s; footer: 'Page X of Y'; "

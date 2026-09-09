@@ -93,8 +93,8 @@ def sectpr_flags(path):
 
 
 def main(wd):
-    B = os.path.join(wd, "submission", "build")
-    OUTD = os.path.join(wd, "submission")
+    B = os.path.join(wd, "submission", "4_BUILD")
+    OUTD = os.path.join(wd, "submission", "4_BUILD", "output")
 
     jobs = [
         ("SUBMISSION", os.path.join(OUTD, "PeakATail_manuscript_submission.docx"),

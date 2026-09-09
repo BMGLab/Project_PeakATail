@@ -1,0 +1,41 @@
+# 1_UPLOAD manifest
+
+Assembled by submission/assemble_upload.sh. Do not edit files here.
+
+FILE                                                BYTES  SHA256
+01_Manuscript.docx                                  54245  f2fe36740105b03d
+02_Additional_file_1_Supplementary.docx             21236  4491ed209d3a9980
+03_Cover_letter.docx                                12374  2e6a57696998f66b
+03_Cover_letter.md                                   9111  0c043a77f1bbcce5
+04_Main_figures/Figure_1.pdf                        47739  5c39ccbae42bb4ee
+04_Main_figures/Figure_1.png                       879445  8bce36f21e34f98f
+04_Main_figures/Figure_2.pdf                        29723  5798fa4f976015e1
+04_Main_figures/Figure_2.png                       665073  367431ffda0e2ccf
+04_Main_figures/Figure_3.pdf                        32486  a3ec9d4ecb14795e
+04_Main_figures/Figure_3.png                       791948  fd732d252e2607d3
+04_Main_figures/Figure_4.pdf                        27339  7eba0741881fd2dd
+04_Main_figures/Figure_4.png                       494874  2e78352a0a58ae0a
+04_Main_figures/Figure_5.pdf                        66791  5d06518af591eb87
+04_Main_figures/Figure_5.png                      1244760  f35d18bbf5d26a42
+04_Main_figures/Figure_6.pdf                        28241  1c513fadddfeb19c
+04_Main_figures/Figure_6.png                       887575  4e543d679d82ecd0
+05_Supplementary_figures/Figure_S1.pdf              32165  8f96b1156649ae87
+05_Supplementary_figures/Figure_S1.png             940192  9ade939dd6fe6755
+05_Supplementary_figures/Figure_S10.pdf             39251  5bdc8f4cdfd82c88
+05_Supplementary_figures/Figure_S10.png            951432  53c5d405bbe13ade
+05_Supplementary_figures/Figure_S11.pdf             42119  7d26cb6b4d0ff9a8
+05_Supplementary_figures/Figure_S11.png           1947632  693e159997321cb0
+05_Supplementary_figures/Figure_S12.pdf             60191  93fb471598973e37
+05_Supplementary_figures/Figure_S12.png           1987651  913fa640f4899aac
+05_Supplementary_figures/Figure_S2.pdf              38315  4935c3e1f55b5315
+05_Supplementary_figures/Figure_S2.png            1575015  82b4d40ffcd902bb
+05_Supplementary_figures/Figure_S3.pdf              41815  da760e43f213ed83
+05_Supplementary_figures/Figure_S3.png             995970  5b26d4df2f98ce4d
+05_Supplementary_figures/Figure_S4.pdf              40903  8a5fb91256b556d3
+05_Supplementary_figures/Figure_S4.png            1003223  d55564354b7d8f54
+05_Supplementary_figures/Figure_S7.pdf              38634  c71d34c2b7d5268f
+05_Supplementary_figures/Figure_S7.png            1561506  44ec8533de2d3c43
+05_Supplementary_figures/Figure_S8.pdf              33383  91beaf1dce97d673
+05_Supplementary_figures/Figure_S8.png             898045  bbb40b729a30479c
+05_Supplementary_figures/Figure_S9.pdf              40799  602efebaf7b756b9
+05_Supplementary_figures/Figure_S9.png            1184632  de6c06d67b1b6c8c

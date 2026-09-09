@@ -22,7 +22,7 @@ The only table-shaped item is Supplementary Table T7, which is still in preparat
 
 ```bash
 export LC_ALL=C OMP_NUM_THREADS=1
-bash /mnt/ssd1/Projects/PeakATail_wd/submission/build/build.sh
+bash /mnt/ssd1/Projects/PeakATail_wd/submission/4_BUILD/build.sh
 ```
 
 The script is idempotent, prints every step, and ends with a 38-check verification pass
@@ -31,7 +31,7 @@ that exits non-zero on any failure. Tooling used: `/usr/bin/pandoc` 2.9.2.1 and 
 
 ## 3. What the build does, step by step
 
-Files live in `submission/build/`.
+Files live in `submission/4_BUILD/`.
 
 **0. Pin the style base.** `pandoc --print-default-data-file reference.docx > reference_base.docx`
 — pandoc's own default reference document, so every style its docx writer expects survives.
@@ -92,22 +92,22 @@ WD=/mnt/ssd1/Projects/PeakATail_wd
 FMT='markdown-implicit_figures-smart'
 
 "$PANDOC" -f "$FMT" -t docx \
-  --reference-doc="$WD/submission/build/reference_submission.docx" \
+  --reference-doc="$WD/submission/4_BUILD/reference_submission.docx" \
   --resource-path="$WD/manuscript/figures:$WD" \
-  -o "$WD/submission/PeakATail_manuscript_submission.docx" \
-  "$WD/submission/build/main_submission.md"
+  -o "$WD/submission/4_BUILD/output/PeakATail_manuscript_submission.docx" \
+  "$WD/submission/4_BUILD/main_submission.md"
 
 "$PANDOC" -f "$FMT" -t docx \
-  --reference-doc="$WD/submission/build/reference_reading.docx" \
+  --reference-doc="$WD/submission/4_BUILD/reference_reading.docx" \
   --resource-path="$WD/manuscript/figures:$WD" \
-  -o "$WD/submission/PeakATail_manuscript_reading_copy.docx" \
-  "$WD/submission/build/main_reading.md"
+  -o "$WD/submission/4_BUILD/output/PeakATail_manuscript_reading_copy.docx" \
+  "$WD/submission/4_BUILD/main_reading.md"
 
 "$PANDOC" -f "$FMT" -t docx \
-  --reference-doc="$WD/submission/build/reference_supplementary.docx" \
+  --reference-doc="$WD/submission/4_BUILD/reference_supplementary.docx" \
   --resource-path="$WD/manuscript/figures:$WD" \
-  -o "$WD/submission/PeakATail_supplementary.docx" \
-  "$WD/submission/build/supplementary.md"
+  -o "$WD/submission/4_BUILD/output/PeakATail_supplementary.docx" \
+  "$WD/submission/4_BUILD/supplementary.md"
 ```
 
 Both reader extensions are deliberate and **must not be dropped**:
@@ -166,7 +166,7 @@ the visual check, not a property of the .docx.
 ## 5. Verification result (all 38 checks pass)
 
 ```
-python3 submission/build/verify_docx.py /mnt/ssd1/Projects/PeakATail_wd
+python3 submission/4_BUILD/verify_docx.py /mnt/ssd1/Projects/PeakATail_wd
 ```
 
 Confirms, per document: heading sequence; **0 / 6 / 0** embedded image parts and the same

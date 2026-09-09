@@ -40,10 +40,10 @@ the builder:
 
 ## Reproducing the check
 
-    bash submission/build/build.sh
-    python3 submission/build/check_typography.py submission/PeakATail_manuscript_submission.docx \
-                                    submission/PeakATail_manuscript_reading_copy.docx \
-                                    submission/PeakATail_supplementary.docx
+    bash submission/4_BUILD/build.sh
+    python3 submission/4_BUILD/check_typography.py submission/4_BUILD/output/PeakATail_manuscript_submission.docx \
+                                    submission/4_BUILD/output/PeakATail_manuscript_reading_copy.docx \
+                                    submission/4_BUILD/output/PeakATail_supplementary.docx
 
 Last verified 2026-09-05: all three documents pass; body 11 pt, headings bold 12 pt,
 18 legend paragraphs at 10 pt in each main copy, 91/91 and 14/14 body paragraphs justified.

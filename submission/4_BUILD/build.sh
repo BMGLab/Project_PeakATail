@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build the three PeakATail submission Word documents from the verified draft.
 #
-#   bash submission/build/build.sh          # run from anywhere; WD is fixed below
+#   bash submission/4_BUILD/build.sh          # run from anywhere; WD is fixed below
 #
 # Inputs  : manuscript/00_draft/MAIN.md, manuscript/00_draft/SUPPLEMENTARY.md,
 #           manuscript/figures/fig{1..6}_*.png
@@ -16,8 +16,8 @@ export LC_ALL=C
 export OMP_NUM_THREADS=1
 
 WD=/mnt/ssd1/Projects/PeakATail_wd
-B="$WD/submission/build"
-OUT="$WD/submission"
+B="$WD/submission/4_BUILD"
+OUT="$WD/submission/4_BUILD/output"
 PANDOC=/usr/bin/pandoc
 
 # markdown reader:

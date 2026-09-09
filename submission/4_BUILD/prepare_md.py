@@ -5,9 +5,9 @@
 
 Reads   WD/manuscript/00_draft/MAIN.md
         WD/manuscript/00_draft/SUPPLEMENTARY.md
-Writes  WD/submission/build/main_submission.md
-        WD/submission/build/main_reading.md
-        WD/submission/build/supplementary.md
+Writes  WD/submission/4_BUILD/main_submission.md
+        WD/submission/4_BUILD/main_reading.md
+        WD/submission/4_BUILD/supplementary.md
 
 Rules (assembly only — no claim, number, citation or author is altered):
   * HTML comments are dropped (a submission file carries no working notes).
@@ -106,7 +106,7 @@ def split_sections(blks):
 
 def main(wd):
     src = os.path.join(wd, "manuscript", "00_draft")
-    build = os.path.join(wd, "submission", "build")
+    build = os.path.join(wd, "submission", "4_BUILD")
     figdir = os.path.join(wd, "manuscript", "figures")
 
     raw = open(os.path.join(src, "MAIN.md"), encoding="utf-8").read()
