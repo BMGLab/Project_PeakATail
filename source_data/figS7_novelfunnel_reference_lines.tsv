@@ -1,0 +1,12 @@
+item	value	source
+pre_registered_target	0.7	manuscript/13_reliability_positioning.md §3 (committed before any number)
+trusted_novel_x3p_t5_25bp	0.4853	verifier_crosscheck/RESULTS.txt; = validation.tsv trusted_novel/t5
+trusted_novel_gemx_t5_25bp	0.5154	verifier_crosscheck/RESULTS.txt (GEM-X truth, other donor)
+trusted_novel_pooled_x3p_gemx_t5_25bp	0.5816	verifier_crosscheck/RESULTS.txt (union of both donors' truth)
+trusted_novel_pooled_x3p_gemx_t5_50bp	0.6688	verifier_crosscheck/RESULTS.txt (NOT the pre-registered window)
+trusted_novel_pooled_x3p_gemx_t5_100bp	0.7143	verifier_crosscheck/RESULTS.txt (NOT the pre-registered window)
+null_mean_trusted_novel_t5	0.007411	validation.tsv (gene-body-shuffled null, 10 seeds)
+enrichment_trusted_novel_t5	65.483271	validation.tsv
+empirical_p_floor	0.090909	validation.tsv (1/(10 seeds + 1))
+n_genes_trusted_novel	3578.0	REPORT_PROVISIONAL.md §5 (gene_id in run/annotatedpas.bed; subtitle only)
+n_sites_default_incl_offcontig	46544.0	call_primary/funnel.tsv 'input' (denominator of frac_of_input; 20 off-contig sites excluded before the funnel)

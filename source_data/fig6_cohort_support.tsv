@@ -1,0 +1,9 @@
+panel	replication_count	n_replicated	in_K3_sensitivity_set	source
+c	2	10504	False	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/replicated.tsv (replication_count)
+c	3	3302	True	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/replicated.tsv (replication_count)
+c	4	1306	True	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/replicated.tsv (replication_count)
+c	5	520	True	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/replicated.tsv (replication_count)
+c	6	237	True	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/replicated.tsv (replication_count)
+c	7	58	True	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/replicated.tsv (replication_count)
+c	8	11	True	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/replicated.tsv (replication_count)
+c	9	4	True	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/replicated.tsv (replication_count)

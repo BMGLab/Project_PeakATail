@@ -1,0 +1,140 @@
+{
+  "tool": "trusted_novel_pas.py validate",
+  "argv": [
+    "/mnt/ssd1/Projects/PeakATail_wd/scripts/reliability/trusted_novel_pas.py",
+    "validate",
+    "--query",
+    "00_input=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/00_input.bed",
+    "--query",
+    "01_on_listed_contigs=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/01_on_listed_contigs.bed",
+    "--query",
+    "02_clip_supported=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/02_clip_supported.bed",
+    "--query",
+    "03_support_ge2_reads=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/03_support_ge2_reads.bed",
+    "--query",
+    "04_sequence_testable=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/04_sequence_testable.bed",
+    "--query",
+    "05_not_internal_priming=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/05_not_internal_priming.bed",
+    "--query",
+    "06_hexamer_any12_-40..-5=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/06_hexamer_any12_-40..-5.bed",
+    "--query",
+    "07_atlas_novel_ge100bp=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/07_atlas_novel_ge100bp.bed",
+    "--query",
+    "08_trusted_novel=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/08_trusted_novel.bed",
+    "--query",
+    "09_trusted_novel_strong=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/09_trusted_novel_strong.bed",
+    "--truth",
+    "t5=/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t5.point.bed",
+    "--truth",
+    "t20=/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t20.point.bed",
+    "--truth",
+    "t100=/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t100.point.bed",
+    "--truth",
+    "t500=/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t500.point.bed",
+    "--chrom-sizes",
+    "/mnt/ssd1/Projects/PeakATail_wd/data/references/chrom.sizes.nochr.filt",
+    "--seeds",
+    "10",
+    "--stale-dry-run",
+    "--outdir",
+    "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/validate"
+  ],
+  "started": "2026-08-21T01:34:01",
+  "elapsed_s": 267.0,
+  "bedtools": "bedtools v2.30.0",
+  "params": {
+    "window_bp": 25,
+    "strand_aware": true,
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "incl": null,
+    "chrom_sizes": "/mnt/ssd1/Projects/PeakATail_wd/data/references/chrom.sizes.nochr.filt",
+    "target": 0.7,
+    "null_model": "bedtools shuffle -chrom -noOverlapping (width, chrom and strand of every record preserved)"
+  },
+  "queries": [
+    {
+      "label": "00_input",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/00_input.bed",
+      "md5": "f89f9328860cd1be6ef473b897952718"
+    },
+    {
+      "label": "01_on_listed_contigs",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/01_on_listed_contigs.bed",
+      "md5": "603f5b9e2e2d8994d7e9bf3566256a47"
+    },
+    {
+      "label": "02_clip_supported",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/02_clip_supported.bed",
+      "md5": "0b79f4a583bddc425fc3267a09785844"
+    },
+    {
+      "label": "03_support_ge2_reads",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/03_support_ge2_reads.bed",
+      "md5": "942ccc4f416ba2d1883579f87fa289a6"
+    },
+    {
+      "label": "04_sequence_testable",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/04_sequence_testable.bed",
+      "md5": "942ccc4f416ba2d1883579f87fa289a6"
+    },
+    {
+      "label": "05_not_internal_priming",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/05_not_internal_priming.bed",
+      "md5": "3bc30cf1f23615a1fe80c8e5fa7d7299"
+    },
+    {
+      "label": "06_hexamer_any12_-40..-5",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/06_hexamer_any12_-40..-5.bed",
+      "md5": "734abb32ab4ce4669d99581626717fd5"
+    },
+    {
+      "label": "07_atlas_novel_ge100bp",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/07_atlas_novel_ge100bp.bed",
+      "md5": "07a503edc8e15606cd782f1744f183d6"
+    },
+    {
+      "label": "08_trusted_novel",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/08_trusted_novel.bed",
+      "md5": "07a503edc8e15606cd782f1744f183d6"
+    },
+    {
+      "label": "09_trusted_novel_strong",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/_dryrun_stale_stage2_pbmc/call/stages/09_trusted_novel_strong.bed",
+      "md5": "2d39a524621e1d22c66028739bfec66d"
+    }
+  ],
+  "truths": [
+    {
+      "label": "t5",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t5.point.bed",
+      "md5": "9d94f3273f5bfbcb28abdf053b5a6ef5"
+    },
+    {
+      "label": "t20",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t20.point.bed",
+      "md5": "cc717a3e0497ddad865167ea70aa3342"
+    },
+    {
+      "label": "t100",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t100.point.bed",
+      "md5": "e9f1cd9fe23c0d5627eaa08a230e4d90"
+    },
+    {
+      "label": "t500",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t500.point.bed",
+      "md5": "a1141c1f567914539427128a18a79cfa"
+    }
+  ],
+  "stale_input_dry_run": true
+}

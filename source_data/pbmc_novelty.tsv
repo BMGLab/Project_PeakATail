@@ -74,24 +74,26 @@ b	pas17	DC	1	cells
 b	pas18	DC	84	cells
 b	pas19	CD4-T	1	cells
 b	pas19	DC	26	cells
-d	all 275k PAS, COUNTS  (shipped)	AMI_vs_celltype_res1.0	0.708	n_features=275370; the published result
-d	all 275k PAS, COUNTS  (shipped)	AMI_vs_celltype_k_matched_to_8_types	0.7878	
-d	→ summed per gene = EXPRESSION	AMI_vs_celltype_res1.0	0.6978	n_features=14891; site resolution discarded
-d	→ summed per gene = EXPRESSION	AMI_vs_celltype_k_matched_to_8_types	0.7602	
-d	atlas-supported PAS only, counts	AMI_vs_celltype_res1.0	0.7202	n_features=32361; 
-d	atlas-supported PAS only, counts	AMI_vs_celltype_k_matched_to_8_types	0.8247	
-d	NON-atlas peaks only, counts	AMI_vs_celltype_res1.0	0.6962	n_features=243009; 
-d	NON-atlas peaks only, counts	AMI_vs_celltype_k_matched_to_8_types	0.8214	
-d	gene-DETECTION mask only (binary)	AMI_vs_celltype_res1.0	0.7233	n_features=10000; no usage value at all
-d	gene-DETECTION mask only (binary)	AMI_vs_celltype_k_matched_to_8_types	0.7107	
-d	within-gene USAGE, top 10k sites	AMI_vs_celltype_res1.0	0.7797	n_features=10000; 89% of them are NOT poly(A) sites
-d	within-gene USAGE, top 10k sites	AMI_vs_celltype_k_matched_to_8_types	0.7997	
-d	USAGE over REAL poly(A) sites only	AMI_vs_celltype_res1.0	0.3166	n_features=10000; true APA signal
-d	USAGE over REAL poly(A) sites only	AMI_vs_celltype_k_matched_to_8_types	0.3166	
-d	USAGE over NON-PAS, variance-matched	AMI_vs_celltype_res1.0	0.7391	n_features=10000; same n, same usage variance
-d	USAGE over NON-PAS, variance-matched	AMI_vs_celltype_k_matched_to_8_types	0.7528	
-d	usage values shuffled (null)	AMI_vs_celltype_res1.0	0.0003	n_features=10000; 
-d	usage values shuffled (null)	AMI_vs_celltype_k_matched_to_8_types	0.0003	
+d	all PAS, counts  (shipped)	AMI_vs_celltype_res1.0	0.708	n_features=275370; the published result
+d	all PAS, counts  (shipped)	AMI_vs_celltype_k_matched_to_8_types	0.7878	
+d	summed per gene = EXPRESSION	AMI_vs_celltype_res1.0	0.6978	n_features=14891; site resolution discarded
+d	summed per gene = EXPRESSION	AMI_vs_celltype_k_matched_to_8_types	0.7602	
+d	real PAS only, counts	AMI_vs_celltype_res1.0	0.7202	n_features=32361; 
+d	real PAS only, counts	AMI_vs_celltype_k_matched_to_8_types	0.8247	
+d	NON-PAS peaks only, counts	AMI_vs_celltype_res1.0	0.6962	n_features=243009; 
+d	NON-PAS peaks only, counts	AMI_vs_celltype_k_matched_to_8_types	0.8214	
+d	gene-DETECTION mask only	AMI_vs_celltype_res1.0	0.7233	n_features=10000; no usage value at all
+d	gene-DETECTION mask only	AMI_vs_celltype_k_matched_to_8_types	0.7107	
+d	USAGE, top 10k sites	AMI_vs_celltype_res1.0	0.7797	n_features=10000; 89% of them are NOT poly(A) sites
+d	USAGE, top 10k sites	AMI_vs_celltype_k_matched_to_8_types	0.7997	
+d	USAGE, REAL poly(A) sites only	AMI_vs_celltype_res1.0	0.3166	n_features=10000; true APA signal
+d	USAGE, REAL poly(A) sites only	AMI_vs_celltype_k_matched_to_8_types	0.3166	
+d	USAGE, NON-PAS (var-matched)	AMI_vs_celltype_res1.0	0.7391	n_features=10000; same n, same usage variance
+d	USAGE, NON-PAS (var-matched)	AMI_vs_celltype_k_matched_to_8_types	0.7528	
+d	USAGE, NON-PAS (var + depth)	AMI_vs_celltype_res1.0	0.6511	n_features=10000; non-PAS counts thinned to p=0.23 so per-gene depth matches the real-PAS set
+d	USAGE, NON-PAS (var + depth)	AMI_vs_celltype_k_matched_to_8_types	0.6951	
+d	USAGE shuffled (null)	AMI_vs_celltype_res1.0	0.0003	n_features=10000; 
+d	USAGE shuffled (null)	AMI_vs_celltype_k_matched_to_8_types	0.0003	
 e	B_PAS13_vs_PAS12	depth	pass	1.4× AUC 0.20
 e	B_PAS13_vs_PAS12	gexdepth	FAIL	1.5×
 e	B_PAS13_vs_PAS12	mito	pass	1.0×

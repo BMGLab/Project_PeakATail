@@ -1,0 +1,13 @@
+panel	set	label	n	item	count	frac	wilson95_lo	wilson95_hi
+c_feature_class	trusted_novel	trusted-novel	7259	3utr	1081	0.1489185838269734		
+c_feature_class	trusted_novel	trusted-novel	7259	other_exon	545	0.07507921201267392		
+c_feature_class	trusted_novel	trusted-novel	7259	intronic	5037	0.6938972310235569		
+c_feature_class	trusted_novel	trusted-novel	7259	intergenic	596	0.0821049731367957		
+c_feature_class	CAL_atlas_known_hexpass	atlas-known, hexamer-pass	28453	3utr	19886	0.6989069693881137		
+c_feature_class	CAL_atlas_known_hexpass	atlas-known, hexamer-pass	28453	other_exon	1416	0.04976628123572207		
+c_feature_class	CAL_atlas_known_hexpass	atlas-known, hexamer-pass	28453	intronic	5119	0.17991072997574947		
+c_feature_class	CAL_atlas_known_hexpass	atlas-known, hexamer-pass	28453	intergenic	2032	0.07141601940041471		
+c_decoy_within25bp	trusted_novel	trusted-novel	7259	within_25bp_of_kinnex_ip_decoy	1959	0.2699	0.2597841127268963	0.2802030921549492
+c_decoy_within25bp	trusted_novel_strong	trusted-novel, strong	4329	within_25bp_of_kinnex_ip_decoy	727	0.1679	0.15709721761597892	0.179365926193049
+c_decoy_within25bp	default_output_all	full precision default	46524	within_25bp_of_kinnex_ip_decoy	6048	0.13	0.1269720560957911	0.13308388201546767
+c_decoy_within25bp	CAL_atlas_known_hexpass	atlas-known, hexamer-pass	28453	within_25bp_of_kinnex_ip_decoy	2171	0.0763	0.07327342735400973	0.07944350242756208

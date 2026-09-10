@@ -29,11 +29,11 @@ a_precision_vs_cutoff	pbmc_10k_v3	Sierra	sierra	25.000000	0.151804	precision_vs_
 a_precision_vs_cutoff	pbmc_10k_v3	Sierra	sierra	50.000000	0.214279	precision_vs_atlas_full
 a_precision_vs_cutoff	pbmc_10k_v3	Sierra	sierra	100.000000	0.255854	precision_vs_atlas_full
 a_precision_vs_cutoff	pbmc_10k_v3	Sierra	sierra	200.000000	0.298182	precision_vs_atlas_full
-a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	10.000000	0.002485	null band 0.0023-0.0027 (3 seeds x all arms)
-a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	25.000000	0.006139	null band 0.0058-0.0065 (3 seeds x all arms)
-a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	50.000000	0.011954	null band 0.0117-0.0122 (3 seeds x all arms)
-a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	100.000000	0.022351	null band 0.0220-0.0227 (3 seeds x all arms)
-a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	200.000000	0.040768	null band 0.0400-0.0416 (3 seeds x all arms)
+a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	10.000000	0.002485	null band 0.0023-0.0027 (envelope of per-arm 3-seed means)
+a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	25.000000	0.006139	null band 0.0058-0.0065 (envelope of per-arm 3-seed means)
+a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	50.000000	0.011954	null band 0.0117-0.0122 (envelope of per-arm 3-seed means)
+a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	100.000000	0.022351	null band 0.0220-0.0227 (envelope of per-arm 3-seed means)
+a_precision_vs_cutoff	pbmc_10k_v3	(null)	genic_shuffle_null	200.000000	0.040768	null band 0.0400-0.0416 (envelope of per-arm 3-seed means)
 a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse1	10.000000	0.060318	precision_vs_atlas_full
 a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse1	25.000000	0.128913	precision_vs_atlas_full
 a_precision_vs_cutoff	gse104556	PeakATail	peakatail_mouse1	50.000000	0.226327	precision_vs_atlas_full
@@ -89,11 +89,11 @@ a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse2	25.000000	0.313007	precisio
 a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse2	50.000000	0.396485	precision_vs_atlas_full
 a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse2	100.000000	0.581064	precision_vs_atlas_full
 a_precision_vs_cutoff	gse104556	Sierra	sierra_mouse2	200.000000	0.651840	precision_vs_atlas_full
-a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	10.000000	0.001767	null band 0.0016-0.0019 (3 seeds x all arms)
-a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	25.000000	0.004246	null band 0.0041-0.0044 (3 seeds x all arms)
-a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	50.000000	0.007892	null band 0.0076-0.0082 (3 seeds x all arms)
-a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	100.000000	0.014068	null band 0.0137-0.0145 (3 seeds x all arms)
-a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	200.000000	0.026301	null band 0.0257-0.0269 (3 seeds x all arms)
+a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	10.000000	0.001767	null band 0.0016-0.0019 (envelope of per-arm 3-seed means)
+a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	25.000000	0.004246	null band 0.0041-0.0044 (envelope of per-arm 3-seed means)
+a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	50.000000	0.007892	null band 0.0076-0.0082 (envelope of per-arm 3-seed means)
+a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	100.000000	0.014068	null band 0.0137-0.0145 (envelope of per-arm 3-seed means)
+a_precision_vs_cutoff	gse104556	(null)	genic_shuffle_null	200.000000	0.026301	null band 0.0257-0.0269 (envelope of per-arm 3-seed means)
 b_pr_at100	pbmc_10k_v3	PeakATail	peakatail	0.156189	0.117538	n_called=277111
 b_pr_at100	pbmc_10k_v3	polyApipe	polyapipe	0.198796	0.379966	n_called=120916
 b_pr_at100	pbmc_10k_v3	scAPAtrap	scapatrap	0.300376	0.099919	n_called=787138

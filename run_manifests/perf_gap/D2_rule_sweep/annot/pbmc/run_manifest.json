@@ -1,0 +1,181 @@
+{
+  "tool": "trusted_novel_pas.py call",
+  "argv": [
+    "/mnt/ssd1/Projects/PeakATail_wd/scripts/reliability/trusted_novel_pas.py",
+    "call",
+    "--pas-bed",
+    "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/pas.bed",
+    "--clip-bed",
+    "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/pas_tier1.bed",
+    "--support-unit",
+    "molecules",
+    "--min-support",
+    "1",
+    "--genome",
+    "/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+    "--ip-lo",
+    "1",
+    "--ip-hi",
+    "18",
+    "--ip-a-stretch",
+    "19",
+    "--ip-a-frac",
+    "0.6666666",
+    "--hex-lo",
+    "-40",
+    "--hex-hi",
+    "-5",
+    "--atlas",
+    "/mnt/ssd1/Projects/PeakATail_wd/data/references/atlases/polyasite2.GRCh38.96.rep_sites.bed6",
+    "--atlas-min-dist",
+    "100",
+    "--restrict-chroms",
+    "/mnt/ssd1/Projects/PeakATail_wd/data/references/chrom.sizes.nochr.filt",
+    "--outdir",
+    "/mnt/ssd1/Projects/PeakATail_wd/results/perf_gap/D2_rule_sweep/annot/pbmc"
+  ],
+  "started": "2026-08-21T21:30:20",
+  "elapsed_s": 14.7,
+  "bedtools": "bedtools v2.30.0",
+  "python": "3.10.12",
+  "params": {
+    "support_unit": "molecules",
+    "min_support": 1.0,
+    "ip_window": [
+      1,
+      18
+    ],
+    "ip_a_stretch": 19,
+    "ip_a_frac": 0.6666666,
+    "ip_from_annot": null,
+    "hex_window": [
+      -40,
+      -5
+    ],
+    "hex_strong": [
+      "AATAAA",
+      "ATTAAA"
+    ],
+    "hex12": [
+      "AATAAA",
+      "ATTAAA",
+      "TATAAA",
+      "AGTAAA",
+      "AATACA",
+      "CATAAA",
+      "AATATA",
+      "GATAAA",
+      "AATGAA",
+      "AAGAAA",
+      "ACTAAA",
+      "AATAGA"
+    ],
+    "atlas_min_dist": 100,
+    "atlas_strand_aware": true,
+    "symmetric_window_halfwidth_W": 40
+  },
+  "inputs": {
+    "pas_bed": {
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/pas.bed",
+      "md5": "2a7f9f76d6a70ba2daacc8aab0c2817d"
+    },
+    "clip_bed": {
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/pas_tier1.bed",
+      "md5": "d6f14c6ab3d9a1a417760066b43ecb17"
+    },
+    "genome": {
+      "path": "/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "md5": "size=3151425857;mtime=1673906988"
+    },
+    "atlas": [
+      {
+        "path": "/mnt/ssd1/Projects/PeakATail_wd/data/references/atlases/polyasite2.GRCh38.96.rep_sites.bed6",
+        "md5": "f574216865c41d52d0b2240d379206f3"
+      }
+    ],
+    "restrict_chroms": "/mnt/ssd1/Projects/PeakATail_wd/data/references/chrom.sizes.nochr.filt"
+  },
+  "funnel": [
+    {
+      "stage": "input",
+      "n_pass": 334005,
+      "n_fail_at_stage": 0,
+      "frac_of_input": 1.0,
+      "frac_of_previous": 1.0
+    },
+    {
+      "stage": "on_listed_contigs",
+      "n_pass": 333920,
+      "n_fail_at_stage": 85,
+      "frac_of_input": 0.9997455127917246,
+      "frac_of_previous": 0.9997455127917246
+    },
+    {
+      "stage": "clip_supported",
+      "n_pass": 167565,
+      "n_fail_at_stage": 166355,
+      "frac_of_input": 0.5016841065253514,
+      "frac_of_previous": 0.5018118112122664
+    },
+    {
+      "stage": "support_ge1_molecules",
+      "n_pass": 167565,
+      "n_fail_at_stage": 0,
+      "frac_of_input": 0.5016841065253514,
+      "frac_of_previous": 1.0
+    },
+    {
+      "stage": "sequence_testable",
+      "n_pass": 167565,
+      "n_fail_at_stage": 0,
+      "frac_of_input": 0.5016841065253514,
+      "frac_of_previous": 1.0
+    },
+    {
+      "stage": "not_internal_priming",
+      "n_pass": 167323,
+      "n_fail_at_stage": 242,
+      "frac_of_input": 0.5009595664735558,
+      "frac_of_previous": 0.9985557843225017
+    },
+    {
+      "stage": "hexamer_any12_-40..-5",
+      "n_pass": 84846,
+      "n_fail_at_stage": 82477,
+      "frac_of_input": 0.25402613733327345,
+      "frac_of_previous": 0.5070791224159261
+    },
+    {
+      "stage": "atlas_novel_ge100bp",
+      "n_pass": 40014,
+      "n_fail_at_stage": 44832,
+      "frac_of_input": 0.11980060178739839,
+      "frac_of_previous": 0.4716073827876388
+    },
+    {
+      "stage": "trusted_novel",
+      "n_pass": 40014,
+      "n_fail_at_stage": 0,
+      "frac_of_input": 0.11980060178739839,
+      "frac_of_previous": 1.0
+    },
+    {
+      "stage": "hexamer_strong_AATAAA_ATTAAA",
+      "n_pass": 18114,
+      "n_fail_at_stage": 21900,
+      "frac_of_input": 0.05423272106704989,
+      "frac_of_previous": 0.45269155795471583
+    },
+    {
+      "stage": "trusted_novel_strong",
+      "n_pass": 18114,
+      "n_fail_at_stage": 0,
+      "frac_of_input": 0.05423272106704989,
+      "frac_of_previous": 1.0
+    }
+  ],
+  "n_trusted_novel": 40014,
+  "n_trusted_novel_strong": 18114,
+  "warnings": [],
+  "stale_input_dry_run": false
+}

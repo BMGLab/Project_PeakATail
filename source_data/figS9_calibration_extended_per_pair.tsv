@@ -1,0 +1,19 @@
+panel	arm	arm_label	pair	n_null_tests	null_frac_p_lt_05	null_frac_q_lt_fdr	null_mean_hits_per_run	source
+a	A_fisher_reads	A  fisher, count-mode reads, top-200 markers	ES_vs_RS	2151	0.18503022	0.076243608	8.2	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	A_fisher_reads	A  fisher, count-mode reads, top-200 markers	ES_vs_SPC	2151	0.19618782	0.066480707	7.15	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	A_fisher_reads	A  fisher, count-mode reads, top-200 markers	RS_vs_SPC	2151	0.22687122	0.086936309	9.35	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	B_fisher_cells	B  fisher, count-mode cells, top-200 markers	ES_vs_RS	2151	0.12831241	0.011157601	1.2	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	B_fisher_cells	B  fisher, count-mode cells, top-200 markers	ES_vs_SPC	2151	0.12552301	0.0074384007	0.8	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	B_fisher_cells	B  fisher, count-mode cells, top-200 markers	RS_vs_SPC	2151	0.13668061	0.010227801	1.1	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	C_nb_pairwise	C  nb_pairwise, top-200 markers	ES_vs_RS	11997	0.23805951	0.010252563	6.15	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	C_nb_pairwise	C  nb_pairwise, top-200 markers	ES_vs_SPC	11996	0.25383461	0.019756586	11.85	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	C_nb_pairwise	C  nb_pairwise, top-200 markers	RS_vs_SPC	11997	0.24847879	0.0081687088	4.9	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	A0_fisher_reads_nomarker	A0  fisher reads, no marker pre-sel.	ES_vs_RS	1430727	0.095521368	0.0069880557	499.9	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	A0_fisher_reads_nomarker	A0  fisher reads, no marker pre-sel.	ES_vs_SPC	1419070	0.093764931	0.0065902316	467.6	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	A0_fisher_reads_nomarker	A0  fisher reads, no marker pre-sel.	RS_vs_SPC	1431361	0.097385635	0.0072595243	519.55	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	B0_fisher_cells_nomarker	B0  fisher cells, no marker pre-sel. (SHIPS)	ES_vs_RS	1430727	0.030158094	0	0	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	B0_fisher_cells_nomarker	B0  fisher cells, no marker pre-sel. (SHIPS)	ES_vs_SPC	1419070	0.029350913	0	0	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	B0_fisher_cells_nomarker	B0  fisher cells, no marker pre-sel. (SHIPS)	RS_vs_SPC	1431361	0.031295389	0	0	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	C0_nb_pairwise_nomarker	C0  nb_pairwise, no marker pre-sel.	ES_vs_RS	707191	0.051321354	0.0014295996	50.55	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	C0_nb_pairwise_nomarker	C0  nb_pairwise, no marker pre-sel.	ES_vs_SPC	670903	0.049935684	0.0011626122	39	results/figures/manuscript/fig4_calibration_per_pair.tsv
+a	C0_nb_pairwise_nomarker	C0  nb_pairwise, no marker pre-sel.	RS_vs_SPC	713147	0.051460639	0.0013896153	49.55	results/figures/manuscript/fig4_calibration_per_pair.tsv

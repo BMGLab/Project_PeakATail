@@ -1,0 +1,9 @@
+panel	library	arm	n	P100	R_det	F1_det	null_P_seed1	null_P_seed2	null_P_seed3	null_P_mean	gate	verdict	source
+a	pbmc4k (donor 2, v2 chem.)	pre-registered default (tier-1, IP, >=2 mol)	20672	0.827883	0.110389	0.194803	0.021575	0.022204	0.021672	0.021817	P@100 >= 0.50	PASS	results/benchmark_tools/pbmc4k_donor2/run_ipfilt/score_*.tsv
+a	pbmc4k (donor 2, v2 chem.)	>=1 molecule arm (tier-1, IP; not gated)	62911	0.504188	0.178383	0.263529	0.022317	0.022715	0.021761	0.022264	not gated		results/benchmark_tools/pbmc4k_donor2/run_ipfilt/score_*.tsv
+a	PBMC 10k v3 (donor 1, v3 chem.)	pre-registered default (tier-1, IP, >=2 mol)	46524	0.706195	0.175443	0.281060	0.021666	0.021666	0.021731	0.021688	P@100 >= 0.50	PASS	results/figures/manuscript/fig2_accuracy.tsv (19 FIXED)
+a	PBMC 10k v3 (donor 1, v3 chem.)	>=1 molecule arm (tier-1, IP; not gated)	167565	0.351965	0.268472	0.304601	0.021633	0.021932	0.022344	0.021970	not gated		results/figures/manuscript/fig2_accuracy.tsv (19 FIXED)
+a	testis mouse 1 (GSE104556)	pre-registered default (tier-1, IP, >=2 mol)	26255	0.745001	0.204790	0.321268	0.014892	0.012950	0.013940	0.013927	P@100 >= 0.50	PASS	results/figures/manuscript/fig2_accuracy.tsv (19 FIXED)
+a	testis mouse 1 (GSE104556)	>=1 molecule arm (tier-1, IP; not gated)	52792	0.568647	0.280639	0.375808	0.015192	0.014245	0.014055	0.014497	not gated		results/figures/manuscript/fig2_accuracy.tsv (19 FIXED)
+a	testis mouse 2 (GSE104556)	pre-registered default (tier-1, IP, >=2 mol)	26526	0.757219	0.208002	0.326357	0.013722	0.012667	0.014966	0.013785	P@100 >= 0.50	PASS	results/figures/manuscript/fig2_accuracy.tsv (19 FIXED)
+a	testis mouse 2 (GSE104556)	>=1 molecule arm (tier-1, IP; not gated)	51842	0.587998	0.282628	0.381759	0.014448	0.013541	0.013715	0.013901	not gated		results/figures/manuscript/fig2_accuracy.tsv (19 FIXED)

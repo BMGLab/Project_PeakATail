@@ -1,0 +1,213 @@
+{
+  "tool": "trusted_novel_pas.py validate",
+  "argv": [
+    "/mnt/ssd1/Projects/PeakATail_wd/scripts/reliability/trusted_novel_pas.py",
+    "validate",
+    "--query",
+    "00_input=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/00_input.bed",
+    "--query",
+    "01_on_listed_contigs=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/01_on_listed_contigs.bed",
+    "--query",
+    "02_clip_supported=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/02_clip_supported.bed",
+    "--query",
+    "03_support_ge2_molecules=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/03_support_ge2_molecules.bed",
+    "--query",
+    "04_sequence_testable=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/04_sequence_testable.bed",
+    "--query",
+    "05_not_internal_priming=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/05_not_internal_priming.bed",
+    "--query",
+    "06_hexamer_any12_-40..-5=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/06_hexamer_any12_-40..-5.bed",
+    "--query",
+    "07_atlas_novel_ge100bp=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/07_atlas_novel_ge100bp.bed",
+    "--query",
+    "08_trusted_novel=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/08_trusted_novel.bed",
+    "--query",
+    "09_trusted_novel_strong=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/09_trusted_novel_strong.bed",
+    "--query",
+    "trusted_novel=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/trusted_novel.bed",
+    "--query",
+    "trusted_novel_strong=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/trusted_novel.strong.bed",
+    "--query",
+    "CAL_default_output_all=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/01_on_listed_contigs.bed",
+    "--query",
+    "CAL_atlas_known_all=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/refs/atlas_known_all.bed",
+    "--query",
+    "CAL_atlas_known_hexpass=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/refs/atlas_known_hexpass.bed",
+    "--query",
+    "CAL_atlas_known_hexstrong=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/refs/atlas_known_hexstrong.bed",
+    "--query",
+    "CAL_atlas_novel_hexfail=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/refs/atlas_novel_hexfail.bed",
+    "--query",
+    "SENS_min1_06_hexamer=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_sens_min1/stages/06_hexamer_any12_-40..-5.bed",
+    "--query",
+    "SENS_min1_trusted_novel=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_sens_min1/trusted_novel.bed",
+    "--query",
+    "SENS_min1_trusted_novel_strong=/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_sens_min1/trusted_novel.strong.bed",
+    "--truth",
+    "t5=/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t5.point.bed",
+    "--truth",
+    "t20=/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t20.point.bed",
+    "--truth",
+    "t100=/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t100.point.bed",
+    "--truth",
+    "t500=/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t500.point.bed",
+    "--chrom-sizes",
+    "/mnt/ssd1/Projects/PeakATail_wd/data/references/chrom.sizes.nochr.filt",
+    "--window",
+    "25",
+    "--seeds",
+    "10",
+    "--target",
+    "0.70",
+    "--outdir",
+    "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/validate_noincl"
+  ],
+  "started": "2026-08-21T06:53:00",
+  "elapsed_s": 172.2,
+  "bedtools": "bedtools v2.30.0",
+  "params": {
+    "window_bp": 25,
+    "strand_aware": true,
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "incl": null,
+    "chrom_sizes": "/mnt/ssd1/Projects/PeakATail_wd/data/references/chrom.sizes.nochr.filt",
+    "target": 0.7,
+    "null_model": "bedtools shuffle -chrom -noOverlapping (width, chrom and strand of every record preserved)"
+  },
+  "queries": [
+    {
+      "label": "00_input",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/00_input.bed",
+      "md5": "2e22499d11de8cbddd87fead4e230dec"
+    },
+    {
+      "label": "01_on_listed_contigs",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/01_on_listed_contigs.bed",
+      "md5": "07f983616a2d823632e661749738730a"
+    },
+    {
+      "label": "02_clip_supported",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/02_clip_supported.bed",
+      "md5": "07f983616a2d823632e661749738730a"
+    },
+    {
+      "label": "03_support_ge2_molecules",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/03_support_ge2_molecules.bed",
+      "md5": "07f983616a2d823632e661749738730a"
+    },
+    {
+      "label": "04_sequence_testable",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/04_sequence_testable.bed",
+      "md5": "07f983616a2d823632e661749738730a"
+    },
+    {
+      "label": "05_not_internal_priming",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/05_not_internal_priming.bed",
+      "md5": "07f983616a2d823632e661749738730a"
+    },
+    {
+      "label": "06_hexamer_any12_-40..-5",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/06_hexamer_any12_-40..-5.bed",
+      "md5": "7ace203cbd6022df382af87a608c5b47"
+    },
+    {
+      "label": "07_atlas_novel_ge100bp",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/07_atlas_novel_ge100bp.bed",
+      "md5": "cfcd5cefcfb0526d569f0a48d940af29"
+    },
+    {
+      "label": "08_trusted_novel",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/08_trusted_novel.bed",
+      "md5": "cfcd5cefcfb0526d569f0a48d940af29"
+    },
+    {
+      "label": "09_trusted_novel_strong",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/09_trusted_novel_strong.bed",
+      "md5": "b4282daa3884281d9d748a4c8b7c56c4"
+    },
+    {
+      "label": "trusted_novel",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/trusted_novel.bed",
+      "md5": "9a47061ad1636e113a6b3999233d1ed7"
+    },
+    {
+      "label": "trusted_novel_strong",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/trusted_novel.strong.bed",
+      "md5": "9b497f71ea5ecbdbc26c3fcfb2d372b6"
+    },
+    {
+      "label": "CAL_default_output_all",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_primary/stages/01_on_listed_contigs.bed",
+      "md5": "07f983616a2d823632e661749738730a"
+    },
+    {
+      "label": "CAL_atlas_known_all",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/refs/atlas_known_all.bed",
+      "md5": "47a423ebc9c888a60975637b37f2ec9a"
+    },
+    {
+      "label": "CAL_atlas_known_hexpass",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/refs/atlas_known_hexpass.bed",
+      "md5": "3a265711e488a6db6ec6373ff4faebd1"
+    },
+    {
+      "label": "CAL_atlas_known_hexstrong",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/refs/atlas_known_hexstrong.bed",
+      "md5": "5b6bffcef0e092b7587488c13be48e57"
+    },
+    {
+      "label": "CAL_atlas_novel_hexfail",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/refs/atlas_novel_hexfail.bed",
+      "md5": "f631b0fba4ec52b5bbfdf2c614e49ad5"
+    },
+    {
+      "label": "SENS_min1_06_hexamer",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_sens_min1/stages/06_hexamer_any12_-40..-5.bed",
+      "md5": "e6269b534c990fdd80c8227057716095"
+    },
+    {
+      "label": "SENS_min1_trusted_novel",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_sens_min1/trusted_novel.bed",
+      "md5": "e433cf89bf5dc7cbc0684e009d1ee730"
+    },
+    {
+      "label": "SENS_min1_trusted_novel_strong",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/reliability/trusted_novel_final_pbmc/call_sens_min1/trusted_novel.strong.bed",
+      "md5": "5c9a47ae60e77a3a0c219039e7faecbf"
+    }
+  ],
+  "truths": [
+    {
+      "label": "t5",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t5.point.bed",
+      "md5": "9d94f3273f5bfbcb28abdf053b5a6ef5"
+    },
+    {
+      "label": "t20",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t20.point.bed",
+      "md5": "cc717a3e0497ddad865167ea70aa3342"
+    },
+    {
+      "label": "t100",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t100.point.bed",
+      "md5": "e9f1cd9fe23c0d5627eaa08a230e4d90"
+    },
+    {
+      "label": "t500",
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/kinnex_truth/x3p/x3p_truth_t500.point.bed",
+      "md5": "a1141c1f567914539427128a18a79cfa"
+    }
+  ],
+  "stale_input_dry_run": false
+}

@@ -1,0 +1,59 @@
+panel	quantity	value	source	note
+c	default P@100	0.706195	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__PRESPEC_precision_default.tsv	
+c	default n scored	46524	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__PRESPEC_precision_default.tsv	
+c	tier1_ip P@100	0.351965	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__tier1.tsv	
+c	tier1_ip n scored	167565	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__tier1.tsv	
+c	tier2_ip P@100	0.055808	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__tier2.tsv	
+c	tier2_ip n scored	166355	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__tier2.tsv	
+c	no-IP >=2 molecules P@100	0.590726	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2/score_pbmc_final_v2__tier1_ge2umi_POSTHOC.tsv	diagnostic arm only -- pas_tier1_ge2mol_noIP is NOT the default (21 §7)
+c	BED rows peaks_noip	402860	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2/pas.bed	
+c	BED rows peaks_ip	334005	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/pas.bed	
+c	BED rows tier1_ip	167629	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/pas_tier1.bed	
+c	BED rows tier2_ip	166376	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/pas_tier2.bed	
+c	BED rows tier1_noip	223026	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2/pas_tier1.bed	
+c	BED rows tier2_noip	179834	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2/pas_tier2.bed	
+c	BED rows default	46544	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/pas_PRESPEC_precision_default.bed	
+c	BED rows ge2_noip	62132	results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2/pas_tier1_ge2umi_POSTHOC.bed	
+all	run parameter seqlen	91	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter cb_len	16	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter barcode_tag	CB	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter strategy	clip_seeded	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter polya_min_clip	6	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter polya_min_purity	0.8	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter polya_seed_window	25	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter polya_min_umis	1	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter polya_clip_filter	none	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter ip_window_left	10	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter ip_window_right	30	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter ip_a_stretch	6	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+all	run parameter ip_a_fraction	0.7	results/.../peakatail_clipseeded_final_v2_ipfilt/run/run_config.json	
+d	precision@100 of the calls the IP filter removes	0.246023	computed here: bedtools window -w 100 -sm -u vs PolyASite 2.0 rep sites	
+d	precision@100 of the kept default, same independent pipeline	0.70602	computed here; reproduces score_tool.py's 0.7062 (the 20 off-genome peaks it drops)	
+d	removed calls flagged by the >=6-A run rule	0.9997433923530922	computed here on the caller's window: offsets -9..+30 from the called base (--ip-window-left 10 / --ip-window-right 30 are measured from the BED end = call + 1)	
+d	removed calls flagged by the >=70% A-fraction rule	0.0062868873492430075	computed here	
+d	flagged A-run ends at or before the call	0.9165169404517454	computed here	
+b	kept locus: usable reads in +/-300 bp	3473	computed here from the BAM	
+b	kept locus: qualifying clip reads at the site	40	computed here from the BAM	
+b	kept locus: distinct (CB,UB) molecules	31	computed here; equals column 5 of the caller's BED	
+b	removed locus: usable reads in +/-300 bp	31673	computed here from the BAM	
+b	removed locus: qualifying clip reads at the site	22	computed here from the BAM	
+b	removed locus: distinct (CB,UB) molecules	19	computed here; equals column 5 of the caller's BED	
+b	kept locus: same-strand gene bodies overlapping it	THAP3	data/references/gene_end.bed	
+b	kept locus: nearest annotated transcript 3' end of THAP3 (bp)	3	computed here from /home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf (ENST00000054650)	
+b	kept locus: distance to the THAP3 GENE-body 3' end (bp)	7024	data/references/gene_end.bed	the gene body ends far past the call: 'gene 3' end' is not a safe label
+b	kept locus: nearest strand-matched atlas representative site (bp)	1	computed here: bedtools closest -s -d against PolyASite 2.0	
+b	removed locus: same-strand gene bodies overlapping it	NPIPB5	data/references/gene_end.bed	
+b	removed locus: nearest annotated transcript 3' end of NPIPB5 (bp)	20077	computed here from /home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf (ENST00000356156)	
+b	removed locus: distance to the NPIPB5 GENE-body 3' end (bp)	47764	data/references/gene_end.bed	the gene body ends far past the call: 'gene 3' end' is not a safe label
+b	removed locus: nearest strand-matched atlas representative site (bp)	16389	computed here: bedtools closest -s -d against PolyASite 2.0	
+b	default calls satisfying the kept-example criteria	2584	computed here: >=10 molecules, nearest other call >300 bp, atlas site <=25 bp, canonical AATAAA in -40..-5, IP-pass	
+b	removed calls satisfying the removed-example criteria	190	computed here: >=8 molecules, no strand-matched atlas site within 200 bp, flagged A-run >=8 nt ending at -2..0	
+b	kept locus: distinct clip positions in the cluster	5	computed here	
+b	kept locus: span of the cluster (bp)	16	computed here	
+b	kept locus: coverage maximum (reads, seq_len-extended)	1925.0	computed here	
+b	kept locus: offset of the coverage maximum (bp)	-180	computed here	
+b	kept locus: coverage at the cleavage site	64.0	computed here	
+b	kept locus: reads counted into the matrix column	3491	run/pas_support.tsv (window_reads)	NOT simply the cleavage window: polya.py flush() gives the cluster the coverage candidate it suppresses (_assign_candidate) plus count_ends() over [site - seq_len, site + 25] minus those candidates, clipped at midpoints to neighbouring PAS
+b	kept locus: accepted read ends inside [site - seq_len, site + 25] alone	768	computed here from the BAM	vs window_reads 3491: the cleavage window alone accounts for at most 22% of the count column; the rest is the coverage candidate the cluster suppresses (polya.py flush)
+b	kept locus: canonical AATAAA start offset	-18	computed here from GRCh38	
+b	removed locus: flagged A-run (length, start, end offsets)	(10, -9, 0)	computed here from GRCh38	

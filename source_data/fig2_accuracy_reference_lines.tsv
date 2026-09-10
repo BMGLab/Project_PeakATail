@@ -1,0 +1,31 @@
+panel	kind	label	P	F1	plotted
+a	null_genic mean (3 seeds)	scUTRquant	0.02195666666666667		False
+a	null_genic mean (3 seeds)	SCAPTURE	0.022409000000000002		False
+a	null_genic mean (3 seeds)	polyApipe	0.022393		False
+a	null_genic mean (3 seeds)	Sierra	0.02221266666666667		False
+a	null_genic mean (3 seeds)	scAPAtrap	0.022608666666666666		False
+a	null_genic mean (3 seeds)	PeakATail >=2 molecules	0.02168766666666667		False
+a	null_genic mean (3 seeds)	PeakATail >=1 molecules	0.021969666666666665		False
+a	gate	pre-registered gate (13 section 1)	0.5		True
+b	null_genic mean (3 seeds)	scUTRquant	0.014003166666666665		False
+b	null_genic mean (3 seeds)	SCAPTURE	0.013660333333333332		False
+b	null_genic mean (3 seeds)	polyApipe	0.014346000000000001		False
+b	null_genic mean (3 seeds)	Sierra	0.014314999999999998		False
+b	null_genic mean (3 seeds)	scAPAtrap	0.014208833333333334		False
+b	null_genic mean (3 seeds)	PeakATail >=2 molecules	0.013856166666666666		False
+b	null_genic mean (3 seeds)	PeakATail >=1 molecules	0.014199333333333335		False
+b	gate	pre-registered gate (13 section 1)	0.5		True
+a	null_genic mean (3 seeds)	shipped	0.022745333333333336		False
+a	null_genic mean (3 seeds)	both tiers (no IP)	0.02255233333333333		False
+a	null_genic mean (3 seeds)	tier-1 >=1 mol (no IP)	0.022464666666666664		False
+a	null_genic mean (3 seeds)	both tiers (IP)	0.022661333333333335		False
+a	null_genic mean (3 seeds)	tier-2 (IP)	0.022293666666666666		False
+a	null_genic mean (3 seeds)	tier-2 (no IP)	0.02245866666666667		False
+b	null_genic mean (3 seeds)	shipped	0.014122166666666668		False
+b	null_genic mean (3 seeds)	both tiers (IP)	0.014708666666666665		False
+b	null_genic mean (3 seeds)	tier-2 (IP)	0.0145565		False
+a,b	gate	original two-sided gate (10 section 5)	0.38	0.261	False
+a,b	F1 isoline	F1 = 0.1		0.1	False
+a,b	F1 isoline	F1 = 0.2		0.2	False
+a,b	F1 isoline	F1 = 0.3		0.3	False
+a,b	F1 isoline	F1 = 0.4		0.4	False

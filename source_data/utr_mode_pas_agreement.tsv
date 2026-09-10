@@ -1,0 +1,3 @@
+mouse	tested_both	per_gene_sig	within_utr_sig	both	pct_of_per_gene	pct_of_within_utr	per_gene_only	within_utr_only	rows_per_gene	rows_within_utr
+mouse1	161874	47246	44219	42953	90.9	97.1	4293	1266	175947	202895
+mouse2	165964	48945	46319	44855	91.6	96.8	4090	1464	179573	209428

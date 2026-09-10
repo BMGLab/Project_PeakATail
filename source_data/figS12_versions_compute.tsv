@@ -1,0 +1,15 @@
+dataset	version	peak_rss_gb	wall_seconds	wall_minutes	cpu_percent	source_file
+pbmc10k	shipped	100.656528	12425.000000	207.083333	135.000000	/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/pbmc_10k_v3/peakatail/runtime_mem.txt
+pbmc10k	v1	228.406792	13477.000000	224.616667	146.000000	/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_ipfilt/runtime_mem.txt
+pbmc10k	v2	10.602577	1979.380000	32.989667	818.000000	/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/runtime_mem.txt
+pbmc10k	prime	10.567459	1925.070000	32.084500	633.000000	/mnt/ssd0/emaout/peakatail_benchmark/prime_bench/fullbam/prime_pbmc10k/runtime_mem.txt
+mouse1	shipped	14.039829	7608.000000	126.800000	84.000000	/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/gse104556/peakatail/mouse1/runtime_mem.txt
+mouse1	v1	22.050541	3669.000000	61.150000	140.000000	/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/gse104556/peakatail_clipseeded_final/mouse1/runtime_mem.txt
+mouse1	v2	2.924610	850.440000	14.174000	667.000000	/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse1/runtime_mem.txt
+mouse1	prime	3.478138	544.790000	9.079833	612.000000	/mnt/ssd0/emaout/peakatail_benchmark/prime_bench/fullbam/prime_mouse1/runtime_mem.txt
+mouse2	shipped	13.622570	5206.000000	86.766667	112.000000	/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/gse104556/peakatail/mouse2/runtime_mem.txt
+mouse2	v1	21.370110	3708.000000	61.800000	138.000000	/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/gse104556/peakatail_clipseeded_final/mouse2/runtime_mem.txt
+mouse2	v2	3.480618	960.140000	16.002333	610.000000	/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/runtime_mem.txt
+mouse2	prime	3.473492	549.340000	9.155667	614.000000	/mnt/ssd0/emaout/peakatail_benchmark/prime_bench/fullbam/prime_mouse2/runtime_mem.txt
+pbmc4k	v2	3.093369	940.870000	15.681167	627.000000	/mnt/ssd0/emaout/peakatail_benchmark/donor2/run_ipfilt/runtime_mem.txt
+pbmc4k	prime	3.093105	968.070000	16.134500	627.000000	/mnt/ssd0/emaout/peakatail_benchmark/prime_bench/fullbam/prime_pbmc4k/runtime_mem.txt

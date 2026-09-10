@@ -1,0 +1,17 @@
+arm	direction	n_query	n_le25	n_le100	frac_le25	frac_le100	source	panel	note
+PRESPEC_precision_default	pbmc4k->pbmc10k_REAL	20672	16811	17413	0.813200	0.842300	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	
+PRESPEC_precision_default	pbmc4k->pbmc10k_null_s1	20672	8	49	0.000400	0.002400	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)
+PRESPEC_precision_default	pbmc4k->pbmc10k_null_s2	20672	11	53	0.000500	0.002600	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)
+PRESPEC_precision_default	pbmc4k->pbmc10k_null_s3	20672	6	42	0.000300	0.002000	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)
+PRESPEC_precision_default	pbmc10k->pbmc4k_REAL	46524	16811	18577	0.361300	0.399300	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	
+PRESPEC_precision_default	pbmc10k->pbmc4k_null_s1	46524	15	51	0.000300	0.001100	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)
+PRESPEC_precision_default	pbmc10k->pbmc4k_null_s2	46524	12	48	0.000300	0.001000	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)
+PRESPEC_precision_default	pbmc10k->pbmc4k_null_s3	46524	8	49	0.000200	0.001100	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)
+tier1	pbmc4k->pbmc10k_REAL	62911	31436	36205	0.499700	0.575500	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	
+tier1	pbmc4k->pbmc10k_null_s1	62911	155	547	0.002500	0.008700	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)
+tier1	pbmc4k->pbmc10k_null_s2	62911	137	531	0.002200	0.008400	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)
+tier1	pbmc4k->pbmc10k_null_s3	62911	130	548	0.002100	0.008700	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)
+tier1	pbmc10k->pbmc4k_REAL	167565	31476	40129	0.187800	0.239500	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	
+tier1	pbmc10k->pbmc4k_null_s1	167565	153	554	0.000900	0.003300	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)
+tier1	pbmc10k->pbmc4k_null_s2	167565	139	500	0.000800	0.003000	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)
+tier1	pbmc10k->pbmc4k_null_s3	167565	134	540	0.000800	0.003200	results/benchmark_tools/pbmc4k_donor2/concordance.txt	b	genic-shuffle null (same seeds/inclusion file as score_tool.py)

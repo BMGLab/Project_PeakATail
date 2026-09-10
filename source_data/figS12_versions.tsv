@@ -1,0 +1,368 @@
+panel	dataset	version	arm	ranking	metric	value	note	source_file
+a	mouse1	prime	full		P@100	0.448787		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__full/score_prime__mouse1__full.tsv
+a	mouse1	prime	full		R_det@100	0.303372		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__full/score_prime__mouse1__full.tsv
+a	mouse1	shipped	full		P@100	0.369159		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse1__full/score_shipped__mouse1__full.tsv
+a	mouse1	shipped	full		R_det@100	0.197962		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse1__full/score_shipped__mouse1__full.tsv
+a	mouse1	v1	full		P@100	0.442531		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__full/score_v1__mouse1__full.tsv
+a	mouse1	v1	full		R_det@100	0.300562		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__full/score_v1__mouse1__full.tsv
+a	mouse1	v2	full		P@100	0.448787		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__full/score_v2__mouse1__full.tsv
+a	mouse1	v2	full		R_det@100	0.303372		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__full/score_v2__mouse1__full.tsv
+a	mouse2	prime	full		P@100	0.453906		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__full/score_prime__mouse2__full.tsv
+a	mouse2	prime	full		R_det@100	0.305693		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__full/score_prime__mouse2__full.tsv
+a	mouse2	shipped	full		P@100	0.367878		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse2__full/score_shipped__mouse2__full.tsv
+a	mouse2	shipped	full		R_det@100	0.200930		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse2__full/score_shipped__mouse2__full.tsv
+a	mouse2	v1	full		P@100	0.448306		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__full/score_v1__mouse2__full.tsv
+a	mouse2	v1	full		R_det@100	0.302085		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__full/score_v1__mouse2__full.tsv
+a	mouse2	v2	full		P@100	0.453906		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__full/score_v2__mouse2__full.tsv
+a	mouse2	v2	full		R_det@100	0.305693		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__full/score_v2__mouse2__full.tsv
+a	pbmc10k	prime	full		P@100	0.204423		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__full/score_prime__pbmc10k__full.tsv
+a	pbmc10k	prime	full		R_det@100	0.304255		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__full/score_prime__pbmc10k__full.tsv
+a	pbmc10k	shipped	full		P@100	0.117538		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__full/score_shipped__pbmc10k__full.tsv
+a	pbmc10k	shipped	full		R_det@100	0.156189		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__full/score_shipped__pbmc10k__full.tsv
+a	pbmc10k	v1	full		P@100	0.202981		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__full/score_v1__pbmc10k__full.tsv
+a	pbmc10k	v1	full		R_det@100	0.297921		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__full/score_v1__pbmc10k__full.tsv
+a	pbmc10k	v2	full		P@100	0.204423		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__full/score_v2__pbmc10k__full.tsv
+a	pbmc10k	v2	full		R_det@100	0.304255		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__full/score_v2__pbmc10k__full.tsv
+a	pbmc4k	prime	full		P@100	0.240812		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc4k__full/score_prime__pbmc4k__full.tsv
+a	pbmc4k	prime	full		R_det@100	0.217309		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc4k__full/score_prime__pbmc4k__full.tsv
+a	pbmc4k	v2	full		P@100	0.240812		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc4k__full/score_v2__pbmc4k__full.tsv
+a	pbmc4k	v2	full		R_det@100	0.217309		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc4k__full/score_v2__pbmc4k__full.tsv
+b	mouse1	prime	precision_default		P@100	0.745001		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__precision_default/score_prime__mouse1__precision_default.tsv
+b	mouse1	prime	precision_default		R_det@100	0.204790		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__precision_default/score_prime__mouse1__precision_default.tsv
+b	mouse1	v1	precision_default		P@100	0.741372		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__precision_default/score_v1__mouse1__precision_default.tsv
+b	mouse1	v1	precision_default		R_det@100	0.202106		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__precision_default/score_v1__mouse1__precision_default.tsv
+b	mouse1	v2	precision_default		P@100	0.745001		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__precision_default/score_v2__mouse1__precision_default.tsv
+b	mouse1	v2	precision_default		R_det@100	0.204790		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__precision_default/score_v2__mouse1__precision_default.tsv
+b	mouse2	prime	precision_default		P@100	0.757219		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__precision_default/score_prime__mouse2__precision_default.tsv
+b	mouse2	prime	precision_default		R_det@100	0.208002		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__precision_default/score_prime__mouse2__precision_default.tsv
+b	mouse2	v1	precision_default		P@100	0.755389		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__precision_default/score_v1__mouse2__precision_default.tsv
+b	mouse2	v1	precision_default		R_det@100	0.204853		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__precision_default/score_v1__mouse2__precision_default.tsv
+b	mouse2	v2	precision_default		P@100	0.757219		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__precision_default/score_v2__mouse2__precision_default.tsv
+b	mouse2	v2	precision_default		R_det@100	0.208002		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__precision_default/score_v2__mouse2__precision_default.tsv
+b	pbmc10k	prime	precision_default		P@100	0.706195		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__precision_default/score_prime__pbmc10k__precision_default.tsv
+b	pbmc10k	prime	precision_default		R_det@100	0.175443		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__precision_default/score_prime__pbmc10k__precision_default.tsv
+b	pbmc10k	v1	precision_default		P@100	0.716673		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__precision_default/score_v1__pbmc10k__precision_default.tsv
+b	pbmc10k	v1	precision_default		R_det@100	0.170694		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__precision_default/score_v1__pbmc10k__precision_default.tsv
+b	pbmc10k	v2	precision_default		P@100	0.706195		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__precision_default/score_v2__pbmc10k__precision_default.tsv
+b	pbmc10k	v2	precision_default		R_det@100	0.175443		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__precision_default/score_v2__pbmc10k__precision_default.tsv
+b	pbmc10k	v2_noIP	ge2mol_noIP_POSTHOC		P@100	0.590726	v2 run with no behaviour flag	/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2_noIP__pbmc10k__ge2mol_noIP_POSTHOC/score_v2_noIP__pbmc10k__ge2mol_noIP_POSTHOC.tsv
+b	pbmc10k	v2_noIP	ge2mol_noIP_POSTHOC		R_det@100	0.191109	v2 run with no behaviour flag	/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2_noIP__pbmc10k__ge2mol_noIP_POSTHOC/score_v2_noIP__pbmc10k__ge2mol_noIP_POSTHOC.tsv
+b	pbmc4k	prime	precision_default		P@100	0.827883		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc4k__precision_default/score_prime__pbmc4k__precision_default.tsv
+b	pbmc4k	prime	precision_default		R_det@100	0.110389		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc4k__precision_default/score_prime__pbmc4k__precision_default.tsv
+b	pbmc4k	v2	precision_default		P@100	0.827883		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc4k__precision_default/score_v2__pbmc4k__precision_default.tsv
+b	pbmc4k	v2	precision_default		R_det@100	0.110389		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc4k__precision_default/score_v2__pbmc4k__precision_default.tsv
+c	pbmc10k	prime	full		P@100	0.204423		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__full/score_prime__pbmc10k__full.tsv
+c	pbmc10k	prime	full		R_det@100	0.304255		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__full/score_prime__pbmc10k__full.tsv
+c	pbmc10k	prime	full		null_P@100_mean3	0.022661		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__full/score_prime__pbmc10k__full.tsv
+c	pbmc10k	prime	precision_default		P@100	0.706195		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__precision_default/score_prime__pbmc10k__precision_default.tsv
+c	pbmc10k	prime	precision_default		R_det@100	0.175443		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__precision_default/score_prime__pbmc10k__precision_default.tsv
+c	pbmc10k	prime	precision_default		null_P@100_mean3	0.021688		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__precision_default/score_prime__pbmc10k__precision_default.tsv
+c	pbmc10k	shipped	full		P@100	0.117538		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__full/score_shipped__pbmc10k__full.tsv
+c	pbmc10k	shipped	full		R_det@100	0.156189		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__full/score_shipped__pbmc10k__full.tsv
+c	pbmc10k	shipped	full		null_P@100_mean3	0.022745		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__full/score_shipped__pbmc10k__full.tsv
+c	pbmc10k	v1	full		P@100	0.202981		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__full/score_v1__pbmc10k__full.tsv
+c	pbmc10k	v1	full		R_det@100	0.297921		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__full/score_v1__pbmc10k__full.tsv
+c	pbmc10k	v1	full		null_P@100_mean3	0.022482		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__full/score_v1__pbmc10k__full.tsv
+c	pbmc10k	v1	precision_default		P@100	0.716673		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__precision_default/score_v1__pbmc10k__precision_default.tsv
+c	pbmc10k	v1	precision_default		R_det@100	0.170694		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__precision_default/score_v1__pbmc10k__precision_default.tsv
+c	pbmc10k	v1	precision_default		null_P@100_mean3	0.022098		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__precision_default/score_v1__pbmc10k__precision_default.tsv
+c	pbmc10k	v2	full		P@100	0.204423		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__full/score_v2__pbmc10k__full.tsv
+c	pbmc10k	v2	full		R_det@100	0.304255		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__full/score_v2__pbmc10k__full.tsv
+c	pbmc10k	v2	full		null_P@100_mean3	0.022661		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__full/score_v2__pbmc10k__full.tsv
+c	pbmc10k	v2	precision_default		P@100	0.706195		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__precision_default/score_v2__pbmc10k__precision_default.tsv
+c	pbmc10k	v2	precision_default		R_det@100	0.175443		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__precision_default/score_v2__pbmc10k__precision_default.tsv
+c	pbmc10k	v2	precision_default		null_P@100_mean3	0.021688		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__precision_default/score_v2__pbmc10k__precision_default.tsv
+c	pbmc_10k_v3	competitor:SCAPTURE	tool call set		P@100	0.651808	single	results/benchmark_tools/pbmc_10k_v3/scapture/score_scapture.tsv
+c	pbmc_10k_v3	competitor:SCAPTURE	tool call set		R_det@100	0.117561	single	results/benchmark_tools/pbmc_10k_v3/scapture/score_scapture.tsv
+c	pbmc_10k_v3	competitor:Sierra	tool call set		P@100	0.255854	single	results/benchmark_tools/pbmc_10k_v3/sierra/score_sierra.tsv
+c	pbmc_10k_v3	competitor:Sierra	tool call set		R_det@100	0.135006	single	results/benchmark_tools/pbmc_10k_v3/sierra/score_sierra.tsv
+c	pbmc_10k_v3	competitor:polyApipe	tool call set		P@100	0.379966	single	results/benchmark_tools/pbmc_10k_v3/polyapipe/score_polyapipe.tsv
+c	pbmc_10k_v3	competitor:polyApipe	tool call set		R_det@100	0.198796	single	results/benchmark_tools/pbmc_10k_v3/polyapipe/score_polyapipe.tsv
+c	pbmc_10k_v3	competitor:scAPAtrap	tool call set		P@100	0.099919	single	results/benchmark_tools/pbmc_10k_v3/scapatrap/score_scapatrap.tsv
+c	pbmc_10k_v3	competitor:scAPAtrap	tool call set		R_det@100	0.300376	single	results/benchmark_tools/pbmc_10k_v3/scapatrap/score_scapatrap.tsv
+c	pbmc_10k_v3	competitor:scUTRquant	tool call set		P@100	0.792591	single	results/benchmark_tools/pbmc_10k_v3/scutrquant/score_scutrquant.tsv
+c	pbmc_10k_v3	competitor:scUTRquant	tool call set		R_det@100	0.177663	single	results/benchmark_tools/pbmc_10k_v3/scutrquant/score_scutrquant.tsv
+d	gse104556	competitor:SCAPTURE	tool call set		P@100	0.693550	mouse1	results/benchmark_tools/gse104556/scapture/mouse1/score_scapture_mouse1.tsv
+d	gse104556	competitor:SCAPTURE	tool call set		R_det@100	0.155092	mouse1	results/benchmark_tools/gse104556/scapture/mouse1/score_scapture_mouse1.tsv
+d	gse104556	competitor:Sierra	tool call set		P@100	0.508736	mouse1	results/benchmark_tools/gse104556/sierra/score_sierra_mouse1.tsv
+d	gse104556	competitor:Sierra	tool call set		P@100	0.581064	mouse2	results/benchmark_tools/gse104556/sierra/score_sierra_mouse2.tsv
+d	gse104556	competitor:Sierra	tool call set		R_det@100	0.107052	mouse1	results/benchmark_tools/gse104556/sierra/score_sierra_mouse1.tsv
+d	gse104556	competitor:Sierra	tool call set		R_det@100	0.117298	mouse2	results/benchmark_tools/gse104556/sierra/score_sierra_mouse2.tsv
+d	gse104556	competitor:polyApipe	tool call set		P@100	0.400516	mouse1	results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse1.tsv
+d	gse104556	competitor:polyApipe	tool call set		P@100	0.411943	mouse2	results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse2.tsv
+d	gse104556	competitor:polyApipe	tool call set		R_det@100	0.249878	mouse1	results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse1.tsv
+d	gse104556	competitor:polyApipe	tool call set		R_det@100	0.250762	mouse2	results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse2.tsv
+d	gse104556	competitor:scAPAtrap	tool call set		P@100	0.250247	mouse1	results/benchmark_tools/gse104556/scapatrap/mouse1/score_scapatrap_mouse1.tsv
+d	gse104556	competitor:scAPAtrap	tool call set		P@100	0.238911	mouse2	results/benchmark_tools/gse104556/scapatrap/mouse2/score_scapatrap_mouse2.tsv
+d	gse104556	competitor:scAPAtrap	tool call set		R_det@100	0.245315	mouse1	results/benchmark_tools/gse104556/scapatrap/mouse1/score_scapatrap_mouse1.tsv
+d	gse104556	competitor:scAPAtrap	tool call set		R_det@100	0.258576	mouse2	results/benchmark_tools/gse104556/scapatrap/mouse2/score_scapatrap_mouse2.tsv
+d	gse104556	competitor:scUTRquant	tool call set		P@100	0.782464	mouse1	results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse1.tsv
+d	gse104556	competitor:scUTRquant	tool call set		P@100	0.783708	mouse2	results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse2.tsv
+d	gse104556	competitor:scUTRquant	tool call set		R_det@100	0.258632	mouse1	results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse1.tsv
+d	gse104556	competitor:scUTRquant	tool call set		R_det@100	0.258884	mouse2	results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse2.tsv
+d	mouse1	prime	full		P@100	0.448787		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__full/score_prime__mouse1__full.tsv
+d	mouse1	prime	full		R_det@100	0.303372		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__full/score_prime__mouse1__full.tsv
+d	mouse1	prime	full		null_P@100_mean3	0.014601		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__full/score_prime__mouse1__full.tsv
+d	mouse1	prime	precision_default		P@100	0.745001		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__precision_default/score_prime__mouse1__precision_default.tsv
+d	mouse1	prime	precision_default		R_det@100	0.204790		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__precision_default/score_prime__mouse1__precision_default.tsv
+d	mouse1	prime	precision_default		null_P@100_mean3	0.013927		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__precision_default/score_prime__mouse1__precision_default.tsv
+d	mouse1	shipped	full		P@100	0.369159		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse1__full/score_shipped__mouse1__full.tsv
+d	mouse1	shipped	full		R_det@100	0.197962		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse1__full/score_shipped__mouse1__full.tsv
+d	mouse1	shipped	full		null_P@100_mean3	0.013912		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse1__full/score_shipped__mouse1__full.tsv
+d	mouse1	v1	full		P@100	0.442531		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__full/score_v1__mouse1__full.tsv
+d	mouse1	v1	full		R_det@100	0.300562		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__full/score_v1__mouse1__full.tsv
+d	mouse1	v1	full		null_P@100_mean3	0.014420		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__full/score_v1__mouse1__full.tsv
+d	mouse1	v1	precision_default		P@100	0.741372		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__precision_default/score_v1__mouse1__precision_default.tsv
+d	mouse1	v1	precision_default		R_det@100	0.202106		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__precision_default/score_v1__mouse1__precision_default.tsv
+d	mouse1	v1	precision_default		null_P@100_mean3	0.014133		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__precision_default/score_v1__mouse1__precision_default.tsv
+d	mouse1	v2	full		P@100	0.448787		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__full/score_v2__mouse1__full.tsv
+d	mouse1	v2	full		R_det@100	0.303372		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__full/score_v2__mouse1__full.tsv
+d	mouse1	v2	full		null_P@100_mean3	0.014601		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__full/score_v2__mouse1__full.tsv
+d	mouse1	v2	precision_default		P@100	0.745001		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__precision_default/score_v2__mouse1__precision_default.tsv
+d	mouse1	v2	precision_default		R_det@100	0.204790		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__precision_default/score_v2__mouse1__precision_default.tsv
+d	mouse1	v2	precision_default		null_P@100_mean3	0.013927		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__precision_default/score_v2__mouse1__precision_default.tsv
+d	mouse2	prime	full		P@100	0.453906		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__full/score_prime__mouse2__full.tsv
+d	mouse2	prime	full		R_det@100	0.305693		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__full/score_prime__mouse2__full.tsv
+d	mouse2	prime	full		null_P@100_mean3	0.014816		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__full/score_prime__mouse2__full.tsv
+d	mouse2	prime	precision_default		P@100	0.757219		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__precision_default/score_prime__mouse2__precision_default.tsv
+d	mouse2	prime	precision_default		R_det@100	0.208002		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__precision_default/score_prime__mouse2__precision_default.tsv
+d	mouse2	prime	precision_default		null_P@100_mean3	0.013785		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__precision_default/score_prime__mouse2__precision_default.tsv
+d	mouse2	shipped	full		P@100	0.367878		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse2__full/score_shipped__mouse2__full.tsv
+d	mouse2	shipped	full		R_det@100	0.200930		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse2__full/score_shipped__mouse2__full.tsv
+d	mouse2	shipped	full		null_P@100_mean3	0.014332		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse2__full/score_shipped__mouse2__full.tsv
+d	mouse2	v1	full		P@100	0.448306		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__full/score_v1__mouse2__full.tsv
+d	mouse2	v1	full		R_det@100	0.302085		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__full/score_v1__mouse2__full.tsv
+d	mouse2	v1	full		null_P@100_mean3	0.014102		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__full/score_v1__mouse2__full.tsv
+d	mouse2	v1	precision_default		P@100	0.755389		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__precision_default/score_v1__mouse2__precision_default.tsv
+d	mouse2	v1	precision_default		R_det@100	0.204853		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__precision_default/score_v1__mouse2__precision_default.tsv
+d	mouse2	v1	precision_default		null_P@100_mean3	0.014333		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__precision_default/score_v1__mouse2__precision_default.tsv
+d	mouse2	v2	full		P@100	0.453906		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__full/score_v2__mouse2__full.tsv
+d	mouse2	v2	full		R_det@100	0.305693		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__full/score_v2__mouse2__full.tsv
+d	mouse2	v2	full		null_P@100_mean3	0.014816		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__full/score_v2__mouse2__full.tsv
+d	mouse2	v2	precision_default		P@100	0.757219		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__precision_default/score_v2__mouse2__precision_default.tsv
+d	mouse2	v2	precision_default		R_det@100	0.208002		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__precision_default/score_v2__mouse2__precision_default.tsv
+d	mouse2	v2	precision_default		null_P@100_mean3	0.013785		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__precision_default/score_v2__mouse2__precision_default.tsv
+e	mouse1	prime	matched_molref_N26263	molref	P@100	0.745001		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__matched_molref_N26263/score_prime__mouse1__matched_molref_N26263.tsv
+e	mouse1	prime	matched_molref_N26263	molref	R_det@100	0.204790		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__matched_molref_N26263/score_prime__mouse1__matched_molref_N26263.tsv
+e	mouse1	prime	matched_molref_N26263	molref	n_scored	26255.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__matched_molref_N26263/score_prime__mouse1__matched_molref_N26263.tsv
+e	mouse1	prime	matched_molref_N26263	molref	rank_n_kept_at_cut_value	6555.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse1__matched_molref_N26263.txt
+e	mouse1	prime	matched_molref_N26263	molref	rank_n_tied_at_cut_value	6555.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse1__matched_molref_N26263.txt
+e	mouse1	prime	matched_molref_N26263	molref	rank_n_written	26263.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse1__matched_molref_N26263.txt
+e	mouse1	prime	matched_umi_N45921	umi	P@100	0.511740		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__matched_umi_N45921/score_prime__mouse1__matched_umi_N45921.tsv
+e	mouse1	prime	matched_umi_N45921	umi	R_det@100	0.238953		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__matched_umi_N45921/score_prime__mouse1__matched_umi_N45921.tsv
+e	mouse1	prime	matched_umi_N45921	umi	n_scored	45910.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__matched_umi_N45921/score_prime__mouse1__matched_umi_N45921.tsv
+e	mouse1	prime	matched_umi_N45921	umi	rank_n_kept_at_cut_value	156.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse1__matched_umi_N45921.txt
+e	mouse1	prime	matched_umi_N45921	umi	rank_n_tied_at_cut_value	441.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse1__matched_umi_N45921.txt
+e	mouse1	prime	matched_umi_N45921	umi	rank_n_written	45921.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse1__matched_umi_N45921.txt
+e	mouse1	prime	matched_umiref_N26263	umiref	P@100	0.601196		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__matched_umiref_N26263/score_prime__mouse1__matched_umiref_N26263.tsv
+e	mouse1	prime	matched_umiref_N26263	umiref	R_det@100	0.167595		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__matched_umiref_N26263/score_prime__mouse1__matched_umiref_N26263.tsv
+e	mouse1	prime	matched_umiref_N26263	umiref	n_scored	26256.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse1__matched_umiref_N26263/score_prime__mouse1__matched_umiref_N26263.tsv
+e	mouse1	prime	matched_umiref_N26263	umiref	rank_n_kept_at_cut_value	59.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse1__matched_umiref_N26263.txt
+e	mouse1	prime	matched_umiref_N26263	umiref	rank_n_tied_at_cut_value	99.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse1__matched_umiref_N26263.txt
+e	mouse1	prime	matched_umiref_N26263	umiref	rank_n_written	26263.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse1__matched_umiref_N26263.txt
+e	mouse1	shipped	matched_umi_N45921	umi	P@100	0.369159		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse1__matched_umi_N45921/score_shipped__mouse1__matched_umi_N45921.tsv
+e	mouse1	shipped	matched_umi_N45921	umi	R_det@100	0.197962		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse1__matched_umi_N45921/score_shipped__mouse1__matched_umi_N45921.tsv
+e	mouse1	shipped	matched_umi_N45921	umi	n_scored	45907.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse1__matched_umi_N45921/score_shipped__mouse1__matched_umi_N45921.tsv
+e	mouse1	shipped	matched_umi_N45921	umi	rank_n_kept_at_cut_value	715.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse1__matched_umi_N45921.txt
+e	mouse1	shipped	matched_umi_N45921	umi	rank_n_tied_at_cut_value	715.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse1__matched_umi_N45921.txt
+e	mouse1	shipped	matched_umi_N45921	umi	rank_n_written	45921.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse1__matched_umi_N45921.txt
+e	mouse1	shipped	matched_umiref_N26263	umiref	P@100	0.366749		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse1__matched_umiref_N26263/score_shipped__mouse1__matched_umiref_N26263.tsv
+e	mouse1	shipped	matched_umiref_N26263	umiref	R_det@100	0.113075		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse1__matched_umiref_N26263/score_shipped__mouse1__matched_umiref_N26263.tsv
+e	mouse1	shipped	matched_umiref_N26263	umiref	n_scored	26255.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse1__matched_umiref_N26263/score_shipped__mouse1__matched_umiref_N26263.tsv
+e	mouse1	shipped	matched_umiref_N26263	umiref	rank_n_kept_at_cut_value	183.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse1__matched_umiref_N26263.txt
+e	mouse1	shipped	matched_umiref_N26263	umiref	rank_n_tied_at_cut_value	231.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse1__matched_umiref_N26263.txt
+e	mouse1	shipped	matched_umiref_N26263	umiref	rank_n_written	26263.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse1__matched_umiref_N26263.txt
+e	mouse1	v1	matched_molref_N26263	molref	P@100	0.737335		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__matched_molref_N26263/score_v1__mouse1__matched_molref_N26263.tsv
+e	mouse1	v1	matched_molref_N26263	molref	R_det@100	0.202911		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__matched_molref_N26263/score_v1__mouse1__matched_molref_N26263.tsv
+e	mouse1	v1	matched_molref_N26263	molref	n_scored	26254.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__matched_molref_N26263/score_v1__mouse1__matched_molref_N26263.tsv
+e	mouse1	v1	matched_molref_N26263	molref	rank_n_kept_at_cut_value	263.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse1__matched_molref_N26263.txt
+e	mouse1	v1	matched_molref_N26263	molref	rank_n_tied_at_cut_value	26945.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse1__matched_molref_N26263.txt
+e	mouse1	v1	matched_molref_N26263	molref	rank_n_written	26263.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse1__matched_molref_N26263.txt
+e	mouse1	v1	matched_umi_N45921	umi	P@100	0.505946		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__matched_umi_N45921/score_v1__mouse1__matched_umi_N45921.tsv
+e	mouse1	v1	matched_umi_N45921	umi	R_det@100	0.236553		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__matched_umi_N45921/score_v1__mouse1__matched_umi_N45921.tsv
+e	mouse1	v1	matched_umi_N45921	umi	n_scored	45910.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__matched_umi_N45921/score_v1__mouse1__matched_umi_N45921.tsv
+e	mouse1	v1	matched_umi_N45921	umi	rank_n_kept_at_cut_value	119.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse1__matched_umi_N45921.txt
+e	mouse1	v1	matched_umi_N45921	umi	rank_n_tied_at_cut_value	442.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse1__matched_umi_N45921.txt
+e	mouse1	v1	matched_umi_N45921	umi	rank_n_written	45921.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse1__matched_umi_N45921.txt
+e	mouse1	v1	matched_umiref_N26263	umiref	P@100	0.594972		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__matched_umiref_N26263/score_v1__mouse1__matched_umiref_N26263.tsv
+e	mouse1	v1	matched_umiref_N26263	umiref	R_det@100	0.166040		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__matched_umiref_N26263/score_v1__mouse1__matched_umiref_N26263.tsv
+e	mouse1	v1	matched_umiref_N26263	umiref	n_scored	26255.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse1__matched_umiref_N26263/score_v1__mouse1__matched_umiref_N26263.tsv
+e	mouse1	v1	matched_umiref_N26263	umiref	rank_n_kept_at_cut_value	78.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse1__matched_umiref_N26263.txt
+e	mouse1	v1	matched_umiref_N26263	umiref	rank_n_tied_at_cut_value	100.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse1__matched_umiref_N26263.txt
+e	mouse1	v1	matched_umiref_N26263	umiref	rank_n_written	26263.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse1__matched_umiref_N26263.txt
+e	mouse1	v2	matched_molref_N26263	molref	P@100	0.745001		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__matched_molref_N26263/score_v2__mouse1__matched_molref_N26263.tsv
+e	mouse1	v2	matched_molref_N26263	molref	R_det@100	0.204790		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__matched_molref_N26263/score_v2__mouse1__matched_molref_N26263.tsv
+e	mouse1	v2	matched_molref_N26263	molref	n_scored	26255.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__matched_molref_N26263/score_v2__mouse1__matched_molref_N26263.tsv
+e	mouse1	v2	matched_molref_N26263	molref	rank_n_kept_at_cut_value	6555.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse1__matched_molref_N26263.txt
+e	mouse1	v2	matched_molref_N26263	molref	rank_n_tied_at_cut_value	6555.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse1__matched_molref_N26263.txt
+e	mouse1	v2	matched_molref_N26263	molref	rank_n_written	26263.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse1__matched_molref_N26263.txt
+e	mouse1	v2	matched_umi_N45921	umi	P@100	0.511740		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__matched_umi_N45921/score_v2__mouse1__matched_umi_N45921.tsv
+e	mouse1	v2	matched_umi_N45921	umi	R_det@100	0.238953		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__matched_umi_N45921/score_v2__mouse1__matched_umi_N45921.tsv
+e	mouse1	v2	matched_umi_N45921	umi	n_scored	45910.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__matched_umi_N45921/score_v2__mouse1__matched_umi_N45921.tsv
+e	mouse1	v2	matched_umi_N45921	umi	rank_n_kept_at_cut_value	156.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse1__matched_umi_N45921.txt
+e	mouse1	v2	matched_umi_N45921	umi	rank_n_tied_at_cut_value	441.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse1__matched_umi_N45921.txt
+e	mouse1	v2	matched_umi_N45921	umi	rank_n_written	45921.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse1__matched_umi_N45921.txt
+e	mouse1	v2	matched_umiref_N26263	umiref	P@100	0.601196		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__matched_umiref_N26263/score_v2__mouse1__matched_umiref_N26263.tsv
+e	mouse1	v2	matched_umiref_N26263	umiref	R_det@100	0.167595		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__matched_umiref_N26263/score_v2__mouse1__matched_umiref_N26263.tsv
+e	mouse1	v2	matched_umiref_N26263	umiref	n_scored	26256.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse1__matched_umiref_N26263/score_v2__mouse1__matched_umiref_N26263.tsv
+e	mouse1	v2	matched_umiref_N26263	umiref	rank_n_kept_at_cut_value	59.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse1__matched_umiref_N26263.txt
+e	mouse1	v2	matched_umiref_N26263	umiref	rank_n_tied_at_cut_value	99.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse1__matched_umiref_N26263.txt
+e	mouse1	v2	matched_umiref_N26263	umiref	rank_n_written	26263.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse1__matched_umiref_N26263.txt
+e	mouse2	prime	matched_molref_N26533	molref	P@100	0.757219		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__matched_molref_N26533/score_prime__mouse2__matched_molref_N26533.tsv
+e	mouse2	prime	matched_molref_N26533	molref	R_det@100	0.208002		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__matched_molref_N26533/score_prime__mouse2__matched_molref_N26533.tsv
+e	mouse2	prime	matched_molref_N26533	molref	n_scored	26526.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__matched_molref_N26533/score_prime__mouse2__matched_molref_N26533.tsv
+e	mouse2	prime	matched_molref_N26533	molref	rank_n_kept_at_cut_value	6514.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse2__matched_molref_N26533.txt
+e	mouse2	prime	matched_molref_N26533	molref	rank_n_tied_at_cut_value	6514.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse2__matched_molref_N26533.txt
+e	mouse2	prime	matched_molref_N26533	molref	rank_n_written	26533.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse2__matched_molref_N26533.txt
+e	mouse2	prime	matched_umi_N46672	umi	P@100	0.513460		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__matched_umi_N46672/score_prime__mouse2__matched_umi_N46672.tsv
+e	mouse2	prime	matched_umi_N46672	umi	R_det@100	0.242576		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__matched_umi_N46672/score_prime__mouse2__matched_umi_N46672.tsv
+e	mouse2	prime	matched_umi_N46672	umi	n_scored	46656.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__matched_umi_N46672/score_prime__mouse2__matched_umi_N46672.tsv
+e	mouse2	prime	matched_umi_N46672	umi	rank_n_kept_at_cut_value	236.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse2__matched_umi_N46672.txt
+e	mouse2	prime	matched_umi_N46672	umi	rank_n_tied_at_cut_value	385.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse2__matched_umi_N46672.txt
+e	mouse2	prime	matched_umi_N46672	umi	rank_n_written	46672.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse2__matched_umi_N46672.txt
+e	mouse2	prime	matched_umiref_N26533	umiref	P@100	0.619213		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__matched_umiref_N26533/score_prime__mouse2__matched_umiref_N26533.tsv
+e	mouse2	prime	matched_umiref_N26533	umiref	R_det@100	0.173689		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__matched_umiref_N26533/score_prime__mouse2__matched_umiref_N26533.tsv
+e	mouse2	prime	matched_umiref_N26533	umiref	n_scored	26524.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__mouse2__matched_umiref_N26533/score_prime__mouse2__matched_umiref_N26533.tsv
+e	mouse2	prime	matched_umiref_N26533	umiref	rank_n_kept_at_cut_value	105.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse2__matched_umiref_N26533.txt
+e	mouse2	prime	matched_umiref_N26533	umiref	rank_n_tied_at_cut_value	111.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse2__matched_umiref_N26533.txt
+e	mouse2	prime	matched_umiref_N26533	umiref	rank_n_written	26533.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__mouse2__matched_umiref_N26533.txt
+e	mouse2	shipped	matched_umi_N46672	umi	P@100	0.367878		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse2__matched_umi_N46672/score_shipped__mouse2__matched_umi_N46672.tsv
+e	mouse2	shipped	matched_umi_N46672	umi	R_det@100	0.200930		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse2__matched_umi_N46672/score_shipped__mouse2__matched_umi_N46672.tsv
+e	mouse2	shipped	matched_umi_N46672	umi	n_scored	46654.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse2__matched_umi_N46672/score_shipped__mouse2__matched_umi_N46672.tsv
+e	mouse2	shipped	matched_umi_N46672	umi	rank_n_kept_at_cut_value	555.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse2__matched_umi_N46672.txt
+e	mouse2	shipped	matched_umi_N46672	umi	rank_n_tied_at_cut_value	555.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse2__matched_umi_N46672.txt
+e	mouse2	shipped	matched_umi_N46672	umi	rank_n_written	46672.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse2__matched_umi_N46672.txt
+e	mouse2	shipped	matched_umiref_N26533	umiref	P@100	0.368685		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse2__matched_umiref_N26533/score_shipped__mouse2__matched_umiref_N26533.tsv
+e	mouse2	shipped	matched_umiref_N26533	umiref	R_det@100	0.113754		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse2__matched_umiref_N26533/score_shipped__mouse2__matched_umiref_N26533.tsv
+e	mouse2	shipped	matched_umiref_N26533	umiref	n_scored	26524.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__mouse2__matched_umiref_N26533/score_shipped__mouse2__matched_umiref_N26533.tsv
+e	mouse2	shipped	matched_umiref_N26533	umiref	rank_n_kept_at_cut_value	78.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse2__matched_umiref_N26533.txt
+e	mouse2	shipped	matched_umiref_N26533	umiref	rank_n_tied_at_cut_value	205.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse2__matched_umiref_N26533.txt
+e	mouse2	shipped	matched_umiref_N26533	umiref	rank_n_written	26533.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__mouse2__matched_umiref_N26533.txt
+e	mouse2	v1	matched_molref_N26533	molref	P@100	0.749764		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__matched_molref_N26533/score_v1__mouse2__matched_molref_N26533.tsv
+e	mouse2	v1	matched_molref_N26533	molref	R_det@100	0.205824		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__matched_molref_N26533/score_v1__mouse2__matched_molref_N26533.tsv
+e	mouse2	v1	matched_molref_N26533	molref	n_scored	26527.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__matched_molref_N26533/score_v1__mouse2__matched_molref_N26533.tsv
+e	mouse2	v1	matched_molref_N26533	molref	rank_n_kept_at_cut_value	363.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse2__matched_molref_N26533.txt
+e	mouse2	v1	matched_molref_N26533	molref	rank_n_tied_at_cut_value	25583.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse2__matched_molref_N26533.txt
+e	mouse2	v1	matched_molref_N26533	molref	rank_n_written	26533.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse2__matched_molref_N26533.txt
+e	mouse2	v1	matched_umi_N46672	umi	P@100	0.507984		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__matched_umi_N46672/score_v1__mouse2__matched_umi_N46672.tsv
+e	mouse2	v1	matched_umi_N46672	umi	R_det@100	0.239884		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__matched_umi_N46672/score_v1__mouse2__matched_umi_N46672.tsv
+e	mouse2	v1	matched_umi_N46672	umi	n_scored	46655.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__matched_umi_N46672/score_v1__mouse2__matched_umi_N46672.tsv
+e	mouse2	v1	matched_umi_N46672	umi	rank_n_kept_at_cut_value	279.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse2__matched_umi_N46672.txt
+e	mouse2	v1	matched_umi_N46672	umi	rank_n_tied_at_cut_value	386.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse2__matched_umi_N46672.txt
+e	mouse2	v1	matched_umi_N46672	umi	rank_n_written	46672.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse2__matched_umi_N46672.txt
+e	mouse2	v1	matched_umiref_N26533	umiref	P@100	0.612864		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__matched_umiref_N26533/score_v1__mouse2__matched_umiref_N26533.tsv
+e	mouse2	v1	matched_umiref_N26533	umiref	R_det@100	0.171787		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__matched_umiref_N26533/score_v1__mouse2__matched_umiref_N26533.tsv
+e	mouse2	v1	matched_umiref_N26533	umiref	n_scored	26523.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__mouse2__matched_umiref_N26533/score_v1__mouse2__matched_umiref_N26533.tsv
+e	mouse2	v1	matched_umiref_N26533	umiref	rank_n_kept_at_cut_value	21.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse2__matched_umiref_N26533.txt
+e	mouse2	v1	matched_umiref_N26533	umiref	rank_n_tied_at_cut_value	130.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse2__matched_umiref_N26533.txt
+e	mouse2	v1	matched_umiref_N26533	umiref	rank_n_written	26533.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__mouse2__matched_umiref_N26533.txt
+e	mouse2	v2	matched_molref_N26533	molref	P@100	0.757219		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__matched_molref_N26533/score_v2__mouse2__matched_molref_N26533.tsv
+e	mouse2	v2	matched_molref_N26533	molref	R_det@100	0.208002		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__matched_molref_N26533/score_v2__mouse2__matched_molref_N26533.tsv
+e	mouse2	v2	matched_molref_N26533	molref	n_scored	26526.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__matched_molref_N26533/score_v2__mouse2__matched_molref_N26533.tsv
+e	mouse2	v2	matched_molref_N26533	molref	rank_n_kept_at_cut_value	6514.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse2__matched_molref_N26533.txt
+e	mouse2	v2	matched_molref_N26533	molref	rank_n_tied_at_cut_value	6514.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse2__matched_molref_N26533.txt
+e	mouse2	v2	matched_molref_N26533	molref	rank_n_written	26533.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse2__matched_molref_N26533.txt
+e	mouse2	v2	matched_umi_N46672	umi	P@100	0.513460		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__matched_umi_N46672/score_v2__mouse2__matched_umi_N46672.tsv
+e	mouse2	v2	matched_umi_N46672	umi	R_det@100	0.242576		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__matched_umi_N46672/score_v2__mouse2__matched_umi_N46672.tsv
+e	mouse2	v2	matched_umi_N46672	umi	n_scored	46656.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__matched_umi_N46672/score_v2__mouse2__matched_umi_N46672.tsv
+e	mouse2	v2	matched_umi_N46672	umi	rank_n_kept_at_cut_value	236.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse2__matched_umi_N46672.txt
+e	mouse2	v2	matched_umi_N46672	umi	rank_n_tied_at_cut_value	385.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse2__matched_umi_N46672.txt
+e	mouse2	v2	matched_umi_N46672	umi	rank_n_written	46672.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse2__matched_umi_N46672.txt
+e	mouse2	v2	matched_umiref_N26533	umiref	P@100	0.619213		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__matched_umiref_N26533/score_v2__mouse2__matched_umiref_N26533.tsv
+e	mouse2	v2	matched_umiref_N26533	umiref	R_det@100	0.173689		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__matched_umiref_N26533/score_v2__mouse2__matched_umiref_N26533.tsv
+e	mouse2	v2	matched_umiref_N26533	umiref	n_scored	26524.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__mouse2__matched_umiref_N26533/score_v2__mouse2__matched_umiref_N26533.tsv
+e	mouse2	v2	matched_umiref_N26533	umiref	rank_n_kept_at_cut_value	105.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse2__matched_umiref_N26533.txt
+e	mouse2	v2	matched_umiref_N26533	umiref	rank_n_tied_at_cut_value	111.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse2__matched_umiref_N26533.txt
+e	mouse2	v2	matched_umiref_N26533	umiref	rank_n_written	26533.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__mouse2__matched_umiref_N26533.txt
+e	pbmc10k	prime	matched_molref_N46544	molref	P@100	0.706195		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__matched_molref_N46544/score_prime__pbmc10k__matched_molref_N46544.tsv
+e	pbmc10k	prime	matched_molref_N46544	molref	R_det@100	0.175443		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__matched_molref_N46544/score_prime__pbmc10k__matched_molref_N46544.tsv
+e	pbmc10k	prime	matched_molref_N46544	molref	n_scored	46524.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__matched_molref_N46544/score_prime__pbmc10k__matched_molref_N46544.tsv
+e	pbmc10k	prime	matched_molref_N46544	molref	rank_n_kept_at_cut_value	16718.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__pbmc10k__matched_molref_N46544.txt
+e	pbmc10k	prime	matched_molref_N46544	molref	rank_n_tied_at_cut_value	16718.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__pbmc10k__matched_molref_N46544.txt
+e	pbmc10k	prime	matched_molref_N46544	molref	rank_n_written	46544.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__pbmc10k__matched_molref_N46544.txt
+e	pbmc10k	prime	matched_umi_N277164	umi	P@100	0.212128		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__matched_umi_N277164/score_prime__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	prime	matched_umi_N277164	umi	R_det@100	0.273182		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__matched_umi_N277164/score_prime__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	prime	matched_umi_N277164	umi	n_scored	277102.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__matched_umi_N277164/score_prime__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	prime	matched_umi_N277164	umi	rank_n_kept_at_cut_value	1379.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	prime	matched_umi_N277164	umi	rank_n_tied_at_cut_value	1462.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	prime	matched_umi_N277164	umi	rank_n_written	277164.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	prime	matched_umiref_N46544	umiref	P@100	0.385687		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__matched_umiref_N46544/score_prime__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	prime	matched_umiref_N46544	umiref	R_det@100	0.102933		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__matched_umiref_N46544/score_prime__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	prime	matched_umiref_N46544	umiref	n_scored	46530.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__matched_umiref_N46544/score_prime__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	prime	matched_umiref_N46544	umiref	rank_n_kept_at_cut_value	13.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__pbmc10k__matched_umiref_N46544.txt
+e	pbmc10k	prime	matched_umiref_N46544	umiref	rank_n_tied_at_cut_value	58.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__pbmc10k__matched_umiref_N46544.txt
+e	pbmc10k	prime	matched_umiref_N46544	umiref	rank_n_written	46544.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/prime__pbmc10k__matched_umiref_N46544.txt
+e	pbmc10k	shipped	matched_umi_N277164	umi	P@100	0.117538		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__matched_umi_N277164/score_shipped__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	shipped	matched_umi_N277164	umi	R_det@100	0.156189		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__matched_umi_N277164/score_shipped__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	shipped	matched_umi_N277164	umi	n_scored	277111.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__matched_umi_N277164/score_shipped__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	shipped	matched_umi_N277164	umi	rank_n_kept_at_cut_value	996.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	shipped	matched_umi_N277164	umi	rank_n_tied_at_cut_value	996.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	shipped	matched_umi_N277164	umi	rank_n_written	277164.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	shipped	matched_umiref_N46544	umiref	P@100	0.117868		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__matched_umiref_N46544/score_shipped__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	shipped	matched_umiref_N46544	umiref	R_det@100	0.026237		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__matched_umiref_N46544/score_shipped__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	shipped	matched_umiref_N46544	umiref	n_scored	46535.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__matched_umiref_N46544/score_shipped__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	shipped	matched_umiref_N46544	umiref	rank_n_kept_at_cut_value	39.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__pbmc10k__matched_umiref_N46544.txt
+e	pbmc10k	shipped	matched_umiref_N46544	umiref	rank_n_tied_at_cut_value	50.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__pbmc10k__matched_umiref_N46544.txt
+e	pbmc10k	shipped	matched_umiref_N46544	umiref	rank_n_written	46544.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/shipped__pbmc10k__matched_umiref_N46544.txt
+e	pbmc10k	v1	matched_molref_N46544	molref	P@100	0.694745		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__matched_molref_N46544/score_v1__pbmc10k__matched_molref_N46544.tsv
+e	pbmc10k	v1	matched_molref_N46544	molref	R_det@100	0.172426		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__matched_molref_N46544/score_v1__pbmc10k__matched_molref_N46544.tsv
+e	pbmc10k	v1	matched_molref_N46544	molref	n_scored	46525.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__matched_molref_N46544/score_v1__pbmc10k__matched_molref_N46544.tsv
+e	pbmc10k	v1	matched_molref_N46544	molref	rank_n_kept_at_cut_value	2131.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__pbmc10k__matched_molref_N46544.txt
+e	pbmc10k	v1	matched_molref_N46544	molref	rank_n_tied_at_cut_value	117243.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__pbmc10k__matched_molref_N46544.txt
+e	pbmc10k	v1	matched_molref_N46544	molref	rank_n_written	46544.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__pbmc10k__matched_molref_N46544.txt
+e	pbmc10k	v1	matched_umi_N277164	umi	P@100	0.209006		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__matched_umi_N277164/score_v1__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	v1	matched_umi_N277164	umi	R_det@100	0.269303		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__matched_umi_N277164/score_v1__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	v1	matched_umi_N277164	umi	n_scored	277097.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__matched_umi_N277164/score_v1__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	v1	matched_umi_N277164	umi	rank_n_kept_at_cut_value	648.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	v1	matched_umi_N277164	umi	rank_n_tied_at_cut_value	1409.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	v1	matched_umi_N277164	umi	rank_n_written	277164.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	v1	matched_umiref_N46544	umiref	P@100	0.384354		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__matched_umiref_N46544/score_v1__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	v1	matched_umiref_N46544	umiref	R_det@100	0.102726		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__matched_umiref_N46544/score_v1__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	v1	matched_umiref_N46544	umiref	n_scored	46530.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__matched_umiref_N46544/score_v1__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	v1	matched_umiref_N46544	umiref	rank_n_kept_at_cut_value	18.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__pbmc10k__matched_umiref_N46544.txt
+e	pbmc10k	v1	matched_umiref_N46544	umiref	rank_n_tied_at_cut_value	62.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__pbmc10k__matched_umiref_N46544.txt
+e	pbmc10k	v1	matched_umiref_N46544	umiref	rank_n_written	46544.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v1__pbmc10k__matched_umiref_N46544.txt
+e	pbmc10k	v2	matched_molref_N46544	molref	P@100	0.706195		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__matched_molref_N46544/score_v2__pbmc10k__matched_molref_N46544.tsv
+e	pbmc10k	v2	matched_molref_N46544	molref	R_det@100	0.175443		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__matched_molref_N46544/score_v2__pbmc10k__matched_molref_N46544.tsv
+e	pbmc10k	v2	matched_molref_N46544	molref	n_scored	46524.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__matched_molref_N46544/score_v2__pbmc10k__matched_molref_N46544.tsv
+e	pbmc10k	v2	matched_molref_N46544	molref	rank_n_kept_at_cut_value	16718.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__pbmc10k__matched_molref_N46544.txt
+e	pbmc10k	v2	matched_molref_N46544	molref	rank_n_tied_at_cut_value	16718.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__pbmc10k__matched_molref_N46544.txt
+e	pbmc10k	v2	matched_molref_N46544	molref	rank_n_written	46544.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__pbmc10k__matched_molref_N46544.txt
+e	pbmc10k	v2	matched_umi_N277164	umi	P@100	0.212128		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__matched_umi_N277164/score_v2__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	v2	matched_umi_N277164	umi	R_det@100	0.273182		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__matched_umi_N277164/score_v2__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	v2	matched_umi_N277164	umi	n_scored	277102.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__matched_umi_N277164/score_v2__pbmc10k__matched_umi_N277164.tsv
+e	pbmc10k	v2	matched_umi_N277164	umi	rank_n_kept_at_cut_value	1379.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	v2	matched_umi_N277164	umi	rank_n_tied_at_cut_value	1462.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	v2	matched_umi_N277164	umi	rank_n_written	277164.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__pbmc10k__matched_umi_N277164.txt
+e	pbmc10k	v2	matched_umiref_N46544	umiref	P@100	0.385687		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__matched_umiref_N46544/score_v2__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	v2	matched_umiref_N46544	umiref	R_det@100	0.102933		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__matched_umiref_N46544/score_v2__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	v2	matched_umiref_N46544	umiref	n_scored	46530.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__matched_umiref_N46544/score_v2__pbmc10k__matched_umiref_N46544.tsv
+e	pbmc10k	v2	matched_umiref_N46544	umiref	rank_n_kept_at_cut_value	13.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__pbmc10k__matched_umiref_N46544.txt
+e	pbmc10k	v2	matched_umiref_N46544	umiref	rank_n_tied_at_cut_value	58.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__pbmc10k__matched_umiref_N46544.txt
+e	pbmc10k	v2	matched_umiref_N46544	umiref	rank_n_written	46544.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/matched_reports/v2__pbmc10k__matched_umiref_N46544.txt
+g	pbmc10k	prime	precision_default		P@100	0.706195		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__precision_default/score_prime__pbmc10k__precision_default.tsv
+g	pbmc10k	prime	precision_default		kinnex_decoy_frac25	0.129997		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__precision_default/kinnex.json
+g	pbmc10k	prime	precision_default		kinnex_t20_frac25	0.558378		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__precision_default/kinnex.json
+g	pbmc10k	prime	precision_default		kinnex_t5_frac25	0.764659		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__precision_default/kinnex.json
+g	pbmc10k	prime	precision_default		n_scored	46524.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/prime__pbmc10k__precision_default/score_prime__pbmc10k__precision_default.tsv
+g	pbmc10k	shipped	full		kinnex_t5_frac25	0.062621	shipped has no >=2-molecule arm; its FULL call set is shown for scale only	/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/shipped__pbmc10k__full/kinnex.json
+g	pbmc10k	v1	precision_default		P@100	0.716673		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__precision_default/score_v1__pbmc10k__precision_default.tsv
+g	pbmc10k	v1	precision_default		kinnex_decoy_frac25	0.112448		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__precision_default/kinnex.json
+g	pbmc10k	v1	precision_default		kinnex_t20_frac25	0.575596		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__precision_default/kinnex.json
+g	pbmc10k	v1	precision_default		kinnex_t5_frac25	0.786165		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__precision_default/kinnex.json
+g	pbmc10k	v1	precision_default		n_scored	44394.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v1__pbmc10k__precision_default/score_v1__pbmc10k__precision_default.tsv
+g	pbmc10k	v2	precision_default		P@100	0.706195		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__precision_default/score_v2__pbmc10k__precision_default.tsv
+g	pbmc10k	v2	precision_default		kinnex_decoy_frac25	0.129997		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__precision_default/kinnex.json
+g	pbmc10k	v2	precision_default		kinnex_t20_frac25	0.558378		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__precision_default/kinnex.json
+g	pbmc10k	v2	precision_default		kinnex_t5_frac25	0.764659		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__precision_default/kinnex.json
+g	pbmc10k	v2	precision_default		n_scored	46524.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2__pbmc10k__precision_default/score_v2__pbmc10k__precision_default.tsv
+g	pbmc10k	v2_flagless_topN40687	matched_precision		R_det@100	0.158616	matched-precision control: v2 no-flags truncated to P@100 = prime's 0.706195	/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/adversarial/veto_matched_pbmc10k.tsv
+g	pbmc10k	v2_flagless_topN46524	matched_calls		P_atlas@100	0.664044	matched-budget control: v2 no-flags truncated by clip-molecule rank to prime's own N = 46,524	/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/adversarial/veto_matched_pbmc10k.tsv
+g	pbmc10k	v2_flagless_topN46524	matched_calls		kinnex_decoy@25	0.280973	matched-budget control: v2 no-flags truncated by clip-molecule rank to prime's own N = 46,524	/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/adversarial/veto_matched_pbmc10k.tsv
+g	pbmc10k	v2_flagless_topN46524	matched_calls		kinnex_t20@25	0.522827	matched-budget control: v2 no-flags truncated by clip-molecule rank to prime's own N = 46,524	/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/adversarial/veto_matched_pbmc10k.tsv
+g	pbmc10k	v2_flagless_topN46524	matched_calls		kinnex_t5@25	0.678166	matched-budget control: v2 no-flags truncated by clip-molecule rank to prime's own N = 46,524	/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/adversarial/veto_matched_pbmc10k.tsv
+g	pbmc10k	v2_noIP	ge2mol_noIP_POSTHOC		P@100	0.590726		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2_noIP__pbmc10k__ge2mol_noIP_POSTHOC/score_v2_noIP__pbmc10k__ge2mol_noIP_POSTHOC.tsv
+g	pbmc10k	v2_noIP	ge2mol_noIP_POSTHOC		kinnex_decoy_frac25	0.312236		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2_noIP__pbmc10k__ge2mol_noIP_POSTHOC/kinnex.json
+g	pbmc10k	v2_noIP	ge2mol_noIP_POSTHOC		kinnex_t20_frac25	0.433183		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2_noIP__pbmc10k__ge2mol_noIP_POSTHOC/kinnex.json
+g	pbmc10k	v2_noIP	ge2mol_noIP_POSTHOC		kinnex_t5_frac25	0.608066		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2_noIP__pbmc10k__ge2mol_noIP_POSTHOC/kinnex.json
+g	pbmc10k	v2_noIP	ge2mol_noIP_POSTHOC		n_scored	62110.000000		/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway/scores/v2_noIP__pbmc10k__ge2mol_noIP_POSTHOC/score_v2_noIP__pbmc10k__ge2mol_noIP_POSTHOC.tsv

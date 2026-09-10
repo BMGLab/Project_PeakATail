@@ -1,0 +1,16 @@
+panel	quantity	value	source
+c	atlas-agreement precision @100 bp, default, PBMC 10k v3	0.7062	manuscript/19 section 1
+c	calls kept, default, PBMC 10k v3	46524	manuscript/19 section 1
+c	atlas-agreement precision @100 bp, default, Testis mouse 1	0.7450	manuscript/19 section 1
+c	calls kept, default, Testis mouse 1	26255	manuscript/19 section 1
+c	atlas-agreement precision @100 bp, default, Testis mouse 2	0.7572	manuscript/19 section 1
+c	calls kept, default, Testis mouse 2	26526	manuscript/19 section 1
+b	Tail-supported, ≥ 2 molecules	0.7062	manuscript/19 section 2
+b	Tail-supported, ≥ 1 molecule	0.3520	manuscript/19 section 2
+b	Coverage-only, no tail evidence	0.0568	manuscript/19 section 2
+a	poly(A) clip rate, genome-wide	0.5730%	manuscript/23 section 2
+c	peak memory, PBMC 10k v3	12.53 GB	manuscript/19 section 3
+c	wall time, uncontended	27 min	manuscript/19 section 3
+c	null p<0.05 rate, calibrated switch test	3.0%	manuscript/14
+d	replicated switches	15,942	manuscript/20
+d	patients	12	manuscript/20

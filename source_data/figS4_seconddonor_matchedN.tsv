@@ -1,0 +1,7 @@
+reduction	n	P100	R_det	arm	source	panel
+top 20,672 by clip-molecule rank (coordinate tie-break)	20672	0.904900	0.113500	donor 1 default, reduced to ~donor 2's call count	manuscript/26_second_donor_preregistration.md, 'Matched-call-count control (added by the verifier, 2026-08-22)'	c
+top 20,672 by clip-molecule rank (reverse tie-break)	20672	0.904900	0.113400	donor 1 default, reduced to ~donor 2's call count	manuscript/26_second_donor_preregistration.md, 'Matched-call-count control (added by the verifier, 2026-08-22)'	c
+>=4 molecules	23679	0.885600	0.124100	donor 1 default, reduced to ~donor 2's call count	manuscript/26_second_donor_preregistration.md, 'Matched-call-count control (added by the verifier, 2026-08-22)'	c
+>=5 molecules	20320	0.907400	0.112200	donor 1 default, reduced to ~donor 2's call count	manuscript/26_second_donor_preregistration.md, 'Matched-call-count control (added by the verifier, 2026-08-22)'	c
+donor 2 default (comparison target)	20672	0.827883	0.110389	pbmc4k pre-registered default	run_ipfilt/score_pbmc4k_final_v2_ipfilt__PRESPEC_precision_default.tsv	c
+donor 1 default, full (context)	46524	0.706195	0.175443	pbmc_10k_v3 pre-registered default	results/figures/manuscript/fig2_accuracy.tsv	c

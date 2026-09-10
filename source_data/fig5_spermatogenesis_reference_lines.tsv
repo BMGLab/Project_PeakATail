@@ -1,0 +1,22 @@
+item	value	source
+claim_sentence_source	manuscript/18_spermatogenesis_final.md	manuscript/18 v2 section (verdict SOUND, 2026-09-02); v1 retained as the labelled comparison; the figure states this claim and no stronger one
+code_frozen_tree	9dfdefb3	REPORT_PROVISIONAL.md §0 (commit 9dfdefb3eb353b0817ef79c4eb9ace6d6c8aab53)
+binomial_p_excess_mouse1	3.4e-9	manuscript/18 (shortening-vs-lengthening excess, 486 vs 318)
+binomial_p_excess_mouse2	0.0039	manuscript/18 (366 vs 291)
+null_draws_reaching_mouse2_excess	0/40	computed here from mouse2/summary/pdui_null_shuffles.tsv (|short-long| over 20 fixed + 20 free-guard draws); reproduces 18's '0/40'
+median_pdui_mouse1_SPC_RS_ES	0.7953/0.8014/0.7364	mouse1/summary/pdui_summary.json (NOT monotone: RS > SPC)
+median_pdui_mouse2_SPC_RS_ES	0.8787/0.8874/0.8813	mouse2/summary/pdui_summary.json (NOT monotone: RS > SPC)
+mean_pdui_mouse1_SPC_RS_ES	0.5950/0.5782/0.5582	mouse1/summary/pdui_summary.json (monotone decreasing; not plotted)
+mean_pdui_mouse2_SPC_RS_ES	0.6337/0.6192/0.6019	mouse2/summary/pdui_summary.json (monotone decreasing; not plotted)
+spg_cells_mouse1_mouse2	64/68	pdui_summary.json info.stage_counts (SPG excluded from the claim per manuscript/11)
+switch_true_q05_hits_mouse1	50354	summary/switch_cross_mouse_replication.tsv, sum of n_hits_m1 over the 3 TRUE rows
+switch_true_q05_hits_mouse2	52111	summary/switch_cross_mouse_replication.tsv, sum of n_hits_m2 over the 3 TRUE rows
+switch_null_frac_p05_mouse1	0.03169	summary/switch_null_summary.tsv, mean over the 3 pairs (5 shuffles each)
+switch_null_frac_p05_mouse2	0.03152	summary/switch_null_summary.tsv, mean over the 3 pairs (5 shuffles each)
+switch_null_bh_families_with_a_hit	0/30	summary/switch_null_summary.tsv (null_q05_total and null_runs_with_hit both 0)
+replicate_pearson_r	0.8425	summary/gene_replication_summary.json
+binom_p_both_shorten_vs_both_lengthen	0.00855	summary/gene_replication_summary.json (339 vs 273; per-gene reproducibility and net shortening are different claims)
+genes_monotone_shortening_in_both_mice	165 (0.179)	summary/gene_replication_summary.json (expected under independence 0.095)
+label_agreement_gex_vs_pas_clusters	0.9878 / 0.9877	REPORT_PROVISIONAL.md §0 (3-stage set)
+protamine_share_of_guarded_ES_umis	25.2% / 14.5% of guarded ES UMIs (m1/m2)	manuscript/18 and REPORT_PROVISIONAL.md caveat 8 (Prm2 + Prm1)
+v1_comparison_render	SPERMATOGENESIS_VERSION=v1	manuscript/18 v2 section; the v1-code render is the labelled comparison, not the record

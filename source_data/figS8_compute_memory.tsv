@@ -1,0 +1,5 @@
+panel	quantity	peak_rss_gb	source
+d	v1 peak RSS, full PBMC run	293.736616	results/figures/manuscript/fig3_tradeoff_compute.tsv (runtime_mem.txt)
+d	the culprit in isolation: 4 dense float64 copies of the cells × PAS matrix (clustering, not peak calling)	287.800000	manuscript/15_final_gate.md section 5 addendum (profiling, results/perf/)
+d	after perf/clip-memory: sparse TF-IDF + parallel calling (byte-identical outputs, 18/18)	12.450000	manuscript/15_final_gate.md section 5 addendum (uncontended PR run)
+d	dense-copy arithmetic (computed): 4 x 23,303 x 390,493 x 8 B	291.000000	manuscript/15_final_gate.md section 5 addendum

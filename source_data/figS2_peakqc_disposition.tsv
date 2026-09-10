@@ -1,0 +1,5 @@
+panel	arm	view	n	P100	null_P100	R_det100	kin_decoy25	source
+g	pbmc_base (slice)	tier-2	7401	0.064181	0.028780	0.036484	0.020000	results/paramsweep/arms_all.tsv
+g	pbmc_B_off95 = --cleavage-offset 95 (slice)	tier-2	5771	0.085081	0.028302	0.036893	0.064600	results/paramsweep/arms_all.tsv
+g	m1_base (slice)	tier-2	1135	0.125110	0.015565	0.021806		results/paramsweep/arms_all.tsv
+g	m1_B_auto = --auto-cleavage-offset (87 bp; slice)	tier-2	805	0.178882	0.015735	0.019328		results/paramsweep/arms_all.tsv

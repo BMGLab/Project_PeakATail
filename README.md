@@ -72,6 +72,31 @@ pull` from the internal working directory. Use
 which re-runs the identical filter (deterministic, so unchanged commits keep
 their SHAs) and replays the packaging commits on top.
 
+## Before this repository is made public
+
+It currently contains the **unsubmitted manuscript draft** and internal working documents that
+came across in the sync — `manuscript/00_draft/` (MAIN.md, SUPPLEMENTARY.md), and notably
+`PI_DECISIONS.md` and `REVIEW_SIMULATION.md`, the latter being a *simulated* referee report
+written in-project, not a real review. Decide deliberately which of these should be visible
+before flipping the repository to public; nothing here is public yet.
+
+The Availability statement in the manuscript promises this repository carries the benchmark
+scorer, the replication filter, the long-read truth-set build scripts, the label-confirmation
+and universe policy files, the figure scripts with their audit tables and captions, the
+pre-registration documents, and the run manifests. As of this commit all of those are present:
+
+| promised | where |
+|---|---|
+| benchmark scorer | `scripts/benchmark_tools/score_tool.py` |
+| replication filter | `scripts/` (`replication_filter.py`) |
+| Kinnex truth + decoy point BEDs | `truth_sets/kinnex/` (gzipped) |
+| Kinnex build script | `scripts/benchmark_tools/` |
+| pre-registration documents | `manuscript/24_`, `26_`, `27_` |
+| figure scripts and captions | `scripts/manuscript_figures/`, `manuscript/figures/*.caption.md` |
+| figure source data | `source_data/` |
+| numbers audit, competitor run table | `audit/` |
+| run manifests | `run_manifests/` |
+
 ## Before release
 
 Items to settle before making this repository public and minting a DOI:

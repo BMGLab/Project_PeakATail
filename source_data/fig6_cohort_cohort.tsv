@@ -1,0 +1,46 @@
+key	value	note
+version	v2_code	
+peakatail_code	9dfdefb	#96 minus-strand IP fix
+n_patients_with_multiple_libraries	3	libraries per patient: LX255B=1,LX653=1,LX661=1,LX675=2,LX676=1,LX679=1,LX680=1,LX682=2,LX684=2,LX685=1,LX699=1,LX701=1
+tree	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3	read-only
+source_of_truth	manuscript/20_stage3_replication.md	verifier verdict SOUND
+n_patients	12	LX255B,LX653,LX661,LX675,LX676,LX679,LX680,LX682,LX684,LX685,LX699,LX701
+n_libraries_gsm	15	
+n_celltype_pairs	59	
+n_pairs_multi_patient	47	>=2 patients
+n_pairs_with_replicated	47	
+pas_universe	80464	IP-pass AND tier-1 AND cohort clip-molecule sum >=2
+cells_entering_tests	17373	sum of n_cells_final over the 15 primary libraries
+cells_confirmed_label_matched	17881	sum of n_cells_matched
+real_tests_total	5677639	sum of true.n_tests over the 15 libraries
+real_calls_total_q<0.05	94864	sum of per_sample_called
+null_tests_total	58859840	15 primary libraries x 10 permutations; source /mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/switch/<GSM>/summary.json (null.perm_NN.n_tests / n_q_lt_fdr)
+null_nominal_q_hits_total	11	none co-occurring in two patients
+n_tested_pair_pas	2128711	
+n_replicated_K2	15942	
+n_replicated_K2_floor	15212	
+n_replicated_K3	5438	
+n_replicated_K3_floor	5242	
+n_gene_level_K2	10415	
+n_distinct_pas	5951	
+n_distinct_genes	2883	
+split_direction_dropped	148	called in >=2 patients but no single direction reached K
+discordance_vetoed	39	reached K in one direction but an opposite-direction patient vetoed it
+empirical_p_floor	0.09090909090909091	1/(10+1); NOT an FDR
+median_abs_consensus_effect	0.338992	retired panel c (not plotted since 2026-09-02); quoted in the caption Legend; replicated.tsv
+mean_abs_consensus_effect	0.360947	retired panel c (not plotted since 2026-09-02); quoted in the caption Legend; replicated.tsv
+n_consensus_below_effect_floor	291	|mean_effect_consensus| < 0.1; caption Legend
+n_removed_by_effect_floor	730	floor applied per patient then patients re-counted; footer
+null_tested_mean_per_combo	2033817.5	panel a grey bar; null_control.tsv
+null_called_ge1_mean_per_combo	1.1	panel a grey bar; /mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/verify_v2chain/null_hits.tsv
+effect_histogram_modal_bin_centre	0.29	retired panel c; fig6_cohort_effects.tsv
+null_tests_GSM3516672-StageIB	9096302	footer BH-discreteness disclosure
+null_qhits_GSM3516672-StageIB	3	footer BH-discreteness disclosure
+curated_cells	29063	CITED 20 (verified vs labels/manifest.json)
+confirmed_cells	18651	CITED 20 (verified vs labels/manifest.json)
+confirmed_fraction	0.642	CITED 20
+top30_gene_rows_misnamed_frac	0.4	CITED 20 disclosure 1, definition = rows whose representative PAS is not in the named gene's 3' UTR (12 of 30, 40%); 8 of 30 (27%) on the narrower 'different gene's 3' UTR' reading. Both recounted 2026-08-22 from verify_v2chain/topgene_check.py; the same script on the v1 tree gives 12/30 and 9/30, so the defect is unchanged between the two chains; NOT recomputed here (would require the forbidden ranked list)
+sens_replicated_13_patients	16010	CITED 20 / PRIMARY_vs_SENSITIVITY.txt
+sens_replicated_floor_13_patients	15282	CITED 20 / PRIMARY_vs_SENSITIVITY.txt
+metbone_clip_rate_quoted	0.015%	CITED 20 disclosure 2; a first-200,000-CB-read sampling artefact, premise WRONG
+metbone_actual_clip_molecules	306k	CITED 20 disclosure 2 / tool issue #99

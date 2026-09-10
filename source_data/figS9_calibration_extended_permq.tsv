@@ -1,0 +1,7 @@
+panel	arm	arm_label	true_nominal_q_hits	true_perm_q_hits	true_perm_q_hits_with_effect_floor	effect_kind	effect_floor	perm_q_resolution_min_p_emp	source
+d	A_fisher_reads	A  fisher, count-mode reads, top-200 markers	307	186	85	delta_proportion	0.1	0.00046468401	results/figures/manuscript/fig4_calibration_stats.tsv
+d	B_fisher_cells	B  fisher, count-mode cells, top-200 markers	668	640	572	delta_proportion	0.1	0.00046468401	results/figures/manuscript/fig4_calibration_stats.tsv
+d	C_nb_pairwise	C  nb_pairwise, top-200 markers	1754	1733	1588	log2fc	1	8.3347225e-05	results/figures/manuscript/fig4_calibration_stats.tsv
+d	A0_fisher_reads_nomarker	A0  fisher reads, no marker pre-sel.	49923	33325	16983	delta_proportion	0.1	6.9863529e-07	results/figures/manuscript/fig4_calibration_stats.tsv
+d	B0_fisher_cells_nomarker	B0  fisher cells, no marker pre-sel. (SHIPS)	60332	66630	46230	delta_proportion	0.1	6.9863529e-07	results/figures/manuscript/fig4_calibration_stats.tsv
+d	C0_nb_pairwise_nomarker	C0  nb_pairwise, no marker pre-sel.	43127	42974	33067	log2fc	1	1.4022335e-06	results/figures/manuscript/fig4_calibration_stats.tsv

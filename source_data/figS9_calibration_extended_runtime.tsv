@@ -1,0 +1,7 @@
+panel	arm	true_run_elapsed_s	perm_run_elapsed_mean_s	n_perms	source
+caption	A_fisher_reads	9.2	8.08	20	results/figures/manuscript/fig4_calibration_stats.tsv
+caption	B_fisher_cells	8.9	7.955	20	results/figures/manuscript/fig4_calibration_stats.tsv
+caption	C_nb_pairwise	14	12.87	20	results/figures/manuscript/fig4_calibration_stats.tsv
+caption	A0_fisher_reads_nomarker	91.9	93.215	20	results/figures/manuscript/fig4_calibration_stats.tsv
+caption	B0_fisher_cells_nomarker	88	87.16	20	results/figures/manuscript/fig4_calibration_stats.tsv
+caption	C0_nb_pairwise_nomarker	309.8	773.89	20	results/figures/manuscript/fig4_calibration_stats.tsv

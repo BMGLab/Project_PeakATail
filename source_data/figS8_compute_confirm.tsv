@@ -1,0 +1,4 @@
+panel	scale	v1_wall_h	v1_wall_str	v1_peak_rss_gb	v2_wall_h	v2_wall_str	v2_peak_rss_gb	speedup	note	source
+c	17-library Laughney cohort (~224 GB of BAM, one unified PAS space)	9.107222	9:06:26	13.630000	1.107222	1:06:26	13.530000	8.225289	identical YAML/flags; v2 --peak-workers 16; unified PAS 505,197 = 505,197 (identical output scale)	manuscript/19_final_gate_v2.md section 5
+c	testis mouse 1	1.019167	1:01:09	23.100000	0.236111	14:10	3.070000	4.316471	v1 --threads 12 (15 section 5); v2 concurrent with the other three arms (19 section 3)	manuscript/15_final_gate.md section 5; manuscript/19_final_gate_v2.md section 3
+c	testis mouse 2	1.030000	1:01:48	22.400000	0.266667	16:00	3.650000	3.862500	v1 --threads 12 (15 section 5); v2 concurrent with the other three arms (19 section 3)	manuscript/15_final_gate.md section 5; manuscript/19_final_gate_v2.md section 3

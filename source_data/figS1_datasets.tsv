@@ -1,0 +1,44 @@
+panel	library	column	value	source	note
+a	pbmc_10k_v3	Library	PBMC 10k v3 (human donor 1)	manuscript/04_datasets.md (b)	
+a	pbmc_10k_v3	Species / accession	human 10x public pbmc_10k_v3	manuscript/04_datasets.md (b)	
+a	pbmc_10k_v3	Chemistry	10x 3' v3	10 sR2; 26 s2	
+a	pbmc_10k_v3	Upstream pipeline	CellRanger 3.0.0 (GRCh38-3.0.0 refdata)	10 sR2; 26 s2/A1	
+a	pbmc_10k_v3	Cells	~10,000 (est.)	manuscript/04_datasets.md; 26 sR4.2	
+a	pbmc_10k_v3	Reads / input	557,564,408 accepted CB reads	23 [V] s5 (clip-rate denominator)	
+a	pbmc_10k_v3	R2 length (--seq-len)	91 bp	run_config.json; 26 s3 (100,000/100,000 first records)	
+a	pbmc_10k_v3	Poly(A) clip rate (% of CB reads)	0.5730 genome-wide qualifying (3,195,067 / 557,564,408) head-sample estimator: 2.2565	23 s2/[V] s5; 26 A1.2	corrects the superseded 1.152%
+a	pbmc4k	Library	pbmc4k (human donor 2)	manuscript/26 s2	
+a	pbmc4k	Species / accession	human 10x public pbmc4k (flow cell H53GNBCXY)	26 s2/V	
+a	pbmc4k	Chemistry	10x 3' v2	26 s2 (web summary)	
+a	pbmc4k	Upstream pipeline	CellRanger 2.1.0 (GRCh38-1.2.0 refdata)	26 s2 (web summary + BAM @PG)	
+a	pbmc4k	Cells	4,340 (est.)	26 s2 (web summary)	
+a	pbmc4k	Reads / input	87,433 mean reads/cell; BAM 33.24 GB	26 s2	
+a	pbmc4k	R2 length (--seq-len)	98 bp	run_config.json; 26 s2 (200,000/200,000 first records)	
+a	pbmc4k	Poly(A) clip rate (% of CB reads)	head-sample estimator: 3.6965 (genome-wide not measured)	26 sR4.4/V	1.64x donor 1's estimator value; both far above the 0.3% warn threshold
+a	testis_m1	Library	testis mouse 1 (GSE104556)	manuscript/04_datasets.md (b)	
+a	testis_m1	Species / accession	mouse GEO GSE104556	manuscript/04_datasets.md (b)	
+a	testis_m1	Chemistry	10x 3' v2	10 sR2	
+a	testis_m1	Upstream pipeline	STARsolo (version not recorded)	10 sR2 / 10 s5 gate table	
+a	testis_m1	Cells	2,500 (both mice together)	manuscript/04_datasets.md (b)	
+a	testis_m1	Reads / input	—	no verified per-BAM read count in the manuscript set	
+a	testis_m1	R2 length (--seq-len)	98 bp	run_config.json; 10 sR2; 26 s3	
+a	testis_m1	Poly(A) clip rate (% of CB reads)	—	10 sR2 required the measurement; no verified value exists	
+a	testis_m2	Library	testis mouse 2 (GSE104556)	manuscript/04_datasets.md (b)	
+a	testis_m2	Species / accession	mouse GEO GSE104556	manuscript/04_datasets.md (b)	
+a	testis_m2	Chemistry	10x 3' v2	10 sR2	
+a	testis_m2	Upstream pipeline	STARsolo (version not recorded)	10 sR2 / 10 s5 gate table	
+a	testis_m2	Cells	(see mouse 1)	manuscript/04_datasets.md (b): 2,500 across 2 mice	
+a	testis_m2	Reads / input	—	no verified per-BAM read count in the manuscript set	
+a	testis_m2	R2 length (--seq-len)	98 bp	run_config.json; 10 sR2; 26 s3	
+a	testis_m2	Poly(A) clip rate (% of CB reads)	—	10 sR2 required the measurement; no verified value exists	
+a	laughney	Library	Laughney LUAD cohort (17 libs, cohort-level row)	20; cohort run_manifest.json	
+a	laughney	Species / accession	human GEO GSE123904 17 GSMs = 14 patients	13 addendum; 20; cohort run_manifest.json	
+a	laughney	Chemistry	10x 3' (v2 era; HiSeq 2500)	manuscript/04_datasets.md (c)	
+a	laughney	Upstream pipeline	—	upstream pipeline/version not recorded in the verified set	
+a	laughney	Cells	29,063 curated; 18,651 label- confirmed (64.2%)	20 (verified SOUND)	
+a	laughney	Reads / input	~224 GB of BAM; 505,197 unified PAS	19 s5	
+a	laughney	R2 length (--seq-len)	—	not recorded in the verified set	
+a	laughney	Poly(A) clip rate (% of CB reads)	—	only in-run estimate is the INVALID head-of-chr1 0.015% warning (20) -- never repeated as fact	
+b	PBMC 10k v3 genome-wide	clip_rate_pct	0.5730	23 s2/[V] s5: 3,195,067 / 557,564,408 accepted CB reads	genome-wide qualifying rate (the figure constant)
+b	PBMC 10k v3 head-sample est.	clip_rate_pct	2.2565	26 A1.2 (verifier-exact); first 200,000 CB reads = head of chr1	hatched = head-sample estimator (known ~4.2x head bias)
+b	pbmc4k head-sample est.	clip_rate_pct	3.6965	26 R4.4/V (verifier-exact); genome-wide value not measured	hatched = head-sample estimator (known ~4.2x head bias)

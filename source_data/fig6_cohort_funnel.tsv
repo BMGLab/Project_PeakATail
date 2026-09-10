@@ -1,0 +1,14 @@
+panel	stage	stage_label	series	n	note	source
+a	1	tested (pair, PAS) hypotheses	real	2128711.0000		/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/all_features.tsv
+a	1	tested (pair, PAS) hypotheses	null_mean_of_10	2033817.5000	mean of 10 null combinations	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/null_control.tsv
+a	2	called BH q<0.05 in ≥1 patient	real	68546.0000		/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/all_features.tsv
+a	2	called BH q<0.05 in ≥1 patient	null_mean_of_10	1.1000	mean of 10; per-combination 0–4	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/verify_v2chain/null_hits.tsv
+a	3	called in ≥2 patients (any direction)	real	16129.0000		/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/all_features.tsv
+a	3	called in ≥2 patients (any direction)	null_mean_of_10	0.0000	0 in all 10	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/verify_v2chain/null_hits.tsv
+a	4	replicated: ≥2 patients, same direction, no opposite-direction patient	real	15942.0000		/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/all_features.tsv
+a	4	replicated: ≥2 patients, same direction, no opposite-direction patient	null_mean_of_10	0.0000	0 in all 10	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/null_control.tsv
+a	5	+ effect floor |Δproportion| ≥ 0.1	real	15212.0000		/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/all_features.tsv
+a	5	+ effect floor |Δproportion| ≥ 0.1	null_mean_of_10	0.0000	0 in all 10	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/null_control.tsv
+a	2	null per-combination detail	null_called_ge1_per_combo		0;0;0;2;0;1;2;2;0;4	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/verify_v2chain/null_hits.tsv
+a	4	dropped: called in >=2 patients but no single direction reached K	real	148.0000	stage 3 -> stage 4 loses 187 = 148 split-direction + 39 vetoed	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/all_features.tsv
+a	4	dropped: reached K in one direction but an opposite-direction patient vetoed it	real	39.0000	discordant_policy=exclude	/mnt/ssd0/emaout/peakatail_benchmark/stage3_laughney_v3/replication/primary_noMetBone/pas_K2/all_features.tsv

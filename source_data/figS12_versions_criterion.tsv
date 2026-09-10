@@ -1,0 +1,4 @@
+dataset	dP	dR	dF1	i_dP_ge_minus0p005	ii_dR_ge_plus0p010	iii_dF1_gt_0	verdict	criterion	overall	baseline	test	source_file
+pbmc10k	0.000000	0.000000	0.000000	True	False	False	FAIL	24 section 3.1 PRIMARY: dP>=-0.005 AND dR>=+0.010 AND dF1>0, on all three gate datasets simultaneously	FAIL	v2 precision_default	prime precision_default	/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway.tsv
+mouse1	0.000000	0.000000	0.000000	True	False	False	FAIL	24 section 3.1 PRIMARY: dP>=-0.005 AND dR>=+0.010 AND dF1>0, on all three gate datasets simultaneously	FAIL	v2 precision_default	prime precision_default	/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway.tsv
+mouse2	0.000000	0.000000	0.000000	True	False	False	FAIL	24 section 3.1 PRIMARY: dP>=-0.005 AND dR>=+0.010 AND dF1>0, on all three gate datasets simultaneously	FAIL	v2 precision_default	prime precision_default	/mnt/ssd1/Projects/PeakATail_wd/results/prime_bench/fourway.tsv

@@ -1,0 +1,5 @@
+panel	arm	count_mode	marker_preselection	frac_null_p_lt_05	mean_false_q_hits_per_null_run	n_runs_with_q_hit	source
+c	A_fisher_reads	reads	top-200 wilcoxon	0.20269642	24.7	20	results/figures/manuscript/fig4_calibration_stats.tsv
+c	B_fisher_cells	cells	top-200 wilcoxon	0.13017201	3.1	19	results/figures/manuscript/fig4_calibration_stats.tsv
+c	A0_fisher_reads_nomarker	reads	off	0.095562462	1487.05	20	results/figures/manuscript/fig4_calibration_stats.tsv
+c	B0_fisher_cells_nomarker	cells	off	0.030270782	0	0	results/figures/manuscript/fig4_calibration_stats.tsv

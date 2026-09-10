@@ -1,0 +1,29 @@
+panel	mouse	stage	median_wdi_across_cells	n_cells	cliffs_delta	mannwhitney_p	gene_id	m1_delta	m2_delta	mean_delta	category
+e_across_gene_umi_weighted_distal_index	mouse1	SPC	0.5866283613708123	370.0							
+e_across_gene_umi_weighted_distal_index	mouse1	RS	0.5724021018919521	504.0							
+e_across_gene_umi_weighted_distal_index	mouse1	ES	0.6267572796199212	356.0							
+e_across_gene_umi_weighted_distal_index	mouse1	cliff_SPC_vs_RS			0.38752681252681254	1.1404348180294008e-22					
+e_across_gene_umi_weighted_distal_index	mouse1	cliff_RS_vs_ES			-0.9341336721954699	1.1867300668397556e-120					
+e_across_gene_umi_weighted_distal_index	mouse1	cliff_SPC_vs_ES			-0.7887640449438202	1.604068927939308e-75					
+e_across_gene_umi_weighted_distal_index	mouse2	SPC	0.63995708898384	268.0							
+e_across_gene_umi_weighted_distal_index	mouse2	RS	0.6354877124607556	757.0							
+e_across_gene_umi_weighted_distal_index	mouse2	ES	0.671976401179941	271.0							
+e_across_gene_umi_weighted_distal_index	mouse2	cliff_SPC_vs_RS			0.18893314142629003	4.194657846079448e-06					
+e_across_gene_umi_weighted_distal_index	mouse2	cliff_RS_vs_ES			-0.8689768799933706	3.187249290080451e-100					
+e_across_gene_umi_weighted_distal_index	mouse2	cliff_SPC_vs_ES			-0.7414771162636999	3.616263640991414e-50					
+f_literature_panel	both	Prm3					ENSMUSG00000050058	-0.1503341021479351	-0.1655670227192872	-0.1579505624336111	shorten in both
+f_literature_panel	both	Ybx2					ENSMUSG00000018554	-0.0787563844274377	-0.0572799483445829	-0.0680181663860103	shorten in both
+f_literature_panel	both	Pgk2					ENSMUSG00000031233	-0.0307017543859649	0.0120388192001651	-0.0093314675928998	discordant
+f_literature_panel	both	Ppp1cc					ENSMUSG00000004455	-0.0131337031698852	-0.0016324275459846	-0.0073830653579349	shorten in both
+f_literature_panel	both	Nsun7					ENSMUSG00000029206	-0.0044213465715172	-0.009858601728201	-0.007139974149859	shorten in both
+f_literature_panel	both	Tnp1					ENSMUSG00000026182	0.0	0.0002287805994051	0.0001143902997025	delta 0 in one mouse
+f_literature_panel	both	Prm2					ENSMUSG00000038015	-1.1496697573609715e-05	0.0009618034121384	0.0004751533572823	discordant
+f_literature_panel	both	Prm1					ENSMUSG00000022501	4.124544466188596e-06	0.0012434027317606	0.0006237636381133	lengthen in both
+f_literature_panel	both	Tnp2					ENSMUSG00000043050	0.0028607755880483	0.0009462803901586	0.0019035279891034	lengthen in both
+f_literature_panel	both	Odf1					ENSMUSG00000061923	0.0078917313841937	0.0043785310734463	0.00613513122882	lengthen in both
+f_literature_panel	both	Oaz3					ENSMUSG00000028141	0.0201174330189075	-0.0001319783555496	0.0099927273316789	discordant
+f_literature_panel	both	Gapdhs					ENSMUSG00000061099	0.0	0.0411437097104849	0.0205718548552424	delta 0 in one mouse
+f_literature_panel	both	Akap4					ENSMUSG00000050089	-0.0166706279412464	0.0612857384201059	0.0223075552394297	discordant
+f_literature_panel	both	Hils1					ENSMUSG00000038994	-0.0622661954824699	0.118187740212364	0.027960772364947	discordant
+f_literature_panel	both	Spata19					ENSMUSG00000031991	0.0349966832752283	0.0849120026140246	0.0599543429446264	lengthen in both
+f_literature_panel	both	Smcp					ENSMUSG00000074435	0.1192687210474916	0.0120033864903905	0.065636053768941	lengthen in both

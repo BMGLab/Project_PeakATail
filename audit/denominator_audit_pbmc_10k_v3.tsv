@@ -1,0 +1,6 @@
+denominator	n_sites	recovered_by_default	R	ceiling_any_raw_peak	R_ceiling
+atlas_detected (PolyASite2.0 rep sites in 14,949 detected genes)	285136	50025	0.1754	97130	0.3406
+atlas_detected AND Kinnex x3p >=5 UMI within 100bp	107260	46892	0.4372	72250	0.6736
+atlas_detected AND Kinnex GEM-X >=5 UMI within 100bp	114576	47369	0.4134	74022	0.6461
+atlas_detected AND Kinnex (x3p OR GEM-X) >=5 UMI within 100bp	127188	48281	0.3796	78699	0.6188
+the above AND in a gene with >=10,000 raw reads	94023	34746	0.3695	57681	0.6135

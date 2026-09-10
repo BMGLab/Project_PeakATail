@@ -1,0 +1,164 @@
+{
+  "run_id": "run",
+  "root": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/pbmc_10k_v3/peakatail/run",
+  "contract_version": "0.1.0",
+  "timestamp": "2026-08-19T14:33:23.281659",
+  "datasets": [
+    {
+      "dataset_id": "default",
+      "bam_paths": [
+        "/mnt/ssd1/Projects/PeakATail_wd/data/benchmark/pbmc_10k_v3/pbmc_10k_v3_possorted_genome_bam.bam"
+      ],
+      "label": null
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "run_config.json",
+      "stage": "run",
+      "format": "json",
+      "schema_name": "run_config",
+      "schema_version": "0.1.0",
+      "entity_counts": {},
+      "content_hash": "sha256:accfdbea46a9d7d9b5af33e313c2444a110dfa423f744e3337c0837a555dc364"
+    },
+    {
+      "path": "07_clustering/default/clusters.h5ad",
+      "stage": "clustering",
+      "format": "h5ad",
+      "schema_name": "clusters.h5ad",
+      "schema_version": "0.1.0",
+      "entity_counts": {},
+      "content_hash": "sha256:660bf83cf4f2ed1970b5fce413254792645f492b69fcb77d2f8e90abe260840c"
+    }
+  ],
+  "resolved_config": {
+    "directories": {
+      "output_dir": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/pbmc_10k_v3/peakatail/run",
+      "bam_dir": null,
+      "gtf_dir": "/home/sharedFolder/humanSTARindex/Homo_sapiens.GRCh38.99.gtf",
+      "atlas": null,
+      "atlas_distance": 50,
+      "datasets": [
+        {
+          "id": "default",
+          "merge_strategy": "none",
+          "bams": [
+            "/mnt/ssd1/Projects/PeakATail_wd/data/benchmark/pbmc_10k_v3/pbmc_10k_v3_possorted_genome_bam.bam"
+          ]
+        }
+      ],
+      "filenames": {}
+    },
+    "variables": {
+      "seqlen": 91,
+      "cb_len": 16,
+      "barcode_tag": "CB",
+      "default_threshold": 5,
+      "merge_len": 100,
+      "min_pas_spacing": -1,
+      "min_pas_prominence": 5.0
+    },
+    "filters": {
+      "min_read": 1500,
+      "min_cells": 3,
+      "min_genes": 50,
+      "min_pas_per_cell": 50
+    },
+    "args": {
+      "config": null,
+      "output": "emaout",
+      "bam_dir": null,
+      "bam_files": null,
+      "gtf": null,
+      "atlas": null,
+      "atlas_distance": 50,
+      "atlas_mode": "annotate",
+      "filenames": null,
+      "seq_len": null,
+      "cb_len": null,
+      "barcode_tag": null,
+      "default_threshold": 5,
+      "merge_len": 100,
+      "ignore_chro": "MT,mt",
+      "threads": null,
+      "bam_threads": 4,
+      "pipeline": false,
+      "batch_size": 10000,
+      "tiles": false,
+      "tile_size": null,
+      "tile_overlap": 10000,
+      "strategy": "lambda_gradient",
+      "lambda_window": 5000,
+      "lambda_method": "median",
+      "lambda_fold_change": 2.0,
+      "max_pas": 5,
+      "smoothing_window": 50,
+      "min_prominence": 5.0,
+      "dynamic_threshold": false,
+      "floor_threshold": 3,
+      "pas_gap": 100,
+      "min_pas_spacing": -1,
+      "min_pas_prominence": 5.0,
+      "ip_filter": false,
+      "genome_fasta": null,
+      "ip_filter_mode": "annotate",
+      "annot_filter": false,
+      "annotation_bed": null,
+      "ip_a_stretch": 6,
+      "ip_a_fraction": 0.7,
+      "ip_window_left": 10,
+      "ip_window_right": 30,
+      "min_pas_per_cell": 50,
+      "min_read": 1500,
+      "min_cells": 3,
+      "max_gene_distance": 5000,
+      "utr_multiplier": 2.0,
+      "include_extended": false,
+      "clustering_method": "leiden_tfidf",
+      "resolution": 1.0,
+      "n_pcs": 40,
+      "external_clusters": null,
+      "random_seed": 42,
+      "cluster_match_method": "marker_overlap",
+      "n_top_markers": 50,
+      "marker_top_n": 200,
+      "marker_method": "wilcoxon",
+      "fdr": 0.05,
+      "per_worker_mb": 300,
+      "isoform_agg": "per_gene",
+      "isoform_collapse": "none",
+      "pdui_pseudocount": 0.0,
+      "log2fc_thresh": 1.0,
+      "min_cells_per_group": 10,
+      "mnn_components": 30,
+      "mnn_k_neighbors": 10,
+      "n_neighbors": 30,
+      "tfidf_scale_factor": 10000.0,
+      "depth_corr_threshold": 0.75,
+      "n_svd_components": 50,
+      "n_top_hvg": 2000,
+      "benchmark": false,
+      "validate_db": null,
+      "log_level": null,
+      "no_log_file": false,
+      "no_progress": false,
+      "verbose": 0,
+      "quiet": false,
+      "datasets": [],
+      "gtf_dir": null,
+      "seqlen": null
+    }
+  },
+  "stratum_to_label": {},
+  "entity_counts": {
+    "n_datasets": 1
+  },
+  "id_grammar": {
+    "pas_uid": "chrom:pos:strand (pos = end-1 on +, start on -)",
+    "cell_uid": "{dataset_id}:{barcode}",
+    "cluster_uid": "{dataset_id}:{leiden}",
+    "canonical_cluster": "shared int across datasets (obs column)",
+    "finding_uid": "{arm}:{celltype}:{gene_id}"
+  }
+}

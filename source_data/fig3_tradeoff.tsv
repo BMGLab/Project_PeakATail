@@ -1,0 +1,116 @@
+panel	plotted	tool	dataset	arm	min_molecules	pre_registered	cutoff_bp	n	n_matched	atlas_agreement_precision	recall_detected_genes	recall_detected_denominator	recall_full_atlas	recall_full_denominator	F1_detected_genes	null_P_seed1	null_P_seed2	null_P_seed3	null_P_mean	source
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	pbmc	v2 IP arm, >=1 molecules	1.000000	False	100	167565	58977	0.351965	0.268472	285136	0.137132	569005.000000	0.304601	0.021633	0.021932	0.022344	0.021970	fig3_trade_repro_work/pbmc/score_pbmc_ge1mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	pbmc	v2 IP arm, >=2 molecules	2.000000	True	100	46524	32855	0.706195	0.175443	285136	0.088908	569005.000000	0.281060	0.021666	0.021666	0.021731	0.021688	fig3_trade_repro_work/pbmc/score_pbmc_ge2mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	pbmc	v2 IP arm, >=3 molecules	3.000000	False	100	29814	24919	0.835815	0.141936	285136	0.071748	569005.000000	0.242663	0.021500	0.022573	0.022171	0.022081	fig3_trade_repro_work/pbmc/score_pbmc_ge3mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	pbmc	v2 IP arm, >=5 molecules	5.000000	False	100	20320	18439	0.907431	0.112171	285136	0.056562	569005.000000	0.199661	0.020079	0.021604	0.021654	0.021112	fig3_trade_repro_work/pbmc/score_pbmc_ge5mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	pbmc	v2 IP arm, >=10 molecules	10.000000	False	100	13560	12763	0.941224	0.082799	285136	0.041652	569005.000000	0.152208	0.022050	0.019764	0.022493	0.021436	fig3_trade_repro_work/pbmc/score_pbmc_ge10mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	mouse1	v2 IP arm, >=1 molecules	1.000000	False	100	52792	30020	0.568647	0.280639	126686	0.136612	301006.000000	0.375808	0.015192	0.014245	0.014055	0.014497	fig3_trade_repro_work/mouse1/score_mouse1_ge1mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	mouse1	v2 IP arm, >=2 molecules	2.000000	True	100	26255	19560	0.745001	0.204790	126686	0.097656	301006.000000	0.321268	0.014892	0.012950	0.013940	0.013927	fig3_trade_repro_work/mouse1/score_mouse1_ge2mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	mouse1	v2 IP arm, >=3 molecules	3.000000	False	100	19703	15781	0.800944	0.171740	126686	0.081271	301006.000000	0.282834	0.015328	0.013196	0.014313	0.014279	fig3_trade_repro_work/mouse1/score_mouse1_ge3mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	mouse1	v2 IP arm, >=5 molecules	5.000000	False	100	14194	12043	0.848457	0.135264	126686	0.063952	301006.000000	0.233329	0.016345	0.013386	0.015288	0.015006	fig3_trade_repro_work/mouse1/score_mouse1_ge5mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	mouse1	v2 IP arm, >=10 molecules	10.000000	False	100	9449	8366	0.885385	0.097817	126686	0.046095	301006.000000	0.176170	0.015981	0.013864	0.013864	0.014570	fig3_trade_repro_work/mouse1/score_mouse1_ge10mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	mouse2	v2 IP arm, >=1 molecules	1.000000	False	100	51842	30483	0.587998	0.282628	126686	0.138180	301006.000000	0.381759	0.014448	0.013541	0.013715	0.013901	fig3_trade_repro_work/mouse2/score_mouse2_ge1mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	mouse2	v2 IP arm, >=2 molecules	2.000000	True	100	26526	20086	0.757219	0.208002	126686	0.099503	301006.000000	0.326357	0.013722	0.012667	0.014966	0.013785	fig3_trade_repro_work/mouse2/score_mouse2_ge2mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	mouse2	v2 IP arm, >=3 molecules	3.000000	False	100	20013	16201	0.809524	0.175055	126686	0.083178	301006.000000	0.287861	0.015040	0.013291	0.013141	0.013824	fig3_trade_repro_work/mouse2/score_mouse2_ge3mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	mouse2	v2 IP arm, >=5 molecules	5.000000	False	100	14572	12482	0.856574	0.139573	126686	0.065965	301006.000000	0.240035	0.015646	0.013862	0.013999	0.014502	fig3_trade_repro_work/mouse2/score_mouse2_ge5mol.tsv (recomputed by score_tool.py)
+not_plotted_moved_to_fig2	False	PeakATail v2 (IP arm)	mouse2	v2 IP arm, >=10 molecules	10.000000	False	100	9835	8774	0.892120	0.101858	126686	0.047979	301006.000000	0.182840	0.015658	0.012506	0.014947	0.014370	fig3_trade_repro_work/mouse2/score_mouse2_ge10mol.tsv (recomputed by score_tool.py)
+a,b	True	PeakATail v2 default	pbmc				10	46524	24233	0.520871	0.083764	285136								results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__PRESPEC_precision_default.tsv
+a,b	True	PeakATail v2 default	pbmc				25	46524	29723	0.638875	0.105013	285136								results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__PRESPEC_precision_default.tsv
+a,b	True	PeakATail v2 default	pbmc				50	46524	31379	0.674469	0.134757	285136								results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__PRESPEC_precision_default.tsv
+a,b	True	PeakATail v2 default	pbmc				100	46524	32855	0.706195	0.175443	285136								results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__PRESPEC_precision_default.tsv
+a,b	False	PeakATail v2 default	pbmc				200	46524	34309	0.737447	0.219818	285136								results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__PRESPEC_precision_default.tsv
+a,b	True	PeakATail v2 tier-1 ≥1 mol	pbmc				10	167565	38498	0.229750	0.131846	285136								results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__tier1.tsv
+a,b	True	PeakATail v2 tier-1 ≥1 mol	pbmc				25	167565	48254	0.287972	0.168698	285136								results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__tier1.tsv
+a,b	True	PeakATail v2 tier-1 ≥1 mol	pbmc				50	167565	53123	0.317029	0.211334	285136								results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__tier1.tsv
+a,b	True	PeakATail v2 tier-1 ≥1 mol	pbmc				100	167565	58977	0.351965	0.268472	285136								results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__tier1.tsv
+a,b	False	PeakATail v2 tier-1 ≥1 mol	pbmc				200	167565	66445	0.396533	0.331182	285136								results/benchmark_tools/pbmc_10k_v3/peakatail_clipseeded_final_v2_ipfilt/score_pbmc_final_v2_ipfilt__tier1.tsv
+a,b	True	scUTRquant*	pbmc				10	40519	23190	0.572324	0.076328	285136								results/benchmark_tools/pbmc_10k_v3/scutrquant/score_scutrquant.tsv
+a,b	True	scUTRquant*	pbmc				25	40519	28747	0.709470	0.097385	285136								results/benchmark_tools/pbmc_10k_v3/scutrquant/score_scutrquant.tsv
+a,b	True	scUTRquant*	pbmc				50	40519	30586	0.754856	0.128297	285136								results/benchmark_tools/pbmc_10k_v3/scutrquant/score_scutrquant.tsv
+a,b	True	scUTRquant*	pbmc				100	40519	32115	0.792591	0.177663	285136								results/benchmark_tools/pbmc_10k_v3/scutrquant/score_scutrquant.tsv
+a,b	False	scUTRquant*	pbmc				200	40519	33733	0.832523	0.240955	285136								results/benchmark_tools/pbmc_10k_v3/scutrquant/score_scutrquant.tsv
+a,b	True	SCAPTURE	pbmc				10	35759	10815	0.302441	0.031055	285136								results/benchmark_tools/pbmc_10k_v3/scapture/score_scapture.tsv
+a,b	True	SCAPTURE	pbmc				25	35759	18699	0.522917	0.057306	285136								results/benchmark_tools/pbmc_10k_v3/scapture/score_scapture.tsv
+a,b	True	SCAPTURE	pbmc				50	35759	22411	0.626723	0.085149	285136								results/benchmark_tools/pbmc_10k_v3/scapture/score_scapture.tsv
+a,b	True	SCAPTURE	pbmc				100	35759	23308	0.651808	0.117561	285136								results/benchmark_tools/pbmc_10k_v3/scapture/score_scapture.tsv
+a,b	False	SCAPTURE	pbmc				200	35759	23985	0.670740	0.156234	285136								results/benchmark_tools/pbmc_10k_v3/scapture/score_scapture.tsv
+a,b	True	polyApipe	pbmc				10	120916	35398	0.292749	0.099395	285136								results/benchmark_tools/pbmc_10k_v3/polyapipe/score_polyapipe.tsv
+a,b	True	polyApipe	pbmc				25	120916	41222	0.340914	0.118224	285136								results/benchmark_tools/pbmc_10k_v3/polyapipe/score_polyapipe.tsv
+a,b	True	polyApipe	pbmc				50	120916	43354	0.358546	0.149108	285136								results/benchmark_tools/pbmc_10k_v3/polyapipe/score_polyapipe.tsv
+a,b	True	polyApipe	pbmc				100	120916	45944	0.379966	0.198796	285136								results/benchmark_tools/pbmc_10k_v3/polyapipe/score_polyapipe.tsv
+a,b	False	polyApipe	pbmc				200	120916	49545	0.409747	0.263734	285136								results/benchmark_tools/pbmc_10k_v3/polyapipe/score_polyapipe.tsv
+a,b	True	Sierra	pbmc				10	106170	8869	0.083536	0.028881	285136								results/benchmark_tools/pbmc_10k_v3/sierra/score_sierra.tsv
+a,b	True	Sierra	pbmc				25	106170	16117	0.151804	0.053511	285136								results/benchmark_tools/pbmc_10k_v3/sierra/score_sierra.tsv
+a,b	True	Sierra	pbmc				50	106170	22750	0.214279	0.089161	285136								results/benchmark_tools/pbmc_10k_v3/sierra/score_sierra.tsv
+a,b	True	Sierra	pbmc				100	106170	27164	0.255854	0.135006	285136								results/benchmark_tools/pbmc_10k_v3/sierra/score_sierra.tsv
+a,b	False	Sierra	pbmc				200	106170	31658	0.298182	0.194732	285136								results/benchmark_tools/pbmc_10k_v3/sierra/score_sierra.tsv
+a,b	True	scAPAtrap	pbmc				10	787138	18818	0.023907	0.057092	285136								results/benchmark_tools/pbmc_10k_v3/scapatrap/score_scapatrap.tsv
+a,b	True	scAPAtrap	pbmc				25	787138	32147	0.040840	0.099293	285136								results/benchmark_tools/pbmc_10k_v3/scapatrap/score_scapatrap.tsv
+a,b	True	scAPAtrap	pbmc				50	787138	49005	0.062257	0.170575	285136								results/benchmark_tools/pbmc_10k_v3/scapatrap/score_scapatrap.tsv
+a,b	True	scAPAtrap	pbmc				100	787138	78650	0.099919	0.300376	285136								results/benchmark_tools/pbmc_10k_v3/scapatrap/score_scapatrap.tsv
+a,b	False	scAPAtrap	pbmc				200	787138	111704	0.141912	0.450999	285136								results/benchmark_tools/pbmc_10k_v3/scapatrap/score_scapatrap.tsv
+a,b	False	PeakATail v2 default	mouse1				10	26255	15219	0.579661	0.107107	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse1/score_testis_m1_final_v2__PRESPEC_precision_default.tsv
+a,b	False	PeakATail v2 default	mouse1				25	26255	17907	0.682042	0.126557	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse1/score_testis_m1_final_v2__PRESPEC_precision_default.tsv
+a,b	False	PeakATail v2 default	mouse1				50	26255	18706	0.712474	0.160902	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse1/score_testis_m1_final_v2__PRESPEC_precision_default.tsv
+a,b	False	PeakATail v2 default	mouse1				100	26255	19560	0.745001	0.204790	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse1/score_testis_m1_final_v2__PRESPEC_precision_default.tsv
+a,b	False	PeakATail v2 default	mouse1				200	26255	20390	0.776614	0.251267	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse1/score_testis_m1_final_v2__PRESPEC_precision_default.tsv
+a,b	False	PeakATail v2 default	mouse2				10	26526	15769	0.594473	0.110438	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/score_testis_m2_final_v2__PRESPEC_precision_default.tsv
+a,b	False	PeakATail v2 default	mouse2				25	26526	18382	0.692980	0.129446	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/score_testis_m2_final_v2__PRESPEC_precision_default.tsv
+a,b	False	PeakATail v2 default	mouse2				50	26526	19205	0.724007	0.164383	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/score_testis_m2_final_v2__PRESPEC_precision_default.tsv
+a,b	False	PeakATail v2 default	mouse2				100	26526	20086	0.757219	0.208002	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/score_testis_m2_final_v2__PRESPEC_precision_default.tsv
+a,b	False	PeakATail v2 default	mouse2				200	26526	20951	0.789829	0.254045	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/score_testis_m2_final_v2__PRESPEC_precision_default.tsv
+a,b	False	PeakATail v2 tier-1 ≥1 mol	mouse1				10	52792	21668	0.410441	0.148627	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse1/score_testis_m1_final_v2__tier1.tsv
+a,b	False	PeakATail v2 tier-1 ≥1 mol	mouse1				25	52792	25875	0.490131	0.179065	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse1/score_testis_m1_final_v2__tier1.tsv
+a,b	False	PeakATail v2 tier-1 ≥1 mol	mouse1				50	52792	27741	0.525477	0.224831	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse1/score_testis_m1_final_v2__tier1.tsv
+a,b	False	PeakATail v2 tier-1 ≥1 mol	mouse1				100	52792	30020	0.568647	0.280639	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse1/score_testis_m1_final_v2__tier1.tsv
+a,b	False	PeakATail v2 tier-1 ≥1 mol	mouse1				200	52792	32402	0.613767	0.337125	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse1/score_testis_m1_final_v2__tier1.tsv
+a,b	False	PeakATail v2 tier-1 ≥1 mol	mouse2				10	51842	22250	0.429189	0.151943	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/score_testis_m2_final_v2__tier1.tsv
+a,b	False	PeakATail v2 tier-1 ≥1 mol	mouse2				25	51842	26333	0.507947	0.181678	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/score_testis_m2_final_v2__tier1.tsv
+a,b	False	PeakATail v2 tier-1 ≥1 mol	mouse2				50	51842	28198	0.543922	0.227318	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/score_testis_m2_final_v2__tier1.tsv
+a,b	False	PeakATail v2 tier-1 ≥1 mol	mouse2				100	51842	30483	0.587998	0.282628	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/score_testis_m2_final_v2__tier1.tsv
+a,b	False	PeakATail v2 tier-1 ≥1 mol	mouse2				200	51842	32791	0.632518	0.339225	126686								results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/score_testis_m2_final_v2__tier1.tsv
+a,b	False	scUTRquant*	mouse1				10	35732	21364	0.597895	0.118616	126686								results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse1.tsv
+a,b	False	scUTRquant*	mouse1				25	35732	25842	0.723217	0.142486	126686								results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse1.tsv
+a,b	False	scUTRquant*	mouse1				50	35732	27040	0.756745	0.188576	126686								results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse1.tsv
+a,b	False	scUTRquant*	mouse1				100	35732	27959	0.782464	0.258632	126686								results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse1.tsv
+a,b	False	scUTRquant*	mouse1				200	35732	29063	0.813361	0.343156	126686								results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse1.tsv
+a,b	False	scUTRquant*	mouse2				10	35845	21448	0.598354	0.118608	126686								results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse2.tsv
+a,b	False	scUTRquant*	mouse2				25	35845	25955	0.724090	0.142431	126686								results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse2.tsv
+a,b	False	scUTRquant*	mouse2				50	35845	27166	0.757874	0.188592	126686								results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse2.tsv
+a,b	False	scUTRquant*	mouse2				100	35845	28092	0.783708	0.258884	126686								results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse2.tsv
+a,b	False	scUTRquant*	mouse2				200	35845	29195	0.814479	0.343669	126686								results/benchmark_tools/gse104556/scutrquant/score_scutrquant_mouse2.tsv
+a,b	False	SCAPTURE	mouse1				10	23645	8605	0.363925	0.047456	126686								results/benchmark_tools/gse104556/scapture/mouse1/score_scapture_mouse1.tsv
+a,b	False	SCAPTURE	mouse1				25	23645	13200	0.558258	0.074349	126686								results/benchmark_tools/gse104556/scapture/mouse1/score_scapture_mouse1.tsv
+a,b	False	SCAPTURE	mouse1				50	23645	15773	0.667075	0.112956	126686								results/benchmark_tools/gse104556/scapture/mouse1/score_scapture_mouse1.tsv
+a,b	False	SCAPTURE	mouse1				100	23645	16399	0.693550	0.155092	126686								results/benchmark_tools/gse104556/scapture/mouse1/score_scapture_mouse1.tsv
+a,b	False	SCAPTURE	mouse1				200	23645	16754	0.708564	0.201743	126686								results/benchmark_tools/gse104556/scapture/mouse1/score_scapture_mouse1.tsv
+a,b	False	polyApipe	mouse1				10	89527	28643	0.319937	0.126186	126686								results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse1.tsv
+a,b	False	polyApipe	mouse1				25	89527	32854	0.366973	0.147364	126686								results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse1.tsv
+a,b	False	polyApipe	mouse1				50	89527	34469	0.385012	0.189666	126686								results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse1.tsv
+a,b	False	polyApipe	mouse1				100	89527	35857	0.400516	0.249878	126686								results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse1.tsv
+a,b	False	polyApipe	mouse1				200	89527	37616	0.420164	0.322695	126686								results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse1.tsv
+a,b	False	polyApipe	mouse2				10	87983	29267	0.332644	0.128088	126686								results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse2.tsv
+a,b	False	polyApipe	mouse2				25	87983	33440	0.380073	0.149006	126686								results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse2.tsv
+a,b	False	polyApipe	mouse2				50	87983	34876	0.396395	0.191221	126686								results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse2.tsv
+a,b	False	polyApipe	mouse2				100	87983	36244	0.411943	0.250762	126686								results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse2.tsv
+a,b	False	polyApipe	mouse2				200	87983	37886	0.430606	0.323398	126686								results/benchmark_tools/gse104556/polyapipe/score_polyapipe_mouse2.tsv
+a,b	False	Sierra	mouse1				10	22550	4779	0.211929	0.027383	126686								results/benchmark_tools/gse104556/sierra/score_sierra_mouse1.tsv
+a,b	False	Sierra	mouse1				25	22550	6532	0.289667	0.037502	126686								results/benchmark_tools/gse104556/sierra/score_sierra_mouse1.tsv
+a,b	False	Sierra	mouse1				50	22550	8010	0.355211	0.058381	126686								results/benchmark_tools/gse104556/sierra/score_sierra_mouse1.tsv
+a,b	False	Sierra	mouse1				100	22550	11472	0.508736	0.107052	126686								results/benchmark_tools/gse104556/sierra/score_sierra_mouse1.tsv
+a,b	False	Sierra	mouse1				200	22550	13777	0.610953	0.170658	126686								results/benchmark_tools/gse104556/sierra/score_sierra_mouse1.tsv
+a,b	False	Sierra	mouse2				10	21335	4823	0.226060	0.027304	126686								results/benchmark_tools/gse104556/sierra/score_sierra_mouse2.tsv
+a,b	False	Sierra	mouse2				25	21335	6678	0.313007	0.038260	126686								results/benchmark_tools/gse104556/sierra/score_sierra_mouse2.tsv
+a,b	False	Sierra	mouse2				50	21335	8459	0.396485	0.062091	126686								results/benchmark_tools/gse104556/sierra/score_sierra_mouse2.tsv
+a,b	False	Sierra	mouse2				100	21335	12397	0.581064	0.117298	126686								results/benchmark_tools/gse104556/sierra/score_sierra_mouse2.tsv
+a,b	False	Sierra	mouse2				200	21335	13907	0.651840	0.175150	126686								results/benchmark_tools/gse104556/sierra/score_sierra_mouse2.tsv
+a,b	False	scAPAtrap	mouse1				10	135538	14695	0.108420	0.071010	126686								results/benchmark_tools/gse104556/scapatrap/mouse1/score_scapatrap_mouse1.tsv
+a,b	False	scAPAtrap	mouse1				25	135538	21335	0.157410	0.105750	126686								results/benchmark_tools/gse104556/scapatrap/mouse1/score_scapatrap_mouse1.tsv
+a,b	False	scAPAtrap	mouse1				50	135538	27250	0.201051	0.162978	126686								results/benchmark_tools/gse104556/scapatrap/mouse1/score_scapatrap_mouse1.tsv
+a,b	False	scAPAtrap	mouse1				100	135538	33918	0.250247	0.245315	126686								results/benchmark_tools/gse104556/scapatrap/mouse1/score_scapatrap_mouse1.tsv
+a,b	False	scAPAtrap	mouse1				200	135538	39016	0.287860	0.335183	126686								results/benchmark_tools/gse104556/scapatrap/mouse1/score_scapatrap_mouse1.tsv
+a,b	False	scAPAtrap	mouse2				10	151140	15208	0.100622	0.072984	126686								results/benchmark_tools/gse104556/scapatrap/mouse2/score_scapatrap_mouse2.tsv
+a,b	False	scAPAtrap	mouse2				25	151140	22253	0.147234	0.111007	126686								results/benchmark_tools/gse104556/scapatrap/mouse2/score_scapatrap_mouse2.tsv
+a,b	False	scAPAtrap	mouse2				50	151140	28700	0.189890	0.171566	126686								results/benchmark_tools/gse104556/scapatrap/mouse2/score_scapatrap_mouse2.tsv
+a,b	False	scAPAtrap	mouse2				100	151140	36109	0.238911	0.258576	126686								results/benchmark_tools/gse104556/scapatrap/mouse2/score_scapatrap_mouse2.tsv
+a,b	False	scAPAtrap	mouse2				200	151140	41335	0.273488	0.350560	126686								results/benchmark_tools/gse104556/scapatrap/mouse2/score_scapatrap_mouse2.tsv

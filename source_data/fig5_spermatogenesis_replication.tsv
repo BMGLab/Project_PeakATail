@@ -1,0 +1,4 @@
+pair	label	n_pas_matched	hits_m1	hits_m2	hits_m1_matched	hits_m2_matched	replicated_same_dir	both_hit_opposite_dir	sign_agreement	frac_m1_matched_hits_replicated	frac_m2_matched_hits_replicated	expected_same_dir_if_independent	pas_shuffle_same_dir_mean	pas_shuffle_same_dir_max	enrichment_over_independent	n_null_pairings	null_replicated_same_dir_total	null_replicated_same_dir_max	null_hits_m1_total	null_hits_m2_total
+RS_vs_SPC	SPC → RS	36840	21090	24031	14412	16050	11219	32	0.9971558083725892	0.7784485151262837	0.6990031152647975	3450.0059717698155	3454.1	3517	3.251878429139291	5	0	0	0	0
+ES_vs_RS	RS → ES	35668	11191	11420	8300	8475	6070	17	0.99720716280598	0.7313253012048193	0.7162241887905605	1201.1930301670966	1193.3	1225	5.053309374560397	5	0	0	0	0
+ES_vs_SPC	SPC → ES	35382	18073	16660	12757	11954	9480	16	0.9983150800336984	0.7431214235321784	0.7930399866153589	2530.422248600984	2510.8	2598	3.7464103096790615	5	0	0	0	0

@@ -1,0 +1,12 @@
+panel	kind	label	value
+b	gate	pre-registered gate (13 section 1)	0.500000
+c	F1_det isoline	F1 = 0.1	0.100000
+c	F1_det isoline	F1 = 0.2	0.200000
+c	F1_det isoline	F1 = 0.3	0.300000
+c	F1_det isoline	F1 = 0.4	0.400000
+c	gate	pre-registered gate (13 section 1)	0.500000
+d	F1_det isoline	F1 = 0.1	0.100000
+d	F1_det isoline	F1 = 0.2	0.200000
+d	F1_det isoline	F1 = 0.3	0.300000
+d	F1_det isoline	F1 = 0.4	0.400000
+d	gate	pre-registered gate (13 section 1)	0.500000

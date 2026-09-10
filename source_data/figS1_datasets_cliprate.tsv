@@ -1,0 +1,7 @@
+quantity	library	value	numerator	denominator	source
+genome_wide_qualifying_clip_rate_pct	pbmc_10k_v3	0.573	3195067	557564408	manuscript/23_algorithm_roadmap.md s2/[V] s5
+head_sample_estimator_clip_rate_pct	pbmc_10k_v3	2.2565		first 200,000 CB reads	manuscript/26 A1.2 (verifier-exact)
+head_sample_estimator_clip_rate_pct	pbmc4k	3.6965		first 200,000 CB reads	manuscript/26 R4.4/V (verifier-exact)
+estimator_criteria_genome_wide_truth_pct	pbmc_10k_v3	0.5364			manuscript/23 s3 Step 0; 05 standing correction (caption only)
+superseded_docstring_constant_pct	pbmc_10k_v3	1.152			RETIRED -- 05 standing correction; reference line only, never quote
+warn_threshold_pct	all	0.3			manuscript/26 R4.4

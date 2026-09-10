@@ -1,0 +1,63 @@
+label	shift	n	atlas_P10	atlas_P25	atlas_P50	atlas_P100	kin5_P10	kin5_P25	kin5_P100	decoy_P25	source	panel	curve
+pbmc_base_tier2	0	7401.000000	0.007200	0.017800	0.032000	0.070800	0.010900	0.027700	0.109400	0.020000	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	10	7401.000000	0.006800	0.016100	0.033800	0.074200	0.011100	0.029900	0.115000	0.031200	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	20	7401.000000	0.007000	0.015800	0.035100	0.076600	0.013000	0.030000	0.117600	0.052700	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	30	7401.000000	0.006200	0.015900	0.035900	0.079700	0.013800	0.032700	0.119200	0.083500	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	40	7401.000000	0.006600	0.019300	0.039700	0.081900	0.014100	0.037600	0.121200	0.123100	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	50	7401.000000	0.009300	0.020800	0.045500	0.083800	0.016100	0.038200	0.120900	0.172400	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	60	7401.000000	0.010800	0.023100	0.049700	0.086500	0.017700	0.038600	0.120300	0.216200	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	70	7401.000000	0.010500	0.030100	0.052300	0.088000	0.018400	0.046500	0.120700	0.246300	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	80	7401.000000	0.013400	0.034900	0.055800	0.086900	0.018900	0.050800	0.119700	0.255000	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	85	7401.000000	0.015900	0.035400	0.056900	0.087300	0.022300	0.051100	0.118400	0.252700	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	90	7401.000000	0.018800	0.035100	0.058500	0.087200	0.024700	0.050000	0.117100	0.241500	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	95	7401.000000	0.020000	0.035700	0.058500	0.087300	0.026200	0.048500	0.115300	0.229800	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	100	7401.000000	0.019300	0.036900	0.058900	0.086600	0.024600	0.048400	0.113900	0.210100	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	105	7401.000000	0.017300	0.037800	0.058900	0.086600	0.021300	0.046500	0.112400	0.190900	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	110	7401.000000	0.014700	0.037200	0.059700	0.086600	0.017000	0.046600	0.111100	0.168800	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	120	7401.000000	0.013800	0.032200	0.059600	0.086100	0.014600	0.038600	0.107000	0.121900	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	140	7401.000000	0.010000	0.027000	0.054700	0.085000	0.009100	0.024200	0.098100	0.059200	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	160	7401.000000	0.010500	0.021900	0.043400	0.080000	0.006800	0.015400	0.086500	0.021200	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+pbmc_base_tier2	200	7401.000000	0.006400	0.014500	0.027700	0.061900	0.003200	0.007700	0.051700	0.003100	results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	pbmc_tier2
+m1_base_tier2	0	1135.000000	0.010600	0.036100	0.067000	0.134800					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	10	1135.000000	0.020300	0.037900	0.074900	0.145400					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	20	1135.000000	0.022000	0.043200	0.077500	0.150700					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	30	1135.000000	0.017600	0.053700	0.081100	0.157700					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	40	1135.000000	0.022900	0.057300	0.089900	0.155100					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	50	1135.000000	0.034400	0.055500	0.109300	0.158600					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	60	1135.000000	0.030800	0.059900	0.119800	0.159500					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	70	1135.000000	0.025600	0.069600	0.121600	0.159500					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	80	1135.000000	0.030800	0.087200	0.127800	0.158600					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	85	1135.000000	0.036100	0.083700	0.126900	0.161200					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	90	1135.000000	0.046700	0.082800	0.126900	0.161200					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	95	1135.000000	0.053700	0.084600	0.127800	0.161200					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	100	1135.000000	0.048500	0.086300	0.123300	0.161200					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	105	1135.000000	0.048500	0.085500	0.121600	0.163000					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	110	1135.000000	0.036100	0.081100	0.118100	0.160400					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	120	1135.000000	0.028200	0.080200	0.112800	0.158600					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	140	1135.000000	0.020300	0.049300	0.099600	0.154200					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	160	1135.000000	0.009700	0.033500	0.065200	0.138300					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+m1_base_tier2	200	1135.000000	0.008800	0.023800	0.038800	0.096900					results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	m1_tier2
+pbmc_base_default	0	2883.000000	0.631600	0.703800	0.730500	0.759300	0.708600	0.783900	0.840100	0.093300	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	10	2883.000000	0.445400	0.701000	0.727400	0.760000	0.163700	0.769300	0.840400	0.038500	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	20	2883.000000	0.123500	0.680900	0.726700	0.762100	0.054100	0.655200	0.838700	0.018700	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	30	2883.000000	0.055200	0.244500	0.726700	0.760700	0.064900	0.157100	0.839400	0.021500	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	40	2883.000000	0.057200	0.159200	0.720100	0.759600	0.073200	0.149800	0.839800	0.023900	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	50	2883.000000	0.064500	0.126600	0.542500	0.761400	0.068700	0.149800	0.837700	0.023600	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	60	2883.000000	0.063500	0.130400	0.269500	0.758200	0.063500	0.139400	0.835600	0.023900	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	70	2883.000000	0.056500	0.124900	0.209900	0.755100	0.059700	0.133900	0.830700	0.026700	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	80	2883.000000	0.051700	0.120000	0.202600	0.756500	0.051700	0.127600	0.823400	0.027100	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	85	2883.000000	0.048900	0.112400	0.198100	0.753000	0.054800	0.123100	0.817200	0.027400	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	90	2883.000000	0.047900	0.110300	0.193500	0.750600	0.051300	0.122100	0.803300	0.026400	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	95	2883.000000	0.048200	0.111700	0.189400	0.736400	0.049900	0.121400	0.727700	0.027700	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	100	2883.000000	0.045400	0.108900	0.187700	0.598000	0.055200	0.120000	0.392000	0.030200	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	105	2883.000000	0.044700	0.105400	0.179000	0.386700	0.053100	0.119700	0.313900	0.031900	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	110	2883.000000	0.050600	0.102000	0.172700	0.344800	0.055500	0.117600	0.298600	0.031900	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	120	2883.000000	0.048600	0.100900	0.165500	0.287500	0.055500	0.116900	0.293100	0.035000	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	140	2883.000000	0.038800	0.091200	0.157100	0.273700	0.046800	0.105800	0.278900	0.042300	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	160	2883.000000	0.032600	0.082900	0.151600	0.254200	0.041600	0.095400	0.265000	0.037800	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+pbmc_base_default	200	2883.000000	0.036400	0.081500	0.134900	0.232000	0.046100	0.098900	0.243100	0.029800	results/paramsweep/leadB/offsetsweep_pbmc_base_default.tsv	e	pbmc_default_control
+tool --auto-cleavage-offset, PBMC (aataaa_spacing, A-crest 94)	103										results/paramsweep/VERDICTS.md sec.3	e	estimate
+tool --auto-cleavage-offset, mouse 1 (A-crest 94)	87										results/paramsweep/VERDICTS.md sec.3	e	estimate
+post-hoc argmax tier-2 atlas P@10, PBMC	95										results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	estimate
+post-hoc argmax tier-2 atlas P@10, mouse	95										results/paramsweep/leadB/offsetsweep_m1_base_tier2.tsv	e	estimate
+post-hoc argmax tier-2 Kinnex t5 P@10, PBMC	95										results/paramsweep/leadB/offsetsweep_pbmc_base_tier2.tsv	e	estimate

@@ -1,0 +1,181 @@
+{
+  "tool": "trusted_novel_pas.py call",
+  "argv": [
+    "/mnt/ssd1/Projects/PeakATail_wd/scripts/reliability/trusted_novel_pas.py",
+    "call",
+    "--pas-bed",
+    "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/pas.bed",
+    "--clip-bed",
+    "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/pas_tier1.bed",
+    "--support-unit",
+    "molecules",
+    "--min-support",
+    "1",
+    "--genome",
+    "/mnt/ssd1/Projects/PeakATail_wd/data/references/mouse/Mus_musculus.GRCm38.dna.primary_assembly.fa",
+    "--ip-lo",
+    "1",
+    "--ip-hi",
+    "18",
+    "--ip-a-stretch",
+    "19",
+    "--ip-a-frac",
+    "0.6666666",
+    "--hex-lo",
+    "-40",
+    "--hex-hi",
+    "-5",
+    "--atlas",
+    "/mnt/ssd1/Projects/PeakATail_wd/data/references/atlases/polyasite2.GRCm38.96.rep_sites.bed6",
+    "--atlas-min-dist",
+    "100",
+    "--restrict-chroms",
+    "/mnt/ssd1/Projects/PeakATail_wd/data/references/mouse/chrom.sizes.filt",
+    "--outdir",
+    "/mnt/ssd1/Projects/PeakATail_wd/results/perf_gap/D2_rule_sweep/annot/mouse2"
+  ],
+  "started": "2026-08-21T21:30:20",
+  "elapsed_s": 4.0,
+  "bedtools": "bedtools v2.30.0",
+  "python": "3.10.12",
+  "params": {
+    "support_unit": "molecules",
+    "min_support": 1.0,
+    "ip_window": [
+      1,
+      18
+    ],
+    "ip_a_stretch": 19,
+    "ip_a_frac": 0.6666666,
+    "ip_from_annot": null,
+    "hex_window": [
+      -40,
+      -5
+    ],
+    "hex_strong": [
+      "AATAAA",
+      "ATTAAA"
+    ],
+    "hex12": [
+      "AATAAA",
+      "ATTAAA",
+      "TATAAA",
+      "AGTAAA",
+      "AATACA",
+      "CATAAA",
+      "AATATA",
+      "GATAAA",
+      "AATGAA",
+      "AAGAAA",
+      "ACTAAA",
+      "AATAGA"
+    ],
+    "atlas_min_dist": 100,
+    "atlas_strand_aware": true,
+    "symmetric_window_halfwidth_W": 40
+  },
+  "inputs": {
+    "pas_bed": {
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/pas.bed",
+      "md5": "d66fc829003503af8d176325d69f6217"
+    },
+    "clip_bed": {
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/results/benchmark_tools/gse104556/peakatail_clipseeded_final_v2/mouse2/pas_tier1.bed",
+      "md5": "e10ad7ef5b4d3ae4d08a29d9acf124f6"
+    },
+    "genome": {
+      "path": "/mnt/ssd1/Projects/PeakATail_wd/data/references/mouse/Mus_musculus.GRCm38.dna.primary_assembly.fa",
+      "md5": "size=2776390504;mtime=1603081305"
+    },
+    "atlas": [
+      {
+        "path": "/mnt/ssd1/Projects/PeakATail_wd/data/references/atlases/polyasite2.GRCm38.96.rep_sites.bed6",
+        "md5": "a5bc3266abf584eed580f7c98f58d899"
+      }
+    ],
+    "restrict_chroms": "/mnt/ssd1/Projects/PeakATail_wd/data/references/mouse/chrom.sizes.filt"
+  },
+  "funnel": [
+    {
+      "stage": "input",
+      "n_pass": 72335,
+      "n_fail_at_stage": 0,
+      "frac_of_input": 1.0,
+      "frac_of_previous": 1.0
+    },
+    {
+      "stage": "on_listed_contigs",
+      "n_pass": 72308,
+      "n_fail_at_stage": 27,
+      "frac_of_input": 0.9996267367111357,
+      "frac_of_previous": 0.9996267367111357
+    },
+    {
+      "stage": "clip_supported",
+      "n_pass": 51842,
+      "n_fail_at_stage": 20466,
+      "frac_of_input": 0.7166931637519873,
+      "frac_of_previous": 0.7169607788903026
+    },
+    {
+      "stage": "support_ge1_molecules",
+      "n_pass": 51842,
+      "n_fail_at_stage": 0,
+      "frac_of_input": 0.7166931637519873,
+      "frac_of_previous": 1.0
+    },
+    {
+      "stage": "sequence_testable",
+      "n_pass": 51842,
+      "n_fail_at_stage": 0,
+      "frac_of_input": 0.7166931637519873,
+      "frac_of_previous": 1.0
+    },
+    {
+      "stage": "not_internal_priming",
+      "n_pass": 50769,
+      "n_fail_at_stage": 1073,
+      "frac_of_input": 0.7018594041611944,
+      "frac_of_previous": 0.9793024960456772
+    },
+    {
+      "stage": "hexamer_any12_-40..-5",
+      "n_pass": 33044,
+      "n_fail_at_stage": 17725,
+      "frac_of_input": 0.4568189673049008,
+      "frac_of_previous": 0.6508696251649628
+    },
+    {
+      "stage": "atlas_novel_ge100bp",
+      "n_pass": 10263,
+      "n_fail_at_stage": 22781,
+      "frac_of_input": 0.1418815234672012,
+      "frac_of_previous": 0.3105858854860186
+    },
+    {
+      "stage": "trusted_novel",
+      "n_pass": 10263,
+      "n_fail_at_stage": 0,
+      "frac_of_input": 0.1418815234672012,
+      "frac_of_previous": 1.0
+    },
+    {
+      "stage": "hexamer_strong_AATAAA_ATTAAA",
+      "n_pass": 5816,
+      "n_fail_at_stage": 4447,
+      "frac_of_input": 0.08040367733462363,
+      "frac_of_previous": 0.5666958978856085
+    },
+    {
+      "stage": "trusted_novel_strong",
+      "n_pass": 5816,
+      "n_fail_at_stage": 0,
+      "frac_of_input": 0.08040367733462363,
+      "frac_of_previous": 1.0
+    }
+  ],
+  "n_trusted_novel": 10263,
+  "n_trusted_novel_strong": 5816,
+  "warnings": [],
+  "stale_input_dry_run": false
+}

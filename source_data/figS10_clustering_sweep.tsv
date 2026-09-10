@@ -1,0 +1,10 @@
+panel	record	x_label	metric	value	q1	q3	n_datasets	source
+c	A3_res0.5	res 0.5	n_clusters_median	11.000000	9.000000	12.000000	17	results/figures/manuscript/parameter_sweep.tsv (verified FIXED, 05 R3)
+c	A2_trim_default	res 1.0 (default)	n_clusters_median	15.000000	14.000000	16.000000	17	results/figures/manuscript/parameter_sweep.tsv (verified FIXED, 05 R3)
+c	A3_res2.0	res 2.0	n_clusters_median	23.000000	21.000000	24.000000	17	results/figures/manuscript/parameter_sweep.tsv (verified FIXED, 05 R3)
+c	A3_res0.5 -> A3_res2.0	Leiden res 0.5→2.0	paired_pct_change_n_clusters_median	112.500000	91.666700	136.363600	17	results/figures/manuscript/parameter_sweep.tsv (verified FIXED, 05 R3)
+c	A3_nn15 -> A3_nn50	n_neighbors 15→50	paired_pct_change_n_clusters_median	-14.285700	-20.000000	-11.764700	17	results/figures/manuscript/parameter_sweep.tsv (verified FIXED, 05 R3)
+c	A2_trim_default -> A3_libsize	TF-IDF→libsize	paired_pct_change_n_clusters_median	5.882400	-6.666700	28.571400	14	results/figures/manuscript/parameter_sweep.tsv (verified FIXED, 05 R3)
+c	A2_trim_default -> A2_trim_d5000_ext	incl. extended on	paired_pct_change_n_clusters_median	0.000000	0.000000	6.666700	9	results/figures/manuscript/parameter_sweep.tsv (verified FIXED, 05 R3)
+c	A2_trim_d1000_ext -> A2_trim_d10000_ext	gene dist. 1k→10k	paired_pct_change_n_clusters_median	0.000000	0.000000	0.000000	7	results/figures/manuscript/parameter_sweep.tsv (verified FIXED, 05 R3)
+c	A2_trim_mult1.5 -> A2_trim_mult3.0	utr mult. 1.5→3.0	paired_pct_change_n_clusters_median	0.000000	-5.882400	0.000000	8	results/figures/manuscript/parameter_sweep.tsv (verified FIXED, 05 R3)

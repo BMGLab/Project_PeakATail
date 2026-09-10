@@ -1,0 +1,6 @@
+stage	validation_query	label	n	frac_of_input	n_hit_t5_25bp	frac_t5	wilson95_lo	wilson95_hi	delta_frac_vs_previous	null_mean_t5	enrichment_t5
+on_listed_contigs	01_on_listed_contigs	input: precision default, IP arm (sites on primary contigs)	46524	0.99957	35575	0.764659	0.760783	0.768492		0.007177	106.543875
+not_internal_priming	05_not_internal_priming	clip-supported, >=2 molecules, not IP (no-op: caller enforces)	46524	0.99957	35575	0.764659	0.760783	0.768492	0.0	0.007177	106.543875
+hexamer_any12_-40..-5	06_hexamer_any12_-40..-5	canonical hexamer (any of 12) at -40..-5	35712	0.767274	28964	0.811044	0.80695	0.815071	0.04638500000000001	0.007224	112.263566
+trusted_novel	08_trusted_novel	>=100 bp from any PolyASite 2.0 site = TRUSTED-NOVEL	7259	0.15596	3523	0.485329	0.473842	0.49683	-0.325715	0.007411	65.483271
+trusted_novel_strong	09_trusted_novel_strong	AATAAA / ATTAAA only = strong subset	4329	0.093009	2175	0.502426	0.487536	0.517311	0.01709700000000003	0.007161	70.16129
