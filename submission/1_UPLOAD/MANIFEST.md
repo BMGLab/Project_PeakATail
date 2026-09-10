@@ -3,9 +3,9 @@
 Assembled by submission/assemble_upload.sh. Do not edit files here.
 
 FILE                                                BYTES  SHA256
-01_Manuscript.docx                                  57501  dfa32dceee79371d
-02_Additional_file_1_Supplementary.docx             18724  333321d077e93c9d
-03_Cover_letter.docx                                12388  c700cfb110b94250
+01_Manuscript.docx                                  57556  de11957bb4d99d1d
+02_Additional_file_1_Supplementary.docx             20356  14744fddf7ce97df
+03_Cover_letter.docx                                12388  392f3591307c7006
 03_Cover_letter.md                                   5108  7ccce37e7f3a751e
 04_Main_figures/Figure_1.pdf                        47739  5c39ccbae42bb4ee
 04_Main_figures/Figure_1.png                       879445  8bce36f21e34f98f

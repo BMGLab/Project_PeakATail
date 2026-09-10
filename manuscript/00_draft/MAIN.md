@@ -352,5 +352,5 @@ Full supplementary figure legends, with their travelling caveats, are in Additio
 
 **Fig S10 | The dropped clustering claim, stated honestly.** The positive result never appears without its ablation on the same axis: per-gene totals recover cell types as well as site-level profiles, so no novelty claim rests on clustering.
 
-**Supplementary Table T7 | Competitor tool versions, parameters, run commands and run-log caveats.** [In preparation, referenced from Methods; to be collated from the verified run registry and run logs before submission.]
+**Supplementary Table T7 | Competitor tool versions, parameters, run commands and run-log caveats.** Every version string is read from the `tool_version.txt` each run wrote at run time, and every invocation is the run script actually executed; both are in the analysis repository at the paths the table gives.
 

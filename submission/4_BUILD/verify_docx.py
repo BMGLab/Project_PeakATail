@@ -30,7 +30,17 @@ def check(cond, msg):
 
 
 def doc_text(d):
-    return "\n".join(p.text for p in d.paragraphs)
+    """Paragraphs AND table cells.
+
+    Markdown table rows become docx TABLE CELLS, not paragraphs, so a
+    paragraph-only reading made every table invisible to the no-loss check --
+    Supplementary Table T7 could have shipped empty and this would have passed.
+    """
+    parts = [p.text for p in d.paragraphs]
+    for tb in d.tables:
+        for row in tb.rows:
+            parts.append(" ".join(c.text for c in row.cells))
+    return "\n".join(parts)
 
 
 def image_count(path):
@@ -57,6 +67,10 @@ def strip_md(s):
     s = re.sub(r"^\s*[-*]\s+", "", s, flags=re.M)     # bullets
     s = re.sub(r"^\s*\d+\.\s+", "", s, flags=re.M)    # ordered list markers
     s = re.sub(r"^#+\s*", "", s, flags=re.M)
+    # a markdown table row renders as a row of cells; drop the pipes so the probe
+    # matches the text docx actually holds, and drop separator rows entirely
+    s = re.sub(r"^[ \t]*\|[ \t:|-]+\|[ \t]*$", "", s, flags=re.M)
+    s = re.sub(r"^[ \t]*\|[ \t]*(.*?)[ \t]*\|[ \t]*$", lambda m: m.group(1).replace("|", " "), s, flags=re.M)
     s = re.sub(r"\s+", " ", s)
     return s.strip()
 
