@@ -1,6 +1,6 @@
-# NOTE: placeholder author list, mirroring the convention in the PeakATail tool
-# repository. The final, ordered author list (and ORCIDs) will be set to match
-# the manuscript author list at submission. See README "Before release".
+# Author list set 2026-09-12 to match the manuscript byline exactly, as this file
+# always said it would be at submission. Contributors to the analysis code who are
+# not authors of the paper are credited in the manuscript's Acknowledgements.
 cff-version: 1.2.0
 message: "If you use this analysis code or its outputs, please cite the metadata below."
 type: software
@@ -11,13 +11,14 @@ abstract: >-
   seven-tool head-to-head benchmark of single-cell APA callers, and
   cell-type-resolved APA analyses in lung adenocarcinoma and mouse testis.
 authors:
-  - name: "PeakATail manuscript authors (BMGLab)"
-  - family-names: "Koçakaya"
-    given-names: "Ebru"
-  - family-names: "Kaymaz"
-    given-names: "Yasin"
   - family-names: "Amiri Tabat"
     given-names: "Amir"
+    orcid: "https://orcid.org/0009-0009-8740-7770"
+    affiliation: "Department of Computer Engineering, Faculty of Computer and Informatics Sciences, Ege University, İzmir, Türkiye"
+  - family-names: "Kaymaz"
+    given-names: "Yasin"
+    orcid: "https://orcid.org/0000-0002-9725-7536"
+    affiliation: "Department of Bioengineering, Faculty of Engineering, Ege University, İzmir, Türkiye"
 repository-code: "https://github.com/BMGLab/Project_PeakATail"
 license: MIT
 keywords:
